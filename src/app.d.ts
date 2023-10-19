@@ -6,4 +6,7 @@ declare namespace App {
 	// interface PageData {}
 	// interface Error {}
 	// interface Platform {}
+	interface Navigator {
+		connection?: NetworkInformation;
+	  }
 }

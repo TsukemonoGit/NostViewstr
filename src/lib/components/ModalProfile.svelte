@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { windowOpen } from '$lib/Functions';
+	import { windowOpen } from '$lib/nostrFunctions';
 	import { getModalStore, getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { nip19 } from 'nostr-tools';
 	export let parent: any;
@@ -15,7 +15,7 @@
 		try {
 			profileContent = JSON.parse($modalStore[0].meta.metadata.content);
 		} catch (error) {
-			console.log('profileJSONの展開に失敗');
+			console.log('failed to open profileJSON');
 		}
 	}
 	//$modalStore[0]?.meta.hexKey
@@ -38,7 +38,7 @@
 			},
 			() => {
 				// コピーに失敗したときの処理
-				console.log('コピー失敗');
+				console.log('failed to copy');
 				/**@type {import('@skeletonlabs/skeleton').ToastSettings}*/
 				const t: ToastSettings = {
 					message: 'failed to copy',

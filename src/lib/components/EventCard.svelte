@@ -9,11 +9,14 @@
 	import Open from '$lib/components/Button/Open.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { nip19 } from 'nostr-tools';
-	import { parseNaddr, windowOpen } from '$lib/Functions';
+	import { parseNaddr, windowOpen } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
+	import { MenuMode } from '$lib/functions';
+
 	export let note: NostrEvent;
 	export let metadata: NostrEvent | undefined;
 	export let iconView: boolean = true;
+	export let menuMode: MenuMode = MenuMode.Owner;
 	export let myIndex: number | undefined;
 	export let tagArray: string[] | undefined;
 	const dispatch = createEventDispatcher();
@@ -107,7 +110,7 @@
 <Modal />
 <Toast />
 <!-- ノート | ボタン群-->
-<div class="card drop-shadow px-1 py-2 my-1 grid grid-cols-[1fr_auto] gap-1">
+<div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
 	<!-- icon | その他-->
 	<div class="grid grid-cols-[auto_1fr] gap-1">
 		<!--icon-->
@@ -124,6 +127,7 @@
 				{/if}
 			</div>
 		{:else}
+			<!--iconなし-->
 			<div />
 		{/if}
 
@@ -181,36 +185,65 @@
 					</u>
 				</button>
 			{/if}
+
 			<!--note-->
 			<div class="parent-container break-all whitespace-pre-wrap">
+				<!--tag?-->
+				{#if note.tags.length > 0}
+					{#each note.tags as tag}
+						<div>{tag}</div>
+					{/each}
+				{/if}
+				<!--note-->
 				{note.content}
 			</div>
 		</div>
 	</div>
 
 	<!--ボタン群-->
-	<div>
-		<button
-			class="btn variant-filled m-0 p-0"
-			on:click={() => {
-				handleClick(State.Delete);
-			}}><DeleteBtn isSmph={false} /></button
-		>
-		<button on:click={() => handleClick(State.Move)}><Move isSmph={false} /></button>
+	{#if menuMode === MenuMode.Owner}
+		<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
+			<div>
+				<button><Share /></button>
 
-		<!-- <button class="btn variant-filled m-0 p-0" on:click={() => handleClick(State.Check)}
+				<!-- <button class="btn variant-filled m-0 p-0" on:click={() => handleClick(State.Check)}
 			>Check</button
 		> -->
-		<button class="btn variant-filled m-0 p-0"><Share isSmph={false} /></button>
-		<button
-			class="btn variant-filled m-0 p-0"
-			on:click={() => {
-				if (tagArray) {
-					windowOpen(note.id);
-				}
-			}}><Open isSmph={false} /></button
-		>
-	</div>
+				<button on:click={() => handleClick(State.Move)}><Move /></button>
+			</div>
+			<div>
+				<button
+					on:click={() => {
+						if (tagArray) {
+							windowOpen(note.id);
+						}
+					}}><Open /></button
+				>
+				<button
+					on:click={() => {
+						handleClick(State.Delete);
+					}}><DeleteBtn /></button
+				>
+			</div>
+		</div>
+	{:else if menuMode === MenuMode.Viewer}
+		<!--修正ボタンなし-->
+		<div class="flex flex-col">
+			<button class="my-1"><Share /></button>
+
+			<button
+				class="my-1"
+				on:click={() => {
+					if (tagArray) {
+						windowOpen(note.id);
+					}
+				}}><Open /></button
+			>
+		</div>
+	{:else}
+		<!--複数選択モード-->
+		<input class="m-2 checkbox scale-125" type="checkbox" on:change={() => {}} />
+	{/if}
 </div>
 <div class="card p-1 variant-ghost-secondary z-20" data-popup="popupShare">
 	<p>{$_('popup.Share')}</p>
