@@ -2,7 +2,7 @@
   import type { Placement } from '@floating-ui/dom';
   import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
   import ArrowCircleRight from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
-  import { _ } from 'svelte-i18n'
+
 
   export let isSmph: boolean;
   const popupHover = (target: string, place: Placement): PopupSettings => {
@@ -21,14 +21,10 @@
     >
   </div>
 {:else}
-  <div use:popup={popupHover('popupMove', 'top')}>
-    <span class=" rounded fill-primary-100 variant-filled-primary"
+  <div use:popup={popupHover('popupMove', 'top')} >
+    <span class=" rounded fill-surface-500 variant-filled-primary "
       >{@html ArrowCircleRight}</span
     >
   </div>
 {/if}
 
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupMove">
-  <p>{$_('popup.move')}</p>
-  <div class="arrow variant-filled-secondary z-20" />
-</div>

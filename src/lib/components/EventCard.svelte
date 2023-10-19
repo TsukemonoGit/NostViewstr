@@ -9,8 +9,8 @@
 	import Open from '$lib/components/Button/Open.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { nip19 } from 'nostr-tools';
-	import { parseNaddr } from '$lib/Functions';
-
+	import { parseNaddr, windowOpen } from '$lib/Functions';
+	import { _ } from 'svelte-i18n';
 	export let note: NostrEvent;
 	export let metadata: NostrEvent | undefined;
 	export let iconView: boolean = true;
@@ -44,7 +44,6 @@
 	};
 
 	$: if (metadata) {
-		console.log(metadata);
 		try {
 			metadataContent = JSON.parse(metadata.content);
 			console.log(metadataContent);
@@ -59,14 +58,10 @@
 		ref: ModalProfile
 	};
 
-	function OpenProfile(metadata: NostrEvent) {
+	function OpenProfile(metadata: { pubkey: string } | NostrEvent) {
 		const modal: ModalSettings = {
 			type: 'component',
-			//  flyX: x,
-			//  flyY: y,
 			meta: {
-				//    position: `x-${clientX} y-${clientY}`,
-
 				metadata: metadata
 			},
 			component: profileModalComponent
@@ -83,11 +78,8 @@
 	function OpenNoteJson(text: NostrEvent) {
 		const modal = {
 			type: 'component' as const,
-			//  flyX: x,
-			//  flyY: y,
 			title: 'Event Json',
 			meta: {
-				//    position: `x-${clientX} y-${clientY}`,
 				note: text
 			},
 
@@ -148,16 +140,16 @@
 							on:click={() => {
 								if (metadata !== undefined) {
 									OpenProfile(metadata);
+								} else {
+									OpenProfile({ pubkey: note.pubkey });
 								}
 							}}
 							><u
 								>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(metadata.content).name}
 								{:else}
-									<!-- {nip19
-                  .npubEncode(note.pubkey)
-                  .slice(0, 12)}:{nip19
-                  .npubEncode(note.pubkey)
-                  .slice(-4)} -->
+									{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19
+										.npubEncode(note.pubkey)
+										.slice(-4)}
 								{/if}
 							</u></button
 						>
@@ -179,7 +171,15 @@
 					</div>
 				</div>
 			{:else}
-				<div>{note.pubkey}</div>
+				<button
+					class="w-fit text-secondary-600 dark:text-blue-500"
+					on:click={() => {
+						OpenProfile({ pubkey: note.pubkey });
+					}}
+					><u>
+						{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19.npubEncode(note.pubkey).slice(-4)}
+					</u>
+				</button>
 			{/if}
 			<!--note-->
 			<div class="parent-container break-all whitespace-pre-wrap">
@@ -197,7 +197,7 @@
 			}}><DeleteBtn isSmph={false} /></button
 		>
 		<button on:click={() => handleClick(State.Move)}><Move isSmph={false} /></button>
-		
+
 		<!-- <button class="btn variant-filled m-0 p-0" on:click={() => handleClick(State.Check)}
 			>Check</button
 		> -->
@@ -206,18 +206,26 @@
 			class="btn variant-filled m-0 p-0"
 			on:click={() => {
 				if (tagArray) {
-					window.open(
-						// //nostr.bandはaタグでの検索ができない
-						// `https://nostr.band/?q=${
-						//   tagArray[0] === 'a'
-						//     ? nip19.naddrEncode(parseNaddr(tagArray))
-						//     : nip19.noteEncode(tagArray[1])
-						// }`,
-						`https://nostr.band/?q=${note.id}`,
-						'_blank'
-					);
+					windowOpen(note.id);
 				}
 			}}><Open isSmph={false} /></button
 		>
 	</div>
+</div>
+<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupShare">
+	<p>{$_('popup.Share')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
+</div>
+
+<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupOpen">
+	<p>{$_('popup.open')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
+</div>
+<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupMove">
+	<p>{$_('popup.move')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
+</div>
+<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupDelete">
+	<p>{$_('popup.delete')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
 </div>

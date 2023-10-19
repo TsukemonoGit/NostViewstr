@@ -16,3 +16,16 @@ export function parseNaddr(tag: string[]): AddressPointer {
         };
   }
   
+
+  export function windowOpen(str:string):void{
+    window.open(
+      // //nostr.bandはaタグでの検索ができない
+      // `https://nostr.band/?q=${
+      //   tagArray[0] === 'a'
+      //     ? nip19.naddrEncode(parseNaddr(tagArray))
+      //     : nip19.noteEncode(tagArray[1])
+      // }`,
+      `https://nostr.band/?q=${str}`,
+      '_blank'
+    );
+  }

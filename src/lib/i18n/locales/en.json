@@ -1,0 +1,8 @@
+{
+  "popup": {
+    "Share": "Post on Nostr",
+    "open": "Open other app",
+    "move": "Move ather list",
+    "delete": "Delete"
+  }
+}

@@ -3,6 +3,7 @@
   import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
   import Chat from '@material-design-icons/svg/round/chat.svg?raw';
 
+
   export let isSmph: boolean;
 
   const popupHover = (target: string, place: Placement): PopupSettings => {
@@ -21,7 +22,7 @@
     >
   </div>
 {:else}
-  <div use:popup={popupHover('popupShare', 'top')}>
+  <div use:popup={popupHover('popupShare', 'top')} class="bg-surface-500  rounded">
     <span class=" rounded fill-primary-100 variant-filled-primary"
       >{@html Chat}</span
     >

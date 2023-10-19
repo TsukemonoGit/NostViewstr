@@ -4,6 +4,7 @@
 
   import OpenInBrowser from '@material-design-icons/svg/round/open_in_browser.svg?raw';
 
+  
   export let isSmph: boolean;
 
   const popupHover = (target: string, place: Placement): PopupSettings => {
@@ -20,7 +21,7 @@
     <span class="fill-primary-100">{@html OpenInBrowser}</span>
   </div>
 {:else}
-  <div use:popup={popupHover('popupOpen', 'bottom')}>
+  <div use:popup={popupHover('popupOpen', 'bottom') } class="bg-surface-500  rounded">
     <span class="  fill-primary-100">{@html OpenInBrowser}</span>
   </div>
 {/if}
