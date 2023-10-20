@@ -4,5 +4,13 @@
     "open": "Open other app",
     "move": "Move ather list",
     "delete": "Delete"
+  },
+  "modal": {
+    "failed_copy": "failed to copy"
+  },
+  "PostNote": {
+    "copied": "copied clipboard",
+    "failed_copy": "failed to copy clipboard",
+    "popup_copy": "copy to clipboard"
   }
 }

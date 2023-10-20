@@ -3,18 +3,19 @@
 	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
 	import ModalProfile from '$lib/components/ModalProfile.svelte';
 	import ModalEventJson from '$lib/components/ModalEventJson.svelte';
+	import ModalPostNote from '$lib/components/ModalPostNote.svelte';
 	import DeleteBtn from '$lib/components/Button/DeleteBtn.svelte';
 	import Move from '$lib/components/Button/Move.svelte';
 	import Share from '$lib/components/Button/Share.svelte';
 	import Open from '$lib/components/Button/Open.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { nip19 } from 'nostr-tools';
+	import { nip19, type Event } from 'nostr-tools';
 	import { parseNaddr, windowOpen } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { MenuMode } from '$lib/functions';
 
-	export let note: NostrEvent;
-	export let metadata: NostrEvent | undefined;
+	export let note: Event;
+	export let metadata: Event | undefined;
 	export let iconView: boolean = true;
 	export let menuMode: MenuMode = MenuMode.Owner;
 	export let myIndex: number | undefined;
@@ -30,15 +31,15 @@
 		Move,
 		Check
 	}
-	type NostrEvent = {
-		id: string;
-		kind: number;
-		pubkey: string;
-		content: string;
-		sig: string;
-		tags: string[][];
-		created_at: number;
-	};
+	// type NostrEvent = {
+	// 	id: string;
+	// 	kind: number;
+	// 	pubkey: string;
+	// 	content: string;
+	// 	sig: string;
+	// 	tags: string[][];
+	// 	created_at: number;
+	// };
 
 	type NostrProfile = {
 		name: string;
@@ -49,7 +50,6 @@
 	$: if (metadata) {
 		try {
 			metadataContent = JSON.parse(metadata.content);
-			console.log(metadataContent);
 		} catch (error) {
 			console.log('profile Json parse error');
 		}
@@ -61,15 +61,16 @@
 		ref: ModalProfile
 	};
 
-	function OpenProfile(metadata: { pubkey: string } | NostrEvent) {
+	function OpenProfile(metadata: { pubkey: string } | Event) {
 		const modal: ModalSettings = {
 			type: 'component',
+			backdropClasses: '!bg-primary-400/40',
 			meta: {
 				metadata: metadata
 			},
 			component: profileModalComponent
 		};
-		console.log(modal);
+
 		modalStore.trigger(modal);
 	}
 
@@ -78,12 +79,14 @@
 		ref: ModalEventJson
 	};
 
-	function OpenNoteJson(text: NostrEvent) {
+	function OpenNoteJson(text: Event) {
 		const modal = {
 			type: 'component' as const,
 			title: 'Event Json',
+			backdropClasses: '!bg-primary-400/40',
 			meta: {
-				note: text
+				note: text,
+				tagArray: tagArray
 			},
 
 			component: jsonModalComponent
@@ -104,6 +107,44 @@
 				dispatch('CheckNote', { number: myIndex });
 				break;
 		}
+	}
+
+	//-----------------------------------------------引用ポスト
+	const postNoteModalComponent: ModalComponent = {
+		ref: ModalPostNote
+	};
+	function shareNote() {
+		const tags = tagArray
+			? tagArray[0] === 'e'
+				? [[...tagArray, '', 'mention']]
+				: [tagArray]
+			: [];
+		const modal: ModalSettings = {
+			type: 'component',
+			component: postNoteModalComponent,
+			backdropClasses: '!bg-primary-400/40',
+			title: $_('nprofile.modal.postNote.title'),
+			body: ``,
+			value: {
+				content: `${
+					tagArray && tagArray[0] === 'a'
+						? `\r\nnostr:${nip19.naddrEncode(parseNaddr(tagArray))}`
+						: tagArray && tagArray[0] === 'e'
+						? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
+						: ''
+				}`,
+				tags: tags,
+				pubkey: note.pubkey
+			}
+			// response: async (res) => {
+			// 	console.log(res);
+			// 	if (res) {
+			// 		//帰ってきた値によってなんやかんや
+			// 		//でもポストノートは別に戻ってきてからやんなくても良くない？
+			// 	}
+			// }
+		};
+		modalStore.trigger(modal);
 	}
 </script>
 
@@ -133,10 +174,10 @@
 
 		<!-- profile | note -->
 		<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
-			<!--profile-->
-			{#if metadata}
-				<!-- name | display_name | time -->
-				<div class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix">
+			<!-- name | display_name | time -->
+			<div class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix">
+				<!--profile-->
+				{#if metadata}
 					<!--name-->
 					<div class="truncate wid justify-items-end">
 						<button
@@ -173,18 +214,30 @@
 							}}>{new Date(note.created_at * 1000).toLocaleString()}</button
 						>
 					</div>
-				</div>
-			{:else}
-				<button
-					class="w-fit text-secondary-600 dark:text-blue-500"
-					on:click={() => {
-						OpenProfile({ pubkey: note.pubkey });
-					}}
-					><u>
-						{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19.npubEncode(note.pubkey).slice(-4)}
-					</u>
-				</button>
-			{/if}
+				{:else}
+					<!--name-->
+					<button
+						class="w-fit text-secondary-600 dark:text-blue-500"
+						on:click={() => {
+							OpenProfile({ pubkey: note.pubkey });
+						}}
+						><u>
+							{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19.npubEncode(note.pubkey).slice(-4)}
+						</u>
+					</button>
+					<!--display_name-->
+					<div />
+					<!--time-->
+					<div class="min-w-max">
+						<button
+							class="text-sm underline decoration-secondary-500"
+							on:click={() => {
+								OpenNoteJson(note);
+							}}>{new Date(note.created_at * 1000).toLocaleString()}</button
+						>
+					</div>
+				{/if}
+			</div>
 
 			<!--note-->
 			<div class="parent-container break-all whitespace-pre-wrap">
@@ -204,11 +257,7 @@
 	{#if menuMode === MenuMode.Owner}
 		<div class="grid grid-rows-[auto_1fr]">
 			<div>
-				<button class="btn m-0 p-0 bg-surface-500"><Share /></button>
-
-				<!-- <button class="btn variant-filled m-0 p-0" on:click={() => handleClick(State.Check)}
-			>Check</button
-		> -->
+				<button class="btn m-0 p-0 bg-surface-500" on:click={shareNote}><Share /></button>
 				<button class="btn m-0 p-0 bg-surface-500" on:click={() => handleClick(State.Move)}
 					><Move /></button
 				>
@@ -233,7 +282,7 @@
 	{:else if menuMode === MenuMode.Viewer}
 		<!--修正ボタンなし-->
 		<div class="flex flex-col">
-			<button class="btn m-0 p-0 mb-1 bg-surface-500"><Share /></button>
+			<button class="btn m-0 p-0 mb-1 bg-surface-500" on:click={shareNote}><Share /></button>
 
 			<button
 				class="btn m-0 p-0 bg-surface-500"

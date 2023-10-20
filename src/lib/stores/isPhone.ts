@@ -8,6 +8,7 @@ function checkIsPhone() {
 
 	const unsubscribe = isPhoneStore.subscribe(($isPhone) => {
 		isPhoneValue = $isPhone;
+		console.log(isPhoneValue);
 	});
 
 	if (isPhoneValue === null) {

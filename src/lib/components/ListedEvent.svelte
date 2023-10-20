@@ -3,19 +3,18 @@
 	import { MenuMode } from '$lib/functions';
 
 	const test = {
+		content: 'testuo nostr:note1ggwlje0d0lfu92gvvqswacna9uq8zz620n3ls7nk35z5rv34fyusrt73pt',
+		created_at: 1697707178,
+		id: 'e9a74219fbe7a15f1bfc7443bdeb5aadcb807f8312eed3d3736f88b53ee0a2f4',
 		kind: 1,
-		content:
-			'てすとのもじたち nostr:note1ggwlje0d0lfu92gvvqswacna9uq8zz620n3ls7nk35z5rv34fyusrt73pt',
+		pubkey: '5650178597525e90ea16a4d7a9e33700ac238a1be9dbf3f5093862929d9a1e60',
+		sig: 'cb490cde0dcad222a44baceb3fce6fc19a9120985f69721a44571bda89c4922f62b5b76ae3a44d81f4c1e271a97ddb6dd1e54b22772253e4ac10752d37d36919',
 		tags: [
 			['e', 'e6bc5926d88b02a0cb9d884df0527f8042e0483db2d5e05e594391bdd9738fbc', '', 'reply'],
 			['e', 'acc06bd082f0c62ceb345d381ac60b68b0969ac3ab93a48df5d0f20a12017a7b', '', 'root'],
 			['e', '421df965ed7fd3c2a90c6020eee27d2f00710b4a7ce3f87a768d0541b2354939', '', 'mention'],
 			['p', '5650178597525e90ea16a4d7a9e33700ac238a1be9dbf3f5093862929d9a1e60']
-		],
-		created_at: 1697707178,
-		pubkey: '5650178597525e90ea16a4d7a9e33700ac238a1be9dbf3f5093862929d9a1e60',
-		id: 'e9a74219fbe7a15f1bfc7443bdeb5aadcb807f8312eed3d3736f88b53ee0a2f4',
-		sig: 'cb490cde0dcad222a44baceb3fce6fc19a9120985f69721a44571bda89c4922f62b5b76ae3a44d81f4c1e271a97ddb6dd1e54b22772253e4ac10752d37d36919'
+		]
 	};
 
 	const metadata = {
@@ -68,7 +67,7 @@
 <EventCard
 	tagArray={[
 		'a',
-		'30001:84b0c46ab699ac35eb2ca286470b85e081db2087cdef63932236c397417782f5:bookamrk'
+		'30001:84b0c46ab699ac35eb2ca286470b85e081db2087cdef63932236c397417782f5:bookmark'
 	]}
 	note={test}
 	{metadata}

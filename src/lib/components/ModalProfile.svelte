@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { windowOpen } from '$lib/nostrFunctions';
-	import { getModalStore, getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
+	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
+
 	export let parent: any;
-	const modalStore = getModalStore();
-	const toastStore = getToastStore();
+
 	let profileContent: {
 		[x: string]: string | null | undefined;
 		picture: any;
@@ -114,7 +115,7 @@
 					class="btn variant-filled-surface p-2"
 					on:click={() => {
 						windowOpen(nip19.npubEncode($modalStore[0]?.meta.metadata.pubkey));
-							
+
 						parent.onClose();
 					}}>Open in external app</button
 				>
