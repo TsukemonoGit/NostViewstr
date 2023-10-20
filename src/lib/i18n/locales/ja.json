@@ -13,5 +13,12 @@
     "failed_copy": "コピーに失敗しました",
     "popup_copy": "クリップボードにコピー",
     "p_tag": "引用元のpubkeyを含める"
+  },
+  "nprofile": {
+    "modal": {
+      "postNote": {
+        "title": "Post Note"
+      }
+    }
   }
 }

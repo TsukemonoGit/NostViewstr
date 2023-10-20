@@ -45,10 +45,16 @@
 			sig: ''
 		};
 		const response = await publishEvent(event, Relays().postRelays);
-		const toastSettings: ToastSettings = {
-			message: `publish result<br>${response.msg.join('<br>')}`,
-			timeout: 5000
-		};
+		const toastSettings: ToastSettings = response.isSuccess
+			? {
+					message: `publish result<br>${response.msg.join('<br>')}`,
+					timeout: 5000
+			  }
+			: {
+					message: `failed to publish`,
+					background: 'bg-orange-500 text-white width-filled ',
+					timeout: 5000
+			  };
 		toastStore.trigger(toastSettings);
 		modalStore.close();
 	}

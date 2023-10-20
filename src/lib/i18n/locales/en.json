@@ -11,6 +11,14 @@
   "PostNote": {
     "copied": "copied clipboard",
     "failed_copy": "failed to copy clipboard",
-    "popup_copy": "copy to clipboard"
+    "popup_copy": "copy to clipboard",
+    "p_tag": "Include the p tag of the quoted source"
+  },
+  "nprofile": {
+    "modal": {
+      "postNote": {
+        "title": "Post Note"
+      }
+    }
   }
 }

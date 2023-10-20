@@ -42,7 +42,7 @@ export function windowOpen(str: string): void {
 export async function publishEvent(
 	obj: Event,
 	relays: string[]
-): Promise<{ isSuccess: boolean; event: Nostr.Event; msg: string[] }> {
+): Promise<{ isSuccess: boolean; event?: Nostr.Event; msg: string[] }> {
 	let isSuccess = false;
 	const msg: string[] = [];
 	console.log(obj);
@@ -50,54 +50,30 @@ export async function publishEvent(
 	if (obj.pubkey === '') {
 		obj.pubkey = await getPub();
 	}
-	//try {
-	const event = await signEv(obj); //window.nostr.signEvent(obj);
-	event.id = getEventHash(event);
+	try {
+		const event = await signEv(obj); //window.nostr.signEvent(obj);
+		event.id = getEventHash(event);
 
-	const pool = new SimplePool();
-	const pubs = pool.publish(relays, event);
+		const pool = new SimplePool();
+		const pubs = pool.publish(relays, event);
 
-	await Promise.allSettled(pubs).then((results) => {
-		results.forEach((result, index) => {
-			if (result.status === 'fulfilled') {
-				console.log(`リレー ${relays[index]} への送信に成功しました`);
-				isSuccess = true;
-				msg.push(`[ok] ${relays[index]}`);
-			} else {
-				console.error(`リレー ${relays[index]} への送信に失敗しました: ${result.reason}`);
-				msg.push(`[failed] ${relays[index]}`);
-			}
+		await Promise.allSettled(pubs).then((results) => {
+			results.forEach((result, index) => {
+				if (result.status === 'fulfilled') {
+					console.log(`success ${relays[index]} `);
+					isSuccess = true;
+					msg.push(`[ok] ${relays[index]}`);
+				} else {
+					console.error(`failed ${relays[index]}: ${result.reason}`);
+					msg.push(`[failed] ${relays[index]}`);
+				}
+			});
 		});
-	});
-	return { isSuccess: isSuccess, event: event, msg: msg };
-	// return new Promise((resolve) => {
-	// 	const timeoutID = setTimeout(() => {
-	// 		resolve({ isSuccess, event, msg });
-	// 	}, 5000);
-
-	// 	pub.on('ok', (relay: string) => {
-	// 		isSuccess = true;
-	// 		msg.push(`[ok]${relay}`);
-
-	// 		if (msg.length == relays.length) {
-	// 			clearTimeout(timeoutID);
-	// 			resolve({ isSuccess, event, msg });
-	// 		}
-	// 	});
-
-	// 	pub.on('failed', (relay: string) => {
-	// 		msg.push(`[failed]${relay}`);
-
-	// 		if (msg.length == relays.length) {
-	// 			clearTimeout(timeoutID);
-	// 			resolve({ isSuccess, event, msg });
-	// 		}
-	// 	});
-	// });
-	//} catch (error) {
-	//throw new Error("拡張機能が読み込めませんでした");
-	//	throw new Error(error as string);
-	//}
+		return { isSuccess: isSuccess, event: event, msg: msg };
+	} catch (error) {
+		console.error(error);
+		return { isSuccess: false, msg: [`failed to publish`] };
+	}
 }
 
 //--------------------------------------------------nip07かnsecかでやるやつ
