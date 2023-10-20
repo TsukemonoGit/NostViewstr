@@ -7,7 +7,6 @@ interface Relays {
 	bookmarkRelays: string[];
 	postRelays: string[];
 }
-const relays = writable<Relays>();
 
 export const defaultRelays = [
 	'wss://relay.nostr.band',
@@ -15,42 +14,48 @@ export const defaultRelays = [
 	'wss://relay.nostr.wirednet.jp',
 	'wss://relayable.org'
 ];
+export const relays = writable<Relays>({
+	searchRelays: defaultRelays,
+	bookmarkRelays: defaultRelays,
+	postRelays: defaultRelays
+});
 
-export const Relays = (): Relays => {
-	let relay: Relays = {
-		searchRelays: [],
-		bookmarkRelays: [],
-		postRelays: []
-	};
-	const unsubscribe = relays.subscribe(($relays: Relays) => {
-		relay = $relays;
-		console.log(relay);
-	});
-	if (!relay || relay.searchRelays.length === 0) {
-		let tmp: Relays = {
-			searchRelays: [],
-			bookmarkRelays: [],
-			postRelays: []
-		};
-		const config = localStorage.getItem('config');
-		if (config && JSON.parse(config).bookmarkRelays) {
-			tmp.bookmarkRelays = JSON.parse(config).bookmarkRelays;
-		} else {
-			tmp.bookmarkRelays = defaultRelays;
-		}
-		if (config && JSON.parse(config).searchRelays) {
-			tmp.searchRelays = JSON.parse(config).searchRelays;
-		} else {
-			tmp.searchRelays = defaultRelays;
-		}
-		if (config && JSON.parse(config).postRelays) {
-			tmp.postRelays = JSON.parse(config).postRelays;
-		} else {
-			tmp.postRelays = defaultRelays;
-		}
-		relays.set(tmp);
-	}
+// export const Relays = (): Relays => {
+// 	let relay: Relays = {
+// 		searchRelays: [],
+// 		bookmarkRelays: [],
+// 		postRelays: []
+// 	};
 
-	unsubscribe();
-	return relay;
-};
+// 	const unsubscribe = relays.subscribe(($relays: Relays) => {
+// 		relay = $relays;
+// 		//console.log(relay);
+// 	});
+// 	if (!relay || relay.searchRelays.length === 0) {
+// 		let tmp: Relays = {
+// 			searchRelays: [],
+// 			bookmarkRelays: [],
+// 			postRelays: []
+// 		};
+// 		const config = localStorage.getItem('config');
+// 		if (config && JSON.parse(config).bookmarkRelays) {
+// 			tmp.bookmarkRelays = JSON.parse(config).bookmarkRelays;
+// 		} else {
+// 			tmp.bookmarkRelays = defaultRelays;
+// 		}
+// 		if (config && JSON.parse(config).searchRelays) {
+// 			tmp.searchRelays = JSON.parse(config).searchRelays;
+// 		} else {
+// 			tmp.searchRelays = defaultRelays;
+// 		}
+// 		if (config && JSON.parse(config).postRelays) {
+// 			tmp.postRelays = JSON.parse(config).postRelays;
+// 		} else {
+// 			tmp.postRelays = defaultRelays;
+// 		}
+// 		relays.set(tmp);
+// 	}
+
+// 	unsubscribe();
+// 	return relay;
+// };

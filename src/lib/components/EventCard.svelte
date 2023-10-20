@@ -10,9 +10,12 @@
 	import Open from '$lib/components/Button/Open.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { nip19, type Event } from 'nostr-tools';
-	import { parseNaddr, windowOpen } from '$lib/nostrFunctions';
+	import { parseNaddr, uniqueTags, windowOpen } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { MenuMode } from '$lib/functions';
+	import EventTag from './EventTag.svelte';
+	import { NostrApp } from 'nosvelte';
+	import { relays } from '$lib/stores/relays';
 
 	export let note: Event;
 	export let metadata: Event | undefined;
@@ -31,15 +34,6 @@
 		Move,
 		Check
 	}
-	// type NostrEvent = {
-	// 	id: string;
-	// 	kind: number;
-	// 	pubkey: string;
-	// 	content: string;
-	// 	sig: string;
-	// 	tags: string[][];
-	// 	created_at: number;
-	// };
 
 	type NostrProfile = {
 		name: string;
@@ -61,7 +55,7 @@
 		ref: ModalProfile
 	};
 
-	function OpenProfile(metadata: { pubkey: string } | Event) {
+	const OpenProfile = (metadata: { pubkey: string } | Event) => {
 		const modal: ModalSettings = {
 			type: 'component',
 			backdropClasses: '!bg-primary-400/40',
@@ -72,14 +66,14 @@
 		};
 
 		modalStore.trigger(modal);
-	}
+	};
 
 	//-------------------------------イベントJSON表示
 	const jsonModalComponent: ModalComponent = {
 		ref: ModalEventJson
 	};
 
-	function OpenNoteJson(text: Event) {
+	const OpenNoteJson = (text: Event) => {
 		const modal = {
 			type: 'component' as const,
 			title: 'Event Json',
@@ -92,7 +86,7 @@
 			component: jsonModalComponent
 		};
 		modalStore.trigger(modal);
-	}
+	};
 
 	function handleClick(state: State) {
 		switch (state) {
@@ -148,156 +142,166 @@
 	}
 </script>
 
-<Modal />
-<Toast />
-<!-- ノート | ボタン群-->
-<div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
-	<!-- icon | その他-->
-	<div class="grid grid-cols-[auto_1fr] gap-1">
-		<!--icon-->
-		{#if iconView && metadata}
-			<div
-				class="w-12 h-12 rounded-full flex justify-center overflow-hidden bg-surface-500/25 mt-1"
-			>
-				{#if JSON.parse(metadata.content).picture}
-					<img
-						class="w-12 object-contain justify-center"
-						src={JSON.parse(metadata.content).picture}
-						alt="avatar"
-					/>
+{#if $relays}
+	<NostrApp relays={$relays.searchRelays}>
+		<!-- ノート | ボタン群-->
+		<div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
+			<!-- icon | その他-->
+			<div class="grid grid-cols-[auto_1fr] gap-1">
+				<!--icon-->
+				{#if iconView && metadata}
+					<div
+						class="w-12 h-12 rounded-full flex justify-center overflow-hidden bg-surface-500/25 mt-1"
+					>
+						{#if JSON.parse(metadata.content).picture}
+							<img
+								class="w-12 object-contain justify-center"
+								src={JSON.parse(metadata.content).picture}
+								alt="avatar"
+							/>
+						{/if}
+					</div>
+				{:else}
+					<!--iconなし-->
+					<div />
 				{/if}
-			</div>
-		{:else}
-			<!--iconなし-->
-			<div />
-		{/if}
 
-		<!-- profile | note -->
-		<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
-			<!-- name | display_name | time -->
-			<div class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix">
-				<!--profile-->
-				{#if metadata}
-					<!--name-->
-					<div class="truncate wid justify-items-end">
-						<button
-							class="text-secondary-600 dark:text-blue-500"
-							on:click={() => {
-								if (metadata !== undefined) {
-									OpenProfile(metadata);
-								} else {
+				<!-- profile | note -->
+				<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
+					<!-- name | display_name | time -->
+					<div class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix overflow-x-hidden">
+						<!--profile-->
+						{#if metadata}
+							<!--name-->
+							<div class="truncate wid justify-items-end">
+								<button
+									class="text-secondary-600 dark:text-blue-500"
+									on:click={() => {
+										if (metadata !== undefined) {
+											OpenProfile(metadata);
+										} else {
+											OpenProfile({ pubkey: note.pubkey });
+										}
+									}}
+									><u
+										>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(metadata.content)
+												.name}
+										{:else}
+											{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19
+												.npubEncode(note.pubkey)
+												.slice(-4)}
+										{/if}
+									</u></button
+								>
+							</div>
+							<!--display_name-->
+							<div class="text-left self-end text-sm h-fix wi truncate justify-items-end">
+								{#if JSON.parse(metadata.content).display_name}
+									{JSON.parse(metadata.content).display_name}
+								{/if}
+							</div>
+							<!--time-->
+							<div class="min-w-max">
+								<button
+									class="text-sm underline decoration-secondary-500"
+									on:click={() => {
+										OpenNoteJson(note);
+									}}>{new Date(note.created_at * 1000).toLocaleString()}</button
+								>
+							</div>
+						{:else}
+							<!--name-->
+							<button
+								class="w-fit text-secondary-600 dark:text-blue-500"
+								on:click={() => {
 									OpenProfile({ pubkey: note.pubkey });
-								}
-							}}
-							><u
-								>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(metadata.content).name}
-								{:else}
+								}}
+								><u>
 									{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19
 										.npubEncode(note.pubkey)
 										.slice(-4)}
-								{/if}
-							</u></button
-						>
-					</div>
-					<!--display_name-->
-					<div class="text-left self-end text-sm h-fix wi truncate justify-items-end">
-						{#if JSON.parse(metadata.content).display_name}
-							{JSON.parse(metadata.content).display_name}
+								</u>
+							</button>
+							<!--display_name-->
+							<div />
+							<!--time-->
+							<div class="min-w-max">
+								<button
+									class="text-sm underline decoration-secondary-500"
+									on:click={() => {
+										OpenNoteJson(note);
+									}}>{new Date(note.created_at * 1000).toLocaleString()}</button
+								>
+							</div>
 						{/if}
 					</div>
-					<!--time-->
-					<div class="min-w-max">
-						<button
-							class="text-sm underline decoration-secondary-500"
-							on:click={() => {
-								OpenNoteJson(note);
-							}}>{new Date(note.created_at * 1000).toLocaleString()}</button
+
+					<!--note-->
+					<div class="parent-container break-all whitespace-pre-wrap overflow-x-hidden">
+						<!--tag?-->
+						{#if uniqueTags(note.tags).length > 0}
+							<div
+								class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-rose-800/25 dark:border-s-rose-100/25"
+							>
+								{#each note.tags as tag}
+									<EventTag {tag} handleClickDate={OpenNoteJson} handleClickPubkey={OpenProfile} />
+								{/each}
+							</div>
+						{/if}
+						<!--note-->
+						{note.content}
+					</div>
+				</div>
+			</div>
+
+			<!--ボタン群-->
+			{#if menuMode === MenuMode.Owner}
+				<div class="grid grid-rows-[auto_1fr] w-14">
+					<div>
+						<button class="btn m-0 p-0 bg-surface-500" on:click={shareNote}><Share /></button>
+						<button class="btn m-0 p-0 bg-surface-500" on:click={() => handleClick(State.Move)}
+							><Move /></button
 						>
 					</div>
-				{:else}
-					<!--name-->
+					<div>
+						<button
+							class="btn m-0 p-0 bg-surface-500"
+							on:click={() => {
+								if (tagArray) {
+									windowOpen(note.id);
+								}
+							}}><Open /></button
+						>
+						<button
+							class="btn m-0 p-0 bg-surface-500"
+							on:click={() => {
+								handleClick(State.Delete);
+							}}><DeleteBtn /></button
+						>
+					</div>
+				</div>
+			{:else if menuMode === MenuMode.Viewer}
+				<!--修正ボタンなし-->
+				<div class="flex flex-col">
+					<button class="btn m-0 p-0 mb-1 bg-surface-500" on:click={shareNote}><Share /></button>
+
 					<button
-						class="w-fit text-secondary-600 dark:text-blue-500"
+						class="btn m-0 p-0 bg-surface-500"
 						on:click={() => {
-							OpenProfile({ pubkey: note.pubkey });
-						}}
-						><u>
-							{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19.npubEncode(note.pubkey).slice(-4)}
-						</u>
-					</button>
-					<!--display_name-->
-					<div />
-					<!--time-->
-					<div class="min-w-max">
-						<button
-							class="text-sm underline decoration-secondary-500"
-							on:click={() => {
-								OpenNoteJson(note);
-							}}>{new Date(note.created_at * 1000).toLocaleString()}</button
-						>
-					</div>
-				{/if}
-			</div>
-
-			<!--note-->
-			<div class="parent-container break-all whitespace-pre-wrap">
-				<!--tag?-->
-				{#if note.tags.length > 0}
-					{#each note.tags as tag}
-						<div>{tag}</div>
-					{/each}
-				{/if}
-				<!--note-->
-				{note.content}
-			</div>
+							if (tagArray) {
+								windowOpen(note.id);
+							}
+						}}><Open /></button
+					>
+				</div>
+			{:else}
+				<!--複数選択モード-->
+				<input class="m-2 checkbox scale-125" type="checkbox" on:change={() => {}} />
+			{/if}
 		</div>
-	</div>
+	</NostrApp>
+{/if}
 
-	<!--ボタン群-->
-	{#if menuMode === MenuMode.Owner}
-		<div class="grid grid-rows-[auto_1fr]">
-			<div>
-				<button class="btn m-0 p-0 bg-surface-500" on:click={shareNote}><Share /></button>
-				<button class="btn m-0 p-0 bg-surface-500" on:click={() => handleClick(State.Move)}
-					><Move /></button
-				>
-			</div>
-			<div>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => {
-						if (tagArray) {
-							windowOpen(note.id);
-						}
-					}}><Open /></button
-				>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => {
-						handleClick(State.Delete);
-					}}><DeleteBtn /></button
-				>
-			</div>
-		</div>
-	{:else if menuMode === MenuMode.Viewer}
-		<!--修正ボタンなし-->
-		<div class="flex flex-col">
-			<button class="btn m-0 p-0 mb-1 bg-surface-500" on:click={shareNote}><Share /></button>
-
-			<button
-				class="btn m-0 p-0 bg-surface-500"
-				on:click={() => {
-					if (tagArray) {
-						windowOpen(note.id);
-					}
-				}}><Open /></button
-			>
-		</div>
-	{:else}
-		<!--複数選択モード-->
-		<input class="m-2 checkbox scale-125" type="checkbox" on:change={() => {}} />
-	{/if}
-</div>
 <div class="card p-1 variant-ghost-secondary z-20" data-popup="popupShare">
 	<p>{$_('popup.Share')}</p>
 	<div class="arrow variant-filled-secondary z-20" />

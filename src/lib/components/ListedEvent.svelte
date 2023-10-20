@@ -28,6 +28,16 @@
 		tags: []
 	};
 
+	const test2 = {
+		content: 'やぶみちゃん観測がんばってるえらい\nhttps://i.nostr.build/yJLm.png',
+		created_at: 1697806174,
+		id: 'd91f6df10af6b1df6f39dc3f624eb5114707c9996b36f42377992661e2701705',
+		kind: 1,
+		pubkey: 'cd408a69cc6c737ca1a76efc3fa247c6ca53ec807f6e7c9574164164797e8162',
+		sig: '170f1dcab84c265aa19a836e6090e7869a6961f73c329c958e96b8a60a9b2f11f69c3f01b870a515c312a9947a89d81a654ad3a880eaf962ae7680d5741f4f13',
+		tags: []
+	};
+
 	function DeleteNote(e: CustomEvent<any>): void {
 		console.log('DeleteNote');
 		console.log(e.detail.number);
@@ -72,6 +82,16 @@
 	note={test}
 	{metadata}
 	myIndex={2}
+	on:DeleteNote={DeleteNote}
+	on:MoveNote={MoveNote}
+	on:CheckNote={CheckNote}
+	menuMode={MenuMode.Viewer}
+/>
+<EventCard
+	tagArray={['e', test2.id]}
+	note={test2}
+	metadata={undefined}
+	myIndex={3}
 	on:DeleteNote={DeleteNote}
 	on:MoveNote={MoveNote}
 	on:CheckNote={CheckNote}

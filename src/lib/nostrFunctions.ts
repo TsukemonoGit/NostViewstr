@@ -9,7 +9,7 @@ import { SimplePool, getEventHash, getPublicKey, getSignature, nip04 } from 'nos
 import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 import type { Nostr } from 'nosvelte';
 import type { Event as NostrEvent } from 'nostr-tools';
-import { pubkey } from '$lib/stores/bookmarkEvents';
+import { pubkey } from '$lib/stores/settings';
 export function parseNaddr(tag: string[]): AddressPointer {
 	const parts = tag[1].split(':');
 	return tag.length >= 2
@@ -187,3 +187,31 @@ async function signEv(obj: NostrEvent): Promise<Event> {
 		}
 	}
 }
+export const uniqueTags = (tags: any[]): string[][] => {
+	if (tags.length > 0) {
+		return tags.reduce((acc: any[][], curr: [any, any]) => {
+			// Standardized Tag | id? | ... |marker
+			const [tag1, tag2, ...marker] = curr;
+
+			//重複削除
+			const isDuplicate = acc.some(
+				([existingTag1, existingTag2]) => existingTag1 === tag1 && existingTag2 === tag2
+			);
+
+			//絵文字タグ、URLタグ、ハッシュタグ、qタグを除外
+			const isValidTag = tag1 !== 'emoji' && tag1 !== 'r' && tag1 !== 't' && tag1 !== 'q';
+
+			// 追加: 最後の要素が"mention"でない場合にのみ追加する
+			//(mentionは引用でこんてんとのなかにnostr:~~ではいってるはずということから)
+			//mentionのeタグだけ除外
+			//const isMention = marker[marker.length - 1] === 'mention';
+			const isMention = marker[marker.length - 1] === 'mention' && tag1 === 'e';
+			if (!isDuplicate && isValidTag && !isMention) {
+				acc.push([tag1, tag2, ...marker]);
+			}
+			return acc;
+		}, []);
+	} else {
+		return [];
+	}
+};

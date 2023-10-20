@@ -1,6 +1,5 @@
 <script>
-	import { initializeStores } from '@skeletonlabs/skeleton';
-
+	import 'websocket-polyfill';
 	import { LightSwitch } from '@skeletonlabs/skeleton';
 	import ListedEvent from '$lib/components/ListedEvent.svelte';
 </script>
