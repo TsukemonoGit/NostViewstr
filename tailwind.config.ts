@@ -2,6 +2,7 @@ import { join } from 'path';
 import type { Config } from 'tailwindcss';
 import { skeleton } from '@skeletonlabs/tw-plugin';
 import { myCustomTheme } from './myCustomTheme';
+import { myCustomTheme2 } from './myCustomTheme2';
 export default {
 	darkMode: 'class',
 	content: [
@@ -21,7 +22,7 @@ export default {
 				// 	},
 				// ],
 
-				custom: [myCustomTheme]
+				custom: [myCustomTheme2]
 			}
 		})
 	]

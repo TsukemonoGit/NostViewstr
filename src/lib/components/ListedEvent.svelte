@@ -1,8 +1,6 @@
 <script lang="ts">
 	import EventCard from '$lib/components/EventCard.svelte';
 	import { MenuMode } from '$lib/functions';
-	import { isPhone } from '$lib/store';
-	import { onMount } from 'svelte';
 
 	const test = {
 		kind: 1,
@@ -30,9 +28,6 @@
 		sig: '9f414555a4ddc308d4cc968a44bc471501943a1619ec217913d1109e72bcd644f026b52a12dae364ddf0f0e81561256e77dd131954b6b289648499f04fdab55e',
 		tags: []
 	};
-	onMount(() => {
-		isPhone.set(navigator.userAgent.match(/iPhone|Android.+Mobile/) ? true : false);
-	});
 
 	function DeleteNote(e: CustomEvent<any>): void {
 		console.log('DeleteNote');

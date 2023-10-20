@@ -3,7 +3,7 @@
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
 
 	import OpenInBrowser from '@material-design-icons/svg/round/open_in_browser.svg?raw';
-	import { isPhone } from '$lib/store';
+	import { checkIsPhone } from '$lib/stores/isPhone';
 
 	const popupHover = (target: string, place: Placement): PopupSettings => {
 		return {
@@ -14,12 +14,10 @@
 	};
 </script>
 
-{#if $isPhone}
-	<div class="bg-surface-500 rounded">
-		<span class="fill-white">{@html OpenInBrowser}</span>
-	</div>
+{#if checkIsPhone()}
+	<span class="fill-white">{@html OpenInBrowser}</span>
 {:else}
-	<div use:popup={popupHover('popupOpen', 'bottom')} class="bg-surface-500 rounded">
+	<div use:popup={popupHover('popupOpen', 'bottom')}>
 		<span class="  fill-white">{@html OpenInBrowser}</span>
 	</div>
 {/if}

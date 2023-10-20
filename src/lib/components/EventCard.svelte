@@ -202,17 +202,20 @@
 
 	<!--ボタン群-->
 	{#if menuMode === MenuMode.Owner}
-		<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
+		<div class="grid grid-rows-[auto_1fr]">
 			<div>
-				<button><Share /></button>
+				<button class="btn m-0 p-0 bg-surface-500"><Share /></button>
 
 				<!-- <button class="btn variant-filled m-0 p-0" on:click={() => handleClick(State.Check)}
 			>Check</button
 		> -->
-				<button on:click={() => handleClick(State.Move)}><Move /></button>
+				<button class="btn m-0 p-0 bg-surface-500" on:click={() => handleClick(State.Move)}
+					><Move /></button
+				>
 			</div>
 			<div>
 				<button
+					class="btn m-0 p-0 bg-surface-500"
 					on:click={() => {
 						if (tagArray) {
 							windowOpen(note.id);
@@ -220,6 +223,7 @@
 					}}><Open /></button
 				>
 				<button
+					class="btn m-0 p-0 bg-surface-500"
 					on:click={() => {
 						handleClick(State.Delete);
 					}}><DeleteBtn /></button
@@ -229,10 +233,10 @@
 	{:else if menuMode === MenuMode.Viewer}
 		<!--修正ボタンなし-->
 		<div class="flex flex-col">
-			<button class="my-1"><Share /></button>
+			<button class="btn m-0 p-0 mb-1 bg-surface-500"><Share /></button>
 
 			<button
-				class="my-1"
+				class="btn m-0 p-0 bg-surface-500"
 				on:click={() => {
 					if (tagArray) {
 						windowOpen(note.id);
