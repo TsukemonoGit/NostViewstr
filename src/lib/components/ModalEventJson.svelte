@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ToastSettings } from '@skeletonlabs/skeleton';
+	import type { TabGroup, ToastSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
 	export let parent: any;
@@ -54,10 +54,12 @@
 		<div class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto">
 			{JSON.stringify($modalStore[0].meta.note, undefined, 4)}
 		</div>
-		<div class="mt-2"><b>list tag</b></div>
-		<div class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto">
-			{JSON.stringify($modalStore[0].meta.tagArray)}
-		</div>
+		{#if $modalStore[0].meta.tagArray}
+			<div class="mt-2"><b>list tag</b></div>
+			<div class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto">
+				{JSON.stringify($modalStore[0].meta.tagArray)}
+			</div>
+		{/if}
 		<footer class="modal-footer {parent.regionFooter}">
 			<!--button-->
 			<div class="flex flex-wrap gap-2">

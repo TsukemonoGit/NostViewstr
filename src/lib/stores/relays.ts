@@ -2,23 +2,17 @@ import { writable } from 'svelte/store';
 //search relay 各ノートの内容を取得するためのリレー
 //bookmark relay ブックマークの取得、書き込みに使うリレー
 //post relay 共有、引用ポスト用のリレー
-interface Relays {
-	searchRelays: string[];
-	bookmarkRelays: string[];
-	postRelays: string[];
-}
 
 export const defaultRelays = [
+	//'wss://tes'
 	'wss://relay.nostr.band',
 	'wss://nos.lol',
 	'wss://relay.nostr.wirednet.jp',
 	'wss://relayable.org'
 ];
-export const relays = writable<Relays>({
-	searchRelays: defaultRelays,
-	bookmarkRelays: defaultRelays,
-	postRelays: defaultRelays
-});
+export const searchRelays = writable<string[]>(defaultRelays);
+export const bookmarkRelays = writable<string[]>(defaultRelays);
+export const postRelays = writable<string[]>(defaultRelays);
 
 // export const Relays = (): Relays => {
 // 	let relay: Relays = {

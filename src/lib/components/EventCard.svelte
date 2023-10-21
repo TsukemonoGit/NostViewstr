@@ -15,8 +15,13 @@
 	import { MenuMode } from '$lib/functions';
 	import EventTag from './EventTag.svelte';
 	import { NostrApp } from 'nosvelte';
-	import { relays } from '$lib/stores/relays';
+	import { searchRelays } from '$lib/stores/relays';
+	import { checkedIndexList } from '$lib/stores/bookmarkEvents';
+	import Ogp from './OGP.svelte';
+	import Content from './Content.svelte';
+	import { allView } from '$lib/stores/settings';
 
+	export let isPageOwner: boolean = false;
 	export let note: Event;
 	export let metadata: Event | undefined;
 	export let iconView: boolean = true;
@@ -58,7 +63,7 @@
 	const OpenProfile = (metadata: { pubkey: string } | Event) => {
 		const modal: ModalSettings = {
 			type: 'component',
-			backdropClasses: '!bg-primary-400/40',
+			backdropClasses: '!bg-surface-400/80',
 			meta: {
 				metadata: metadata
 			},
@@ -73,14 +78,14 @@
 		ref: ModalEventJson
 	};
 
-	const OpenNoteJson = (text: Event) => {
+	const OpenNoteJson = (text: Event, tag: string[]) => {
 		const modal = {
 			type: 'component' as const,
 			title: 'Event Json',
-			backdropClasses: '!bg-primary-400/40',
+			backdropClasses: '!bg-surface-400/80',
 			meta: {
 				note: text,
-				tagArray: tagArray
+				tagArray: tag
 			},
 
 			component: jsonModalComponent
@@ -116,7 +121,7 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: postNoteModalComponent,
-			backdropClasses: '!bg-primary-400/40',
+			backdropClasses: '!bg-surface-400/80 ',
 			title: $_('nprofile.modal.postNote.title'),
 			body: ``,
 			value: {
@@ -140,10 +145,18 @@
 		};
 		modalStore.trigger(modal);
 	}
+
+	function JsonCheck(text: string) {
+		try {
+			return JSON.parse(text);
+		} catch (error) {
+			return '';
+		}
+	}
 </script>
 
-{#if $relays}
-	<NostrApp relays={$relays.searchRelays}>
+{#if $searchRelays}
+	<NostrApp relays={$searchRelays}>
 		<!-- ノート | ボタン群-->
 		<div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
 			<!-- icon | その他-->
@@ -205,7 +218,9 @@
 								<button
 									class="text-sm underline decoration-secondary-500"
 									on:click={() => {
-										OpenNoteJson(note);
+										if (tagArray) {
+											OpenNoteJson(note, tagArray);
+										}
 									}}>{new Date(note.created_at * 1000).toLocaleString()}</button
 								>
 							</div>
@@ -229,7 +244,9 @@
 								<button
 									class="text-sm underline decoration-secondary-500"
 									on:click={() => {
-										OpenNoteJson(note);
+										if (tagArray) {
+											OpenNoteJson(note, tagArray);
+										}
 									}}>{new Date(note.created_at * 1000).toLocaleString()}</button
 								>
 							</div>
@@ -241,7 +258,7 @@
 						<!--tag?-->
 						{#if uniqueTags(note.tags).length > 0}
 							<div
-								class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-rose-800/25 dark:border-s-rose-100/25"
+								class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50"
 							>
 								{#each note.tags as tag}
 									<EventTag {tag} handleClickDate={OpenNoteJson} handleClickPubkey={OpenProfile} />
@@ -249,7 +266,30 @@
 							</div>
 						{/if}
 						<!--note-->
-						{note.content}
+						{#if note.kind === 31990}
+							{#await JsonCheck(note.content) then data}
+								{#if data !== ''}
+									<Ogp
+										ogp={{
+											title: data.name,
+											image: data.banner,
+											description: data.about,
+											favicon: data.picture
+										}}
+										url={data.website}
+									/>
+								{/if}
+							{/await}
+						{:else}
+							<!--{note.content}-->
+							<Content
+								text={note.content}
+								tag={note.tags}
+								id={note.id}
+								view={$allView}
+								{isPageOwner}
+							/>
+						{/if}
 					</div>
 				</div>
 			</div>
@@ -296,7 +336,16 @@
 				</div>
 			{:else}
 				<!--複数選択モード-->
-				<input class="m-2 checkbox scale-125" type="checkbox" on:change={() => {}} />
+				<input
+					class="m-2 checkbox scale-125"
+					type="checkbox"
+					checked={$checkedIndexList
+						.map((item) => item.index)
+						.includes(myIndex !== undefined ? myIndex : -1)}
+					on:change={() => {
+						handleClick(State.Check);
+					}}
+				/>
 			{/if}
 		</div>
 	</NostrApp>

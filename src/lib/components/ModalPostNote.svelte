@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { relays } from '$lib/stores/relays';
+	import { postRelays } from '$lib/stores/relays';
 	import type { Event } from 'nostr-tools';
 	import { publishEvent } from '$lib/nostrFunctions';
 	export let parent: any;
@@ -44,7 +44,7 @@
 			content: res.content,
 			sig: ''
 		};
-		const response = await publishEvent(event, $relays.postRelays);
+		const response = await publishEvent(event, $postRelays);
 		const toastSettings: ToastSettings = response.isSuccess
 			? {
 					message: `publish result<br>${response.msg.join('<br>')}`,

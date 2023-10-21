@@ -32,7 +32,7 @@
 		<div class="-mt-0.5 px-2 opacity-60 text-sm overflow-x-hidden">
 			{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p]
 			<button
-				class="text-emerald-800 dark:text-blue-400 overflow-x-hidden text-ellipsis"
+				class="text-tertiary-800 dark:text-tertiary-400 overflow-x-hidden text-ellipsis"
 				on:click={() => {
 					handleClickPubkey(metadata, tag[1]);
 				}}
@@ -69,9 +69,9 @@
 		<div class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-x-hidden">
 			[{tag[0]}]
 			<button
-				class="text-emerald-800 dark:text-blue-400 whitespace-nowrap overflow-x-hidden text-ellipsis"
+				class="text-tertiary-800 dark:text-tertiary-400 whitespace-nowrap overflow-x-hidden text-ellipsis"
 				on:click={() => {
-					handleClickDate(text);
+					handleClickDate(text, tag);
 				}}
 			>
 				{#if text.tags.some((tag) => tag[0] === 'content-warning') && $allView == false}
