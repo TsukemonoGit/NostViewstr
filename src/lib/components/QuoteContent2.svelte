@@ -26,18 +26,17 @@
 		slot: `<p>Skeleton</p>`
 	};
 
-	function handleClickPubkey(metadata: Nostr.Event<number>, pubkey: string) {
+	function handleClickPubkey(metadata: Nostr.Event<number>) {
 		console.log(metadata);
 
 		const modal = {
 			type: 'component' as const,
 			//  flyX: x,
 			//  flyY: y,
-			value: {
+			meta: {
 				//    position: `x-${clientX} y-${clientY}`,
 
-				metadata: metadata,
-				pubkey: pubkey
+				metadata: metadata
 			},
 			component: pubkeyModalComponent
 		};
@@ -61,7 +60,7 @@
 			//  flyX: x,
 			//  flyY: y,
 			title: 'Event Json',
-			value: {
+			meta: {
 				//    position: `x-${clientX} y-${clientY}`,
 				note: text
 			},
@@ -294,7 +293,7 @@
 						<button
 							class="text-emerald-800 dark:text-blue-500 text-sm"
 							on:click={() => {
-								handleClickPubkey(metadata, text.pubkey);
+								handleClickPubkey(metadata);
 							}}
 							><u
 								>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(metadata.content).name}
@@ -348,7 +347,7 @@
 										<button
 											class="text-emerald-800 dark:text-blue-400 overflow-hidden text-ellipsis"
 											on:click={() => {
-												handleClickPubkey(metadata, tag[1]);
+												handleClickPubkey(metadata);
 											}}>@<u>{JSON.parse(metadata.content).name}</u></button
 										>
 									</div>
