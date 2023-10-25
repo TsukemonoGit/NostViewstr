@@ -261,24 +261,25 @@
 			</div>
 
 			<!--note-->
-
-			<!--tag?-->
-			{#await uniqueTags(note.tags) then tags}
-				{#if tags.length > 0}
-					<div
-						class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50"
-					>
-						{#each tags as tag}
-							<EventTag
-								{tag}
-								handleClickDate={OpenNoteJson}
-								handleClickPubkey={OpenProfile}
-							/>
-						{/each}
-					</div>
-				{/if}
-				<!--note-->
-				<div class="break-all whitespace-pre-wrap overflow-x-hidden">
+			<div
+				class="parent-container break-all whitespace-pre-wrap overflow-x-hidden"
+			>
+				<!--tag?-->
+				{#await uniqueTags(note.tags) then tags}
+					{#if tags.length > 0}
+						<div
+							class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50"
+						>
+							{#each tags as tag}
+								<EventTag
+									{tag}
+									handleClickDate={OpenNoteJson}
+									handleClickPubkey={OpenProfile}
+								/>
+							{/each}
+						</div>
+					{/if}
+					<!--note-->
 					{#if note.kind === 31990}
 						{#await JsonCheck(note.content) then data}
 							{#if data !== ''}
@@ -293,15 +294,18 @@
 								/>
 							{/if}
 						{/await}
-					{:else}<Content
+					{:else}
+						<!--{note.content}-->
+						<Content
 							text={note.content}
 							tag={note.tags}
 							id={note.id}
 							view={$allView}
 							{isPageOwner}
-						/>{/if}
-				</div>
-			{/await}
+						/>
+					{/if}
+				{/await}
+			</div>
 		</div>
 	</div>
 

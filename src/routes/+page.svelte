@@ -1,7 +1,10 @@
 <script>
 	import 'websocket-polyfill';
 	import { LightSwitch } from '@skeletonlabs/skeleton';
-	import ListedEvent from '$lib/components/ListedEvent.svelte';
+	import ListedEventList from '$lib/components/ListedEventList.svelte';
+	import Settings from '$lib/components/Settings.svelte';
+
+	let settings = false;
 </script>
 
 <!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
@@ -19,6 +22,10 @@
 		</ul>
 	</div>
 </div> -->
-<LightSwitch />
 
-<ListedEvent />
+<LightSwitch />
+{#if !settings}
+	<Settings bind:settings />
+{:else}
+	<ListedEventList />
+{/if}

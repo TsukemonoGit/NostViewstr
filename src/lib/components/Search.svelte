@@ -2,7 +2,12 @@
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import type { Nostr } from 'nosvelte';
-	import { createRxNostr, createRxOneshotReq, type EventPacket, verify } from 'rx-nostr';
+	import {
+		createRxNostr,
+		createRxOneshotReq,
+		type EventPacket,
+		verify
+	} from 'rx-nostr';
 	import { searchRelays } from '$lib/stores/relays';
 	import type { Observer, Subscription } from 'rxjs';
 	export let parent: any;
@@ -153,11 +158,13 @@
 		// 購読開始
 		subscription = observable.subscribe(observer);
 		// 全エラーを監視するObservableの購読
-		const rxErrorSubscription = rxNostr.createAllErrorObservable().subscribe((error) => {
-			console.error('Error occurred globally:', error);
-			// グローバルなエラー処理を行う
-			relaysState[error.from] = RelayState.Error;
-		});
+		const rxErrorSubscription = rxNostr
+			.createAllErrorObservable()
+			.subscribe((error) => {
+				console.error('Error occurred globally:', error);
+				// グローバルなエラー処理を行う
+				relaysState[error.from] = RelayState.Error;
+			});
 
 		// Send CLOSE message in 10 seconds
 		setTimeout(() => {
@@ -191,7 +198,9 @@
 				logs.push(`message from ${$searchRelays[i]}: ${e.data}`);
 				logs = logs;
 				if (msg[2]) {
-					logs.push(`<span class="font-bold">Success: ${$searchRelays[i]}</span>`);
+					logs.push(
+						`<span class="font-bold">Success: ${$searchRelays[i]}</span>`
+					);
 					logs = logs;
 					// isSuccess = true;
 				} else {
@@ -241,10 +250,13 @@
 			{/each}
 		</div>
 
-		<button class="btn {parent.buttonNeutral}" on:click={onClick}>search</button>
+		<button class="btn {parent.buttonNeutral}" on:click={onClick}>search</button
+		>
 
 		{#if $modalStore[0].value.isPageOwner && event.sig !== ''}
-			<button class="btn {parent.buttonNeutral}" on:click={onClickDup}>duplicate</button>
+			<button class="btn {parent.buttonNeutral}" on:click={onClickDup}
+				>duplicate</button
+			>
 		{/if}
 		{#if event.sig !== ''}
 			<div class="border">Event</div>
@@ -270,11 +282,4 @@
         </footer>
 		</label>
 	</div>
-
-	<!--NostrAppをあたらしくつくるのはだめっぽい？
-     {#if isSuccess}
-    <NostrApp relays={$searchRelays}>
-      <Text queryKey={[event.id]} id={event.id} let:text />
-    </NostrApp>
-  {/if} -->
 {/if}

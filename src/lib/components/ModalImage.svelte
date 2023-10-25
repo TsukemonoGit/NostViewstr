@@ -12,6 +12,7 @@
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase}">
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 		<img src={$modalStore[0]?.image} alt="" on:click={handleClickImage} />
 
 		<footer class="modal-footer {parent.regionFooter}">

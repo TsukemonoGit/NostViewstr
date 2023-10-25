@@ -5,13 +5,25 @@ interface Window {
 }
 declare let window: Window;
 
-import { SimplePool, getEventHash, getPublicKey, getSignature, nip04 } from 'nostr-tools';
+import {
+	SimplePool,
+	getEventHash,
+	getPublicKey,
+	getSignature,
+	nip04
+} from 'nostr-tools';
 import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 
 import type { Event as NostrEvent } from 'nostr-tools';
 import { pubkey } from '$lib/stores/settings';
 import type { Observer } from 'rxjs';
-import { createRxNostr, createRxOneshotReq, Nostr, uniq, verify } from 'rx-nostr';
+import {
+	createRxNostr,
+	createRxOneshotReq,
+	Nostr,
+	uniq,
+	verify
+} from 'rx-nostr';
 
 export function parseNaddr(tag: string[]): AddressPointer {
 	const parts = tag[1].split(':');
@@ -117,7 +129,10 @@ export async function getPub(): Promise<string> {
 	}
 }
 
-export async function nip04De(pubkey: string, message: string): Promise<string> {
+export async function nip04De(
+	pubkey: string,
+	message: string
+): Promise<string> {
 	const sec = localStorage.getItem('nsec');
 	if (sec) {
 		try {
@@ -138,7 +153,10 @@ export async function nip04De(pubkey: string, message: string): Promise<string> 
 	}
 }
 
-export async function nip04En(pubkey: string, message: string): Promise<string> {
+export async function nip04En(
+	pubkey: string,
+	message: string
+): Promise<string> {
 	const sec = localStorage.getItem('nsec');
 	if (sec) {
 		try {
@@ -190,34 +208,6 @@ async function signEv(obj: NostrEvent): Promise<Event> {
 		}
 	}
 }
-export const uniqueTags = (tags: any[]): string[][] => {
-	if (tags.length > 0) {
-		return tags.reduce((acc: any[][], curr: [any, any]) => {
-			// Standardized Tag | id? | ... |marker
-			const [tag1, tag2, ...marker] = curr;
-
-			//重複削除
-			const isDuplicate = acc.some(
-				([existingTag1, existingTag2]) => existingTag1 === tag1 && existingTag2 === tag2
-			);
-
-			//絵文字タグ、URLタグ、ハッシュタグ、qタグを除外
-			const isValidTag = tag1 !== 'emoji' && tag1 !== 'r' && tag1 !== 't' && tag1 !== 'q';
-
-			// 追加: 最後の要素が"mention"でない場合にのみ追加する
-			//(mentionは引用でこんてんとのなかにnostr:~~ではいってるはずということから)
-			//mentionのeタグだけ除外
-			//const isMention = marker[marker.length - 1] === 'mention';
-			const isMention = marker[marker.length - 1] === 'mention' && tag1 === 'e';
-			if (!isDuplicate && isValidTag && !isMention) {
-				acc.push([tag1, tag2, ...marker]);
-			}
-			return acc;
-		}, []);
-	} else {
-		return [];
-	}
-};
 
 export async function fetchFilteredEvents(
 	relays: string[],
@@ -254,11 +244,17 @@ export async function fetchFilteredEvents(
 				) {
 					const tagID = packet.event.tags[0][1];
 					const existingEvent = eventMap.get(tagID);
-					if (!existingEvent || packet.event.created_at > existingEvent.created_at) {
+					if (
+						!existingEvent ||
+						packet.event.created_at > existingEvent.created_at
+					) {
 						eventMap.set(tagID, packet.event);
 					}
 				} else {
-					if (returnEvent.id === '' || packet.event.created_at > returnEvent.created_at) {
+					if (
+						returnEvent.id === '' ||
+						packet.event.created_at > returnEvent.created_at
+					) {
 						returnEvent = packet.event;
 					}
 				}
