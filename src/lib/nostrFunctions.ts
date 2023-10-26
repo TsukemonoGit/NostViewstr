@@ -10,7 +10,8 @@ import {
 	getEventHash,
 	getPublicKey,
 	getSignature,
-	nip04
+	nip04,
+	nip19
 } from 'nostr-tools';
 import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 
@@ -24,6 +25,8 @@ import {
 	uniq,
 	verify
 } from 'rx-nostr';
+import { naddrStore, type NaddrStore } from './stores/bookmarkEvents';
+import { defaultRelays, searchRelays } from './stores/relays';
 
 export function parseNaddr(tag: string[]): AddressPointer {
 	const parts = tag[1].split(':');
@@ -39,6 +42,100 @@ export function parseNaddr(tag: string[]): AddressPointer {
 				pubkey: parts.length > 1 ? parts[1] : '',
 				identifier: parts.length > 2 ? parts[2] : ''
 		  };
+}
+
+export async function getIdByTag(
+	tag: string[]
+): Promise<{ id: string; filter: {}; kind?: number }> {
+	if (tag[0] === 'e') {
+		return { id: tag[1], filter: { ids: [tag[1]] } };
+	} else if (tag[0] === 'a') {
+		const naddr = parseNaddr(tag);
+		if (!naddr.pubkey) {
+			//tagはaだけどnaddrじゃなさそう
+			return { id: tag[1], filter: {} };
+		}
+		const filter =
+			naddr.identifier.trim() !== ''
+				? {
+						authors: [naddr.pubkey],
+						'#d': [naddr.identifier],
+						kinds: [naddr.kind]
+				  }
+				: {
+						authors: [naddr.pubkey],
+						kinds: [naddr.kind]
+				  };
+		// console.log(naddr.kind);
+		const res = await getEvent(naddr);
+		if (res) {
+			return { id: res.id, kind: naddr.kind, filter: filter };
+		} else {
+			//取得失敗
+			return { id: '', kind: naddr.kind, filter: filter };
+		}
+	} else {
+		//多分ないはず
+		return { id: tag[1], filter: {} };
+	}
+}
+
+let storeValue: NaddrStore;
+
+// Storeの値を読み込む
+naddrStore.subscribe((value) => {
+	storeValue = value;
+});
+
+let searchValue: string[];
+searchRelays.subscribe((value) => {
+	searchValue = value;
+});
+
+async function getEvent(naddr: {
+	kind: number;
+	pubkey: string;
+	identifier: string;
+	relays?: string[];
+}) {
+	const addressPointer = nip19.naddrEncode({
+		identifier: naddr.identifier,
+		pubkey: naddr.pubkey,
+		kind: naddr.kind
+	});
+	console.log(naddrStore);
+	// naddrStoreの内容を確認し、イベントが存在しない場合のみ取得と保存を行う
+	if (!(addressPointer in storeValue)) {
+		const relays =
+			searchValue && searchValue.length > 0 ? searchValue : defaultRelays;
+		// naddr.relays && naddr.relays.length > 0 ? naddr.relays : RelaysforSearch;
+		const filter =
+			naddr.identifier.trim() !== ''
+				? [
+						{
+							authors: [naddr.pubkey],
+							'#d': [naddr.identifier],
+							kinds: [naddr.kind]
+						}
+				  ]
+				: [
+						{
+							authors: [naddr.pubkey],
+							kinds: [naddr.kind]
+						}
+				  ];
+		const res = await fetchFilteredEvents(relays, filter);
+
+		if (res.length > 0) {
+			res.sort((a, b) => b.created_at - a.created_at);
+			// 取得したイベントをnaddrStoreに保存
+			storeValue[addressPointer] = res[0];
+			naddrStore.set(storeValue);
+			return res[0];
+		}
+	} else {
+		return storeValue[addressPointer];
+	}
 }
 
 export function windowOpen(str: string): void {
