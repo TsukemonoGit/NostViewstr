@@ -16,7 +16,7 @@ import {
 import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 
 import type { Event as NostrEvent } from 'nostr-tools';
-import { pubkey } from '$lib/stores/settings';
+import { pubkey_viewer } from '$lib/stores/settings';
 import type { Observer } from 'rxjs';
 import {
 	createRxNostr,
@@ -67,13 +67,13 @@ export async function getIdByTag(
 						kinds: [naddr.kind]
 				  };
 		// console.log(naddr.kind);
-		const res = await getEvent(naddr);
-		if (res) {
-			return { id: res.id, kind: naddr.kind, filter: filter };
-		} else {
-			//取得失敗
-			return { id: '', kind: naddr.kind, filter: filter };
-		}
+		//	const res = await getEvent(naddr);
+		//	if (res) {
+		//		return { id: res.id, kind: naddr.kind, filter: filter };
+		//	} else {
+		//取得失敗
+		return { id: '', kind: naddr.kind, filter: filter };
+		//	}
 	} else {
 		//多分ないはず
 		return { id: tag[1], filter: {} };
@@ -191,7 +191,7 @@ export async function publishEvent(
 //--------------------------------------------------nip07かnsecかでやるやつ
 export async function getPub(): Promise<string> {
 	let myPubkey: string = '';
-	const unsubscribe = pubkey.subscribe(($pubkey) => {
+	const unsubscribe = pubkey_viewer.subscribe(($pubkey) => {
 		myPubkey = $pubkey;
 	});
 	if (myPubkey && myPubkey !== '') {
@@ -200,12 +200,12 @@ export async function getPub(): Promise<string> {
 		const sec = localStorage.getItem('nsec');
 		if (sec) {
 			try {
-				pubkey.set(getPublicKey(sec));
+				pubkey_viewer.set(getPublicKey(sec));
 				unsubscribe();
 				return myPubkey;
 			} catch (error) {
 				try {
-					pubkey.set(await window.nostr.getPublicKey());
+					pubkey_viewer.set(await window.nostr.getPublicKey());
 					unsubscribe();
 					return myPubkey;
 				} catch (error) {
@@ -215,7 +215,7 @@ export async function getPub(): Promise<string> {
 			}
 		} else {
 			try {
-				pubkey.set(await window.nostr.getPublicKey());
+				pubkey_viewer.set(await window.nostr.getPublicKey());
 				unsubscribe();
 				return myPubkey;
 			} catch (error) {
@@ -388,6 +388,8 @@ export async function fetchFilteredEvents(
 
 		return eventArray;
 	} else {
-		throw new Error('一致するイベントが見つかりませんでした');
+		throw new Error(
+			`${JSON.stringify(filters)}に一致するイベントが見つかりませんでした`
+		);
 	}
 }
