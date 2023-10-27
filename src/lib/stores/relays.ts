@@ -4,11 +4,11 @@ import { writable } from 'svelte/store';
 //post relay 共有、引用ポスト用のリレー
 
 export const defaultRelays = [
-	'wss://tes'
+	//'wss://tes'
 	//'wss://relay.nostr.band'
 	//	'wss://nos.lol',
 	//'wss://relay.nostr.wirednet.jp'
-	//	'wss://relayable.org'
+	'wss://relayable.org'
 ];
 export const searchRelays = writable<string[]>(defaultRelays);
 export const bookmarkRelays = writable<string[]>(defaultRelays);

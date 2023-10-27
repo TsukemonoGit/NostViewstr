@@ -138,7 +138,7 @@
 				<div class="grid grid-cols-[auto_1fr] gap-1 flex">
 					<div class="flex justify-center items-center h-auto">
 						<button
-							class="btn m-0 p-1 variant-filled-primary rounded-full"
+							class="btn m-0 p-1 variant-filled-secondary rounded-full"
 							on:click={() => {
 								onClickSearch({ ids: [id] });
 							}}>{@html searchIcon}</button
@@ -153,7 +153,7 @@
 				<div class="grid grid-cols-[auto_1fr] gap-1 flex">
 					<div class="flex justify-center items-center h-auto">
 						<button
-							class="btn m-0 p-1 variant-filled-primary rounded-full"
+							class="btn m-0 p-1 variant-filled-secondary rounded-full"
 							on:click={() => {
 								onClickSearch({ ids: [id] });
 							}}>{@html searchIcon}</button
@@ -169,7 +169,7 @@
 				<div class="grid grid-cols-[auto_1fr] gap-1 flex">
 					<div class="flex justify-center items-center h-auto">
 						<button
-							class="btn m-0 p-1 variant-filled-primary rounded-full"
+							class="btn m-0 p-1 variant-filled-secondary rounded-full"
 							on:click={() => {
 								onClickSearch({ ids: [id] });
 							}}>{@html searchIcon}</button

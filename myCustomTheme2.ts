@@ -87,18 +87,18 @@ export const myCustomTheme2: CustomThemeConfig = {
 		'--color-surface-700': '60 39 84',
 		'--color-surface-800': '35 22 49',
 		'--color-surface-900': '18 11 24'
-	},
-	properties_dark: {
-		'--on-primary': '0 0 0',
-		'--color-primary-50': '251 247 224',
-		'--color-primary-100': '250 244 214',
-		'--color-primary-200': '249 241 204',
-		'--color-primary-300': '245 233 173',
-		'--color-primary-400': '238 217 112',
-		'--color-primary-500': '230 200 51',
-		'--color-primary-600': '207 180 46',
-		'--color-primary-700': '173 150 38',
-		'--color-primary-800': '138 120 31',
-		'--color-primary-900': '113 98 25'
 	}
+	// properties_dark: {
+	// 	'--on-primary': '0 0 0',
+	// 	'--color-primary-50': '251 247 224',
+	// 	'--color-primary-100': '250 244 214',
+	// 	'--color-primary-200': '249 241 204',
+	// 	'--color-primary-300': '245 233 173',
+	// 	'--color-primary-400': '238 217 112',
+	// 	'--color-primary-500': '230 200 51',
+	// 	'--color-primary-600': '207 180 46',
+	// 	'--color-primary-700': '173 150 38',
+	// 	'--color-primary-800': '138 120 31',
+	// 	'--color-primary-900': '113 98 25'
+	// }
 };

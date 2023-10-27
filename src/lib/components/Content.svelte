@@ -153,26 +153,23 @@
 	{:then viewContent}
 		{#each viewContent as item, index}
 			{#if item.content.length > 0}
-				<!-- <div class="break-all whitespace-pre-wrap overflow-x-hidden"> -->
+				<!-- <div class="break-all  overflow-x-hidden"> -->
 				{#if item.type === 'emoji'}<span
-						class="w-[fit-content] inline-flex flex align-bottom whitespace-pre-wrap break-all"
-						><img
+						class="w-[fit-content] inline-flex flex align-bottom break-all"
+						><!-- svelte-ignore a11y-click-events-have-key-events -->
+						<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+						<img
 							class="max-h-[1.5em] object-contain"
 							src={item.url}
 							alt=""
 							on:click={() => handleClickImage(item.url)}
 						/></span
-					>{:else if item.type === 'url'}
-					{#if $URLPreview}
-						{#if new URL(item.content).hostname.endsWith('twitter.com')}
-							<div
-								class="max-h-[24rem] max-w-[36rem] overflow-auto break-all whitespace-pre-wrap"
-							>
+					>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
+							<div class="max-h-[24rem] max-w-[36rem] overflow-auto break-all">
 								<blockquote class="twitter-tweet">
 									<p lang="ja" dir="ltr">
-										<a
-											class="anchor example break-all whitespace-pre-wrap"
-											href={item.content}>{item.content}</a
+										<a class="anchor break-all" href={item.content}
+											>{item.content}</a
 										>
 									</p>
 								</blockquote>
@@ -201,50 +198,39 @@
 								Your browser does not support the video tag.
 							</video>
 						{:else}
-							{#await loadOgp(item.content)}<span
-									class=" break-all whitespace-pre-wrap"
-									><a
-										class="anchor example"
-										href={item.content}
-										target="_blank"
-									>
-										{#if item.content.length > 80}{item.content.slice(0, 75)}...
-										{:else}{item.content}
-										{/if}
-									</a></span
+							{#await loadOgp(item.content)}<span class=" break-all"
+									><a class="anchor" href={item.content} target="_blank"
+										>{#if item.content.length > 80}{item.content.slice(
+												0,
+												75
+											)}...{:else}{item.content}{/if}</a
+									></span
 								>{:then ogp}
 								{#if $ogpStore[item.content].title !== ''}
 									<OGP ogp={$ogpStore[item.content]} url={item.content} />
-								{:else}<span class="  break-all whitespace-pre-wrap"
-										><a
-											class="anchor example"
-											href={item.content}
-											target="_blank"
-											>{#if item.content.length > 80}{item.content.slice(
-													0,
-													75
-												)}...{:else}{item.content}{/if}</a
-										></span
+								{:else}<a class="anchor" href={item.content} target="_blank"
+										>{#if item.content.length > 80}{item.content.slice(
+												0,
+												75
+											)}...{:else}{item.content}{/if}</a
 									>{/if}
 							{/await}
 						{/if}
-					{:else}<span class="  break-all whitespace-pre-wrap"
-							><a class="anchor example" href={item.content} target="_blank"
-								>{#if item.content.length > 80}{item.content.slice(0, 75)}...
-								{:else}{item.content}{/if}</a
-							></span
+					{:else}<a class="anchor" href={item.content} target="_blank"
+							>{#if item.content.length > 80}{item.content.slice(0, 75)}...
+							{:else}{item.content}{/if}</a
 						>{/if}
 				{:else if item.type === 'image'}
 					{#if $URLPreview}<span
 							class="w-[fit-content] inline-flex flex align-bottom"
-							><img
+							><!-- svelte-ignore a11y-no-noninteractive-element-interactions --><!-- svelte-ignore a11y-click-events-have-key-events --><img
 								class="max-h-[10em] object-contain"
 								src={item.content}
 								alt=""
 								loading="lazy"
 								on:click={() => handleClickImage(item.content)}
 							/></span
-						>{:else}<span class="  break-all whitespace-pre-wrap break-all"
+						>{:else}<span class="break-all break-all"
 							><a class="anchor" href={item.content} target="_blank"
 								>{#if item.content.length > 80}{item.content.slice(
 										0,
@@ -254,9 +240,7 @@
 						>{/if}{:else if item.type === 'nostr' && item.url}
 					{#if decodeCheck(item.url)}
 						<QuoteContent encodedId={item.url} {isPageOwner} />
-					{:else}
-						<span>{item.content}</span>
-					{/if}
+					{:else}<span>{item.content}</span>{/if}
 				{:else if item.type === 'quote' && item.number !== undefined}
 					<!--引用タグの中身がパブキーの時-->
 					{#if tag[item.number][0] === 'p'}
@@ -315,7 +299,7 @@
 						>
 					{:else}{tag[item.number][1]}
 					{/if}{:else if item.type === 'hashtag'}<span
-						class="  break-all whitespace-pre-wrap anchor"
+						class=" break-all anchor"
 						on:click={() => {
 							goto(`../t/${item.content.slice(1)}`);
 						}}

@@ -3,24 +3,17 @@
 	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
 	import ModalProfile from '$lib/components/ModalProfile.svelte';
 	import ModalEventJson from '$lib/components/ModalEventJson.svelte';
-	import ModalPostNote from '$lib/components/ModalPostNote.svelte';
-	import DeleteBtn from '$lib/components/Button/DeleteBtn.svelte';
-	import Move from '$lib/components/Button/Move.svelte';
-	import Share from '$lib/components/Button/Share.svelte';
-	import Open from '$lib/components/Button/Open.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import { nip19, type Event } from 'nostr-tools';
-	import { parseNaddr, windowOpen } from '$lib/nostrFunctions';
+
 	import { uniqueTags } from '$lib/functions';
 	import { _ } from 'svelte-i18n';
-	import { MenuMode } from '$lib/functions';
+	import type { MenuMode } from '$lib/functions';
 	import EventTag from './EventTag.svelte';
-	import { NostrApp } from 'nosvelte';
-	import { searchRelays } from '$lib/stores/relays';
-	import { checkedIndexList } from '$lib/stores/bookmarkEvents';
+
 	import Ogp from './OGP.svelte';
 	import Content from './Content.svelte';
 	import { allView, iconView } from '$lib/stores/settings';
+	import MenuButtons from './MenuButtons.svelte';
 
 	export let isPageOwner: boolean;
 	export let note: Event;
@@ -30,17 +23,14 @@
 	export let menuMode: MenuMode;
 	export let myIndex: number | undefined;
 	export let tagArray: string[] | undefined;
-	const dispatch = createEventDispatcher();
+	export let DeleteNote: (e: CustomEvent<any>) => void;
+	export let MoveNote: (e: CustomEvent<any>) => void;
+	export let CheckNote: (e: CustomEvent<any>) => void;
+
+	//const dispatch = createEventDispatcher();
 
 	let metadataContent: NostrProfile;
 	const modalStore = getModalStore();
-
-	enum State {
-		Default,
-		Delete,
-		Move,
-		Check
-	}
 
 	type NostrProfile = {
 		name: string;
@@ -95,59 +85,6 @@
 		modalStore.trigger(modal);
 	};
 
-	function handleClick(state: State) {
-		switch (state) {
-			case State.Delete:
-				dispatch('DeleteNote', { number: myIndex });
-				break;
-
-			case State.Move:
-				dispatch('MoveNote', { number: myIndex });
-				break;
-			case State.Check:
-				dispatch('CheckNote', { number: myIndex });
-				break;
-		}
-	}
-
-	//-----------------------------------------------引用ポスト
-	const postNoteModalComponent: ModalComponent = {
-		ref: ModalPostNote
-	};
-	function shareNote() {
-		const tags = tagArray
-			? tagArray[0] === 'e'
-				? [[...tagArray, '', 'mention']]
-				: [tagArray]
-			: [];
-		const modal: ModalSettings = {
-			type: 'component',
-			component: postNoteModalComponent,
-			backdropClasses: '!bg-surface-400/80 ',
-			title: $_('nprofile.modal.postNote.title'),
-			body: ``,
-			value: {
-				content: `${
-					tagArray && tagArray[0] === 'a'
-						? `\r\nnostr:${nip19.naddrEncode(parseNaddr(tagArray))}`
-						: tagArray && tagArray[0] === 'e'
-						? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
-						: ''
-				}`,
-				tags: tags,
-				pubkey: note.pubkey
-			}
-			// response: async (res) => {
-			// 	console.log(res);
-			// 	if (res) {
-			// 		//帰ってきた値によってなんやかんや
-			// 		//でもポストノートは別に戻ってきてからやんなくても良くない？
-			// 	}
-			// }
-		};
-		modalStore.trigger(modal);
-	}
-
 	function JsonCheck(text: string) {
 		try {
 			return JSON.parse(text);
@@ -162,7 +99,7 @@
 <!-- ノート | ボタン群-->
 <div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
 	<!-- icon | その他-->
-	<div class="grid grid-cols-[auto_1fr] gap-1">
+	<div class="grid grid-cols-[auto_1fr] gap-1.5">
 		<!--icon-->
 		{#if $iconView && metadata}
 			<div
@@ -170,7 +107,7 @@
 			>
 				{#if JSON.parse(metadata.content).picture}
 					<img
-						class="w-12 object-contain justify-center"
+						class="max-w-12 max-h-12 object-contain justify-center"
 						src={JSON.parse(metadata.content).picture}
 						alt="avatar"
 					/>
@@ -278,7 +215,7 @@
 					</div>
 				{/if}
 				<!--note-->
-				<div class="break-all whitespace-pre-wrap overflow-x-hidden">
+				<div class="break-all overflow-x-hidden">
 					{#if note.kind === 31990}
 						{#await JsonCheck(note.content) then data}
 							{#if data !== ''}
@@ -306,78 +243,15 @@
 	</div>
 
 	<!--ボタン群-->
-	{#if menuMode === MenuMode.Owner}
-		<div class="grid grid-rows-[auto_1fr] w-14">
-			<div>
-				<button class="btn m-0 p-0 bg-surface-500" on:click={shareNote}
-					><Share /></button
-				>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => handleClick(State.Move)}><Move /></button
-				>
-			</div>
-			<div>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => {
-						if (tagArray) {
-							windowOpen(note.id);
-						}
-					}}><Open /></button
-				>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => {
-						handleClick(State.Delete);
-					}}><DeleteBtn /></button
-				>
-			</div>
-		</div>
-	{:else if menuMode === MenuMode.Viewer}
-		<!--修正ボタンなし-->
-		<div class="flex flex-col">
-			<button class="btn m-0 p-0 mb-1 bg-surface-500" on:click={shareNote}
-				><Share /></button
-			>
-
-			<button
-				class="btn m-0 p-0 bg-surface-500"
-				on:click={() => {
-					if (tagArray) {
-						windowOpen(note.id);
-					}
-				}}><Open /></button
-			>
-		</div>
-	{:else if menuMode === MenuMode.Multi}
-		<!--複数選択モード-->
-		<input
-			class="m-2 checkbox scale-125"
-			type="checkbox"
-			checked={$checkedIndexList
-				.map((item) => item.index)
-				.includes(myIndex !== undefined ? myIndex : -1)}
-			on:change={() => {
-				handleClick(State.Check);
-			}}
-		/>
-	{:else}<!--修正だけ（シェアなし）-->
-
-		<div class="flex flex-col">
-			<button
-				class="btn m-0 p-0 mb-1 bg-surface-500"
-				on:click={() => handleClick(State.Move)}><Move /></button
-			>
-
-			<button
-				class="btn m-0 p-0 bg-surface-500"
-				on:click={() => {
-					handleClick(State.Delete);
-				}}><DeleteBtn /></button
-			>
-		</div>
-	{/if}
+	<MenuButtons
+		{myIndex}
+		{tagArray}
+		{note}
+		{menuMode}
+		on:DeleteNote={DeleteNote}
+		on:MoveNote={MoveNote}
+		on:CheckNote={CheckNote}
+	/>
 </div>
 <!-- </NostrApp> -->
 <!--{/if}-->

@@ -4,7 +4,7 @@
 	import { searchRelays } from '$lib/stores/relays';
 	import { Metadata, NostrApp, Text } from 'nosvelte';
 	import OtherCard from '$lib/components/OtherCard.svelte';
-	import { nip19, type Event as NostrEvent } from 'nostr-tools';
+	import type { Event as NostrEvent } from 'nostr-tools';
 	import { getIdByTag } from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
@@ -77,54 +77,54 @@
 					<!--tagをそのままだす-->
 					<SearchCard
 						{filter}
-						message={`failed to get event ${tag}`}
+						message={`failed to get event tag [${tag}]`}
 						isPageOwner={true}
 						menuMode={MenuMode.other}
 						tagArray={tag}
 						myIndex={index}
-						on:DeleteNote={DeleteNote}
-						on:MoveNote={MoveNote}
-						on:CheckNote={CheckNote}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
 					/>
 				{:else if tag[0] === 'e' || tag[0] === 'a'}
 					<Text queryKey={[id]} {id} let:text>
 						<SearchCard
 							slot="loading"
 							{filter}
-							message={`loading ${tag}`}
+							message={`loading [${tag}]`}
 							isPageOwner={true}
 							menuMode={MenuMode.other}
 							tagArray={tag}
 							myIndex={index}
-							on:DeleteNote={DeleteNote}
-							on:MoveNote={MoveNote}
-							on:CheckNote={CheckNote}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
 						/>
 
 						<SearchCard
 							slot="error"
 							{filter}
-							message={`error ${tag}`}
+							message={`error [${tag}]`}
 							isPageOwner={true}
 							menuMode={MenuMode.other}
 							tagArray={tag}
 							myIndex={index}
-							on:DeleteNote={DeleteNote}
-							on:MoveNote={MoveNote}
-							on:CheckNote={CheckNote}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
 						/>
 
 						<SearchCard
 							slot="nodata"
 							{filter}
-							message={`not found ${tag}`}
+							message={`not found [${tag}]`}
 							isPageOwner={true}
 							menuMode={MenuMode.other}
 							tagArray={tag}
 							myIndex={index}
-							on:DeleteNote={DeleteNote}
-							on:MoveNote={MoveNote}
-							on:CheckNote={CheckNote}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
 						/>
 
 						<Metadata
@@ -140,9 +140,9 @@
 								note={text}
 								metadata={undefined}
 								myIndex={index}
-								on:DeleteNote={DeleteNote}
-								on:MoveNote={MoveNote}
-								on:CheckNote={CheckNote}
+								{DeleteNote}
+								{MoveNote}
+								{CheckNote}
 							/>
 							<EventCard
 								slot="error"
@@ -152,9 +152,9 @@
 								note={text}
 								metadata={undefined}
 								myIndex={index}
-								on:DeleteNote={DeleteNote}
-								on:MoveNote={MoveNote}
-								on:CheckNote={CheckNote}
+								{DeleteNote}
+								{MoveNote}
+								{CheckNote}
 							/>
 							<EventCard
 								slot="nodata"
@@ -164,9 +164,9 @@
 								note={text}
 								metadata={undefined}
 								myIndex={index}
-								on:DeleteNote={DeleteNote}
-								on:MoveNote={MoveNote}
-								on:CheckNote={CheckNote}
+								{DeleteNote}
+								{MoveNote}
+								{CheckNote}
 							/>
 
 							<EventCard
@@ -176,9 +176,9 @@
 								note={text}
 								{metadata}
 								myIndex={index}
-								on:DeleteNote={DeleteNote}
-								on:MoveNote={MoveNote}
-								on:CheckNote={CheckNote}
+								{DeleteNote}
+								{MoveNote}
+								{CheckNote}
 							/>
 						</Metadata>
 					</Text>

@@ -25,7 +25,7 @@
 
 <LightSwitch />
 {#if !settings}
-	<Settings bind:settings />
+	<Settings />
 {:else}
 	<ListedEventList />
 {/if}

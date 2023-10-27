@@ -14,22 +14,22 @@
 {#if tag[0] === 'p'}
 	<Metadata queryKey={['metadata', tag[1]]} pubkey={tag[1]} let:metadata>
 		<div slot="loading">
-			<div class="-mt- px-2 opacity-60 text-sm overflow-x-hidden">
+			<div class="-mt- px-2 opacity-70 text-sm overflow-x-hidden">
 				{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p] {tag[1]}
 			</div>
 		</div>
 		<div slot="error">
-			<div class="-mt-0.5 px-2 opacity-60 text-sm overflow-x-hidden">
+			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
 				{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p] {tag[1]}
 			</div>
 		</div>
 
 		<div slot="nodata">
-			<div class="-mt-0.5 px-2 opacity-60 text-sm overflow-x-hidden">
+			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
 				{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p] {tag[1]}
 			</div>
 		</div>
-		<div class="-mt-0.5 px-2 opacity-60 text-sm overflow-x-hidden">
+		<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
 			{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p]
 			<button
 				class="text-tertiary-800 dark:text-tertiary-400 overflow-x-hidden text-ellipsis"
@@ -37,7 +37,9 @@
 					handleClickPubkey(metadata, tag[1]);
 				}}
 				><u
-					>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(metadata.content).name}
+					>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
+							metadata.content
+						).name}
 					{:else}
 						{nip19.npubEncode(metadata.pubkey).slice(0, 12)}:{nip19
 							.npubEncode(metadata.pubkey)
@@ -50,23 +52,25 @@
 {:else if tag[0] === 'e' || tag[0] === 'q'}
 	<Text queryKey={[tag[1]]} id={tag[1]} let:text>
 		<div slot="loading">
-			<div class="-mt-0.5 px-2 opacity-60 text-sm overflow-x-hidden">
+			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
 				[{tag[0]}] {tag[1]}
 			</div>
 		</div>
 		<div slot="error">
-			<div class="-mt-0.5 px-2 opacity-60 text-sm overflow-x-hidden">
+			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
 				[{tag[0]}] {tag[1]}
 			</div>
 		</div>
 
 		<div slot="nodata">
-			<div class="-mt-0.5 px-2 opacity-60 text-sm overflow-x-hidden">
+			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
 				[{tag[0]}] {tag[1]}
 			</div>
 		</div>
 
-		<div class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-x-hidden">
+		<div
+			class="-mt-0.5 px-2 opacity-70 text-sm whitespace-nowrap overflow-x-hidden"
+		>
 			[{tag[0]}]
 			<button
 				class="text-tertiary-800 dark:text-tertiary-400 whitespace-nowrap overflow-x-hidden text-ellipsis"
@@ -83,7 +87,9 @@
 		</div>
 	</Text>
 {:else}
-	<div class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-x-hidden">
+	<div
+		class="-mt-0.5 px-2 opacity-70 text-sm whitespace-nowrap overflow-x-hidden"
+	>
 		[{tag[0]}]
 		{tag[1]}
 	</div>

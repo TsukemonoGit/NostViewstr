@@ -15,7 +15,7 @@
 	import { parseNaddr, windowOpen } from '$lib/nostrFunctions';
 	import { uniqueTags } from '$lib/functions';
 	import { _ } from 'svelte-i18n';
-	import { MenuMode } from '$lib/functions';
+	import type { MenuMode } from '$lib/functions';
 	import EventTag from './EventTag.svelte';
 	import { NostrApp } from 'nosvelte';
 	import { searchRelays } from '$lib/stores/relays';
@@ -23,7 +23,10 @@
 	import Ogp from './OGP.svelte';
 	import Content from './Content.svelte';
 	import { allView, iconView } from '$lib/stores/settings';
-
+	import MenuButtons from './MenuButtons.svelte';
+	export let DeleteNote: (e: CustomEvent<any>) => void;
+	export let MoveNote: (e: CustomEvent<any>) => void;
+	export let CheckNote: (e: CustomEvent<any>) => void;
 	export let isPageOwner: boolean;
 	export let filter: {};
 	export let message: string;
@@ -166,12 +169,12 @@
 <!-- ノート | ボタン群-->
 <div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
 	<!-- icon | その他-->
-	<div class="grid grid-cols-[auto_1fr] gap-1">
+	<div class="grid grid-cols-[auto_1fr] gap-1.5">
 		<!--icon-->
 
 		<div class="flex justify-center items-center h-auto">
 			<button
-				class="btn m-0 p-1 variant-filled-primary rounded-full"
+				class="btn m-0 p-1 variant-filled-secondary rounded-full"
 				on:click={() => {
 					onClickSearch(filter);
 				}}>{@html searchIcon}</button
@@ -184,78 +187,15 @@
 	</div>
 
 	<!--ボタン群-->
-	{#if menuMode === MenuMode.Owner}
-		<div class="grid grid-rows-[auto_1fr] w-14">
-			<div>
-				<button class="btn m-0 p-0 bg-surface-500" on:click={shareNote}
-					><Share /></button
-				>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => handleClick(State.Move)}><Move /></button
-				>
-			</div>
-			<div>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => {
-						if (tagArray) {
-							windowOpen('');
-						}
-					}}><Open /></button
-				>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => {
-						handleClick(State.Delete);
-					}}><DeleteBtn /></button
-				>
-			</div>
-		</div>
-	{:else if menuMode === MenuMode.Viewer}
-		<!--修正ボタンなし-->
-		<div class="flex flex-col">
-			<button class="btn m-0 p-0 mb-1 bg-surface-500" on:click={shareNote}
-				><Share /></button
-			>
-
-			<button
-				class="btn m-0 p-0 bg-surface-500"
-				on:click={() => {
-					if (tagArray) {
-						windowOpen('');
-					}
-				}}><Open /></button
-			>
-		</div>
-	{:else if menuMode === MenuMode.Multi}
-		<!--複数選択モード-->
-		<input
-			class="m-2 checkbox scale-125"
-			type="checkbox"
-			checked={$checkedIndexList
-				.map((item) => item.index)
-				.includes(myIndex !== undefined ? myIndex : -1)}
-			on:change={() => {
-				handleClick(State.Check);
-			}}
-		/>
-	{:else}<!--修正だけ（シェアなし）-->
-
-		<div class="flex flex-col">
-			<button
-				class="btn m-0 p-0 mb-1 bg-surface-500"
-				on:click={() => handleClick(State.Move)}><Move /></button
-			>
-
-			<button
-				class="btn m-0 p-0 bg-surface-500"
-				on:click={() => {
-					handleClick(State.Delete);
-				}}><DeleteBtn /></button
-			>
-		</div>
-	{/if}
+	<MenuButtons
+		{myIndex}
+		{tagArray}
+		note={undefined}
+		{menuMode}
+		on:DeleteNote={DeleteNote}
+		on:MoveNote={MoveNote}
+		on:CheckNote={CheckNote}
+	/>
 </div>
 <!-- </NostrApp> -->
 <!--{/if}-->
