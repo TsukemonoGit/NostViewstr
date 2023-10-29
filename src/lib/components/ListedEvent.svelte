@@ -15,7 +15,7 @@
 
 	//一つのタグに一種類のイベントしかないことにして日付だけ見る
 	const uniqueEvent = (eventList: NostrEvent[]): NostrEvent => {
-		console.log(eventList);
+		//console.log(eventList);
 		eventList.sort((a, b) => b.created_at - a.created_at);
 		return eventList[0];
 	};

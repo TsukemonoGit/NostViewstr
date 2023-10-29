@@ -458,6 +458,10 @@ export async function getRelays(author: string) {
 			resolve();
 		});
 	});
+
+	//リレー用イベント取ってきたらそれをセットする
+	await setRelays(kekka);
+
 	return kekka;
 }
 
@@ -503,5 +507,14 @@ export function setRelays(events: NostrEvent[]) {
 	if (write.length > 0) {
 		bookmarkRelays.set(write);
 		postRelays.set(write);
+	}
+	if (get(searchRelays).length === 0) {
+		searchRelays.set(defaultRelays);
+	}
+	if (get(bookmarkRelays).length === 0) {
+		bookmarkRelays.set(defaultRelays);
+	}
+	if (get(postRelays).length === 0) {
+		postRelays.set(defaultRelays);
 	}
 }

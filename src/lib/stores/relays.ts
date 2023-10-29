@@ -19,9 +19,9 @@ export const defaultRelays = [
 	//kind:3
 	//'wss://relayable.org',
 ];
-export const searchRelays = writable<string[]>(defaultRelays);
-export const bookmarkRelays = writable<string[]>(defaultRelays);
-export const postRelays = writable<string[]>(defaultRelays);
+export const searchRelays = writable<string[]>([]);
+export const bookmarkRelays = writable<string[]>([]);
+export const postRelays = writable<string[]>([]);
 
 // export const Relays = (): Relays => {
 // 	let relay: Relays = {
