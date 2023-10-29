@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import type { Placement } from '@floating-ui/dom';
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
 

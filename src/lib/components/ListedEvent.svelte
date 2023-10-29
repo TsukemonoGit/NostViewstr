@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import EventCard from '$lib/components/EventCard.svelte';
 	import { MenuMode } from '$lib/functions';
 	import { searchRelays } from '$lib/stores/relays';
 	import { Metadata, NostrApp, Text, UniqueEventList } from 'nosvelte';
-	import OtherCard from '$lib/components/OtherCard.svelte';
 	import type { Event as NostrEvent } from 'nostr-tools';
 	import { getIdByTag } from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
@@ -271,3 +271,21 @@
 		/> -->
 	</NostrApp>
 {/if}
+
+<div class="card p-1 variant-filled-secondary z-20" data-popup="popupShare">
+	<p>{$_('popup.Share')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
+</div>
+
+<div class="card p-1 variant-filled-secondary z-20" data-popup="popupOpen">
+	<p>{$_('popup.open')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
+</div>
+<div class="card p-1 variant-filled-secondary z-20" data-popup="popupMove">
+	<p>{$_('popup.move')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
+</div>
+<div class="card p-1 variant-filled-secondary z-20" data-popup="popupDelete">
+	<p>{$_('popup.delete')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
+</div>

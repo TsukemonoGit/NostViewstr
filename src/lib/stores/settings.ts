@@ -6,5 +6,5 @@ export const URLPreview = writable<boolean>(false);
 export const iconView = writable<boolean>(false);
 
 export const allView = writable<boolean>(false);
-
+export const nowProgress = writable<boolean>(false);
 //export const kind = writable<number>(30001);

@@ -1,15 +1,17 @@
 <script lang="ts">
+	//書き込めるところに書き込むということでwrite二設定しているリレーに複製します
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import type { Nostr } from 'nosvelte';
+	import { app, type Nostr } from 'nosvelte';
 	import {
 		createRxNostr,
 		createRxOneshotReq,
 		type EventPacket,
 		verify
 	} from 'rx-nostr';
-	import { searchRelays } from '$lib/stores/relays';
+	import { postRelays, searchRelays } from '$lib/stores/relays';
 	import type { Observer, Subscription } from 'rxjs';
+
 	export let parent: any;
 	enum RelayState {
 		Preparing,
@@ -118,8 +120,8 @@
 	let logs: string[] = [];
 	$: logs = logs;
 	let nowLoading: boolean = false;
-	const rxNostr = createRxNostr();
-	rxNostr.setRelays(relays);
+	//const rxNostr = createRxNostr();
+	$app.rxNostr.setRelays(relays);
 
 	function onClick() {
 		if (subscription && !subscription.closed) {
@@ -138,7 +140,7 @@
 			relaysState[relay] = RelayState.Connecting;
 		});
 		// データの購読
-		const observable = rxNostr.use(rxReq).pipe();
+		const observable = $app.rxNostr.use(rxReq).pipe(verify());
 
 		// オブザーバーオブジェクトの作成
 		const observer: Observer<any> = {
@@ -158,7 +160,7 @@
 		// 購読開始
 		subscription = observable.subscribe(observer);
 		// 全エラーを監視するObservableの購読
-		const rxErrorSubscription = rxNostr
+		const rxErrorSubscription = $app.rxNostr
 			.createAllErrorObservable()
 			.subscribe((error) => {
 				console.error('Error occurred globally:', error);
@@ -183,11 +185,11 @@
 		if (!subscription.closed) {
 			subscription.unsubscribe();
 		}
-		for (let i = 0; i < $searchRelays.length; i++) {
-			const ws = new WebSocket($searchRelays[i]);
+		for (let i = 0; i < $postRelays.length; i++) {
+			const ws = new WebSocket($postRelays[i]);
 			webSockets.push(ws);
 			ws.onopen = () => {
-				logs.push(`Connected to ${$searchRelays[i]}`);
+				logs.push(`Connected to ${$postRelays[i]}`);
 				logs = logs;
 				ws.send(JSON.stringify(['EVENT', event]));
 			};
@@ -195,17 +197,17 @@
 				console.log(e);
 				const msg = JSON.parse(e.data);
 
-				logs.push(`message from ${$searchRelays[i]}: ${e.data}`);
+				logs.push(`message from ${$postRelays[i]}: ${e.data}`);
 				logs = logs;
 				if (msg[2]) {
 					logs.push(
-						`<span class="font-bold">Success: ${$searchRelays[i]}</span>`
+						`<span class="font-bold">Success: ${$postRelays[i]}</span>`
 					);
 					logs = logs;
 					// isSuccess = true;
 				} else {
 					logs.push(
-						`<span class="font-bold">Failed: ${$searchRelays[1]}</span> (reason:  ${msg[3]})`
+						`<span class="font-bold">Failed: ${$postRelays[1]}</span> (reason:  ${msg[3]})`
 					);
 					logs = logs;
 				}

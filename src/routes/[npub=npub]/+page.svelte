@@ -8,7 +8,9 @@
 	import type { PageData } from './$types';
 	import { getRelays, setRelays } from '$lib/nostrFunctions';
 	import { onMount } from 'svelte';
-	import { testRelay } from '$lib/test.js';
+	import { testRelay } from '$lib/testData/test.js';
+	import FooterMenu from '$lib/components/FooterMenu.svelte';
+	import { searchRelays, postRelays } from '$lib/stores/relays';
 	export let data: PageData;
 	console.log('PageData', data.pubkey);
 
@@ -21,10 +23,13 @@
 	});
 </script>
 
-npub:{$page.params.npub}
+<p>npub:{$page.params.npub}</p>
+<p>read:{$searchRelays}</p>
+<p>write:{$postRelays}</p>
 <LightSwitch />
 {#if !$settings}
 	<Settings />
 {:else}
 	<ListedEventList />
 {/if}
+<FooterMenu />

@@ -87,52 +87,6 @@
 		}
 	}
 
-	//-----------------------------------------------引用ポスト
-	const postNoteModalComponent: ModalComponent = {
-		ref: ModalPostNote
-	};
-	function shareNote() {
-		const tags = tagArray
-			? tagArray[0] === 'e'
-				? [[...tagArray, '', 'mention']]
-				: [tagArray]
-			: [];
-		const modal: ModalSettings = {
-			type: 'component',
-			component: postNoteModalComponent,
-			backdropClasses: '!bg-surface-400/80 ',
-			title: $_('nprofile.modal.postNote.title'),
-			body: ``,
-			value: {
-				content: `${
-					tagArray && tagArray[0] === 'a'
-						? `\r\nnostr:${nip19.naddrEncode(parseNaddr(tagArray))}`
-						: tagArray && tagArray[0] === 'e'
-						? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
-						: ''
-				}`,
-				tags: tags
-				//	pubkey: note.pubkey
-			}
-			// response: async (res) => {
-			// 	console.log(res);
-			// 	if (res) {
-			// 		//帰ってきた値によってなんやかんや
-			// 		//でもポストノートは別に戻ってきてからやんなくても良くない？
-			// 	}
-			// }
-		};
-		modalStore.trigger(modal);
-	}
-
-	function JsonCheck(text: string) {
-		try {
-			return JSON.parse(text);
-		} catch (error) {
-			return '';
-		}
-	}
-
 	//-----------------------------------------------サーチ
 	const searchModalComponent: ModalComponent = {
 		// Pass a reference to your custom component
@@ -196,24 +150,4 @@
 		on:MoveNote={MoveNote}
 		on:CheckNote={CheckNote}
 	/>
-</div>
-<!-- </NostrApp> -->
-<!--{/if}-->
-
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupShare">
-	<p>{$_('popup.Share')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
-
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupOpen">
-	<p>{$_('popup.open')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupMove">
-	<p>{$_('popup.move')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupDelete">
-	<p>{$_('popup.delete')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
 </div>

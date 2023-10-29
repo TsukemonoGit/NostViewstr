@@ -97,7 +97,9 @@
 <!--{#if $searchRelays}-->
 <!-- <NostrApp relays={$searchRelays}> -->
 <!-- ノート | ボタン群-->
-<div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
+<div
+	class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+>
 	<!-- icon | その他-->
 	<div class="grid grid-cols-[auto_1fr] gap-1.5">
 		<!--icon-->
@@ -255,21 +257,3 @@
 </div>
 <!-- </NostrApp> -->
 <!--{/if}-->
-
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupShare">
-	<p>{$_('popup.Share')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
-
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupOpen">
-	<p>{$_('popup.open')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupMove">
-	<p>{$_('popup.move')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupDelete">
-	<p>{$_('popup.delete')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
