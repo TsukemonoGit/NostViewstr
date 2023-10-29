@@ -16,6 +16,12 @@
 		console.log('CheckNote');
 		console.log(e.detail.number);
 	}
+	let bkm: string = 'pub';
 </script>
 
-<ListedEvent {listEvent} {DeleteNote} {MoveNote} {CheckNote} />
+<button
+	on:click={() => {
+		bkm = bkm === 'pub' ? 'prv' : 'pub';
+	}}>test</button
+>
+<ListedEvent {listEvent} {DeleteNote} {MoveNote} {CheckNote} {bkm} />

@@ -5,228 +5,245 @@
 	import { searchRelays } from '$lib/stores/relays';
 	import { Metadata, NostrApp, Text, UniqueEventList } from 'nosvelte';
 	import type { Event as NostrEvent } from 'nostr-tools';
-	import { getIdByTag } from '$lib/nostrFunctions';
+	import { getIdByTag, nip04De } from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
 
 	export let listEvent: NostrEvent;
-
+	export let bkm = 'pub'; //'pub'|'prv'
+	//let viewList: string[][];
 	//一つのタグに一種類のイベントしかないことにして日付だけ見る
 	const uniqueEvent = (eventList: NostrEvent[]): NostrEvent => {
 		//console.log(eventList);
 		eventList.sort((a, b) => b.created_at - a.created_at);
 		return eventList[0];
 	};
+	const privateList = async (list: NostrEvent) => {
+		try {
+			const decypt = await nip04De(list.pubkey, list.content);
+			return JSON.parse(decypt);
+		} catch (error) {
+			console.error('復号失敗');
+		}
+	};
+	$: viewList = async () => {
+		if (bkm === 'pub') {
+			return listEvent.tags;
+		} else {
+			return await privateList(listEvent);
+		}
+	};
 </script>
 
 {#if $searchRelays}
-	<NostrApp relays={$searchRelays}>
-		{#each listEvent.tags as tag, index}
-			{#await getIdByTag(tag)}
-				<!--loading a タグ　のなかみ-->
-			{:then { id, filter, kind }}
-				{#if tag[0] === 'e'}
-					<Text queryKey={[id]} {id} let:text>
-						<SearchCard
-							slot="loading"
-							{filter}
-							message={`loading [${tag}]`}
-							isPageOwner={true}
-							menuMode={MenuMode.other}
-							tagArray={tag}
-							myIndex={index}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-
-						<SearchCard
-							slot="error"
-							{filter}
-							message={`error [${tag}]`}
-							isPageOwner={true}
-							menuMode={MenuMode.other}
-							tagArray={tag}
-							myIndex={index}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-
-						<SearchCard
-							slot="nodata"
-							{filter}
-							message={`not found [${tag}]`}
-							isPageOwner={true}
-							menuMode={MenuMode.other}
-							tagArray={tag}
-							myIndex={index}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-
-						<Metadata
-							queryKey={['metadata', text.pubkey]}
-							pubkey={text.pubkey}
-							let:metadata
-						>
-							<EventCard
+	{#await viewList() then viewList}
+		<NostrApp relays={$searchRelays}>
+			{#each viewList as tag, index}
+				{#await getIdByTag(tag)}
+					<!--loading a タグ　のなかみ-->
+				{:then { id, filter, kind }}
+					{#if tag[0] === 'e'}
+						<Text queryKey={[id]} {id} let:text>
+							<SearchCard
 								slot="loading"
+								{filter}
+								message={`loading [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.Owner}
+								menuMode={MenuMode.other}
 								tagArray={tag}
-								note={text}
-								metadata={undefined}
 								myIndex={index}
 								{DeleteNote}
 								{MoveNote}
 								{CheckNote}
 							/>
-							<EventCard
+
+							<SearchCard
 								slot="error"
+								{filter}
+								message={`error [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.Owner}
+								menuMode={MenuMode.other}
 								tagArray={tag}
-								note={text}
-								metadata={undefined}
 								myIndex={index}
 								{DeleteNote}
 								{MoveNote}
 								{CheckNote}
 							/>
-							<EventCard
+
+							<SearchCard
 								slot="nodata"
+								{filter}
+								message={`not found [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.Owner}
+								menuMode={MenuMode.other}
 								tagArray={tag}
-								note={text}
-								metadata={undefined}
 								myIndex={index}
 								{DeleteNote}
 								{MoveNote}
 								{CheckNote}
 							/>
 
-							<EventCard
-								isPageOwner={true}
-								menuMode={MenuMode.Owner}
-								tagArray={tag}
-								note={text}
-								{metadata}
-								myIndex={index}
-								{DeleteNote}
-								{MoveNote}
-								{CheckNote}
-							/>
-						</Metadata>
-					</Text>
-				{:else if tag[0] === 'a'}
-					<UniqueEventList queryKey={tag} filters={[filter]} let:events>
-						<SearchCard
-							slot="loading"
-							{filter}
-							message={`loading [${tag}]`}
-							isPageOwner={true}
-							menuMode={MenuMode.other}
-							tagArray={tag}
-							myIndex={index}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
+							<Metadata
+								queryKey={['metadata', text.pubkey]}
+								pubkey={text.pubkey}
+								let:metadata
+							>
+								<EventCard
+									slot="loading"
+									isPageOwner={true}
+									menuMode={MenuMode.Owner}
+									tagArray={tag}
+									note={text}
+									metadata={undefined}
+									myIndex={index}
+									{DeleteNote}
+									{MoveNote}
+									{CheckNote}
+								/>
+								<EventCard
+									slot="error"
+									isPageOwner={true}
+									menuMode={MenuMode.Owner}
+									tagArray={tag}
+									note={text}
+									metadata={undefined}
+									myIndex={index}
+									{DeleteNote}
+									{MoveNote}
+									{CheckNote}
+								/>
+								<EventCard
+									slot="nodata"
+									isPageOwner={true}
+									menuMode={MenuMode.Owner}
+									tagArray={tag}
+									note={text}
+									metadata={undefined}
+									myIndex={index}
+									{DeleteNote}
+									{MoveNote}
+									{CheckNote}
+								/>
 
-						<SearchCard
-							slot="error"
-							{filter}
-							message={`error [${tag}]`}
-							isPageOwner={true}
-							menuMode={MenuMode.other}
-							tagArray={tag}
-							myIndex={index}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-
-						<SearchCard
-							slot="nodata"
-							{filter}
-							message={`not found [${tag}]`}
-							isPageOwner={true}
-							menuMode={MenuMode.other}
-							tagArray={tag}
-							myIndex={index}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-
-						<Metadata
-							queryKey={['metadata', uniqueEvent(events).pubkey]}
-							pubkey={uniqueEvent(events).pubkey}
-							let:metadata
-						>
-							<EventCard
+								<EventCard
+									isPageOwner={true}
+									menuMode={MenuMode.Owner}
+									tagArray={tag}
+									note={text}
+									{metadata}
+									myIndex={index}
+									{DeleteNote}
+									{MoveNote}
+									{CheckNote}
+								/>
+							</Metadata>
+						</Text>
+					{:else if tag[0] === 'a'}
+						<UniqueEventList queryKey={tag} filters={[filter]} let:events>
+							<SearchCard
 								slot="loading"
+								{filter}
+								message={`loading [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.Owner}
+								menuMode={MenuMode.other}
 								tagArray={tag}
-								note={uniqueEvent(events)}
-								metadata={undefined}
 								myIndex={index}
 								{DeleteNote}
 								{MoveNote}
 								{CheckNote}
 							/>
-							<EventCard
+
+							<SearchCard
 								slot="error"
+								{filter}
+								message={`error [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.Owner}
+								menuMode={MenuMode.other}
 								tagArray={tag}
-								note={uniqueEvent(events)}
-								metadata={undefined}
 								myIndex={index}
 								{DeleteNote}
 								{MoveNote}
 								{CheckNote}
 							/>
-							<EventCard
+
+							<SearchCard
 								slot="nodata"
+								{filter}
+								message={`not found [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.Owner}
+								menuMode={MenuMode.other}
 								tagArray={tag}
-								note={uniqueEvent(events)}
-								metadata={undefined}
 								myIndex={index}
 								{DeleteNote}
 								{MoveNote}
 								{CheckNote}
 							/>
 
-							<EventCard
-								isPageOwner={true}
-								menuMode={MenuMode.Owner}
-								tagArray={tag}
-								note={uniqueEvent(events)}
-								{metadata}
-								myIndex={index}
-								{DeleteNote}
-								{MoveNote}
-								{CheckNote}
-							/>
-						</Metadata>
-					</UniqueEventList>
-				{:else}
-					<!--あとでかく-->
-					{tag}
-				{/if}
-			{/await}
-		{/each}
+							<Metadata
+								queryKey={['metadata', uniqueEvent(events).pubkey]}
+								pubkey={uniqueEvent(events).pubkey}
+								let:metadata
+							>
+								<EventCard
+									slot="loading"
+									isPageOwner={true}
+									menuMode={MenuMode.Owner}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									metadata={undefined}
+									myIndex={index}
+									{DeleteNote}
+									{MoveNote}
+									{CheckNote}
+								/>
+								<EventCard
+									slot="error"
+									isPageOwner={true}
+									menuMode={MenuMode.Owner}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									metadata={undefined}
+									myIndex={index}
+									{DeleteNote}
+									{MoveNote}
+									{CheckNote}
+								/>
+								<EventCard
+									slot="nodata"
+									isPageOwner={true}
+									menuMode={MenuMode.Owner}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									metadata={undefined}
+									myIndex={index}
+									{DeleteNote}
+									{MoveNote}
+									{CheckNote}
+								/>
 
-		<!-- <EventCard
+								<EventCard
+									isPageOwner={true}
+									menuMode={MenuMode.Owner}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									{metadata}
+									myIndex={index}
+									{DeleteNote}
+									{MoveNote}
+									{CheckNote}
+								/>
+							</Metadata>
+						</UniqueEventList>
+					{:else}
+						<!--あとでかく-->
+						{tag}
+					{/if}
+				{/await}
+			{/each}
+
+			<!-- <EventCard
 			tagArray={['e', test.id]}
 			note={test}
 			metadata={undefined}
@@ -269,7 +286,8 @@
 			on:CheckNote={CheckNote}
 			menuMode={MenuMode.Viewer}
 		/> -->
-	</NostrApp>
+		</NostrApp>
+	{/await}
 {/if}
 
 <div class="card p-1 variant-filled-secondary z-20" data-popup="popupShare">

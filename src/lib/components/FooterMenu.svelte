@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { allView, nowProgress } from '$lib/stores/settings';
-
-	//
+	import Setting from '@material-design-icons/svg/round/settings.svg?raw';
 </script>
 
 <div class=" fixed bottom-0 z-10 w-screen">
@@ -10,6 +9,6 @@
 	>
 		<button>btn</button>
 		<button>btn</button>
-		<button>btn</button>
+		<button class="fill-white">{@html Setting}</button>
 	</div>
 </div>
