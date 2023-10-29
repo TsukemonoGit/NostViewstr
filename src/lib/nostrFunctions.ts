@@ -33,7 +33,19 @@ import {
 } from 'rx-nostr';
 import { get } from 'svelte/store';
 import { naddrStore, type NaddrStore } from './stores/bookmarkEvents';
-import { defaultRelays, searchRelays } from './stores/relays';
+import {
+	bookmarkRelays,
+	defaultRelays,
+	postRelays,
+	searchRelays
+} from './stores/relays';
+
+interface Kind3Relay {
+	[key: string]: {
+		read: boolean;
+		write: boolean;
+	};
+}
 
 export function parseNaddr(tag: string[]): AddressPointer {
 	const parts = tag[1].split(':');
@@ -320,7 +332,11 @@ export async function fetchFilteredEvents(
 	relays: string[],
 	filters: Nostr.Filter[]
 ): Promise<Nostr.Event[]> {
-	const rxNostr = createRxNostr();
+	//const rxNostr = createRxNostr();
+	if (get(app) === undefined) {
+		app.set({ rxNostr: createRxNostr() });
+	}
+	const rxNostr = get(app).rxNostr;
 	rxNostr.setRelays(relays);
 
 	const rxReq = createRxOneshotReq({ filters });
@@ -446,7 +462,46 @@ export async function getRelays(author: string) {
 }
 
 export function setRelays(events: NostrEvent[]) {
+	let read: string[] = [];
+	let write: string[] = [];
+	const kind10002 = events.find((item) => item.kind === 10002);
 	const kind3 = events.find((item) => item.kind === 3);
-	if (kind3) {
+	if (kind10002 && kind10002.tags.length > 0) {
+		kind10002.tags.map((item) => {
+			if (item[0] === 'r') {
+				if (item.length < 2) {
+					read.push(item[1]);
+					write.push(item[1]);
+				} else if (item[2] === 'read') {
+					read.push(item[1]);
+				} else if (item[2] === 'write') {
+					write.push(item[1]);
+				}
+			}
+		});
+	} else if (kind3 && kind3.content !== '') {
+		try {
+			const relays = JSON.parse(kind3.content);
+			console.log(relays);
+			Object.keys(relays).map((item) => {
+				if (relays[item].read) {
+					read.push(item);
+				}
+				if (relays[item].write) {
+					write.push(item);
+				}
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+	console.log(read);
+	console.log(write);
+	if (read.length > 0) {
+		searchRelays.set(read);
+	}
+	if (write.length > 0) {
+		bookmarkRelays.set(write);
+		postRelays.set(write);
 	}
 }
