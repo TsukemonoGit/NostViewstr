@@ -11,20 +11,27 @@ import {
 	getPublicKey,
 	getSignature,
 	nip04,
-	nip19
+	nip19,
+	verifySignature
 } from 'nostr-tools';
 import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 
 import type { Event as NostrEvent } from 'nostr-tools';
-import { pubkey_viewer } from '$lib/stores/settings';
+import { pubkey_viewer } from './stores/settings';
 import type { Observer } from 'rxjs';
+import { app } from 'nosvelte';
 import {
 	createRxNostr,
 	createRxOneshotReq,
 	Nostr,
 	uniq,
-	verify
+	verify,
+	latest,
+	completeOnTimeout,
+	latestEach,
+	type EventPacket
 } from 'rx-nostr';
+import { get } from 'svelte/store';
 import { naddrStore, type NaddrStore } from './stores/bookmarkEvents';
 import { defaultRelays, searchRelays } from './stores/relays';
 
@@ -80,17 +87,17 @@ export async function getIdByTag(
 	}
 }
 
-let storeValue: NaddrStore;
+// let storeValue: NaddrStore;
 
-// Storeの値を読み込む
-naddrStore.subscribe((value) => {
-	storeValue = value;
-});
+// // Storeの値を読み込む
+// naddrStore.subscribe((value) => {
+// 	storeValue = value;
+// });
 
-let searchValue: string[];
-searchRelays.subscribe((value) => {
-	searchValue = value;
-});
+// let searchValue: string[];
+// searchRelays.subscribe((value) => {
+// 	searchValue = value;
+// });
 
 async function getEvent(naddr: {
 	kind: number;
@@ -105,9 +112,10 @@ async function getEvent(naddr: {
 	});
 	console.log(naddrStore);
 	// naddrStoreの内容を確認し、イベントが存在しない場合のみ取得と保存を行う
-	if (!(addressPointer in storeValue)) {
-		const relays =
-			searchValue && searchValue.length > 0 ? searchValue : defaultRelays;
+	const naddrs = get(naddrStore);
+	const searchR = get(searchRelays);
+	if (!(addressPointer in naddrs)) {
+		const relays = searchR && searchR.length > 0 ? searchR : defaultRelays;
 		// naddr.relays && naddr.relays.length > 0 ? naddr.relays : RelaysforSearch;
 		const filter =
 			naddr.identifier.trim() !== ''
@@ -129,12 +137,12 @@ async function getEvent(naddr: {
 		if (res.length > 0) {
 			res.sort((a, b) => b.created_at - a.created_at);
 			// 取得したイベントをnaddrStoreに保存
-			storeValue[addressPointer] = res[0];
-			naddrStore.set(storeValue);
+			naddrs[addressPointer] = res[0];
+			naddrStore.set(naddrs);
 			return res[0];
 		}
 	} else {
-		return storeValue[addressPointer];
+		return naddrs[addressPointer];
 	}
 }
 
@@ -306,6 +314,8 @@ async function signEv(obj: NostrEvent): Promise<Event> {
 	}
 }
 
+//------------------------------------------------
+
 export async function fetchFilteredEvents(
 	relays: string[],
 	filters: Nostr.Filter[]
@@ -391,5 +401,52 @@ export async function fetchFilteredEvents(
 		throw new Error(
 			`${JSON.stringify(filters)}に一致するイベントが見つかりませんでした`
 		);
+	}
+}
+
+export async function getRelays(author: string) {
+	if (get(app) === undefined) {
+		app.set({ rxNostr: createRxNostr() });
+	}
+	const rxNostr = get(app).rxNostr;
+	await rxNostr.setRelays(defaultRelays);
+	console.log(rxNostr.getRelays());
+	const filters: Nostr.Filter[] = [{ authors: [author], kinds: [3, 10002] }];
+	console.log(filters);
+	const rxReq = createRxOneshotReq({ filters });
+	// データの購読
+	const observable = rxNostr.use(rxReq).pipe(
+		verify(),
+		uniq(),
+		latestEach((packet: { event: { kind: number } }) => packet.event.kind),
+		completeOnTimeout(2000)
+	); //verify()はなんかThe following error occurred during verify(): TypeError: Expected input type is Uint8Array (got object)エラーがテストだと出る（？）
+	const kekka: Nostr.Event<number>[] = [];
+	// 購読開始
+	const subscription = observable.subscribe({
+		next: (packet) => {
+			console.log(packet);
+			kekka.push(packet.event);
+		},
+		error: (error) => {
+			console.log(error);
+		},
+		complete: () => {
+			console.log('owari');
+		}
+	});
+
+	// Observable の完了を待つ
+	await new Promise<void>((resolve) => {
+		subscription.add(() => {
+			resolve();
+		});
+	});
+	return kekka;
+}
+
+export function setRelays(events: NostrEvent[]) {
+	const kind3 = events.find((item) => item.kind === 3);
+	if (kind3) {
 	}
 }

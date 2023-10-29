@@ -1,5 +1,4 @@
 <script>
-	import 'websocket-polyfill';
 	import { LightSwitch } from '@skeletonlabs/skeleton';
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';

@@ -3,12 +3,21 @@ import { writable } from 'svelte/store';
 //bookmark relay ブックマークの取得、書き込みに使うリレー
 //post relay 共有、引用ポスト用のリレー
 
+//参考 https://nostter.vercel.app/nevent1qqsy739r2nqh59p8w4ufwf7ujtp4qxdwjae3uexk5fhn3pf4ntreq8q77psv7
+
 export const defaultRelays = [
 	//'wss://tes'
 	//'wss://relay.nostr.band'
 	//	'wss://nos.lol',
 	//'wss://relay.nostr.wirednet.jp'
-	'wss://relayable.org'
+
+	//kind 0 (ユーザのプロフィール) と kind 10002 (利用中のリレーリスト) 特化
+	'wss://directory.yabu.me',
+	'wss://purplepag.es', //https://purplepag.es/what
+	'wss://relay.nostr.band',
+	'wss://nos.lol'
+	//kind:3
+	//'wss://relayable.org',
 ];
 export const searchRelays = writable<string[]>(defaultRelays);
 export const bookmarkRelays = writable<string[]>(defaultRelays);
