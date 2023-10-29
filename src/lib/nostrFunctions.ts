@@ -37,6 +37,7 @@ import {
 	bookmarkRelays,
 	defaultRelays,
 	postRelays,
+	relaySearchRelays,
 	searchRelays
 } from './stores/relays';
 
@@ -425,7 +426,7 @@ export async function getRelays(author: string) {
 		app.set({ rxNostr: createRxNostr() });
 	}
 	const rxNostr = get(app).rxNostr;
-	await rxNostr.setRelays(defaultRelays);
+	rxNostr.setRelays(relaySearchRelays);
 	console.log(rxNostr.getRelays());
 	const filters: Nostr.Filter[] = [{ authors: [author], kinds: [3, 10002] }];
 	console.log(filters);

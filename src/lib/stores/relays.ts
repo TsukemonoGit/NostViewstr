@@ -5,7 +5,7 @@ import { writable } from 'svelte/store';
 
 //参考 https://nostter.vercel.app/nevent1qqsy739r2nqh59p8w4ufwf7ujtp4qxdwjae3uexk5fhn3pf4ntreq8q77psv7
 
-export const defaultRelays = [
+export const relaySearchRelays = [
 	//'wss://tes'
 	//'wss://relay.nostr.band'
 	//	'wss://nos.lol',
@@ -18,6 +18,14 @@ export const defaultRelays = [
 	'wss://nos.lol'
 	//kind:3
 	//'wss://relayable.org',
+];
+
+export const defaultRelays = [
+	//'wss://tes'
+	//'wss://relay.nostr.wirednet.jp'
+	'wss://relay.nostr.band',
+	'wss://nos.lol',
+	'wss://relayable.org'
 ];
 export const searchRelays = writable<string[]>([]);
 export const bookmarkRelays = writable<string[]>([]);
