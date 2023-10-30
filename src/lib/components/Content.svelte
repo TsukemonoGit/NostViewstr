@@ -3,11 +3,11 @@
 	import { extractTextParts, type TextPart } from '$lib/content';
 	import type { ModalComponent } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import ModalImage from './ModalImage.svelte';
+	import ModalImage from '$lib/components/modals/ModalImage.svelte';
 	import { nip19 } from 'nostr-tools';
 
 	import { Metadata, Nostr, NostrApp, Text } from 'nosvelte';
-	import ModalCopyPubkey from './ModalProfile.svelte';
+	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
 	import { getOgp } from '$lib/functions';
 	import OGP from './OGP.svelte';
 	import { contentStore, ogpStore } from '$lib/stores/bookmarkEvents';

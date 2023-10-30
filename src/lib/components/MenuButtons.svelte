@@ -12,7 +12,7 @@
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { modalStore } from '$lib/stores/store';
 	import { _ } from 'svelte-i18n';
-	import ModalPostNote from '$lib/components/ModalPostNote.svelte';
+	import ModalPostNote from '$lib/components/modals/ModalPostNote.svelte';
 	export let menuMode: MenuMode;
 	export let tagArray: string[] | undefined;
 	export let note: Event | undefined;

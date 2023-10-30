@@ -1,28 +1,16 @@
 <script lang="ts">
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
-	import ModalProfile from '$lib/components/ModalProfile.svelte';
-	import ModalEventJson from '$lib/components/ModalEventJson.svelte';
-	import ModalPostNote from '$lib/components/ModalPostNote.svelte';
-	import DeleteBtn from '$lib/components/Button/DeleteBtn.svelte';
-	import Move from '$lib/components/Button/Move.svelte';
-	import Share from '$lib/components/Button/Share.svelte';
-	import Open from '$lib/components/Button/Open.svelte';
+	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
+	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
+
 	import searchIcon from '@material-design-icons/svg/round/search.svg?raw';
 	import Search from '$lib/components/Search.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { nip19, type Event } from 'nostr-tools';
-	import { parseNaddr, windowOpen } from '$lib/nostrFunctions';
-	import { uniqueTags } from '$lib/functions';
+
 	import { _ } from 'svelte-i18n';
 	import type { MenuMode } from '$lib/functions';
-	import EventTag from './EventTag.svelte';
-	import { NostrApp } from 'nosvelte';
-	import { searchRelays } from '$lib/stores/relays';
-	import { checkedIndexList } from '$lib/stores/bookmarkEvents';
-	import Ogp from './OGP.svelte';
-	import Content from './Content.svelte';
-	import { allView, iconView } from '$lib/stores/settings';
+
 	import MenuButtons from './MenuButtons.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
@@ -36,7 +24,6 @@
 	export let tagArray: string[] | undefined;
 	const dispatch = createEventDispatcher();
 
-	let metadataContent: NostrProfile;
 	const modalStore = getModalStore();
 
 	enum State {

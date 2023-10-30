@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
-	import ModalProfile from '$lib/components/ModalProfile.svelte';
-	import ModalEventJson from '$lib/components/ModalEventJson.svelte';
-	import ModalPostNote from '$lib/components/ModalPostNote.svelte';
+	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
+	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
+	import ModalPostNote from '$lib/components/modals/ModalPostNote.svelte';
 	import DeleteBtn from '$lib/components/Button/DeleteBtn.svelte';
 	import Move from '$lib/components/Button/Move.svelte';
 	import Share from '$lib/components/Button/Share.svelte';

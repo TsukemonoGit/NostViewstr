@@ -1,11 +1,21 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { allView, nowProgress, settings } from '$lib/stores/settings';
 	import Setting from '@material-design-icons/svg/round/settings.svg?raw';
 	import firstIcon from '@material-design-icons/svg/round/first_page.svg?raw';
 	import lastIcon from '@material-design-icons/svg/round/last_page.svg?raw';
 	import backIcon from '@material-design-icons/svg/round/chevron_left.svg?raw';
 	import nextIcon from '@material-design-icons/svg/round/chevron_right.svg?raw';
+	import menuIcon from '@material-design-icons/svg/round/menu.svg?raw';
+	import ModalTagList from '$lib/components/modals/ModalTagList.svelte';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
+	import {
+		bookmarkEvents,
+		identifierList,
+		listNum
+	} from '$lib/stores/bookmarkEvents';
+	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
+	import { modalStore } from '$lib/stores/store';
 	$: console.log(
 		`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
 	);
@@ -39,6 +49,43 @@
 	}
 
 	const buttonClass = 'pageIcon btn btn-sm  fill-white';
+	//-----------------------------------------------
+	const tagListModalComponent: ModalComponent = {
+		// Pass a reference to your custom component
+		ref: ModalTagList,
+		// Add the component properties as key/value pairs
+		props: { background: 'bg-red-500' },
+		// Provide a template literal for the default component slot
+		slot: `<p>Skeleton</p>`
+	};
+
+	function openMenu(
+		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
+	) {
+		if ($bookmarkEvents) {
+			const modal: ModalSettings = {
+				type: 'component',
+				component: tagListModalComponent,
+				title: $_('nprofile.modal.tagList.title'),
+				body: ``,
+				value: {
+					tagList: $identifierList
+				},
+				response: (res) => {
+					//   console.log(res);
+					if (
+						res &&
+						res.index !== -1 &&
+						$bookmarkEvents !== undefined &&
+						$bookmarkEvents.length > 1
+					) {
+						$listNum = res.index;
+					}
+				}
+			};
+			modalStore.trigger(modal);
+		}
+	}
 </script>
 
 {#if $settings}
@@ -46,6 +93,11 @@
 		<div
 			class=" inline-flex flex-row space-x-0 overflow-hidden rounded-token; variant-filled-primary w-screen justify-center rounded-none"
 		>
+			{#if $bookmarkEvents && $bookmarkEvents.length > 0}
+				<button class={buttonClass} on:click={openMenu}>{@html menuIcon}</button
+				>
+			{/if}
+
 			<button
 				class={buttonClass}
 				on:click={firstPage}

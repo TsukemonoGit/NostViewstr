@@ -4,7 +4,11 @@
 
 	import ListedEvent from '$lib/components/ListedEvent.svelte';
 	//import { listEvent } from '$lib/testData/list';
-	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
+	import {
+		bookmarkEvents,
+		identifierList,
+		listNum
+	} from '$lib/stores/bookmarkEvents';
 	import {
 		fetchFilteredEvents,
 		getRelays,
@@ -20,7 +24,7 @@
 	let size: number;
 	let bkm: string = 'pub';
 	let viewEvent: Event<number>;
-	let num: number = 0;
+	//let num: number = 0;
 	$: createdAt = viewEvent?.created_at;
 	onMount(async () => {
 		//console.log(await getRelays(data.pubkey));
@@ -46,10 +50,17 @@
 			return tagID_A.localeCompare(tagID_B);
 		});
 		$bookmarkEvents = res;
-		viewEvent = $bookmarkEvents[0];
+		//viewEvent = $bookmarkEvents[0];
 
 		console.log(res);
 	});
+	$: if ($bookmarkEvents) {
+		viewEvent = $bookmarkEvents[$listNum];
+	}
+	//リストが変わったら1ページ目に戻す
+	$: if ($listNum !== -1) {
+		$pageNum = 0;
+	}
 
 	function DeleteNote(e: CustomEvent<any>): void {
 		console.log('DeleteNote');
@@ -68,16 +79,18 @@
 		const number: number = e.detail.number + $pageNum * $amount;
 		console.log(number);
 	}
-	let identifier: string;
-	$: if ($bookmarkEvents) {
-		const index = $bookmarkEvents[num].tags.find((item) => item[0] === 'd');
-		if (index) {
-			identifier = index[1];
-		} else {
-			identifier = ''; // マッチする要素が見つからない場合のデフォルト値
-		}
-		console.log(identifier);
-	}
+	// let identifier: string;
+	// $: if ($bookmarkEvents) {
+	// 	const index = $bookmarkEvents[$listNum].tags.find(
+	// 		(item) => item[0] === 'd'
+	// 	);
+	// 	if (index) {
+	// 		identifier = index[1];
+	// 	} else {
+	// 		identifier = ''; // マッチする要素が見つからない場合のデフォルト値
+	// 	}
+	// 	console.log(identifier);
+	// }
 	const borderClassActive = `break-keep border-b-2 border-surface-900-50-token p-2 pb-0 h6`;
 	const borderClass = `break-keep border-b border-surface-400-500-token p-2 pb-0 h6`;
 </script>
@@ -89,7 +102,7 @@
 	<div
 		class="min-w-[8rem] variant-ghost-primary border-b border-surface-400-500-token p-2 pb-0 h3 break-keep"
 	>
-		{identifier}
+		{$identifierList[$listNum]}
 	</div>
 
 	<button
@@ -129,9 +142,9 @@
 	<LightSwitch />
 	<button
 		on:click={() => {
-			if ($bookmarkEvents && num > 0) {
-				num--;
-				viewEvent = $bookmarkEvents[num];
+			if ($bookmarkEvents && $listNum > 0) {
+				$listNum--;
+				//viewEvent = $bookmarkEvents[$listNum];
 				$pageNum = 0;
 				bkm = 'pub';
 			}
@@ -140,10 +153,10 @@
 
 	<button
 		on:click={() => {
-			if ($bookmarkEvents && num < $bookmarkEvents.length - 1) {
+			if ($bookmarkEvents && $listNum < $bookmarkEvents.length - 1) {
 				$pageNum = 0;
-				num++;
-				viewEvent = $bookmarkEvents[num];
+				$listNum++;
+				//	viewEvent = $bookmarkEvents[$listNum];
 				bkm = 'pub';
 			}
 		}}>{'>'}</button

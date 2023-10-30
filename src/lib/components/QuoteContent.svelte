@@ -4,13 +4,13 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 
 	import { Metadata, Nostr, Text } from 'nosvelte';
-	import ModalCopyPubkey from './ModalProfile.svelte';
+	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
 	import { fetchFilteredEvents } from '$lib/nostrFunctions';
 	import { uniqueTags } from '$lib/functions';
 	import { naddrStore } from '$lib/stores/bookmarkEvents';
 	import { allView, iconView } from '$lib/stores/settings';
 	import { searchRelays } from '$lib/stores/relays';
-	import ModalEventJson from './ModalEventJson.svelte';
+	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import Content from './Content.svelte';
 	import searchIcon from '@material-design-icons/svg/round/search.svg?raw';
 	import Search from '$lib/components/Search.svelte';

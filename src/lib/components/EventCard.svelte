@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
-	import ModalProfile from '$lib/components/ModalProfile.svelte';
-	import ModalEventJson from '$lib/components/ModalEventJson.svelte';
+	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
+	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { nip19, type Event } from 'nostr-tools';
 
 	import { uniqueTags } from '$lib/functions';
