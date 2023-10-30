@@ -17,11 +17,12 @@
 	$: console.log($iconView);
 </script>
 
-<p>npub:{$page.params.npub}</p>
-<p>read:{$searchRelays}</p>
-<p>write:{$postRelays}</p>
-<p>kind:?</p>
-
+<div class="break-all">
+	<p>npub:{$page.params.npub}</p>
+	<p>read:{$searchRelays}</p>
+	<p>write:{$postRelays}</p>
+	<p>kind:?</p>
+</div>
 <LightSwitch />
 {#if !$settings}
 	<Settings />

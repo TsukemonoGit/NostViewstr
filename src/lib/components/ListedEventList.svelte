@@ -70,16 +70,10 @@
 		}
 		console.log(identifier);
 	}
+	const borderClassActive = `break-keep border-b-2 border-surface-900-50-token p-2 pb-0`;
+	const borderClass = `break-keep border-b border-surface-400-500-token p-2 pb-0 h4`;
 </script>
 
-<button
-	on:click={() => {
-		bkm = bkm === 'pub' ? 'prv' : 'pub';
-		console.log(bkm);
-		$pageNum = 0;
-	}}>test</button
->
-<div />
 <button
 	on:click={() => {
 		if ($bookmarkEvents && num > 0) {
@@ -103,12 +97,38 @@
 >
 
 <div />
-<div class="grid grid-cols-[1fr_auto]">
-	<div>
+<div
+	class="z-10 fixed top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
+>
+	<div
+		class="min-w-[8rem] variant-ghost-primary border-b border-surface-400-500-token p-2 pb-0 h3 break-keep"
+	>
 		{identifier}
 	</div>
-	<div>
-		{$_('created_at')}{new Date(createdAt * 1000).toLocaleString()}
+
+	<button
+		class={bkm === 'pub' ? borderClassActive : borderClass}
+		disabled={bkm === 'pub'}
+		on:click={() => {
+			bkm = 'pub';
+			console.log(bkm);
+			$pageNum = 0;
+		}}>{$_('public')}</button
+	>
+	{#if viewEvent?.content !== ''}
+		<button
+			class={bkm === 'prv' ? borderClassActive : borderClass}
+			disabled={bkm === 'prv'}
+			on:click={() => {
+				bkm = 'prv';
+				console.log(bkm);
+				$pageNum = 0;
+			}}>{$_('private')}</button
+		>
+	{/if}
+	<div class="flex-grow text-right h6 break-keep">
+		{$_('created_at')}<br />
+		{new Date(createdAt * 1000).toLocaleString()}
 	</div>
 </div>
 <ListedEvent
