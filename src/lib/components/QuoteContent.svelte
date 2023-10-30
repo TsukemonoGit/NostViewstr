@@ -236,7 +236,14 @@
 								class="text-xs underline decoration-secondary-500"
 								on:click={() => {
 									handleClickDate(text);
-								}}>{new Date(text.created_at * 1000).toLocaleString()}</button
+								}}
+								>{new Date(text.created_at * 1000).toLocaleString([], {
+									year: 'numeric',
+									month: '2-digit',
+									day: '2-digit',
+									hour: '2-digit',
+									minute: '2-digit'
+								})}</button
 							>
 							{#if text.kind === 31990}
 								<Ogp
@@ -268,7 +275,14 @@
 								class="text-xs underline decoration-secondary-500"
 								on:click={() => {
 									handleClickDate(text);
-								}}>{new Date(text.created_at * 1000).toLocaleString()}</button
+								}}
+								>{new Date(text.created_at * 1000).toLocaleString([], {
+									year: 'numeric',
+									month: '2-digit',
+									day: '2-digit',
+									hour: '2-digit',
+									minute: '2-digit'
+								})}</button
 							>
 						</div>
 						<div
@@ -357,7 +371,14 @@
 								class="text-xs underline decoration-secondary-500"
 								on:click={() => {
 									handleClickDate(text);
-								}}>{new Date(text.created_at * 1000).toLocaleString()}</button
+								}}
+								>{new Date(text.created_at * 1000).toLocaleString([], {
+									year: 'numeric',
+									month: '2-digit',
+									day: '2-digit',
+									hour: '2-digit',
+									minute: '2-digit'
+								})}</button
 							>
 						</div>
 					</div>
@@ -619,7 +640,14 @@
 					class="-mt-0.5 ml-2 text-xs underline decoration-secondary-500"
 					on:click={() => {
 						handleClickDate(text);
-					}}>{new Date(text.created_at * 1000).toLocaleString()}</button
+					}}
+					>{new Date(text.created_at * 1000).toLocaleString([], {
+						year: 'numeric',
+						month: '2-digit',
+						day: '2-digit',
+						hour: '2-digit',
+						minute: '2-digit'
+					})}</button
 				>
 
 				<div class="w-full grid grid-rows-[auto_auto] gap-0 h-fix">

@@ -167,7 +167,14 @@
 								if (tagArray) {
 									OpenNoteJson(note, tagArray);
 								}
-							}}>{new Date(note.created_at * 1000).toLocaleString()}</button
+							}}
+							>{new Date(note.created_at * 1000).toLocaleString([], {
+								year: 'numeric',
+								month: '2-digit',
+								day: '2-digit',
+								hour: '2-digit',
+								minute: '2-digit'
+							})}</button
 						>
 					</div>
 				{:else}
@@ -193,7 +200,14 @@
 								if (tagArray) {
 									OpenNoteJson(note, tagArray);
 								}
-							}}>{new Date(note.created_at * 1000).toLocaleString()}</button
+							}}
+							>{new Date(note.created_at * 1000).toLocaleString([], {
+								year: 'numeric',
+								month: '2-digit',
+								day: '2-digit',
+								hour: '2-digit',
+								minute: '2-digit'
+							})}</button
 						>
 					</div>
 				{/if}
