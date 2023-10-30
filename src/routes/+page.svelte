@@ -1,9 +1,41 @@
-<script>
+<script lang="ts">
 	import { LightSwitch } from '@skeletonlabs/skeleton';
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
 
-	let settings = false;
+	import { settings, nsec, pubkey_viewer } from '$lib/stores/settings';
+	import { getPublicKey, nip19 } from 'nostr-tools';
+	import { goto } from '$app/navigation';
+
+	let inputValue: string;
+	$settings = false;
+	const npub = localStorage.getItem('npub');
+	if (npub) {
+		inputValue = npub;
+	}
+	$: console.log($settings);
+	$: if ($settings === true) {
+		console.log('settings true');
+		//inputのpubkeyチェック
+		try {
+			const input = inputValue;
+			const decode = nip19.decode(input);
+			if (decode.type === 'npub') {
+				localStorage.setItem('npub', decode.data);
+				goto(`./${input}`);
+			} else if (decode.type === 'nsec') {
+				$nsec = decode.data;
+
+				const pub = getPublicKey(decode.data);
+				localStorage.setItem('npub', pub);
+				$pubkey_viewer = pub;
+				goto(`./${nip19.npubEncode(pub)}`);
+			}
+		} catch (error) {
+			console.error('npubを確認して');
+		}
+		//okだったらgotoする　NGだったらsettingsをfalseにする
+	}
 </script>
 
 <!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
@@ -23,8 +55,10 @@
 </div> -->
 
 <LightSwitch />
-{#if !settings}
-	<Settings />
-{:else}
-	<ListedEventList />
-{/if}
+<input
+	class="input"
+	type="text"
+	placeholder="npub1..."
+	bind:value={inputValue}
+/>
+<Settings />

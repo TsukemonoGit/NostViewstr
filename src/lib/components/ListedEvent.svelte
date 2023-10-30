@@ -7,6 +7,8 @@
 	import type { Event as NostrEvent } from 'nostr-tools';
 	import { getIdByTag, nip04De } from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
+
+	import { amount, pageNum, listSize } from '$lib/stores/pagination';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -21,26 +23,56 @@
 		return eventList[0];
 	};
 	const privateList = async (list: NostrEvent) => {
-		try {
-			const decypt = await nip04De(list.pubkey, list.content);
-			return JSON.parse(decypt);
-		} catch (error) {
-			console.error('復号失敗');
-		}
-	};
-	$: viewList = async () => {
-		if (bkm === 'pub') {
-			return listEvent.tags;
+		if (list.content !== '') {
+			try {
+				const decypt = await nip04De(list.pubkey, list.content);
+				return JSON.parse(decypt);
+			} catch (error) {
+				console.error('復号失敗');
+				return [];
+			}
 		} else {
-			return await privateList(listEvent);
+			console.log('プライベートブクマなんもないよ');
+			return [];
 		}
 	};
+	//export let size: number = 0;
+	//export let pageNum = 0;
+	//export let amount = 50;
+	let viewList: string[][] = [];
+	$: if (listEvent || bkm) {
+		viewUpdate();
+	} else {
+		viewList = [];
+		$listSize = 0;
+	}
+	async function viewUpdate() {
+		if (listEvent) {
+			if (bkm === 'pub') {
+				$listSize = listEvent?.tags.length;
+				viewList = listEvent?.tags;
+			} else {
+				const res = await privateList(listEvent);
+				$listSize = res.length;
+				viewList = res;
+			}
+		} else {
+			$listSize = 0;
+			viewList = [];
+		}
+	}
+	$: console.log($listSize, $amount, $pageNum);
+
+	$: viewPage = viewList.slice(
+		Math.min($pageNum, Math.floor($listSize / $amount)) * $amount,
+		($pageNum + 1) * Math.min($amount, $listSize - 1)
+	);
 </script>
 
 {#if $searchRelays}
-	{#await viewList() then viewList}
+	{#if viewPage && viewPage.length > 0}
 		<NostrApp relays={$searchRelays}>
-			{#each viewList as tag, index}
+			{#each viewPage as tag, index}
 				{#await getIdByTag(tag)}
 					<!--loading a タグ　のなかみ-->
 				{:then { id, filter, kind }}
@@ -236,8 +268,10 @@
 								/>
 							</Metadata>
 						</UniqueEventList>
+					{:else if tag[0] === 'd'}
+						<!--なんもしない-->
 					{:else}
-						<!--あとでかく-->
+						<!--a,e,d以外あとでかく-->
 						{tag}
 					{/if}
 				{/await}
@@ -287,7 +321,7 @@
 			menuMode={MenuMode.Viewer}
 		/> -->
 		</NostrApp>
-	{/await}
+	{/if}
 {/if}
 
 <div class="card p-1 variant-filled-secondary z-20" data-popup="popupShare">

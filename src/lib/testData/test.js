@@ -3199,7 +3199,7 @@ export const testRelay=[
           [
               "r",
               "wss://nos.lol/",
-              "read"
+             
           ],
           [
               "r",

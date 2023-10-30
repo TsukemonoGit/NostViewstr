@@ -17,9 +17,9 @@ import {
 import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 
 import type { Event as NostrEvent } from 'nostr-tools';
-import { pubkey_viewer } from './stores/settings';
+import { pubkey_viewer, nsec } from './stores/settings';
 import type { Observer } from 'rxjs';
-import { app } from 'nosvelte';
+
 import {
 	createRxNostr,
 	createRxOneshotReq,
@@ -95,7 +95,7 @@ export async function getIdByTag(
 		return { id: '', kind: naddr.kind, filter: filter };
 		//	}
 	} else {
-		//多分ないはず
+		//タグがa,e以外はそのままかえす
 		return { id: tag[1], filter: {} };
 	}
 }
@@ -218,8 +218,9 @@ export async function getPub(): Promise<string> {
 	if (myPubkey && myPubkey !== '') {
 		return myPubkey;
 	} else {
-		const sec = localStorage.getItem('nsec');
-		if (sec) {
+		//const sec = localStorage.getItem('nsec');
+		const sec = get(nsec);
+		if (sec && sec !== '') {
 			try {
 				pubkey_viewer.set(getPublicKey(sec));
 				unsubscribe();
@@ -251,8 +252,9 @@ export async function nip04De(
 	pubkey: string,
 	message: string
 ): Promise<string> {
-	const sec = localStorage.getItem('nsec');
-	if (sec) {
+	//const sec = localStorage.getItem('nsec');
+	const sec = get(nsec);
+	if (sec && sec !== '') {
 		try {
 			return await nip04.decrypt(sec, getPublicKey(sec), message);
 		} catch (error) {
@@ -275,8 +277,9 @@ export async function nip04En(
 	pubkey: string,
 	message: string
 ): Promise<string> {
-	const sec = localStorage.getItem('nsec');
-	if (sec) {
+	//const sec = localStorage.getItem('nsec');
+	const sec = get(nsec);
+	if (sec && sec !== '') {
 		try {
 			return await nip04.encrypt(sec, getPublicKey(sec), message);
 		} catch (error) {
@@ -306,8 +309,9 @@ interface Event {
 }
 
 async function signEv(obj: NostrEvent): Promise<Event> {
-	const sec = localStorage.getItem('nsec');
-	if (sec) {
+	//const sec = localStorage.getItem('nsec');
+	const sec = get(nsec);
+	if (sec && sec !== '') {
 		try {
 			obj.sig = getSignature(obj, sec);
 			return obj;
@@ -333,17 +337,24 @@ export async function fetchFilteredEvents(
 	relays: string[],
 	filters: Nostr.Filter[]
 ): Promise<Nostr.Event[]> {
-	//const rxNostr = createRxNostr();
-	if (get(app) === undefined) {
-		app.set({ rxNostr: createRxNostr() });
-	}
-	const rxNostr = get(app).rxNostr;
+	const rxNostr = createRxNostr();
+
 	rxNostr.setRelays(relays);
 
 	const rxReq = createRxOneshotReq({ filters });
 
 	// データの購読
-	const observable = rxNostr.use(rxReq).pipe(uniq(), verify());
+	const observable = rxNostr.use(rxReq).pipe(
+		uniq(),
+		verify(),
+		filters[0].kinds &&
+			filters[0].kinds[0] >= 30000 &&
+			filters[0].kinds[0] < 40000
+			? latestEach(
+					(packet) => packet.event.tags[0][1] //.find((item) => item[0] === 'd')
+			  )
+			: latest()
+	);
 
 	const eventMap = new Map<string, any>(); // タグIDをキーとするイベントのマップ
 
@@ -356,33 +367,35 @@ export async function fetchFilteredEvents(
 		content: '',
 		created_at: 0
 	};
+	let eventList: Nostr.Event<number>[] = [];
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
 		next: (packet: { event: Nostr.Event<number> }) => {
 			console.log(packet);
-			if (filters[0].kinds) {
-				if (
-					filters[0].kinds[0] >= 30000 &&
-					filters[0].kinds[0] < 40000 &&
-					packet.event.tags[0][0] === 'd'
-				) {
-					const tagID = packet.event.tags[0][1];
-					const existingEvent = eventMap.get(tagID);
-					if (
-						!existingEvent ||
-						packet.event.created_at > existingEvent.created_at
-					) {
-						eventMap.set(tagID, packet.event);
-					}
-				} else {
-					if (
-						returnEvent.id === '' ||
-						packet.event.created_at > returnEvent.created_at
-					) {
-						returnEvent = packet.event;
-					}
-				}
-			}
+			eventList.push(packet.event);
+			// if (filters[0].kinds) {
+			// 	if (
+			// 		filters[0].kinds[0] >= 30000 &&
+			// 		filters[0].kinds[0] < 40000 &&
+			// 		packet.event.tags[0][0] === 'd'
+			// 	) {
+			// 		const tagID = packet.event.tags[0][1];
+			// 		const existingEvent = eventMap.get(tagID);
+			// 		if (
+			// 			!existingEvent ||
+			// 			packet.event.created_at > existingEvent.created_at
+			// 		) {
+			// 			eventMap.set(tagID, packet.event);
+			// 		}
+			// 	} else {
+			// 		if (
+			// 			returnEvent.id === '' ||
+			// 			packet.event.created_at > returnEvent.created_at
+			// 		) {
+			// 			returnEvent = packet.event;
+			// 		}
+			// 	}
+			// }
 		},
 		error: (error) => {
 			console.error('Error occurred:', error);
@@ -406,26 +419,23 @@ export async function fetchFilteredEvents(
 			resolve();
 		});
 	});
+	return eventList;
+	// if (returnEvent.id !== '') {
+	// 	return [returnEvent];
+	// } else if (eventMap.size > 0) {
+	// 	const eventArray: Nostr.Event[] = Array.from(eventMap.values());
+	// 	console.log(eventArray);
 
-	if (returnEvent.id !== '') {
-		return [returnEvent];
-	} else if (eventMap.size > 0) {
-		const eventArray: Nostr.Event[] = Array.from(eventMap.values());
-		console.log(eventArray);
-
-		return eventArray;
-	} else {
-		throw new Error(
-			`${JSON.stringify(filters)}に一致するイベントが見つかりませんでした`
-		);
-	}
+	// 	return eventArray;
+	// } else {
+	// 	throw new Error(
+	// 		`${JSON.stringify(filters)}に一致するイベントが見つかりませんでした`
+	// 	);
+	// }
 }
 
 export async function getRelays(author: string) {
-	if (get(app) === undefined) {
-		app.set({ rxNostr: createRxNostr() });
-	}
-	const rxNostr = get(app).rxNostr;
+	const rxNostr = createRxNostr();
 	rxNostr.setRelays(relaySearchRelays);
 	console.log(rxNostr.getRelays());
 	const filters: Nostr.Filter[] = [{ authors: [author], kinds: [3, 10002] }];
@@ -474,7 +484,7 @@ export function setRelays(events: NostrEvent[]) {
 	if (kind10002 && kind10002.tags.length > 0) {
 		kind10002.tags.map((item) => {
 			if (item[0] === 'r') {
-				if (item.length < 2) {
+				if (item.length < 3) {
 					read.push(item[1]);
 					write.push(item[1]);
 				} else if (item[2] === 'read') {
