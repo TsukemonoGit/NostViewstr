@@ -37,7 +37,8 @@
 	) {
 		$pageNum = last;
 	}
-	const buttonClass = 'btn btn-sm m-0 p-2 bariant-filled-primary fill-white';
+
+	const buttonClass = 'pageIcon btn btn-sm  fill-white';
 </script>
 
 {#if $settings}
@@ -75,3 +76,11 @@
 		</div>
 	</div>
 {/if}
+
+<style>
+	:global(.pageIcon svg) {
+		width: 2em;
+		height: 2em;
+		fill: white;
+	}
+</style>

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
+	import addIcon from '@material-design-icons/svg/round/bookmark_add.svg?raw';
+
 	import ListedEvent from '$lib/components/ListedEvent.svelte';
 	//import { listEvent } from '$lib/testData/list';
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
@@ -37,6 +39,11 @@
 		if (res.length === 0) {
 			return;
 		}
+		res.sort((a, b) => {
+			const tagID_A = a.tags[0][1];
+			const tagID_B = b.tags[0][1];
+			return tagID_A.localeCompare(tagID_B);
+		});
 		$bookmarkEvents = res;
 		viewEvent = $bookmarkEvents[0];
 
@@ -70,8 +77,8 @@
 		}
 		console.log(identifier);
 	}
-	const borderClassActive = `break-keep border-b-2 border-surface-900-50-token p-2 pb-0`;
-	const borderClass = `break-keep border-b border-surface-400-500-token p-2 pb-0 h4`;
+	const borderClassActive = `break-keep border-b-2 border-surface-900-50-token p-2 pb-0 h6`;
+	const borderClass = `break-keep border-b border-surface-400-500-token p-2 pb-0 h6`;
 </script>
 
 <button
@@ -144,7 +151,17 @@
 	{CheckNote}
 	bind:bkm
 />
-
-<div class=" fixed bottom-14 z-10 left-2">
-	<button class="btn-icon variant-filled-primary">+</button>
+<!-------------------------------あど----->
+<div class="fixed bottom-14 z-10 left-2 fill-white">
+	<button id="addIcon" class=" btn-icon variant-filled-primary"
+		>{@html addIcon}</button
+	>
 </div>
+
+<style>
+	:global(#addIcon svg) {
+		width: 1.5em;
+		height: 1.5em;
+		fill: white;
+	}
+</style>
