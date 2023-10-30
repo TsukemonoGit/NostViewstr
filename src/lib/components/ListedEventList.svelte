@@ -16,6 +16,7 @@
 	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
 	import type { Event } from 'nostr-tools';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
+	import { LightSwitch } from '@skeletonlabs/skeleton';
 	let size: number;
 	let bkm: string = 'pub';
 	let viewEvent: Event<number>;
@@ -81,29 +82,7 @@
 	const borderClass = `break-keep border-b border-surface-400-500-token p-2 pb-0 h6`;
 </script>
 
-<button
-	on:click={() => {
-		if ($bookmarkEvents && num > 0) {
-			num--;
-			viewEvent = $bookmarkEvents[num];
-			$pageNum = 0;
-			bkm = 'pub';
-		}
-	}}>{'<'}</button
->
-
-<button
-	on:click={() => {
-		if ($bookmarkEvents && num < $bookmarkEvents.length - 1) {
-			$pageNum = 0;
-			num++;
-			viewEvent = $bookmarkEvents[num];
-			bkm = 'pub';
-		}
-	}}>{'>'}</button
->
-
-<div />
+<!--header-->
 <div
 	class="z-10 fixed top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
 >
@@ -133,7 +112,7 @@
 			}}>{$_('private')}</button
 		>
 	{/if}
-	<div class="flex-grow text-right h6 break-keep">
+	<div class="flex-grow text-right h6 break-keep pr-2">
 		{$_('created_at')}<br />
 		{new Date(createdAt * 1000).toLocaleString([], {
 			year: 'numeric',
@@ -144,13 +123,40 @@
 		})}
 	</div>
 </div>
-<ListedEvent
-	listEvent={viewEvent}
-	{DeleteNote}
-	{MoveNote}
-	{CheckNote}
-	bind:bkm
-/>
+
+<!---->
+<main class="my-10">
+	<LightSwitch />
+	<button
+		on:click={() => {
+			if ($bookmarkEvents && num > 0) {
+				num--;
+				viewEvent = $bookmarkEvents[num];
+				$pageNum = 0;
+				bkm = 'pub';
+			}
+		}}>{'<'}</button
+	>
+
+	<button
+		on:click={() => {
+			if ($bookmarkEvents && num < $bookmarkEvents.length - 1) {
+				$pageNum = 0;
+				num++;
+				viewEvent = $bookmarkEvents[num];
+				bkm = 'pub';
+			}
+		}}>{'>'}</button
+	>
+
+	<ListedEvent
+		listEvent={viewEvent}
+		{DeleteNote}
+		{MoveNote}
+		{CheckNote}
+		bind:bkm
+	/>
+</main>
 <!-------------------------------あど----->
 <div class="fixed bottom-14 z-10 left-2 fill-white">
 	<button id="addIcon" class=" btn-icon variant-filled-primary"
