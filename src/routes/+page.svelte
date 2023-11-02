@@ -6,12 +6,14 @@
 	import { settings, nsec, pubkey_viewer } from '$lib/stores/settings';
 	import { getPublicKey, nip19 } from 'nostr-tools';
 	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
 
 	let inputValue: string;
 	$settings = false;
-	const npub = localStorage.getItem('npub');
+	const npub = browser ? localStorage.getItem('npub') : undefined;
 	if (npub) {
-		inputValue = npub;
+		inputValue = nip19.npubEncode(npub);
 	}
 	$: console.log($settings);
 	$: if ($settings === true) {
@@ -22,6 +24,9 @@
 			const decode = nip19.decode(input);
 			if (decode.type === 'npub') {
 				localStorage.setItem('npub', decode.data);
+				if ($bookmarkEvents && $bookmarkEvents.length > 0) {
+					$bookmarkEvents = [];
+				}
 				goto(`./${input}`);
 			} else if (decode.type === 'nsec') {
 				$nsec = decode.data;

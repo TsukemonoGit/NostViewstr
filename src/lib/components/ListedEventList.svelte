@@ -18,29 +18,29 @@
 	import { testRelay } from '$lib/testData/test.js';
 	import { bookmarks } from '$lib/testData/bookmarks';
 	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
+	import { nowProgress } from '$lib/stores/settings';
 	import type { Event } from 'nostr-tools';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
 	import { LightSwitch } from '@skeletonlabs/skeleton';
 	let size: number;
 	let bkm: string = 'pub';
 	let viewEvent: Event<number>;
+	export let pubkey: string;
 	//let num: number = 0;
 	$: createdAt = viewEvent?.created_at;
 	onMount(async () => {
-		//console.log(await getRelays(data.pubkey));
+		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
 
-		// const filter = [
-		// 	{
-		// 		kinds: [30001],
-		// 		authors: [
-		// 			data.pubkey
-		// 		]
-		// 	}
-		// ];
-		// const res = await fetchFilteredEvents($bookmarkRelays, filter);
+		const filter = [
+			{
+				kinds: [30001],
+				authors: [pubkey]
+			}
+		];
+		$nowProgress = true;
+		const res = await fetchFilteredEvents($bookmarkRelays, filter);
 
-		await setRelays(testRelay);
-		const res = bookmarks;
+		//const res = bookmarks;
 		if (res.length === 0) {
 			return;
 		}
@@ -51,7 +51,7 @@
 		});
 		$bookmarkEvents = res;
 		//viewEvent = $bookmarkEvents[0];
-
+		$nowProgress = false;
 		console.log(res);
 	});
 	$: if ($bookmarkEvents) {
@@ -97,7 +97,7 @@
 
 <!--header-->
 <div
-	class="z-10 fixed top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
+	class="z-10 fixed h-[2.5em] top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
 >
 	<div
 		class="min-w-[8rem] variant-ghost-primary border-b border-surface-400-500-token p-2 pb-0 h3 break-keep"
@@ -125,7 +125,7 @@
 			}}>{$_('private')}</button
 		>
 	{/if}
-	<div class="flex-grow text-right h6 break-keep pr-2">
+	<div class="flex-grow text-right text-sm break-keep pr-2">
 		{$_('created_at')}<br />
 		{new Date(createdAt * 1000).toLocaleString([], {
 			year: 'numeric',
@@ -139,7 +139,7 @@
 
 <!---->
 <main class="my-10">
-	<LightSwitch />
+	<!-- <LightSwitch />
 	<button
 		on:click={() => {
 			if ($bookmarkEvents && $listNum > 0) {
@@ -160,7 +160,7 @@
 				bkm = 'pub';
 			}
 		}}>{'>'}</button
-	>
+	> -->
 
 	<ListedEvent
 		listEvent={viewEvent}

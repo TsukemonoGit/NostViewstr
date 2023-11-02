@@ -69,14 +69,14 @@
 	);
 </script>
 
-{#if $searchRelays}
-	{#if viewPage && viewPage.length > 0}
-		<NostrApp relays={$searchRelays}>
-			{#each viewPage as tag, index}
-				{#await getIdByTag(tag)}
-					<!--loading a タグ　のなかみ-->
-				{:then { id, filter, kind }}
-					{#if tag[0] === 'e'}
+{#if viewPage && viewPage.length > 0}
+	{#each viewPage as tag, index}
+		{#await getIdByTag(tag)}
+			<!--loading a タグ　のなかみ-->
+		{:then { id, filter, kind }}
+			{#if tag[0] === 'e'}
+				{#if $searchRelays && $searchRelays.length > 0}
+					<NostrApp relays={$searchRelays}>
 						<Text queryKey={[id]} {id} let:text>
 							<SearchCard
 								slot="loading"
@@ -172,7 +172,24 @@
 								/>
 							</Metadata>
 						</Text>
-					{:else if tag[0] === 'a'}
+					</NostrApp>
+				{:else}
+					<!--りれーせっていないとき-->
+					<SearchCard
+						{filter}
+						message={`not found [${tag}]`}
+						isPageOwner={true}
+						menuMode={MenuMode.other}
+						tagArray={tag}
+						myIndex={index}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+					/>
+				{/if}
+			{:else if tag[0] === 'a'}
+				{#if $searchRelays && $searchRelays.length > 0}
+					<NostrApp relays={$searchRelays}>
 						<UniqueEventList queryKey={tag} filters={[filter]} let:events>
 							<SearchCard
 								slot="loading"
@@ -268,60 +285,29 @@
 								/>
 							</Metadata>
 						</UniqueEventList>
-					{:else if tag[0] === 'd'}
-						<!--なんもしない-->
-					{:else}
-						<!--a,e,d以外あとでかく-->
-						{tag}
-					{/if}
-				{/await}
-			{/each}
-
-			<!-- <EventCard
-			tagArray={['e', test.id]}
-			note={test}
-			metadata={undefined}
-			myIndex={0}
-			on:DeleteNote={DeleteNote}
-			on:MoveNote={MoveNote}
-			on:CheckNote={CheckNote}
-			menuMode={MenuMode.Multi}
-		/>
-		<EventCard
-			tagArray={['e', test.id]}
-			note={test}
-			{metadata}
-			myIndex={1}
-			on:DeleteNote={DeleteNote}
-			on:MoveNote={MoveNote}
-			on:CheckNote={CheckNote}
-			menuMode={MenuMode.Owner}
-		/>
-		<EventCard
-			tagArray={[
-				'a',
-				'30001:84b0c46ab699ac35eb2ca286470b85e081db2087cdef63932236c397417782f5:bookmark'
-			]}
-			note={test}
-			{metadata}
-			myIndex={2}
-			on:DeleteNote={DeleteNote}
-			on:MoveNote={MoveNote}
-			on:CheckNote={CheckNote}
-			menuMode={MenuMode.Viewer}
-		/>
-		<EventCard
-			tagArray={['e', test2.id]}
-			note={test2}
-			metadata={undefined}
-			myIndex={3}
-			on:DeleteNote={DeleteNote}
-			on:MoveNote={MoveNote}
-			on:CheckNote={CheckNote}
-			menuMode={MenuMode.Viewer}
-		/> -->
-		</NostrApp>
-	{/if}
+					</NostrApp>
+				{:else}
+					<!--リレー設定ないとき-->
+					<SearchCard
+						{filter}
+						message={`not found [${tag}]`}
+						isPageOwner={true}
+						menuMode={MenuMode.other}
+						tagArray={tag}
+						myIndex={index}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+					/>
+				{/if}
+			{:else if tag[0] === 'd'}
+				<!--なんもしない-->
+			{:else}
+				<!--a,e,d以外あとでかく-->
+				{tag}
+			{/if}
+		{/await}
+	{/each}
 {/if}
 
 <div class="card p-1 variant-filled-secondary z-20" data-popup="popupShare">

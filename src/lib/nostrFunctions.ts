@@ -37,6 +37,7 @@ import {
 	bookmarkRelays,
 	defaultRelays,
 	postRelays,
+	relayEvent,
 	relaySearchRelays,
 	searchRelays
 } from './stores/relays';
@@ -176,6 +177,10 @@ export async function publishEvent(
 	obj: Event,
 	relays: string[]
 ): Promise<{ isSuccess: boolean; event?: Nostr.Event; msg: string[] }> {
+	if (relays.length === 0) {
+		console.error('relay設定されてない');
+		return { isSuccess: false, msg: ['relayが設定されていません'] };
+	}
 	let isSuccess = false;
 	const msg: string[] = [];
 	console.log(obj);
@@ -337,6 +342,10 @@ export async function fetchFilteredEvents(
 	relays: string[],
 	filters: Nostr.Filter[]
 ): Promise<Nostr.Event[]> {
+	if (relays.length === 0) {
+		console.error('relay設定されてない');
+		return [];
+	}
 	const rxNostr = createRxNostr();
 
 	rxNostr.setRelays(relays);
@@ -347,6 +356,7 @@ export async function fetchFilteredEvents(
 	const observable = rxNostr.use(rxReq).pipe(
 		uniq(),
 		verify(),
+
 		filters[0].kinds &&
 			filters[0].kinds[0] >= 30000 &&
 			filters[0].kinds[0] < 40000
@@ -419,6 +429,8 @@ export async function fetchFilteredEvents(
 			resolve();
 		});
 	});
+
+	console.log(eventList);
 	return eventList;
 	// if (returnEvent.id !== '') {
 	// 	return [returnEvent];
@@ -493,6 +505,7 @@ export function setRelays(events: NostrEvent[]) {
 					write.push(item[1]);
 				}
 			}
+			relayEvent.set(kind10002);
 		});
 	} else if (kind3 && kind3.content !== '') {
 		try {
@@ -506,6 +519,7 @@ export function setRelays(events: NostrEvent[]) {
 					write.push(item);
 				}
 			});
+			relayEvent.set(kind3);
 		} catch (error) {
 			console.log(error);
 		}

@@ -1,21 +1,23 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	// Props
 	/** Exposes parent props to this component. */
 	export let parent: any;
 	// Local
-	let res = { index: -1 };
+	let res = { index: -1, edit: false };
 
 	let selectTag: number;
 	//$: moveList = $tags.filter((item) => item !== $tags[$tabSet]);
 	// Handle Form Submission
-	function onFormSubmit(index: number): void {
-		res.index = index;
+	function onFormSubmit(): void {
+		console.log(res);
+		//	res.index = index;
 		if ($modalStore[0].response) {
 			$modalStore[0].response(res);
 		}
-		console.log(res);
+
 		modalStore.close();
 	}
 
@@ -36,20 +38,37 @@
 		<ListBox
 			class="border border-surface-500 p-4 rounded-container-token max-h-80 overflow-y-auto"
 		>
-			{#each $modalStore[0].value.tagList as list, index}
-				<ListBoxItem
-					bind:group={selectTag}
-					name={list}
-					value={index}
-					class="truncate"
-					on:change={() => onFormSubmit(index)}>{list}</ListBoxItem
-				>
-			{/each}
+			{#if $modalStore[0].value.tagList?.length > 0}
+				{#each $modalStore[0].value.tagList as list, index}
+					<ListBoxItem
+						bind:group={selectTag}
+						name={list}
+						value={index}
+						class="truncate"
+						on:change={() => {
+							res.edit = false;
+							res.index = index;
+							onFormSubmit();
+						}}>{list}</ListBoxItem
+					>
+				{/each}
+			{:else}
+				{$_('nprofile.modal.tagList.noList')}
+			{/if}
 		</ListBox>
 
 		<footer class="modal-footer {parent.regionFooter}">
 			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
 				>{parent.buttonTextCancel}</button
+			>
+
+			<button
+				class="btn {parent.buttonPositive}"
+				on:click={() => {
+					res.index = -1;
+					res.edit = true;
+					onFormSubmit();
+				}}>{$_('editTag')}</button
 			>
 		</footer>
 	</div>

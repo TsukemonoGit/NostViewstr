@@ -18,10 +18,14 @@
     "modal": {
       "postNote": {
         "title": "Post Note"
+      },
+      "tagList": {
+        "title": "Lists"
       }
     }
   },
   "created_at": "最終更新日時",
   "public": "public",
-  "private": "private"
+  "private": "private",
+  "editTag": "Edit"
 }

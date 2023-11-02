@@ -1,3 +1,4 @@
+import type { Event as NostrEvent } from 'nostr-tools';
 import { writable } from 'svelte/store';
 //search relay 各ノートの内容を取得するためのリレー
 //bookmark relay ブックマークの取得、書き込みに使うリレー
@@ -31,6 +32,7 @@ export const searchRelays = writable<string[]>([]);
 export const bookmarkRelays = writable<string[]>([]);
 export const postRelays = writable<string[]>([]);
 
+export const relayEvent = writable<NostrEvent>();
 // export const Relays = (): Relays => {
 // 	let relay: Relays = {
 // 		searchRelays: [],

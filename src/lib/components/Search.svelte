@@ -2,7 +2,7 @@
 	//書き込めるところに書き込むということでwrite二設定しているリレーに複製します
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { app, type Nostr } from 'nosvelte';
+	import type { Nostr } from 'nosvelte';
 	import {
 		createRxNostr,
 		createRxOneshotReq,
@@ -120,8 +120,8 @@
 	let logs: string[] = [];
 	$: logs = logs;
 	let nowLoading: boolean = false;
-	//const rxNostr = createRxNostr();
-	$app.rxNostr.setRelays(relays);
+	const rxNostr = createRxNostr();
+	rxNostr.setRelays(relays);
 
 	function onClick() {
 		if (subscription && !subscription.closed) {
@@ -140,7 +140,7 @@
 			relaysState[relay] = RelayState.Connecting;
 		});
 		// データの購読
-		const observable = $app.rxNostr.use(rxReq).pipe(verify());
+		const observable = rxNostr.use(rxReq).pipe(verify());
 
 		// オブザーバーオブジェクトの作成
 		const observer: Observer<any> = {
@@ -160,7 +160,7 @@
 		// 購読開始
 		subscription = observable.subscribe(observer);
 		// 全エラーを監視するObservableの購読
-		const rxErrorSubscription = $app.rxNostr
+		const rxErrorSubscription = rxNostr
 			.createAllErrorObservable()
 			.subscribe((error) => {
 				console.error('Error occurred globally:', error);

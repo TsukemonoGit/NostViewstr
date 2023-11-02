@@ -1,27 +1,50 @@
 {
-  "popup": {
-    "Share": "nostrで引用",
-    "delete": "削除",
-    "open": "外部サイトで開く",
-    "move": "別のリストに移動"
-  },
-  "modal": {
-    "failed_copy": "コピーに失敗しました"
-  },
-  "PostNote": {
-    "copied": "クリップボードにコピーしました",
-    "failed_copy": "コピーに失敗しました",
-    "popup_copy": "クリップボードにコピー",
-    "p_tag": "引用元のpubkeyを含める"
-  },
-  "nprofile": {
-    "modal": {
-      "postNote": {
-        "title": "Post Note"
-      }
-    }
-  },
-  "created_at": "最終更新日時",
-  "public": "公開",
-  "private": "非公開"
+	"popup": {
+		"Share": "nostrで引用",
+		"delete": "削除",
+		"open": "外部サイトで開く",
+		"move": "別のリストに移動"
+	},
+	"modal": {
+		"failed_copy": "コピーに失敗しました"
+	},
+	"PostNote": {
+		"copied": "クリップボードにコピーしました",
+		"failed_copy": "コピーに失敗しました",
+		"popup_copy": "クリップボードにコピー",
+		"p_tag": "引用元のpubkeyを含める"
+	},
+	"nprofile": {
+		"modal": {
+			"postNote": {
+				"title": "Post Note"
+			},
+			"tagList": {
+				"title": "リスト一覧",
+				"noList": "no list 編集ボタンから新しいリストを作成できます"
+			},
+			"editTags": {
+				"title": "リストの編集",
+				"body": "新規リストの作成"
+			},
+			"deleteTag": {
+				"title": "リストの削除",
+				"body": "下記リストを削除します"
+			},
+			"info": {
+				"title": "情報と設定",
+				"relay": {
+					"list": "リストの取得更新リレー",
+					"search": "リスト内のノートの検索用リレー"
+				}
+			}
+		}
+	},
+	"created_at": "最終更新日時",
+	"public": "公開",
+	"private": "非公開",
+	"editTag": "編集",
+	"ModalEditTag": {
+		"delete_body": "リストの削除"
+	}
 }
