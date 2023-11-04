@@ -27,6 +27,7 @@
 				if ($bookmarkEvents && $bookmarkEvents.length > 0) {
 					$bookmarkEvents = [];
 				}
+				$pubkey_viewer = '';
 				goto(`./${input}`);
 			} else if (decode.type === 'nsec') {
 				$nsec = decode.data;

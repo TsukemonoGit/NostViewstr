@@ -28,22 +28,23 @@
 	let viewEvent: Event<number>;
 	export let pubkey: string;
 	export let kind: number;
-
+	let isOwner: boolean;
 	//let num: number = 0;
 	$: createdAt = viewEvent?.created_at;
-	onMount(async () => {
+	async function bkminit(pub: string) {
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
-		if ($pubkey_viewer === '') {
+		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
 			$pubkey_viewer = await getPub();
 		}
 
-		console.log($pubkey_viewer === pubkey);
-		console.log(await getRelays(pubkey));
-
+		console.log($pubkey_viewer);
+		console.log(pub);
+		console.log(await getRelays(pub));
+		isOwner = $pubkey_viewer === pubkey;
 		const filter = [
 			{
 				kinds: [kind],
-				authors: [pubkey]
+				authors: [pub]
 			}
 		];
 		$nowProgress = true;
@@ -62,7 +63,8 @@
 		//viewEvent = $bookmarkEvents[0];
 		$nowProgress = false;
 		console.log(res);
-	});
+	}
+
 	$: if ($bookmarkEvents) {
 		viewEvent = $bookmarkEvents[$listNum];
 	}
@@ -104,51 +106,52 @@
 	const borderClass = `break-keep border-b border-surface-400-500-token p-2 pb-0 h6`;
 </script>
 
-<!--header-->
-<div
-	class="z-10 fixed h-[2.5em] top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
->
+{#await bkminit(pubkey) then bkminti}
+	<!--header-->
 	<div
-		class="min-w-[8rem] variant-ghost-primary border-b border-surface-400-500-token p-2 pb-0 h3 break-keep"
+		class="z-10 fixed h-[2.5em] top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
 	>
-		{$identifierList[$listNum]}
-	</div>
+		<div
+			class="min-w-[8rem] variant-ghost-primary border-b border-surface-400-500-token p-2 pb-0 h3 break-keep"
+		>
+			{$identifierList[$listNum]}
+		</div>
 
-	<button
-		class={bkm === 'pub' ? borderClassActive : borderClass}
-		disabled={bkm === 'pub'}
-		on:click={() => {
-			bkm = 'pub';
-			console.log(bkm);
-			$pageNum = 0;
-		}}>{$_('public')}</button
-	>
-	{#if viewEvent?.content !== ''}
 		<button
-			class={bkm === 'prv' ? borderClassActive : borderClass}
-			disabled={bkm === 'prv'}
+			class={bkm === 'pub' ? borderClassActive : borderClass}
+			disabled={bkm === 'pub'}
 			on:click={() => {
-				bkm = 'prv';
+				bkm = 'pub';
 				console.log(bkm);
 				$pageNum = 0;
-			}}>{$_('private')}</button
+			}}>{$_('public')}</button
 		>
-	{/if}
-	<div class="flex-grow text-right text-sm break-keep pr-2">
-		{$_('created_at')}<br />
-		{new Date(createdAt * 1000).toLocaleString([], {
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit'
-		})}
+		{#if viewEvent?.content !== ''}
+			<button
+				class={bkm === 'prv' ? borderClassActive : borderClass}
+				disabled={bkm === 'prv'}
+				on:click={() => {
+					bkm = 'prv';
+					console.log(bkm);
+					$pageNum = 0;
+				}}>{$_('private')}</button
+			>
+		{/if}
+		<div class="flex-grow text-right text-sm break-keep pr-2">
+			{$_('created_at')}<br />
+			{new Date(createdAt * 1000).toLocaleString([], {
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit'
+			})}
+		</div>
 	</div>
-</div>
 
-<!---->
-<main class="my-10">
-	<!-- <LightSwitch />
+	<!---->
+	<main class="my-10">
+		<!-- <LightSwitch />
 	<button
 		on:click={() => {
 			if ($bookmarkEvents && $listNum > 0) {
@@ -171,24 +174,25 @@
 		}}>{'>'}</button
 	> -->
 
-	<ListedEvent
-		listEvent={viewEvent}
-		{DeleteNote}
-		{MoveNote}
-		{CheckNote}
-		bind:bkm
-		isOwner={$pubkey_viewer === pubkey}
-	/>
-</main>
+		<ListedEvent
+			listEvent={viewEvent}
+			{DeleteNote}
+			{MoveNote}
+			{CheckNote}
+			bind:bkm
+			bind:isOwner
+		/>
+	</main>
 
-<!-------------------------------あど----->
-{#if $pubkey_viewer === pubkey}
-	<div class="fixed bottom-14 z-10 left-2 fill-white">
-		<button id="addIcon" class=" btn-icon variant-filled-primary"
-			>{@html addIcon}</button
-		>
-	</div>
-{/if}
+	<!-------------------------------あど----->
+	{#if $pubkey_viewer === pubkey}
+		<div class="fixed bottom-14 z-10 left-2 fill-white">
+			<button id="addIcon" class=" btn-icon variant-filled-primary"
+				>{@html addIcon}</button
+			>
+		</div>
+	{/if}
+{/await}
 
 <style>
 	:global(#addIcon svg) {

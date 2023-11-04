@@ -21,7 +21,16 @@ import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 
 import type { Event as NostrEvent } from 'nostr-tools';
 import { pubkey_viewer, nsec, nowProgress } from './stores/settings';
-import type { Observer } from 'rxjs';
+import {
+	type Observer,
+	groupBy,
+	map,
+	mergeAll,
+	type MonoTypeOperatorFunction,
+	pipe,
+	scan,
+	Observable
+} from 'rxjs';
 
 import {
 	createRxNostr,
@@ -444,7 +453,48 @@ async function signEv(obj: NostrEvent): Promise<Event> {
 }
 
 //------------------------------------------------
+//ほぼじぇぺとがかいたidごとに最新のeventだけ受け取るためのpipe
+export function idlatestEach(): MonoTypeOperatorFunction<EventPacket> {
+	return (source) => {
+		return new Observable(
+			(observer: {
+				next: (arg0: any) => void;
+				complete: () => void;
+				error: (arg0: any) => void;
+			}) => {
+				const eventMap = new Map();
 
+				source.subscribe({
+					next(packet) {
+						const id = packet.event.tags.find((item) => item[0] === 'd'); //一応一個目にdがない場合も考慮
+						//console.log(id);
+						if (id) {
+							const key = id[1]; // タグをキーとして文字列化
+							const existingPacket = eventMap.get(key);
+
+							if (
+								!existingPacket ||
+								packet.event.created_at > existingPacket.event.created_at
+							) {
+								eventMap.set(key, packet);
+							}
+						}
+					},
+					complete() {
+						// Map内の最新のパケットを取得
+						const latestPackets = Array.from(eventMap.values());
+						latestPackets.forEach((packet) => observer.next(packet));
+						observer.complete();
+					},
+					error(err) {
+						observer.error(err);
+					}
+				});
+			}
+		);
+	};
+}
+//----------------------------------------------------------------
 export async function fetchFilteredEvents(
 	relays: string[],
 	filters: Nostr.Filter[]
@@ -458,33 +508,24 @@ export async function fetchFilteredEvents(
 	rxNostr.setRelays(relays);
 
 	const rxReq = createRxOneshotReq({ filters });
-
+	console.log(filters[0].kinds);
 	// データの購読
-	const observable = rxNostr.use(rxReq).pipe(
-		uniq(),
-		verify(),
-
+	const observable =
 		filters[0].kinds &&
-			filters[0].kinds[0] >= 30000 &&
-			filters[0].kinds[0] < 40000
-			? latestEach(
-					(packet) => packet.event.tags[0][1] //.find((item) => item[0] === 'd')
+		filters[0].kinds[0] >= 30000 &&
+		filters[0].kinds[0] < 40000
+			? rxNostr.use(rxReq).pipe(
+					uniq(),
+					verify(),
+
+					idlatestEach(),
+					//	(packet) => packet.event.tags[0][1] //.find((item) => item[0] === 'd')
+					completeOnTimeout(2000)
 			  )
-			: latest(),
-		completeOnTimeout(2000)
-	);
+			: rxNostr
+					.use(rxReq)
+					.pipe(uniq(), verify(), latest(), completeOnTimeout(2000));
 
-	const eventMap = new Map<string, any>(); // タグIDをキーとするイベントのマップ
-
-	let returnEvent: Nostr.Event<number> = {
-		id: '',
-		sig: '',
-		kind: 0,
-		tags: [],
-		pubkey: '',
-		content: '',
-		created_at: 0
-	};
 	let eventList: Nostr.Event<number>[] = [];
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
