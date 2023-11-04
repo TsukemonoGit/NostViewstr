@@ -5,6 +5,7 @@ interface Window {
 }
 declare let window: Window;
 
+import { _ } from 'svelte-i18n';
 import {
 	SimplePool,
 	getEventHash,
@@ -12,12 +13,14 @@ import {
 	getSignature,
 	nip04,
 	nip19,
+	validateEvent,
+	verifiedSymbol,
 	verifySignature
 } from 'nostr-tools';
 import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 
 import type { Event as NostrEvent } from 'nostr-tools';
-import { pubkey_viewer, nsec } from './stores/settings';
+import { pubkey_viewer, nsec, nowProgress } from './stores/settings';
 import type { Observer } from 'rxjs';
 
 import {
@@ -173,44 +176,148 @@ export function windowOpen(str: string): void {
 	);
 }
 
+///
+export async function publishEventWithTimeout(
+	obj: Event,
+	relays: string[]
+): Promise<{
+	isSuccess: boolean;
+	event?: Nostr.Event;
+	msg: string;
+}> {
+	if (relays.length === 0) {
+		console.error('relay設定されてない');
+		return { isSuccess: false, msg: 'relayが設定されていません' };
+	}
+	let isSuccess = false;
+	//const msg: string[] = [];
+	const msgObj: { [relay: string]: boolean } = {}; // リレーごとの結果を格納するオブジェクト
+	// すべてのリレーの結果を初期値として false に設定
+	relays.forEach((relay) => {
+		msgObj[relay] = false;
+	});
+	console.log(obj);
+	//console.log(relays);
+	const pubkey = await getPub();
+	if (obj.pubkey === '') {
+		obj.pubkey = pubkey;
+	} else if (obj.pubkey !== pubkey) {
+		console.log('ログイン中のpubとsignEvのpubが違う');
+		//const message = `$_('msg.nanka')`;
+		return { isSuccess: false, msg: 'login error' };
+	}
+	try {
+		const event = await signEv(obj);
+		event.id = getEventHash(event);
+		console.log(event);
+		console.log(validateEvent(event));
+		console.log(verifySignature(event));
+		const rxNostr = createRxNostr();
+
+		await rxNostr.setRelays(relays);
+		rxNostr.send(event).subscribe((packet) => {
+			console.log(packet);
+			//	console.log(`relay: ${packet.from} -> ${packet.ok ? "succeeded" : "failed"}`);
+		});
+	} catch (error) {}
+	return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+}
+
+// リレーの結果を指定の形式に整形
+function formatResults(msg: { [relay: string]: boolean }): string {
+	let resultString = '';
+	for (const relay in msg) {
+		resultString += msg[relay] ? `OK ${relay}<br/>` : `failed ${relay}<br/>`;
+	}
+	return resultString;
+}
+// ErrorOptions型の定義
+type ErrorOptions = {
+	isSuccess: boolean;
+	event?: Nostr.Event;
+	msg: string;
+};
+
+///
 export async function publishEvent(
 	obj: Event,
 	relays: string[]
-): Promise<{ isSuccess: boolean; event?: Nostr.Event; msg: string[] }> {
+): Promise<{ isSuccess: boolean; event?: Nostr.Event; msg: string }> {
 	if (relays.length === 0) {
 		console.error('relay設定されてない');
-		return { isSuccess: false, msg: ['relayが設定されていません'] };
+		return { isSuccess: false, msg: 'relayが設定されていません' };
 	}
 	let isSuccess = false;
-	const msg: string[] = [];
+	const msgObj: { [relay: string]: boolean } = {}; // リレーごとの結果を格納するオブジェクト
+	// すべてのリレーの結果を初期値として false に設定
+	relays.forEach((relay) => {
+		msgObj[relay] = false;
+	});
 	console.log(obj);
 	console.log(relays);
+	const pubkey = await getPub();
 	if (obj.pubkey === '') {
-		obj.pubkey = await getPub();
+		obj.pubkey = pubkey;
+	} else if (obj.pubkey !== pubkey) {
+		console.log('ログイン中のpubとsignEvのpubが違う');
+		//const message = `$_('msg.nanka')`;
+		return { isSuccess: false, msg: 'login error' };
 	}
 	try {
-		const event = await signEv(obj); //window.nostr.signEvent(obj);
+		const event = await signEv(obj); // window.nostr.signEvent(obj);
 		event.id = getEventHash(event);
 
 		const pool = new SimplePool();
 		const pubs = pool.publish(relays, event);
 
-		await Promise.allSettled(pubs).then((results) => {
-			results.forEach((result, index) => {
-				if (result.status === 'fulfilled') {
-					console.log(`success ${relays[index]} `);
-					isSuccess = true;
-					msg.push(`[ok] ${relays[index]}`);
-				} else {
-					console.error(`failed ${relays[index]}: ${result.reason}`);
-					msg.push(`[failed] ${relays[index]}`);
-				}
-			});
+		// プロミスの競合タイムアウトを設定
+		const timeoutPromise = new Promise((_, reject) => {
+			setTimeout(() => {
+				reject({
+					errorOptions: {
+						isSuccess: isSuccess,
+						event: event,
+						msg: formatResults(msgObj)
+					}
+				});
+			}, 3000); // 1.5秒のタイムアウト
 		});
-		return { isSuccess: isSuccess, event: event, msg: msg };
+
+		const result = await Promise.race([
+			Promise.allSettled(pubs),
+			timeoutPromise
+		]);
+
+		if (result instanceof Error) {
+			console.error('Timeout occurred');
+		}
+
+		const pubsResults: PromiseSettledResult<unknown>[] =
+			await Promise.allSettled(pubs);
+
+		pubsResults.forEach((result, index) => {
+			console.log(result);
+			if (result.status === 'fulfilled') {
+				console.log(`success ${relays[index]} `);
+				isSuccess = true;
+				msgObj[relays[index]] = true;
+			} else {
+				console.error(`failed ${relays[index]}: ${result.reason}`);
+			}
+		});
+
+		return { isSuccess: isSuccess, event: event, msg: formatResults(msgObj) };
 	} catch (error) {
-		console.error(error);
-		return { isSuccess: false, msg: [`failed to publish`] };
+		if (error && typeof error === 'object' && 'errorOptions' in error) {
+			const { isSuccess, event, msg } = (
+				error as { errorOptions: ErrorOptions }
+			).errorOptions;
+			console.error('Timeout occurred');
+			return { isSuccess, event, msg };
+		} else {
+			console.error(error);
+			return { isSuccess: false, msg: `failed to publish` };
+		}
 	}
 }
 
@@ -363,7 +470,8 @@ export async function fetchFilteredEvents(
 			? latestEach(
 					(packet) => packet.event.tags[0][1] //.find((item) => item[0] === 'd')
 			  )
-			: latest()
+			: latest(),
+		completeOnTimeout(2000)
 	);
 
 	const eventMap = new Map<string, any>(); // タグIDをキーとするイベントのマップ
@@ -421,7 +529,7 @@ export async function fetchFilteredEvents(
 	// 5秒後に購読を停止
 	setTimeout(() => {
 		subscription.unsubscribe();
-	}, 5 * 1000);
+	}, 2 * 1000);
 
 	// Observable の完了を待つ
 	await new Promise<void>((resolve) => {
@@ -431,6 +539,7 @@ export async function fetchFilteredEvents(
 	});
 
 	console.log(eventList);
+	nowProgress.set(false);
 	return eventList;
 	// if (returnEvent.id !== '') {
 	// 	return [returnEvent];

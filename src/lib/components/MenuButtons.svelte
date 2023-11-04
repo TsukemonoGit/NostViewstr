@@ -140,7 +140,7 @@
 			handleClick(State.Check);
 		}}
 	/>
-{:else}<!--修正だけ（シェアなし）-->
+{:else if menuMode === MenuMode.other}<!--修正だけ（シェアなし）-->
 
 	<div class="flex flex-col">
 		<button
@@ -155,4 +155,6 @@
 			}}><DeleteBtn /></button
 		>
 	</div>
+{:else}
+	<div />
 {/if}

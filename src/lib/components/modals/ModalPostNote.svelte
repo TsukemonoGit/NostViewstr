@@ -4,7 +4,7 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { postRelays } from '$lib/stores/relays';
 	import type { Event } from 'nostr-tools';
-	import { publishEvent } from '$lib/nostrFunctions';
+	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
 	export let parent: any;
 	let checked: boolean;
 	let contents = {
@@ -47,7 +47,7 @@
 		const response = await publishEvent(event, $postRelays);
 		const toastSettings: ToastSettings = response.isSuccess
 			? {
-					message: `publish result<br>${response.msg.join('<br>')}`,
+					message: `publish result<br>${response.msg}`,
 					timeout: 5000
 			  }
 			: {
@@ -97,7 +97,9 @@
 				{$modalStore[0].title ?? '(title missing)'}
 			</header>
 
-			<button class="btn-icon variant-filled-surface" on:click={onClickCopy}>📋</button>
+			<button class="btn-icon variant-filled-surface" on:click={onClickCopy}
+				>📋</button
+			>
 		</div>
 		<article class="body break-all whitespace-pre-wrap">
 			{$modalStore[0].body ?? '(body missing)'}
@@ -105,7 +107,12 @@
 		<!-- Enable for debugging: -->
 
 		<label class="label break-all whitespace-pre-wrap">
-			<textarea class="textarea" rows="5" placeholder="" bind:value={res.content} />
+			<textarea
+				class="textarea"
+				rows="5"
+				placeholder=""
+				bind:value={res.content}
+			/>
 			{#if contents.pubkey !== ''}
 				<label class="flex items-center space-x-2">
 					<input class="checkbox" type="checkbox" bind:checked />

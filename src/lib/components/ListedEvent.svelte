@@ -15,6 +15,7 @@
 
 	export let listEvent: NostrEvent;
 	export let bkm = 'pub'; //'pub'|'prv'
+	export let isOwner: boolean;
 	//let viewList: string[][];
 	//一つのタグに一種類のイベントしかないことにして日付だけ見る
 	const uniqueEvent = (eventList: NostrEvent[]): NostrEvent => {
@@ -83,7 +84,7 @@
 								{filter}
 								message={`loading [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.other}
+								menuMode={isOwner ? MenuMode.other : MenuMode.none}
 								tagArray={tag}
 								myIndex={index}
 								{DeleteNote}
@@ -96,7 +97,7 @@
 								{filter}
 								message={`error [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.other}
+								menuMode={isOwner ? MenuMode.other : MenuMode.none}
 								tagArray={tag}
 								myIndex={index}
 								{DeleteNote}
@@ -109,7 +110,7 @@
 								{filter}
 								message={`not found [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.other}
+								menuMode={isOwner ? MenuMode.other : MenuMode.none}
 								tagArray={tag}
 								myIndex={index}
 								{DeleteNote}
@@ -125,7 +126,7 @@
 								<EventCard
 									slot="loading"
 									isPageOwner={true}
-									menuMode={MenuMode.Owner}
+									menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
 									tagArray={tag}
 									note={text}
 									metadata={undefined}
@@ -137,7 +138,7 @@
 								<EventCard
 									slot="error"
 									isPageOwner={true}
-									menuMode={MenuMode.Owner}
+									menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
 									tagArray={tag}
 									note={text}
 									metadata={undefined}
@@ -149,7 +150,7 @@
 								<EventCard
 									slot="nodata"
 									isPageOwner={true}
-									menuMode={MenuMode.Owner}
+									menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
 									tagArray={tag}
 									note={text}
 									metadata={undefined}
@@ -161,7 +162,7 @@
 
 								<EventCard
 									isPageOwner={true}
-									menuMode={MenuMode.Owner}
+									menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
 									tagArray={tag}
 									note={text}
 									{metadata}
@@ -179,7 +180,7 @@
 						{filter}
 						message={`not found [${tag}]`}
 						isPageOwner={true}
-						menuMode={MenuMode.other}
+						menuMode={isOwner ? MenuMode.other : MenuMode.none}
 						tagArray={tag}
 						myIndex={index}
 						{DeleteNote}
@@ -196,7 +197,7 @@
 								{filter}
 								message={`loading [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.other}
+								menuMode={isOwner ? MenuMode.other : MenuMode.none}
 								tagArray={tag}
 								myIndex={index}
 								{DeleteNote}
@@ -209,7 +210,7 @@
 								{filter}
 								message={`error [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.other}
+								menuMode={isOwner ? MenuMode.other : MenuMode.none}
 								tagArray={tag}
 								myIndex={index}
 								{DeleteNote}
@@ -222,7 +223,7 @@
 								{filter}
 								message={`not found [${tag}]`}
 								isPageOwner={true}
-								menuMode={MenuMode.other}
+								menuMode={isOwner ? MenuMode.other : MenuMode.none}
 								tagArray={tag}
 								myIndex={index}
 								{DeleteNote}
@@ -238,7 +239,7 @@
 								<EventCard
 									slot="loading"
 									isPageOwner={true}
-									menuMode={MenuMode.Owner}
+									menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
 									tagArray={tag}
 									note={uniqueEvent(events)}
 									metadata={undefined}
@@ -250,7 +251,7 @@
 								<EventCard
 									slot="error"
 									isPageOwner={true}
-									menuMode={MenuMode.Owner}
+									menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
 									tagArray={tag}
 									note={uniqueEvent(events)}
 									metadata={undefined}
@@ -262,7 +263,7 @@
 								<EventCard
 									slot="nodata"
 									isPageOwner={true}
-									menuMode={MenuMode.Owner}
+									menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
 									tagArray={tag}
 									note={uniqueEvent(events)}
 									metadata={undefined}
@@ -274,7 +275,7 @@
 
 								<EventCard
 									isPageOwner={true}
-									menuMode={MenuMode.Owner}
+									menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
 									tagArray={tag}
 									note={uniqueEvent(events)}
 									{metadata}
@@ -292,7 +293,7 @@
 						{filter}
 						message={`not found [${tag}]`}
 						isPageOwner={true}
-						menuMode={MenuMode.other}
+						menuMode={isOwner ? MenuMode.other : MenuMode.none}
 						tagArray={tag}
 						myIndex={index}
 						{DeleteNote}

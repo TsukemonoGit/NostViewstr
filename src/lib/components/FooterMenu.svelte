@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { allView, nowProgress, settings } from '$lib/stores/settings';
+	import type { Event as NostrEvent } from 'nostr-tools';
 	import Setting from '@material-design-icons/svg/round/settings.svg?raw';
 	import firstIcon from '@material-design-icons/svg/round/first_page.svg?raw';
 	import lastIcon from '@material-design-icons/svg/round/last_page.svg?raw';
@@ -23,7 +24,14 @@
 		type ModalComponent,
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
-	import { modalStore } from '$lib/stores/store';
+	import { modalStore, toastStore } from '$lib/stores/store';
+	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
+	import { bookmarkRelays } from '$lib/stores/relays';
+	import { get } from 'svelte/store';
+	import type { Event } from 'nostr-tools';
+	export let pubkey: string;
+	export let kind: number;
+
 	$: console.log(
 		`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
 	);
@@ -162,12 +170,96 @@
 		modalStore.trigger(modal);
 	}
 
-	function addTag(value: any) {
+	async function addTag(value: any) {
+		$nowProgress = true;
+		console.log(value);
+		const event: NostrEvent = {
+			id: '',
+			pubkey: pubkey,
+			sig: '',
+			content: '',
+			tags: [['d', value]],
+			created_at: Math.floor(Date.now() / 1000),
+			kind: kind
+		};
+		const res = await publishEventWithTimeout(event, $bookmarkRelays);
+		console.log(res.msg);
+
+		if (res.isSuccess) {
+			const t = {
+				message: res.msg as string, //.join('<br>'),
+				timeout: 3000
+			};
+
+			toastStore.trigger(t);
+
+			const tmp = get(bookmarkEvents);
+			if (res.event !== undefined) {
+				if (tmp !== undefined) {
+					tmp.push(res.event);
+					bookmarkEvents.set(tmp);
+				} else {
+					bookmarkEvents.set([res.event]);
+				}
+			}
+		} else {
+			const t = {
+				message: res.msg,
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+			toastStore.trigger(t);
+		}
+		$nowProgress = false;
+		console.log(res);
 		//	throw new Error('Function not implemented.');
 	}
 
-	function deleteTag(tagIndex: any) {
-		//throw new Error('Function not implemented.');
+	async function deleteTag(tagIndex: any) {
+		console.log(tagIndex);
+		$nowProgress = true;
+		const bkm = get(bookmarkEvents) as Event[];
+
+		const event: NostrEvent = {
+			id: '',
+			pubkey: pubkey,
+			sig: '',
+			content: '',
+			tags: [['e', bkm[tagIndex].id]],
+			created_at: Math.floor(Date.now() / 1000),
+			kind: 5
+		};
+		const res = await publishEventWithTimeout(event, $bookmarkRelays);
+		console.log(res.msg);
+
+		if (res.isSuccess) {
+			const t = {
+				message: res.msg as string, //.join('<br>'),
+				timeout: 3000
+			};
+
+			toastStore.trigger(t);
+
+			const tmp = get(bookmarkEvents);
+
+			if (tmp !== undefined) {
+				tmp.splice(tagIndex, 1); //削除
+				bookmarkEvents.set(tmp);
+			} else {
+				//ないことはないと思う
+				console.log('えらー');
+			}
+		} else {
+			const t = {
+				message: res.msg,
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+			toastStore.trigger(t);
+		}
+		$nowProgress = false;
+		console.log(res);
+		//	throw new Error('Function not implemented.');
 	}
 
 	//-------------------------------------------------------infomation
@@ -193,7 +285,13 @@
 			class=" inline-flex flex-row space-x-0 overflow-hidden rounded-token; variant-filled-primary w-screen justify-center rounded-none"
 		>
 			{#if $nowProgress}
-				<!----><ProgressRadial class="btn btn-sm " width={'w-14'} stroke={56} />
+				<!----><ProgressRadial
+					class="btn btn-sm "
+					meter="stroke-primary-300"
+					track="stroke-primary-300/30"
+					width={'w-14'}
+					stroke={60}
+				/>
 			{:else}
 				<button class={buttonClass} on:click={openLists}
 					>{@html menuIcon}</button

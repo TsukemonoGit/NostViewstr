@@ -11,6 +11,7 @@
 	} from '$lib/stores/bookmarkEvents';
 	import {
 		fetchFilteredEvents,
+		getPub,
 		getRelays,
 		setRelays
 	} from '$lib/nostrFunctions';
@@ -18,7 +19,7 @@
 	import { testRelay } from '$lib/testData/test.js';
 	import { bookmarks } from '$lib/testData/bookmarks';
 	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
-	import { nowProgress } from '$lib/stores/settings';
+	import { nowProgress, pubkey_viewer } from '$lib/stores/settings';
 	import type { Event } from 'nostr-tools';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
 	import { LightSwitch } from '@skeletonlabs/skeleton';
@@ -26,20 +27,28 @@
 	let bkm: string = 'pub';
 	let viewEvent: Event<number>;
 	export let pubkey: string;
+	export let kind: number;
+
 	//let num: number = 0;
 	$: createdAt = viewEvent?.created_at;
 	onMount(async () => {
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
+		if ($pubkey_viewer === '') {
+			$pubkey_viewer = await getPub();
+		}
+
+		console.log($pubkey_viewer === pubkey);
+		console.log(await getRelays(pubkey));
 
 		const filter = [
 			{
-				kinds: [30001],
+				kinds: [kind],
 				authors: [pubkey]
 			}
 		];
 		$nowProgress = true;
 		const res = await fetchFilteredEvents($bookmarkRelays, filter);
-
+		console.log(res);
 		//const res = bookmarks;
 		if (res.length === 0) {
 			return;
@@ -168,14 +177,18 @@
 		{MoveNote}
 		{CheckNote}
 		bind:bkm
+		isOwner={$pubkey_viewer === pubkey}
 	/>
 </main>
+
 <!-------------------------------あど----->
-<div class="fixed bottom-14 z-10 left-2 fill-white">
-	<button id="addIcon" class=" btn-icon variant-filled-primary"
-		>{@html addIcon}</button
-	>
-</div>
+{#if $pubkey_viewer === pubkey}
+	<div class="fixed bottom-14 z-10 left-2 fill-white">
+		<button id="addIcon" class=" btn-icon variant-filled-primary"
+			>{@html addIcon}</button
+		>
+	</div>
+{/if}
 
 <style>
 	:global(#addIcon svg) {

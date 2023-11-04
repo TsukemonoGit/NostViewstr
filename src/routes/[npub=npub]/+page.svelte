@@ -7,7 +7,8 @@
 		URLPreview,
 		iconView,
 		settings,
-		nowProgress
+		nowProgress,
+		pubkey_viewer
 	} from '$lib/stores/settings';
 	import {
 		LightSwitch,
@@ -19,16 +20,22 @@
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
 	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
 	import { onMount } from 'svelte';
-	import { getRelays } from '$lib/nostrFunctions';
+	import { getPub, getRelays } from '$lib/nostrFunctions';
 
 	export let data: PageData;
+	const kind = 30001;
 	console.log('PageData', data.pubkey);
 
 	$: console.log($URLPreview);
 	$: console.log($iconView);
 	onMount(async () => {
-		console.log(await getRelays(data.pubkey));
-	}); //await setRelays(testRelay);}}
+		if ($pubkey_viewer === '') {
+			$pubkey_viewer = await getPub();
+		}
+	});
+	// onMount(async () => {
+	// 	console.log(await getRelays(data.pubkey));
+	// }); //await setRelays(testRelay);}}
 </script>
 
 <!-- <div class="break-all">
@@ -41,6 +48,6 @@
 {#if !$settings}
 	<Settings />
 {:else}
-	<ListedEventList pubkey={data.pubkey} />
+	<ListedEventList pubkey={data.pubkey} {kind} />
 {/if}
-<FooterMenu />
+<FooterMenu pubkey={data.pubkey} {kind} />
