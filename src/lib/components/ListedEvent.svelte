@@ -66,14 +66,18 @@
 
 	$: viewPage = viewList.slice(
 		Math.min($pageNum, Math.floor($listSize / $amount)) * $amount,
-		($pageNum + 1) * Math.min($amount, $listSize - 1)
+		($pageNum + 1) * Math.min($amount, $listSize)
 	);
+	$: console.log(viewPage);
+	$: console.log(Math.min($pageNum, Math.floor($listSize / $amount)) * $amount);
+	$: console.log(($pageNum + 1) * Math.min($amount, $listSize));
 </script>
 
 {#if viewPage && viewPage.length > 0}
 	{#each viewPage as tag, index}
 		{#await getIdByTag(tag)}
 			<!--loading a タグ　のなかみ-->
+			{tag}
 		{:then { id, filter, kind }}
 			{#if tag[0] === 'e'}
 				{#if $searchRelays && $searchRelays.length > 0}

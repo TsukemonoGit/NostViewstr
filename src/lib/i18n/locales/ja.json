@@ -51,5 +51,12 @@
   },
   "msg": {
     "nanka": "ログインエラー"
+  },
+  "ModalAddNote": {
+    "add_note": "ブックマークに追加",
+    "add_note_to1": "[",
+    "add_note_to2": "] にノートを追加",
+    "add_note_tag": "ブックマークに追加（タグから追加）",
+    "create": "ノートを作成して追加"
   }
 }

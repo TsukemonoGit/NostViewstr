@@ -26,10 +26,10 @@
 	const kind = 30001;
 	console.log('PageData', data.pubkey);
 
-	$: console.log($URLPreview);
-	$: console.log($iconView);
+	// $: console.log($URLPreview);
+	// $: console.log($iconView);
 	onMount(async () => {
-		if ($pubkey_viewer === '') {
+		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
 			$pubkey_viewer = await getPub();
 		}
 	});

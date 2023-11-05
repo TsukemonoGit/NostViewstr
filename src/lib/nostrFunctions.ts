@@ -44,7 +44,11 @@ import {
 	type EventPacket
 } from 'rx-nostr';
 import { get } from 'svelte/store';
-import { naddrStore, type NaddrStore } from './stores/bookmarkEvents';
+import {
+	bookmarkEvents,
+	naddrStore,
+	type NaddrStore
+} from './stores/bookmarkEvents';
 import {
 	bookmarkRelays,
 	defaultRelays,
@@ -504,9 +508,9 @@ export async function fetchFilteredEvents(
 		return [];
 	}
 	const rxNostr = createRxNostr();
-
+	console.log(relays);
 	rxNostr.setRelays(relays);
-
+	console.log(rxNostr.getRelays());
 	const rxReq = createRxOneshotReq({ filters });
 	console.log(filters[0].kinds);
 	// データの購読
@@ -520,11 +524,11 @@ export async function fetchFilteredEvents(
 
 					idlatestEach(),
 					//	(packet) => packet.event.tags[0][1] //.find((item) => item[0] === 'd')
-					completeOnTimeout(2000)
+					completeOnTimeout(5000)
 			  )
 			: rxNostr
 					.use(rxReq)
-					.pipe(uniq(), verify(), latest(), completeOnTimeout(2000));
+					.pipe(uniq(), verify(), latest(), completeOnTimeout(5000));
 
 	let eventList: Nostr.Event<number>[] = [];
 	// オブザーバーオブジェクトの作成
@@ -570,9 +574,9 @@ export async function fetchFilteredEvents(
 	// 5秒後に購読を停止
 	setTimeout(() => {
 		subscription.unsubscribe();
-	}, 2 * 1000);
+	}, 5 * 1000);
 
-	// Observable の完了を待つ
+	//Observable の完了を待つ
 	await new Promise<void>((resolve) => {
 		subscription.add(() => {
 			resolve();
@@ -691,5 +695,162 @@ export function setRelays(events: NostrEvent[]) {
 	}
 	if (get(postRelays).length === 0) {
 		postRelays.set(defaultRelays);
+	}
+}
+
+//無効ならエラーメッセージ、有効ならtagが帰るけどエラーならthrowerrorで良くない？まあいいかちぇっくだし（？）
+export async function checkInput(r: string | boolean): Promise<{
+	tag?: string[];
+	message?: string;
+	error: boolean;
+}> {
+	console.log('response:', r);
+	if (r == null || r == false) {
+		return { message: '無効なIDかもです', error: true };
+	}
+	//rが適切なNoteIDなのかどうかのチェック
+	//適切であればHexのNoteIdを返してほしい
+	const noteId = await validateNoteId(r as string);
+	console.log(noteId);
+
+	return noteId;
+}
+
+async function validateNoteId(str: string): Promise<{
+	tag?: string[];
+	message?: string;
+	error: boolean;
+}> {
+	const res: {
+		tag?: string[];
+		message?: string;
+		error: boolean;
+	} = {
+		error: false
+	};
+
+	// nostr:で始まる場合、その部分をカット
+	if (str.startsWith('nostr:')) {
+		str = str.slice(6);
+	}
+	//note1はじまりかnevent始まりかだったらデコードしてみる
+	if (str.startsWith('note1') || str.startsWith('nevent')) {
+		// "note1"で始まる場合の処理
+		try {
+			const decoded = nip19.decode(str);
+			if (decoded.type == 'note') {
+				res.tag = ['e', decoded.data];
+			} else if (decoded.type == 'nevent') {
+				res.tag = ['e', decoded.data.id];
+			}
+
+			// デコードに成功した場合の追加処理
+		} catch (error) {
+			res.error = true;
+			res.message = error as string;
+			console.log('Decoding failed:', error);
+			// デコードに失敗した場合の追加処理
+		}
+	} else if (str.startsWith('naddr')) {
+		try {
+			const decoded = nip19.decode(str);
+			if (decoded.type == 'naddr') {
+				res.tag = [
+					'a',
+					`${decoded.data.kind}:${decoded.data.pubkey}:${decoded.data.identifier}`
+				];
+				return res;
+			} else {
+				res.error = true;
+				return res;
+			}
+		} catch (error) {
+			res.error = true;
+			res.message = error as string;
+			return res;
+		}
+	} else {
+		// それ以外の場合の処理
+		//逆にノートIDに変換できるか確認してみる
+		if (/^[0-9a-fA-F]+$/.test(str)) {
+			try {
+				nip19.noteEncode(str);
+				res.tag = ['e', str];
+			} catch (error) {
+				res.error = true;
+				res.message = error as string;
+			}
+		} else {
+			res.error = true;
+			res.message = '無効なIDです';
+		}
+	}
+	console.log(res);
+	return res;
+}
+
+export async function updateBkmTag(num: number) {
+	const bkm = get(bookmarkEvents);
+	const relays = get(bookmarkRelays);
+	if (bkm !== undefined && bkm.length > num && relays.length > 0) {
+		const dtag = bkm[num].tags.find((tag) => tag[0] === 'd');
+		const filter: Nostr.Filter =
+			dtag !== undefined
+				? {
+						kinds: [bkm[num].kind],
+						authors: [bkm[num].pubkey],
+						'#d': [dtag[1]]
+				  }
+				: { kinds: [bkm[num].kind], authors: [bkm[num].pubkey] };
+
+		const res = await fetchFilteredEvents(relays, [filter]);
+		if (res.length > 0 && res[0].created_at > bkm[num].created_at) {
+			bkm[num] = res[0];
+			bookmarkEvents.set(bkm);
+		}
+	}
+}
+
+//タグごと追加の項目で入力された値が一次元配列かどうかを確認
+export function isOneDimensionalArray(arr: string[]) {
+	if (Array.isArray(arr)) {
+		// 配列の中身がすべて要素（スカラー値やオブジェクト）であるか確認します。
+		return arr.every((item) => !Array.isArray(item));
+	}
+	return false;
+}
+
+//check.tagを追加した新しいeventを返してもら
+export async function addPrivate(
+	content: string,
+	pubkey: string,
+	tags: string[][]
+): Promise<string> {
+	let array: string[][] = [];
+	if (content.length > 0) {
+		try {
+			const privateContent = await nip04De(pubkey, content);
+			const parsedContent = JSON.parse(privateContent);
+			if (Array.isArray(parsedContent) && Array.isArray(parsedContent[0])) {
+				parsedContent.push(...tags);
+				array = parsedContent;
+			} else {
+				throw new Error('content is not array');
+			}
+		} catch (error) {
+			throw new Error('Decode error');
+		}
+	} else {
+		array = tags;
+	}
+	console.log(array);
+	if (array.length > 0) {
+		try {
+			return await nip04En(pubkey, JSON.stringify(array));
+		} catch (error) {
+			throw new Error('Encode error');
+		}
+	} else {
+		throw new Error('error');
 	}
 }
