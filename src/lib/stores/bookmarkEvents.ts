@@ -16,7 +16,9 @@ bookmarkEvents.subscribe(($bookmarkEvents) => {
 });
 
 export const listNum = writable<number>(0);
-export const checkedIndexList = writable<{ index: number; event: Event }[]>([]);
+export const checkedIndexList = writable<
+	{ index: number; event: Event | {} }[]
+>([]);
 
 interface OgpList {
 	[url: string]: {

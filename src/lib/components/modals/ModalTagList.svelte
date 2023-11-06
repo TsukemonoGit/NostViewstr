@@ -2,6 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
+	import { pubkey_viewer } from '$lib/stores/settings';
 	// Props
 	/** Exposes parent props to this component. */
 	export let parent: any;
@@ -64,6 +65,7 @@
 
 			<button
 				class="btn {parent.buttonPositive}"
+				disabled={$modalStore[0].value.pubkey !== $pubkey_viewer}
 				on:click={() => {
 					res.index = -1;
 					res.edit = true;

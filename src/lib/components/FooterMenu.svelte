@@ -1,12 +1,19 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { allView, nowProgress, settings } from '$lib/stores/settings';
+	import {
+		allView,
+		isMulti,
+		nowProgress,
+		pubkey_viewer,
+		settings
+	} from '$lib/stores/settings';
 	import type { Event as NostrEvent } from 'nostr-tools';
 	import Setting from '@material-design-icons/svg/round/settings.svg?raw';
 	import firstIcon from '@material-design-icons/svg/round/first_page.svg?raw';
 	import lastIcon from '@material-design-icons/svg/round/last_page.svg?raw';
 	import backIcon from '@material-design-icons/svg/round/chevron_left.svg?raw';
 	import nextIcon from '@material-design-icons/svg/round/chevron_right.svg?raw';
+	import multiIcon from '@material-design-icons/svg/round/checklist_rtl.svg?raw';
 	import menuIcon from '@material-design-icons/svg/round/menu.svg?raw';
 	import updateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import ModalTagList from '$lib/components/modals/ModalTagList.svelte';
@@ -16,6 +23,7 @@
 	import ModalDelete from './modals/ModalDelete.svelte';
 	import {
 		bookmarkEvents,
+		checkedIndexList,
 		identifierList,
 		listNum
 	} from '$lib/stores/bookmarkEvents';
@@ -65,6 +73,7 @@
 	}
 
 	const buttonClass = 'pageIcon btn btn-sm py-0 px-2 fill-white';
+
 	//-----------------------------------------------
 	const tagListModalComponent: ModalComponent = {
 		// Pass a reference to your custom component
@@ -85,7 +94,8 @@
 				title: $_('nprofile.modal.tagList.title'),
 				body: ``,
 				value: {
-					tagList: $identifierList
+					tagList: $identifierList,
+					pubkey: pubkey
 				},
 				response: (res) => {
 					console.log(res);
@@ -277,6 +287,15 @@
 	function onClickInfo() {
 		modalStore.trigger(modal);
 	}
+
+	let multiButtonClass: string = '';
+	function onClickMulti() {
+		$isMulti = !$isMulti;
+	}
+	$: {
+		multiButtonClass = $isMulti ? 'variant-ghost-secondary rounded-full ' : '';
+		$checkedIndexList = [];
+	}
 </script>
 
 {#if $settings}
@@ -330,7 +349,14 @@
 						)} / ${$listSize}`}
 					</div>
 				</div>
-				<button class={buttonClass}>{@html updateIcon}</button>
+
+				<button
+					class="btn btn-icon pageIcon {multiButtonClass}"
+					disabled={pubkey !== $pubkey_viewer}
+					on:click={onClickMulti}>{@html multiIcon}</button
+				>
+
+				<!-- <button class={buttonClass}>{@html updateIcon}</button> -->
 
 				<button class={buttonClass} on:click={onClickInfo}
 					>{@html Setting}</button

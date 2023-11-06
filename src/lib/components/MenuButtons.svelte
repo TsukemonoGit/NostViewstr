@@ -13,6 +13,7 @@
 	import { modalStore } from '$lib/stores/store';
 	import { _ } from 'svelte-i18n';
 	import ModalPostNote from '$lib/components/modals/ModalPostNote.svelte';
+	import type { Nostr } from 'nosvelte';
 	export let menuMode: MenuMode;
 	export let tagArray: string[] | undefined;
 	export let note: Event | undefined;
@@ -79,6 +80,29 @@
 		};
 		modalStore.trigger(modal);
 	}
+
+	function onChangeCheckList(
+		idx: number,
+		event: Nostr.Event<number> | undefined
+	) {
+		if ($checkedIndexList.map((item) => item.index).includes(idx)) {
+			$checkedIndexList.splice(
+				$checkedIndexList.map((item) => item.index).indexOf(idx),
+				1
+			);
+		} else {
+			if (event !== undefined) {
+				$checkedIndexList.push({ index: idx, event: event });
+			} else {
+				$checkedIndexList.push({ index: idx, event: {} });
+			}
+		}
+		//背景色変えるやつ
+		//deleteNoteIndexes = checkedIndexList.map((item) => item.index);
+
+		// console.log(idx);
+		//  console.log(checkedIndexList);
+	}
 </script>
 
 {#if menuMode === MenuMode.Owner}
@@ -137,7 +161,10 @@
 			.map((item) => item.index)
 			.includes(myIndex !== undefined ? myIndex : -1)}
 		on:change={() => {
-			handleClick(State.Check);
+			if (myIndex !== undefined) {
+				onChangeCheckList(myIndex, note);
+				handleClick(State.Check);
+			}
 		}}
 	/>
 {:else if menuMode === MenuMode.other}<!--修正だけ（シェアなし）-->
