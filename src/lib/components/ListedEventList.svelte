@@ -11,8 +11,10 @@
 		listNum
 	} from '$lib/stores/bookmarkEvents';
 	import {
-		addPrivate,
+		addPrivates,
 		checkInput,
+		deletePrivates,
+		deletePubs,
 		fetchFilteredEvents,
 		getPub,
 		getRelays,
@@ -21,7 +23,7 @@
 		setRelays,
 		updateBkmTag
 	} from '$lib/nostrFunctions';
-	import { onMount } from 'svelte';
+	import { afterUpdate, onMount } from 'svelte';
 	import { testRelay } from '$lib/testData/test.js';
 	import { bookmarks } from '$lib/testData/bookmarks';
 	import backIcon from '@material-design-icons/svg/round/chevron_left.svg?raw';
@@ -35,6 +37,7 @@
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import ModalAddNote from '$lib/components/modals/ModalAddNote.svelte';
+	import ModalDelete from '$lib/components/modals/ModalDelete.svelte';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import type { Nostr } from 'nosvelte';
 	let size: number;
@@ -97,10 +100,94 @@
 	$: if ($pageNum !== -1 || bkm) {
 		$checkedIndexList = [];
 	}
-	function DeleteNote(e: CustomEvent<any>): void {
+
+	//---------------------------------------------delete?modal
+	const deleteModalComponent: ModalComponent = {
+		// Pass a reference to your custom component
+		ref: ModalDelete,
+		// Add the component properties as key/value pairs
+		//props: { background: 'bg-red-500' },
+		// Provide a template literal for the default component slot
+		slot: '<p>Skeleton</p>'
+	};
+
+	async function DeleteNote(e: CustomEvent<any>) {
 		console.log('DeleteNote');
 		const number: number = e.detail.number + $pageNum * $amount;
+		const listNumber = $listNum;
 		console.log(number);
+
+		//ほんとに消すのか出す
+		const modal: ModalSettings = {
+			type: 'component',
+			component: deleteModalComponent,
+			title: $_('nprofile.modal.deleteNote.title'),
+			body: `${$_('nprofile.modal.deleteNote.body')}`,
+			value: {
+				event: [e.detail.event]
+			},
+			response: async (res) => {
+				//console.log(res);
+				if (res) {
+					await deleteNotesfromLists(listNumber, [number]);
+					//    deleteNoteIndexes = [];
+				} else {
+					//  deleteNoteIndexes = [];
+				}
+			}
+		};
+		modalStore.trigger(modal);
+	}
+
+	async function deleteNotesfromLists(listNumber: number, numList: number[]) {
+		if ($bookmarkEvents) {
+			$nowProgress = true;
+			await updateBkmTag(listNumber); //最新の状態に更新
+			try {
+				const bkmk = $bookmarkEvents[listNumber];
+
+				const event: Nostr.Event = {
+					id: '',
+					pubkey: bkmk.pubkey,
+					created_at: Math.floor(Date.now() / 1000),
+					kind: bkmk.kind,
+					tags: bkm === 'pub' ? deletePubs(bkmk.tags, numList) : bkmk.tags, //bkmk.tags.splice(number, 1) : bkmk.tags,
+					content:
+						bkm === 'pub'
+							? bkmk.content
+							: await deletePrivates(bkmk.content, bkmk.pubkey, numList), //ここでエラーの可能性ある
+					sig: ''
+				};
+				const result = await publishEventWithTimeout(event, $bookmarkRelays);
+				//   console.log(result);
+				if (result.isSuccess && $bookmarkEvents && result.event) {
+					$bookmarkEvents[listNumber] = result.event;
+					viewEvent = $bookmarkEvents[listNumber];
+					const t = {
+						message: 'Add note<br>' + result.msg,
+						timeout: 3000
+					};
+
+					toastStore.trigger(t);
+				} else {
+					const t = {
+						message: $_('nprofile.toast.failed_publish'),
+						timeout: 3000,
+						background: 'bg-orange-500 text-white width-filled '
+					};
+
+					toastStore.trigger(t);
+				}
+			} catch (error) {
+				const t = {
+					message: $_('nprofile.toast.failed_publish'),
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
+
+				toastStore.trigger(t);
+			}
+		}
 	}
 
 	function MoveNote(e: CustomEvent<any>): void {
@@ -239,34 +326,46 @@
 				return;
 			} else if (check.tag && check.tag.length > 0 && $bookmarkEvents) {
 				await updateBkmTag(listNumber); //最新の状態に更新
-				const bkm = $bookmarkEvents[listNumber];
-				//bkm.tags.push(check.tag);
-				const event: Nostr.Event = {
-					id: '',
-					pubkey: bkm.pubkey,
-					created_at: Math.floor(Date.now() / 1000),
-					kind: bkm.kind,
-					tags:
-						res.btn === 'pub' && check.tag
-							? [...bkm.tags, check.tag]
-							: bkm.tags,
-					content:
-						res.btn === 'pub'
-							? bkm.content
-							: await addPrivate(bkm.content, bkm.pubkey, [check.tag]),
-					sig: ''
-				};
-				const result = await publishEventWithTimeout(event, $bookmarkRelays);
-				//   console.log(result);
-				if (result.isSuccess && $bookmarkEvents && result.event) {
-					$bookmarkEvents[listNumber] = result.event;
-					const t = {
-						message: 'Add note<br>' + result.msg,
-						timeout: 3000
+				try {
+					const bkmk = $bookmarkEvents[listNumber];
+					//bkm.tags.push(check.tag);
+					const event: Nostr.Event = {
+						id: '',
+						pubkey: bkmk.pubkey,
+						created_at: Math.floor(Date.now() / 1000),
+						kind: bkmk.kind,
+						tags:
+							res.btn === 'pub' && check.tag
+								? [...bkmk.tags, check.tag]
+								: bkmk.tags,
+						content:
+							res.btn === 'pub'
+								? bkmk.content
+								: await addPrivates(bkmk.content, bkmk.pubkey, [check.tag]), //ここでエラーの可能性ある
+						sig: ''
 					};
+					const result = await publishEventWithTimeout(event, $bookmarkRelays);
+					//   console.log(result);
+					if (result.isSuccess && $bookmarkEvents && result.event) {
+						$bookmarkEvents[listNumber] = result.event;
+						viewEvent = $bookmarkEvents[listNumber]; //今は失敗判定になってるから更新確認できないよ
 
-					toastStore.trigger(t);
-				} else {
+						const t = {
+							message: 'Add note<br>' + result.msg,
+							timeout: 3000
+						};
+
+						toastStore.trigger(t);
+					} else {
+						const t = {
+							message: $_('nprofile.toast.failed_publish'),
+							timeout: 3000,
+							background: 'bg-orange-500 text-white width-filled '
+						};
+
+						toastStore.trigger(t);
+					}
+				} catch (error) {
 					const t = {
 						message: $_('nprofile.toast.failed_publish'),
 						timeout: 3000,
@@ -279,6 +378,11 @@
 		}
 		$nowProgress = false;
 	}
+
+	// afterUpdate(() => {
+	// 	viewEvent = viewEvent;
+	// });
+
 	// let identifier: string;
 	// $: if ($bookmarkEvents) {
 	// 	const index = $bookmarkEvents[$listNum].tags.find(

@@ -821,7 +821,7 @@ export function isOneDimensionalArray(arr: string[]) {
 }
 
 //check.tagを追加した新しいeventを返してもら
-export async function addPrivate(
+export async function addPrivates(
 	content: string,
 	pubkey: string,
 	tags: string[][]
@@ -853,4 +853,56 @@ export async function addPrivate(
 	} else {
 		throw new Error('error');
 	}
+}
+
+//check.tagを追加した新しいeventを返してもら
+export async function deletePrivates(
+	content: string,
+	pubkey: string,
+	numList: number[]
+): Promise<string> {
+	let array: string[][] = [];
+	if (content.length > 0 && numList.length > 0) {
+		numList.sort((a, b) => b - a); //大きい順にソート
+		try {
+			const privateContent = await nip04De(pubkey, content);
+			const parsedContent = JSON.parse(privateContent);
+			if (Array.isArray(parsedContent) && Array.isArray(parsedContent[0])) {
+				for (const index of numList) {
+					parsedContent.splice(index, 1); // インデックスに対応するノートを削除する
+				}
+				array = parsedContent;
+			} else {
+				throw new Error('content is not array');
+			}
+		} catch (error) {
+			throw new Error('Decode error');
+		}
+	} else {
+		throw new Error('error');
+	}
+	console.log(array);
+	if (array.length > 0) {
+		try {
+			return await nip04En(pubkey, JSON.stringify(array));
+		} catch (error) {
+			throw new Error('Encode error');
+		}
+	} else {
+		throw new Error('error');
+	}
+}
+
+export function deletePubs(tags: string[][], numList: number[]): string[][] {
+	if (tags.length > 0 && numList.length > 0) {
+		numList.sort((a, b) => b - a); //大きい順にソート
+		try {
+			for (const index of numList) {
+				tags.splice(index, 1); // インデックスに対応するノートを削除する
+			}
+		} catch (error) {
+			throw new Error('error');
+		}
+	}
+	return tags;
 }

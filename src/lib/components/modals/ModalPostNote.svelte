@@ -37,7 +37,7 @@
 		//		if ($modalStore[0].response) $modalStore[0].response(res);
 		const event: Event = {
 			id: '',
-			pubkey: '',
+			pubkey: $modalStore[0].value.pubkey_viewer,
 			created_at: Math.floor(Date.now() / 1000),
 			kind: 1,
 			tags: res.tags,
