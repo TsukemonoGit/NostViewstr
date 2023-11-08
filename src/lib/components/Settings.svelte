@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import { iconView, URLPreview, settings } from '$lib/stores/settings';
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
-
+	
 	const clickDefault = () => {
 		//bookmarkEventsのしょきか
 		$bookmarkEvents = [];

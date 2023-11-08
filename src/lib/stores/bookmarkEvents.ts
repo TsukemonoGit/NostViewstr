@@ -3,7 +3,7 @@ import type { Event } from 'nostr-tools';
 import type { Nostr } from 'nosvelte';
 import type { TextPart } from '$lib/content';
 
-export const bookmarkEvents = writable<Event[] | undefined>();
+export const bookmarkEvents = writable<Event[]>([]);
 export const identifierList = writable<string[]>([]);
 //dタグがあったらそれを、なかったら（なかったらそもそもリストになってないけど）nonameでだす
 bookmarkEvents.subscribe(($bookmarkEvents) => {

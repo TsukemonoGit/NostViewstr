@@ -31,14 +31,26 @@
 	function handleClick(state: State) {
 		switch (state) {
 			case State.Delete:
-				dispatch('DeleteNote', { number: myIndex, event: note });
+				dispatch('DeleteNote', {
+					number: myIndex,
+					event: note,
+					tagArray: tagArray
+				});
 				break;
 
 			case State.Move:
-				dispatch('MoveNote', { number: myIndex, event: note });
+				dispatch('MoveNote', {
+					number: myIndex,
+					event: note,
+					tagArray: tagArray
+				});
 				break;
 			case State.Check:
-				dispatch('CheckNote', { number: myIndex, event: note });
+				dispatch('CheckNote', {
+					number: myIndex,
+					event: note,
+					tagArray: tagArray
+				});
 				break;
 		}
 	}

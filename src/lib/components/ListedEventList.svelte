@@ -38,6 +38,7 @@
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import ModalAddNote from '$lib/components/modals/ModalAddNote.svelte';
 	import ModalDelete from '$lib/components/modals/ModalDelete.svelte';
+	import ModalMove from '$lib/components/modals/ModalMove.svelte';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import type { Nostr } from 'nosvelte';
 	let size: number;
@@ -60,8 +61,9 @@
 
 		console.log($pubkey_viewer);
 		console.log(pub);
-		console.log(await getRelays(pub));
-
+		if ($bookmarkRelays.length === 0) {
+			console.log(await getRelays(pub));
+		}
 		const filter = [
 			{
 				kinds: [kind],
@@ -190,10 +192,47 @@
 		}
 	}
 
+	//---------------------------------------------move
+	const moveModalComponent: ModalComponent = {
+		// Pass a reference to your custom component
+		ref: ModalMove
+	};
 	function MoveNote(e: CustomEvent<any>): void {
 		console.log('MoveNote');
 		const number: number = e.detail.number + $pageNum * $amount;
 		console.log(number);
+		console.log(e.detail.event);
+		console.log(e.detail.tagArray);
+		const listNumber = $listNum;
+		const _bkm = bkm;
+		//どこに移動させるのか画面を出す。
+		const modal: ModalSettings = {
+			type: 'component',
+			component: moveModalComponent,
+			title: $_('nprofile.modal.moveNote.title'),
+			body: `${$_('nprofile.modal.moveNote.body_from')} ${
+				$identifierList[listNumber]
+			}[${_bkm === 'pub' ? $_('public') : $_('private')}] ${$_(
+				'nprofile.modal.moveNote.body_to'
+			)}`,
+			value: {
+				bkm: _bkm,
+				tag: listNumber
+			},
+			response: (res) => {
+				//console.log(res);
+				if (res) {
+					//$nowProgress = true;
+					moveNoteSuruyatu(
+						[number],
+						[e.detail.tagArray],
+						{ tag: listNumber, bkm: _bkm },
+						{ tag: res.tag, bkm: res.bkm }
+					);
+				}
+			}
+		};
+		modalStore.trigger(modal);
 	}
 
 	function CheckNote(e: CustomEvent<any>): void {
@@ -326,46 +365,50 @@
 				return;
 			} else if (check.tag && check.tag.length > 0 && $bookmarkEvents) {
 				await updateBkmTag(listNumber); //最新の状態に更新
-				try {
-					const bkmk = $bookmarkEvents[listNumber];
-					//bkm.tags.push(check.tag);
-					const event: Nostr.Event = {
-						id: '',
-						pubkey: bkmk.pubkey,
-						created_at: Math.floor(Date.now() / 1000),
-						kind: bkmk.kind,
-						tags:
-							res.btn === 'pub' && check.tag
-								? [...bkmk.tags, check.tag]
-								: bkmk.tags,
-						content:
-							res.btn === 'pub'
-								? bkmk.content
-								: await addPrivates(bkmk.content, bkmk.pubkey, [check.tag]), //ここでエラーの可能性ある
-						sig: ''
+				await addNotesToLists(listNumber, res.btn, [check.tag]);
+			}
+			$nowProgress = false;
+		}
+	}
+	async function addNotesToLists(
+		listNumber: number,
+		btn: string,
+		idTagList: string[][]
+	): Promise<boolean> {
+		let isSuccess = false;
+		if ($bookmarkEvents !== undefined) {
+			try {
+				const bkmk = $bookmarkEvents[listNumber];
+				//bkm.tags.push(check.tag);
+				const event: Nostr.Event = {
+					id: '',
+					pubkey: bkmk.pubkey,
+					created_at: Math.floor(Date.now() / 1000),
+					kind: bkmk.kind,
+					tags:
+						btn === 'pub' && idTagList
+							? [...bkmk.tags, ...idTagList]
+							: bkmk.tags,
+					content:
+						btn === 'pub'
+							? bkmk.content
+							: await addPrivates(bkmk.content, bkmk.pubkey, idTagList), //ここでエラーの可能性ある
+					sig: ''
+				};
+				const result = await publishEventWithTimeout(event, $bookmarkRelays);
+				//   console.log(result);
+				if (result.isSuccess && $bookmarkEvents && result.event) {
+					$bookmarkEvents[listNumber] = result.event;
+					viewEvent = $bookmarkEvents[listNumber]; //今は失敗判定になってるから更新確認できないよ
+
+					const t = {
+						message: 'Add note<br>' + result.msg,
+						timeout: 3000
 					};
-					const result = await publishEventWithTimeout(event, $bookmarkRelays);
-					//   console.log(result);
-					if (result.isSuccess && $bookmarkEvents && result.event) {
-						$bookmarkEvents[listNumber] = result.event;
-						viewEvent = $bookmarkEvents[listNumber]; //今は失敗判定になってるから更新確認できないよ
 
-						const t = {
-							message: 'Add note<br>' + result.msg,
-							timeout: 3000
-						};
-
-						toastStore.trigger(t);
-					} else {
-						const t = {
-							message: $_('nprofile.toast.failed_publish'),
-							timeout: 3000,
-							background: 'bg-orange-500 text-white width-filled '
-						};
-
-						toastStore.trigger(t);
-					}
-				} catch (error) {
+					toastStore.trigger(t);
+					isSuccess = true;
+				} else {
 					const t = {
 						message: $_('nprofile.toast.failed_publish'),
 						timeout: 3000,
@@ -374,11 +417,19 @@
 
 					toastStore.trigger(t);
 				}
+			} catch (error) {
+				const t = {
+					message: $_('nprofile.toast.failed_publish'),
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
+
+				toastStore.trigger(t);
 			}
 		}
-		$nowProgress = false;
-	}
 
+		return isSuccess;
+	}
 	// afterUpdate(() => {
 	// 	viewEvent = viewEvent;
 	// });
@@ -412,6 +463,29 @@
 		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
 	) {
 		throw new Error('Function not implemented.');
+	}
+
+	async function moveNoteSuruyatu(
+		indexes: number[],
+		tags: string[][],
+		from: { tag: number; bkm: string },
+		to: { tag: number; bkm: string }
+	) {
+		console.log(
+			`list:${from.tag} bkm:${from.bkm} の${indexes}番目のノートをlist:${to.tag}のbkm:${to.bkm}に移動させる`
+		);
+		if ($bookmarkEvents.length > 0) {
+			//toの方にaddNoteする。
+			await updateBkmTag(from.tag); //最新の状態に更新
+
+			const addRes = await addNotesToLists(from.tag, from.bkm, tags);
+			if (!addRes) {
+				$nowProgress = false;
+				return;
+			}
+			const deleteRes = await deleteNotesfromLists(to.tag, indexes);
+			$nowProgress = false;
+		}
 	}
 </script>
 

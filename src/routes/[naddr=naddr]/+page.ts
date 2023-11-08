@@ -3,6 +3,12 @@ import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 //import { pubkey } from '$lib/stores/settings';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import {
+	bookmarkRelays,
+	postRelays,
+	searchRelays,
+	defaultRelays
+} from '$lib/stores/relays';
 //https://kit.svelte.jp/docs/load
 //ページを読み込む前に有効なparamかチェック
 
@@ -19,6 +25,12 @@ export const load: PageLoad<{
 		//AddressPointer
 		const address = data as AddressPointer;
 		//pubkey.set(address.pubkey);
+		if (address.relays && address.relays) {
+			bookmarkRelays.set(address.relays);
+			postRelays.set(address.relays);
+			searchRelays.set(defaultRelays);
+		}
+
 		return {
 			pubkey: address.pubkey,
 			kind: address.kind,

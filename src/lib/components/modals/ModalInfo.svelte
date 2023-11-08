@@ -60,22 +60,32 @@
 					hour: '2-digit',
 					minute: '2-digit'
 				})}
-				<p>{$_('nprofile.modal.info.relay.list')}</p>
-				<ul
-					class="bg-surface-50-900-token card max-h-[4em] overflow-y-auto overflow-x-hidden"
-				>
-					{#each $bookmarkRelays as relays}
-						<li>{relays}</li>
-					{/each}
-				</ul>
-
-				<p>{$_('nprofile.modal.info.relay.search')}</p>
-				<ul class="bg-surface-50-900-token card max-h-[4em] overflow-y-auto">
-					{#each $searchRelays as relays}
-						<li>{relays}</li>
-					{/each}
-				</ul>
+				<!-- {:else}
+				relay from kind:({$relayEvent.kind}) created_at: {new Date(
+					$relayEvent.created_at * 1000
+				).toLocaleString([], {
+					year: 'numeric',
+					month: '2-digit',
+					day: '2-digit',
+					hour: '2-digit',
+					minute: '2-digit'
+				})} -->
 			{/if}
+			<p>{$_('nprofile.modal.info.relay.list')}</p>
+			<ul
+				class="bg-surface-50-900-token card max-h-[4em] overflow-y-auto overflow-x-hidden"
+			>
+				{#each $bookmarkRelays as relays}
+					<li>{relays}</li>
+				{/each}
+			</ul>
+
+			<p>{$_('nprofile.modal.info.relay.search')}</p>
+			<ul class="bg-surface-50-900-token card max-h-[4em] overflow-y-auto">
+				{#each $searchRelays as relays}
+					<li>{relays}</li>
+				{/each}
+			</ul>
 		</div>
 		<!-- prettier-ignore -->
 		<footer class="modal-footer {parent.regionFooter}">

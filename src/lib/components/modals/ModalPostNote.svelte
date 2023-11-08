@@ -5,6 +5,7 @@
 	import { postRelays } from '$lib/stores/relays';
 	import type { Event } from 'nostr-tools';
 	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
+	import { pubkey_viewer } from '$lib/stores/settings';
 	export let parent: any;
 	let checked: boolean;
 	let contents = {
@@ -37,7 +38,7 @@
 		//		if ($modalStore[0].response) $modalStore[0].response(res);
 		const event: Event = {
 			id: '',
-			pubkey: $modalStore[0].value.pubkey_viewer,
+			pubkey: $pubkey_viewer,
 			created_at: Math.floor(Date.now() / 1000),
 			kind: 1,
 			tags: res.tags,
