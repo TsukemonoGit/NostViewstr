@@ -1,31 +1,33 @@
 {
-  "popup": {
-    "Share": "Post on Nostr",
-    "open": "Open other app",
-    "move": "Move ather list",
-    "delete": "Delete"
-  },
-  "modal": {
-    "failed_copy": "failed to copy"
-  },
-  "PostNote": {
-    "copied": "copied clipboard",
-    "failed_copy": "failed to copy clipboard",
-    "popup_copy": "copy to clipboard",
-    "p_tag": "Include the p tag of the quoted source"
-  },
-  "nprofile": {
-    "modal": {
-      "postNote": {
-        "title": "Post Note"
-      },
-      "tagList": {
-        "title": "Lists"
-      }
-    }
-  },
-  "created_at": "最終更新日時",
-  "public": "public",
-  "private": "private",
-  "editTag": "Edit"
+	"popup": {
+		"Share": "Post on Nostr",
+		"open": "Open other app",
+		"move": "Move ather list",
+		"delete": "Delete"
+	},
+	"modal": {
+		"failed_copy": "failed to copy"
+	},
+	"PostNote": {
+		"copied": "copied clipboard",
+		"failed_copy": "failed to copy clipboard",
+		"popup_copy": "copy to clipboard",
+		"p_tag": "Include the p tag of the quoted source"
+	},
+	"nprofile": {
+		"modal": {
+			"postNote": {
+				"title": "Post Note"
+			},
+			"tagList": {
+				"title": "Lists"
+			}
+		}
+	},
+	"created_at": "最終更新日時",
+	"public": "public",
+	"private": "private",
+	"editTag": "Edit",
+
+	"main": { "title": "bkmstr" }
 }

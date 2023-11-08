@@ -107,10 +107,12 @@
 		$pageNum = 0;
 		$checkedIndexList = [];
 		bkm = 'pub';
+		window.scrollTo({ top: 0 });
 	}
 	//ページが変わったらチェックリスト空にする
 	$: if ($pageNum !== -1 || bkm) {
 		$checkedIndexList = [];
+		window.scrollTo({ top: 0 });
 	}
 
 	//---------------------------------------------delete?modal

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { LightSwitch } from '@skeletonlabs/skeleton';
-	import ListedEventList from '$lib/components/ListedEventList.svelte';
+
 	import Settings from '$lib/components/Settings.svelte';
 
 	import { settings, nsec, pubkey_viewer } from '$lib/stores/settings';
@@ -8,15 +8,21 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
+	import { _ } from 'svelte-i18n';
 
 	let inputValue: string;
-	$settings = false;
+	$pubkey_viewer = '';
+	//$settings = false;
 	const npub = browser ? localStorage.getItem('npub') : undefined;
 	if (npub) {
 		inputValue = nip19.npubEncode(npub);
 	}
+	let presettings = false;
 	$: console.log($settings);
-	$: if ($settings === true) {
+
+	//なんでかわからんけど無限ループしたからpresettingsをつけた応急処置
+	$: if ($settings === true && !presettings) {
+		presettings = true;
 		console.log('settings true');
 		//inputのpubkeyチェック
 		try {
@@ -27,7 +33,7 @@
 				if ($bookmarkEvents && $bookmarkEvents.length > 0) {
 					$bookmarkEvents = [];
 				}
-				$pubkey_viewer = '';
+
 				goto(`./${input}`);
 			} else if (decode.type === 'nsec') {
 				$nsec = decode.data;
@@ -35,6 +41,7 @@
 				const pub = getPublicKey(decode.data);
 				localStorage.setItem('npub', pub);
 				$pubkey_viewer = pub;
+				console.log(pub);
 				goto(`./${nip19.npubEncode(pub)}`);
 			}
 		} catch (error) {
@@ -42,29 +49,65 @@
 		}
 		//okだったらgotoする　NGだったらsettingsをfalseにする
 	}
+	async function onClickExtension() {
+		try {
+			const pub = await window.nostr?.getPublicKey();
+			if (pub) {
+				inputValue = nip19.npubEncode(pub);
+				$pubkey_viewer = pub;
+			}
+		} catch (error) {
+			console.log('failed to get pubkey');
+		}
+	}
 </script>
 
 <!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
 
-<!-- <div class="container h-full mx-auto flex justify-center items-center">
+<div class="container h-full mx-auto flex justify-center items-center">
 	<div class="space-y-5">
-		<h1 class="h1">Let's get cracking bones!</h1>
-		<p>Start by exploring:</p>
+		<h1 class="h1">{$_('main.title')}</h1>
+		<!-- <p>Start by exploring:</p>
 		<ul>
-			<li><code class="code">/src/routes/+layout.svelte</code> - barebones layout</li>
+			<li>
+				<code class="code">/src/routes/+layout.svelte</code> - barebones layout
+			</li>
 			<li><code class="code">/src/app.postcss</code> - app wide css</li>
 			<li>
-				<code class="code">/src/routes/+page.svelte</code> - this page, you can replace the contents
+				<code class="code">/src/routes/+page.svelte</code> - this page, you can replace
+				the contents
 			</li>
-		</ul>
-	</div>
-</div> -->
+		</ul> -->
 
-<LightSwitch />
-<input
-	class="input"
-	type="text"
-	placeholder="npub1..."
-	bind:value={inputValue}
-/>
-<Settings />
+		<div class="space-t-5 min-w-[80vw]">
+			{$_('main.input_public_key')}
+			<div class="input-group input-group-divider grid-cols-[auto_1fr]">
+				<button
+					class="p-0 input-group-shim btn variant-filled-secondary"
+					on:click={onClickExtension}>nip07<br />extension</button
+				>
+				<input
+					class="input p-1 truncate"
+					type="text"
+					placeholder="npub1..."
+					bind:value={inputValue}
+				/>
+			</div>
+		</div>
+		<!-- <label class="label space-t-5 ">
+			<span> {$_('main.input_public_key')}</span>
+			<input
+				class="input p-1"
+				type="text"
+				placeholder="npub1..."
+				bind:value={inputValue}
+			/>
+		</label> -->
+		<div class="space-t-5">
+			<Settings />
+		</div>
+		<div class="space-t-5">
+			<LightSwitch />
+		</div>
+	</div>
+</div>
