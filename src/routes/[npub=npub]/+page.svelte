@@ -28,11 +28,11 @@
 
 	// $: console.log($URLPreview);
 	// $: console.log($iconView);
-	onMount(async () => {
-		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
-			$pubkey_viewer = await getPub();
-		}
-	});
+	// onMount(async () => {
+	// 	if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
+	// 		$pubkey_viewer = await getPub();
+	// 	}
+	// });
 	// onMount(async () => {
 	// 	console.log(await getRelays(data.pubkey));
 	// }); //await setRelays(testRelay);}}
