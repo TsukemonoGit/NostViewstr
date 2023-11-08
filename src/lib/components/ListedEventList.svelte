@@ -46,6 +46,7 @@
 	let viewEvent: Nostr.Event<number>;
 	export let pubkey: string;
 	export let kind: number;
+	export let identifier: string | undefined = undefined;
 	let isOwner: boolean;
 	//let num: number = 0;
 	$: createdAt = viewEvent?.created_at;
@@ -64,12 +65,21 @@
 		if ($bookmarkRelays.length === 0) {
 			console.log(await getRelays(pub));
 		}
-		const filter = [
-			{
-				kinds: [kind],
-				authors: [pub]
-			}
-		];
+		const filter =
+			identifier === undefined
+				? [
+						{
+							kinds: [kind],
+							authors: [pub]
+						}
+				  ]
+				: [
+						{
+							kinds: [kind],
+							authors: [pub],
+							'#d': [identifier]
+						}
+				  ];
 		$nowProgress = true;
 		const res = await fetchFilteredEvents($bookmarkRelays, filter);
 		console.log(res);
@@ -495,19 +505,21 @@
 	<div
 		class="z-10 fixed h-[2.5em] top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
 	>
-		<div class="flex">
-			<button
-				class="arrow btn p-0 rounded"
-				on:click={() => onClickPage(-1)}
-				disabled={$listNum <= 0}>{@html backIcon}</button
-			>
-			<button
-				class="arrow btn p-0 rounded"
-				on:click={() => onClickPage(1)}
-				disabled={$listNum >= $bookmarkEvents.length - 1}
-				>{@html nextIcon}</button
-			>
-		</div>
+		{#if $bookmarkEvents.length > 1}
+			<div class="flex">
+				<button
+					class="arrow btn p-0 rounded"
+					on:click={() => onClickPage(-1)}
+					disabled={$listNum <= 0}>{@html backIcon}</button
+				>
+				<button
+					class="arrow btn p-0 rounded"
+					on:click={() => onClickPage(1)}
+					disabled={$listNum >= $bookmarkEvents.length - 1}
+					>{@html nextIcon}</button
+				>
+			</div>
+		{/if}
 		<div
 			class="min-w-[8rem] variant-ghost-primary border-b border-surface-400-500-token p-2 pb-0 h3 break-keep"
 		>

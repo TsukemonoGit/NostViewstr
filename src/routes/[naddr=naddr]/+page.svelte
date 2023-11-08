@@ -24,6 +24,7 @@
 
 	export let data: PageData;
 	const kind = data.kind;
+	const identifier = data.identifier;
 	console.log('PageData', data.pubkey);
 	$: console.log($bookmarkRelays);
 	// $: console.log($URLPreview);
@@ -48,6 +49,6 @@
 {#if !$settings}
 	<Settings />
 {:else}
-	<ListedEventList pubkey={data.pubkey} {kind} />
+	<ListedEventList pubkey={data.pubkey} {kind} {identifier} />
 {/if}
-<FooterMenu pubkey={data.pubkey} {kind} />
+<FooterMenu pubkey={data.pubkey} {kind} naddr={true} />

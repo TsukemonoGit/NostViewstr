@@ -39,7 +39,7 @@
 	import type { Event } from 'nostr-tools';
 	export let pubkey: string;
 	export let kind: number;
-
+	export let naddr: boolean = false;
 	$: console.log(
 		`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
 	);
@@ -312,9 +312,11 @@
 					stroke={60}
 				/>
 			{:else}
-				<button class={buttonClass} on:click={openLists}
-					>{@html menuIcon}</button
-				>
+				{#if !naddr}
+					<button class={buttonClass} on:click={openLists}
+						>{@html menuIcon}</button
+					>
+				{/if}
 
 				<div class="grid grid-rows-[auto_auto] gap-0">
 					<div class="flex">

@@ -9,6 +9,7 @@ import {
 	searchRelays,
 	defaultRelays
 } from '$lib/stores/relays';
+import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
 //https://kit.svelte.jp/docs/load
 //ページを読み込む前に有効なparamかチェック
 
@@ -19,6 +20,10 @@ export const load: PageLoad<{
 	relays?: string[];
 }> = ({ params }) => {
 	console.log(params.naddr);
+	bookmarkEvents.set([]);
+	bookmarkRelays.set([]);
+	postRelays.set([]);
+	searchRelays.set([]);
 	try {
 		const { type, data } = nip19.decode(params.naddr);
 		console.log('[decode]', type, data);

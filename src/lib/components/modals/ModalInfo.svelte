@@ -8,8 +8,13 @@
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { LightSwitch, clipboard } from '@skeletonlabs/skeleton';
-	import { identifierList, listNum } from '$lib/stores/bookmarkEvents';
+	import {
+		bookmarkEvents,
+		identifierList,
+		listNum
+	} from '$lib/stores/bookmarkEvents';
 	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
+	import { nip19 } from 'nostr-tools';
 	export let parent: any;
 
 	function onFormSubmit(): void {
@@ -23,7 +28,15 @@
 	const cHeader = 'text-2xl font-bold';
 	let copyData: string = 'test';
 	let copied = false;
+	const adata: nip19.AddressPointer = {
+		identifier: $identifierList[$listNum],
+		pubkey: $bookmarkEvents[$listNum].pubkey,
+		kind: $bookmarkEvents[$listNum].kind,
+		relays: $bookmarkRelays
+	};
+	copyData = nip19.naddrEncode(adata);
 	function onClickHandler(): void {
+		console.log(copyData);
 		copied = true;
 		setTimeout(() => {
 			copied = false;
