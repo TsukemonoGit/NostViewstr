@@ -11,7 +11,7 @@
 	import { _ } from 'svelte-i18n';
 
 	let inputValue: string;
-	$pubkey_viewer = '';
+
 	//$settings = false;
 	const npub = browser ? localStorage.getItem('npub') : undefined;
 	if (npub) {
