@@ -13,5 +13,5 @@ export const load: PageLoad<void> = ({ params }) => {
 	postRelays.set([]);
 	searchRelays.set([]);
 	settings.set(false);
-	pubkey_viewer.set('');
+	//pubkey_viewer.set('');
 };

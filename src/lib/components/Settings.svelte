@@ -2,7 +2,8 @@
 	import { _ } from 'svelte-i18n';
 	import { iconView, URLPreview, settings } from '$lib/stores/settings';
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
-	
+	import { LightSwitch } from '@skeletonlabs/skeleton';
+
 	const clickDefault = () => {
 		//bookmarkEventsのしょきか
 		$bookmarkEvents = [];
@@ -21,14 +22,28 @@
 </script>
 
 表示モードを選択してください
-<div>
-	<button class="btn variant-filled-primary" on:click={clickDefault}
-		>通常モード</button
-	>
-	<button class="btn variant-filled-primary" on:click={clickLight}
-		>通信量軽量モード</button
-	>
+<div class="flex gap-4 mt-2">
+	<div>
+		<button class="btn variant-filled-primary" on:click={clickDefault}
+			>{$_('mode.normal')}</button
+		>
+	</div>
+	<div>
+		<button class="btn variant-filled-primary" on:click={clickLight}
+			>{$_('mode.light')}</button
+		>
+		<div class="text-sm pl-1 pt-1">
+			{$_('mode.light_exp')}
+		</div>
+	</div>
 </div>
+<div class="mt-5">
+	{$_('mode.light_switch')}
+	<div class="mt-2">
+		<LightSwitch />
+	</div>
+</div>
+
 <!-- <div>
 	{$_('Settings.login')}
 	<div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { page } from '$app/stores';
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
@@ -46,7 +47,12 @@
 </div> -->
 
 {#if !$settings}
-	<Settings />
+	<div class="container h-full mx-auto flex justify-center items-center">
+		<div class="mt-5">
+			<h1 class="h1 mb-5">{$_('main.title')}</h1>
+			<Settings />
+		</div>
+	</div>
 {:else}
 	<ListedEventList pubkey={data.pubkey} {kind} />
 {/if}

@@ -106,8 +106,5 @@
 		<div class="space-t-5">
 			<Settings />
 		</div>
-		<div class="space-t-5">
-			<LightSwitch />
-		</div>
 	</div>
 </div>
