@@ -91,107 +91,37 @@
 			{tag}
 		{:then { id, filter, kind }}
 			{#if tag[0] === 'e'}
-				{#if $searchRelays && $searchRelays.length > 0}
-					<NostrApp relays={$searchRelays}>
-						<Text queryKey={[id]} {id} let:text>
-							<SearchCard
-								slot="loading"
-								{filter}
-								message={`loading [${tag}]`}
-								isPageOwner={true}
-								menuMode={menuSearch}
-								tagArray={tag}
-								myIndex={index}
-								{DeleteNote}
-								{MoveNote}
-								{CheckNote}
-							/>
-
-							<SearchCard
-								slot="error"
-								{filter}
-								message={`error [${tag}]`}
-								isPageOwner={true}
-								menuMode={menuSearch}
-								tagArray={tag}
-								myIndex={index}
-								{DeleteNote}
-								{MoveNote}
-								{CheckNote}
-							/>
-
-							<SearchCard
-								slot="nodata"
-								{filter}
-								message={`not found [${tag}]`}
-								isPageOwner={true}
-								menuMode={menuSearch}
-								tagArray={tag}
-								myIndex={index}
-								{DeleteNote}
-								{MoveNote}
-								{CheckNote}
-							/>
-
-							<Metadata
-								queryKey={['metadata', text.pubkey]}
-								pubkey={text.pubkey}
-								let:metadata
-							>
-								<EventCard
-									slot="loading"
-									isPageOwner={true}
-									menuMode={menuEvent}
-									tagArray={tag}
-									note={text}
-									metadata={undefined}
-									myIndex={index}
-									{DeleteNote}
-									{MoveNote}
-									{CheckNote}
-								/>
-								<EventCard
-									slot="error"
-									isPageOwner={true}
-									menuMode={menuEvent}
-									tagArray={tag}
-									note={text}
-									metadata={undefined}
-									myIndex={index}
-									{DeleteNote}
-									{MoveNote}
-									{CheckNote}
-								/>
-								<EventCard
-									slot="nodata"
-									isPageOwner={true}
-									menuMode={menuEvent}
-									tagArray={tag}
-									note={text}
-									metadata={undefined}
-									myIndex={index}
-									{DeleteNote}
-									{MoveNote}
-									{CheckNote}
-								/>
-
-								<EventCard
-									isPageOwner={true}
-									menuMode={menuEvent}
-									tagArray={tag}
-									note={text}
-									{metadata}
-									myIndex={index}
-									{DeleteNote}
-									{MoveNote}
-									{CheckNote}
-								/>
-							</Metadata>
-						</Text>
-					</NostrApp>
-				{:else}
-					<!--りれーせっていないとき-->
+				<!-- {#if $searchRelays && $searchRelays.length > 0}
+					<NostrApp relays={$searchRelays}> -->
+				<Text queryKey={[id]} {id} let:text>
 					<SearchCard
+						slot="loading"
+						{filter}
+						message={`loading [${tag}]`}
+						isPageOwner={true}
+						menuMode={menuSearch}
+						tagArray={tag}
+						myIndex={index}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+					/>
+
+					<SearchCard
+						slot="error"
+						{filter}
+						message={`error [${tag}]`}
+						isPageOwner={true}
+						menuMode={menuSearch}
+						tagArray={tag}
+						myIndex={index}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+					/>
+
+					<SearchCard
+						slot="nodata"
 						{filter}
 						message={`not found [${tag}]`}
 						isPageOwner={true}
@@ -202,109 +132,111 @@
 						{MoveNote}
 						{CheckNote}
 					/>
-				{/if}
+
+					<Metadata
+						queryKey={['metadata', text.pubkey]}
+						pubkey={text.pubkey}
+						let:metadata
+					>
+						<EventCard
+							slot="loading"
+							isPageOwner={true}
+							menuMode={menuEvent}
+							tagArray={tag}
+							note={text}
+							metadata={undefined}
+							myIndex={index}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+						/>
+						<EventCard
+							slot="error"
+							isPageOwner={true}
+							menuMode={menuEvent}
+							tagArray={tag}
+							note={text}
+							metadata={undefined}
+							myIndex={index}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+						/>
+						<EventCard
+							slot="nodata"
+							isPageOwner={true}
+							menuMode={menuEvent}
+							tagArray={tag}
+							note={text}
+							metadata={undefined}
+							myIndex={index}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+						/>
+
+						<EventCard
+							isPageOwner={true}
+							menuMode={menuEvent}
+							tagArray={tag}
+							note={text}
+							{metadata}
+							myIndex={index}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+						/>
+					</Metadata>
+				</Text>
+				<!-- </NostrApp> -->
+				<!--ノートごとにNostrAppはあかんやろ
+					修正NostrAppはListedEventListへ-->
+				<!-- {:else}
+				
+					<SearchCard
+						{filter}
+						message={`not found [${tag}]`}
+						isPageOwner={true}
+						menuMode={menuSearch}
+						tagArray={tag}
+						myIndex={index}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+					/> 
+				{/if}-->
 			{:else if tag[0] === 'a'}
-				{#if $searchRelays && $searchRelays.length > 0}
-					<NostrApp relays={$searchRelays}>
-						<UniqueEventList queryKey={tag} filters={[filter]} let:events>
-							<SearchCard
-								slot="loading"
-								{filter}
-								message={`loading [${tag}]`}
-								isPageOwner={true}
-								menuMode={menuSearch}
-								tagArray={tag}
-								myIndex={index}
-								{DeleteNote}
-								{MoveNote}
-								{CheckNote}
-							/>
-
-							<SearchCard
-								slot="error"
-								{filter}
-								message={`error [${tag}]`}
-								isPageOwner={true}
-								menuMode={menuSearch}
-								tagArray={tag}
-								myIndex={index}
-								{DeleteNote}
-								{MoveNote}
-								{CheckNote}
-							/>
-
-							<SearchCard
-								slot="nodata"
-								{filter}
-								message={`not found [${tag}]`}
-								isPageOwner={true}
-								menuMode={menuSearch}
-								tagArray={tag}
-								myIndex={index}
-								{DeleteNote}
-								{MoveNote}
-								{CheckNote}
-							/>
-
-							<Metadata
-								queryKey={['metadata', uniqueEvent(events).pubkey]}
-								pubkey={uniqueEvent(events).pubkey}
-								let:metadata
-							>
-								<EventCard
-									slot="loading"
-									isPageOwner={true}
-									menuMode={menuEvent}
-									tagArray={tag}
-									note={uniqueEvent(events)}
-									metadata={undefined}
-									myIndex={index}
-									{DeleteNote}
-									{MoveNote}
-									{CheckNote}
-								/>
-								<EventCard
-									slot="error"
-									isPageOwner={true}
-									menuMode={menuEvent}
-									tagArray={tag}
-									note={uniqueEvent(events)}
-									metadata={undefined}
-									myIndex={index}
-									{DeleteNote}
-									{MoveNote}
-									{CheckNote}
-								/>
-								<EventCard
-									slot="nodata"
-									isPageOwner={true}
-									menuMode={menuEvent}
-									tagArray={tag}
-									note={uniqueEvent(events)}
-									metadata={undefined}
-									myIndex={index}
-									{DeleteNote}
-									{MoveNote}
-									{CheckNote}
-								/>
-
-								<EventCard
-									isPageOwner={true}
-									menuMode={menuEvent}
-									tagArray={tag}
-									note={uniqueEvent(events)}
-									{metadata}
-									myIndex={index}
-									{DeleteNote}
-									{MoveNote}
-									{CheckNote}
-								/>
-							</Metadata>
-						</UniqueEventList>
-					</NostrApp>
-				{:else}
-					<!--リレー設定ないとき-->
+				<!-- {#if $searchRelays && $searchRelays.length > 0}
+					<NostrApp relays={$searchRelays}> -->
+				<UniqueEventList queryKey={tag} filters={[filter]} let:events>
 					<SearchCard
+						slot="loading"
+						{filter}
+						message={`loading [${tag}]`}
+						isPageOwner={true}
+						menuMode={menuSearch}
+						tagArray={tag}
+						myIndex={index}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+					/>
+
+					<SearchCard
+						slot="error"
+						{filter}
+						message={`error [${tag}]`}
+						isPageOwner={true}
+						menuMode={menuSearch}
+						tagArray={tag}
+						myIndex={index}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+					/>
+
+					<SearchCard
+						slot="nodata"
 						{filter}
 						message={`not found [${tag}]`}
 						isPageOwner={true}
@@ -315,7 +247,78 @@
 						{MoveNote}
 						{CheckNote}
 					/>
-				{/if}
+
+					<Metadata
+						queryKey={['metadata', uniqueEvent(events).pubkey]}
+						pubkey={uniqueEvent(events).pubkey}
+						let:metadata
+					>
+						<EventCard
+							slot="loading"
+							isPageOwner={true}
+							menuMode={menuEvent}
+							tagArray={tag}
+							note={uniqueEvent(events)}
+							metadata={undefined}
+							myIndex={index}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+						/>
+						<EventCard
+							slot="error"
+							isPageOwner={true}
+							menuMode={menuEvent}
+							tagArray={tag}
+							note={uniqueEvent(events)}
+							metadata={undefined}
+							myIndex={index}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+						/>
+						<EventCard
+							slot="nodata"
+							isPageOwner={true}
+							menuMode={menuEvent}
+							tagArray={tag}
+							note={uniqueEvent(events)}
+							metadata={undefined}
+							myIndex={index}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+						/>
+
+						<EventCard
+							isPageOwner={true}
+							menuMode={menuEvent}
+							tagArray={tag}
+							note={uniqueEvent(events)}
+							{metadata}
+							myIndex={index}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+						/>
+					</Metadata>
+				</UniqueEventList>
+				<!-- </NostrApp> -->
+				<!--リレー設定ないとき-->
+				<!-- {:else}
+				
+					<SearchCard
+						{filter}
+						message={`not found [${tag}]`}
+						isPageOwner={true}
+						menuMode={menuSearch}
+						tagArray={tag}
+						myIndex={index}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+					/> 
+				{/if}-->
 			{:else if tag[0] === 'd'}
 				<!--なんもしない-->
 			{:else}

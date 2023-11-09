@@ -40,7 +40,7 @@
 	import ModalDelete from '$lib/components/modals/ModalDelete.svelte';
 	import ModalMove from '$lib/components/modals/ModalMove.svelte';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import type { Nostr } from 'nosvelte';
+	import { NostrApp, type Nostr } from 'nosvelte';
 	let size: number;
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number>;
@@ -592,15 +592,20 @@
 			}
 		}}>{'>'}</button
 	> -->
-
-		<ListedEvent
-			listEvent={viewEvent}
-			{DeleteNote}
-			{MoveNote}
-			{CheckNote}
-			bind:bkm
-			bind:isOwner
-		/>
+		{#if $searchRelays && $searchRelays.length > 0}
+			<NostrApp relays={$searchRelays}>
+				<ListedEvent
+					listEvent={viewEvent}
+					{DeleteNote}
+					{MoveNote}
+					{CheckNote}
+					bind:bkm
+					bind:isOwner
+				/>
+			</NostrApp>
+		{:else}
+			{`relay has not been set`}
+		{/if}
 	</main>
 
 	<!-------------------------------あど----->
