@@ -2,17 +2,19 @@
 	import { _ } from 'svelte-i18n';
 	import { bookmarkEvents, identifierList } from '$lib/stores/bookmarkEvents';
 	import { modalStore, toastStore } from '$lib/stores/store';
+
 	// Props
 	/** Exposes parent props to this component. */
 	export let parent: any;
 	export let selectedValue: number;
 
-	// Stores
-	import { TabGroup, type ToastSettings } from '@skeletonlabs/skeleton';
-
 	// Form Data
-	let res = {
-		value: '',
+	let res: {
+		btn: string;
+		tagIndex: number;
+		value: { id: string; title?: string; image?: string; summary?: string };
+	} = {
+		value: { id: '' },
 		btn: '',
 		tagIndex: 0
 	};
@@ -40,28 +42,30 @@
 
 	function clickAddButton() {
 		// Trim the input value to remove leading and trailing spaces
-		res.value = res.value.trim();
-		console.log(res.value.length);
+		res.value.id = res.value.id.trim();
+		console.log(res.value.id.length);
 		//有効なタグ名かチェック
-		if (res.value === '') {
+		if (res.value.id === '') {
 			const t = {
-				message: 'タグ名を入力してください',
+				message: 'enter a list name',
 				timeout: 3000,
 				background: 'variant-filled-error'
 			};
 
 			toastStore.trigger(t);
-		} else if (res.value.length > 30) {
+		} else if (res.value.id.length > 30) {
 			const t = {
-				message: 'タグ名が長すぎます',
+				message: 'list name is too long',
 				timeout: 3000,
 				background: 'variant-filled-error'
 			};
 
 			toastStore.trigger(t);
-		} else if ($identifierList.some((item) => item === res.value)) {
+		} else if (
+			$identifierList.some((item) => item.identifier === res.value.id)
+		) {
 			const t = {
-				message: '同じ名前のタグが既に存在します',
+				message: 'already exists',
 				timeout: 3000,
 				background: 'variant-filled-error'
 			};
@@ -94,6 +98,7 @@
 
 	//   toastStore.trigger(t);
 	// }
+	let titleInputOpen: boolean = false;
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -103,14 +108,65 @@
 		<header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
 		<article class="body">{$modalStore[0].body ?? '(body missing)'}</article>
 		<!-- Enable for debugging: -->
+		<label class="label">
+			<span>ID</span>
+			<input
+				class="input p-2"
+				type="text"
+				bind:value={res.value.id}
+				placeholder="bookmark"
+			/>
+		</label>
+		{#if !titleInputOpen}
+			<button
+				on:click={() => {
+					titleInputOpen = !titleInputOpen;
+				}}
+			>
+				<div class="btn-icon btn-icon-sm variant-filled-primary">▶</div>
+				{$_('modalEditTag.list.title')}
+			</button>
+		{:else}
+			<button
+				on:click={() => {
+					titleInputOpen = !titleInputOpen;
+				}}
+			>
+				<div class="btn-icon btn-icon-sm variant-filled-primary">▼</div>
+				{$_('modalEditTag.list.title')}</button
+			>
+			<div class=" card p-4">
+				<label class="label">
+					<span>title</span>
+					<input
+						class="input p-2"
+						type="text"
+						bind:value={res.value.title}
+						placeholder="Books"
+					/>
+				</label>
 
-		<input
-			class="input p-2"
-			type="text"
-			bind:value={res.value}
-			placeholder="bookmark"
-		/>
+				<label class="label">
+					<span>image</span>
+					<input
+						class="input p-2"
+						type="text"
+						bind:value={res.value.image}
+						placeholder="https://example.com/image.webp"
+					/>
+				</label>
 
+				<label class="label">
+					<span>summary</span>
+					<input
+						class="input p-2"
+						type="text"
+						bind:value={res.value.summary}
+						placeholder="Recommended Books Collection"
+					/>
+				</label>
+			</div>
+		{/if}
 		<!-- prettier-ignore -->
 		<footer class="modal-footer {parent.regionFooter}">
         <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
@@ -128,7 +184,7 @@
 				on:change={handleChange}
 			>
 				{#each $identifierList as tag, index}
-					<option value={index}>{tag}</option>
+					<option value={index}>{tag.identifier}</option>
 				{/each}
 			</select>
 			<!-- prettier-ignore -->

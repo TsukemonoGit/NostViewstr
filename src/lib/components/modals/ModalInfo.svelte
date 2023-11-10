@@ -29,7 +29,7 @@
 	let copyData: string = 'test';
 	let copied = false;
 	const adata: nip19.AddressPointer = {
-		identifier: $identifierList[$listNum],
+		identifier: $identifierList[$listNum]?.identifier ?? '',
 		pubkey: $bookmarkEvents[$listNum].pubkey,
 		kind: $bookmarkEvents[$listNum].kind,
 		relays: $bookmarkRelays

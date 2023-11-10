@@ -180,19 +180,36 @@
 		modalStore.trigger(modal);
 	}
 
-	async function addTag(value: any) {
+	async function addTag(value: {
+		id: string;
+		title?: string;
+		image?: string;
+		summary?: string;
+	}) {
 		$nowProgress = true;
 		console.log(value);
+
+		let tags = [['d', value.id]];
+		if (value.title && value.title.trim() !== '') {
+			tags.push(['title', value.title]);
+		}
+		if (value.image && value.image.trim() !== '') {
+			tags.push(['image', value.image]);
+		}
+		if (value.summary && value.summary.trim() !== '') {
+			tags.push(['summary', value.summary]);
+		}
+		console.log(tags);
 		const event: NostrEvent = {
 			id: '',
 			pubkey: pubkey,
 			sig: '',
 			content: '',
-			tags: [['d', value]],
+			tags: tags,
 			created_at: Math.floor(Date.now() / 1000),
 			kind: kind
 		};
-		const res = await publishEventWithTimeout(event, $bookmarkRelays);
+		const res = await publishEventWithTimeout(event, $bookmarkRelays); // = { isSuccess: false, msg: '' }; //
 		console.log(res.msg);
 
 		if (res.isSuccess) {

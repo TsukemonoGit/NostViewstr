@@ -43,14 +43,16 @@
 				{#each $modalStore[0].value.tagList as list, index}
 					<ListBoxItem
 						bind:group={selectTag}
-						name={list}
+						name={list.identifier}
 						value={index}
 						class="truncate"
 						on:change={() => {
 							res.edit = false;
 							res.index = index;
 							onFormSubmit();
-						}}>{list}</ListBoxItem
+						}}
+						>{list.identifier}
+						{list.title ? `【${list.title}】` : ''}</ListBoxItem
 					>
 				{/each}
 			{:else}

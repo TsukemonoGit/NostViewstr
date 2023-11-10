@@ -88,7 +88,9 @@
 	{#each viewPage as tag, index}
 		{#await getIdByTag(tag)}
 			<!--loading a タグ　のなかみ-->
-			{tag}
+			<div class="z-0 card drop-shadow px-1 py-1 my-0.5">
+				{tag}
+			</div>
 		{:then { id, filter, kind }}
 			{#if tag[0] === 'e'}
 				<!-- {#if $searchRelays && $searchRelays.length > 0}
@@ -323,7 +325,9 @@
 				<!--なんもしない-->
 			{:else}
 				<!--a,e,d以外あとでかく-->
-				{tag}
+				<div class="z-0 card drop-shadow px-1 py-1 my-0.5">
+					{JSON.stringify(tag)}
+				</div>
 			{/if}
 		{/await}
 	{/each}

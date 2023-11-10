@@ -31,8 +31,14 @@
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 	import updateIcon from '@material-design-icons/svg/round/update.svg?raw';
+	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
 	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
-	import { isMulti, nowProgress, pubkey_viewer } from '$lib/stores/settings';
+	import {
+		iconView,
+		isMulti,
+		nowProgress,
+		pubkey_viewer
+	} from '$lib/stores/settings';
 	//import type { Event } from 'nostr-tools';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
@@ -224,7 +230,7 @@
 			component: moveModalComponent,
 			title: $_('nprofile.modal.moveNote.title'),
 			body: `${$_('nprofile.modal.moveNote.body_from')} ${
-				$identifierList[listNumber]
+				$identifierList[listNumber].identifier
 			}[${_bkm === 'pub' ? $_('public') : $_('private')}] ${$_(
 				'nprofile.modal.moveNote.body_to'
 			)}`,
@@ -273,7 +279,7 @@
 			// // Pass the component directly:
 			component: addModalComponent,
 			// Provide arbitrary metadata to your modal instance:
-			title: $identifierList[$listNum],
+			title: $identifierList[$listNum].identifier,
 			body: $_('nprofile.modal.addNote_body'),
 			response: async (res) => {
 				console.log(res);
@@ -581,9 +587,41 @@
 			</div>
 		{/if}
 		<div
-			class="min-w-[8rem] variant-ghost-primary border-b border-surface-400-500-token p-2 pb-0 h3 break-keep"
+			class="min-w-[8rem] max-w-[12rem] variant-ghost-primary border-b border-surface-400-500-token px-2 pb-0 break-keep overflow-hidden"
 		>
-			{$identifierList[$listNum]}
+			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
+				<div class="h3 flex h-full items-end">
+					{$identifierList[$listNum].identifier}
+				</div>
+			{:else}
+				<div class="grid grid-cols-[auto_1fr]">
+					{#if $iconView && $identifierList[$listNum].image}
+						<button class="btn-icon btn-icon-sm"
+							><img
+								width={36}
+								class="min-w-[36px]"
+								alt=""
+								src={$identifierList[$listNum].image}
+							/></button
+						>
+					{:else}
+						<button class="btn-icon btn-icon-sm fill-white place-self-center"
+							>{@html infoIcon}</button
+						>
+					{/if}
+					<div class="grid grid-rows-[auto_1fr]">
+						<div class="text-xs p-0">
+							{$identifierList[$listNum].identifier}
+						</div>
+
+						<div class="h5">{$identifierList[$listNum].title}</div>
+					</div>
+				</div>
+
+				{#if $identifierList[$listNum].summary}
+					{$identifierList[$listNum].summary}
+				{/if}
+			{/if}
 		</div>
 
 		<button

@@ -2,15 +2,30 @@ import { writable } from 'svelte/store';
 import type { Event } from 'nostr-tools';
 import type { Nostr } from 'nosvelte';
 import type { TextPart } from '$lib/content';
+import type { U } from 'vitest/dist/reporters-5f784f42';
 
+interface IdentifierList {
+	identifier: string | undefined;
+	title: string | undefined;
+	image: string | undefined;
+	summary: string | undefined;
+}
 export const bookmarkEvents = writable<Event[]>([]);
-export const identifierList = writable<string[]>([]);
+export const identifierList = writable<IdentifierList[]>([]);
 //dタグがあったらそれを、なかったら（なかったらそもそもリストになってないけど）nonameでだす
 bookmarkEvents.subscribe(($bookmarkEvents) => {
 	const newIdentifierList =
 		$bookmarkEvents?.map((item) => {
 			const tag = item.tags.find((tag) => tag[0] === 'd');
-			return tag ? tag[1] : 'nondame';
+			const title = item.tags.find((tag) => tag[0] === 'title');
+			const image = item.tags.find((tag) => tag[0] === 'image');
+			const summary = item.tags.find((tag) => tag[0] === 'summary');
+			return {
+				identifier: tag ? tag[1] : undefined,
+				title: title ? title[1] : undefined,
+				image: image ? image[1] : undefined,
+				summary: summary ? summary[1] : undefined
+			};
 		}) ?? [];
 	identifierList.set(newIdentifierList);
 });

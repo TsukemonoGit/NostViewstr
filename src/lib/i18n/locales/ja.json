@@ -68,5 +68,10 @@
     "light": "通信量軽量モード",
     "light_exp": "※モバイル通信時など",
     "light_switch": "ライトモード / ダークモードの切り替え"
+  },
+  "modalEditTag": {
+    "list": {
+      "title": "title,image,summaryも入れたいなぁ"
+    }
   }
 }
