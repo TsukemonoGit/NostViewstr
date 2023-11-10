@@ -2,7 +2,9 @@
 	import { _ } from 'svelte-i18n';
 	import { bookmarkEvents, identifierList } from '$lib/stores/bookmarkEvents';
 	import { modalStore, toastStore } from '$lib/stores/store';
-
+	import editIcon from '@material-design-icons/svg/round/edit.svg?raw';
+	import deleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
+	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	// Props
 	/** Exposes parent props to this component. */
 	export let parent: any;
@@ -98,7 +100,6 @@
 
 	//   toastStore.trigger(t);
 	// }
-	let titleInputOpen: boolean = false;
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -106,94 +107,110 @@
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
-		<article class="body">{$modalStore[0].body ?? '(body missing)'}</article>
-		<!-- Enable for debugging: -->
-		<label class="label">
-			<span>ID</span>
-			<input
-				class="input p-2"
-				type="text"
-				bind:value={res.value.id}
-				placeholder="bookmark"
-			/>
-		</label>
-		{#if !titleInputOpen}
-			<button
-				on:click={() => {
-					titleInputOpen = !titleInputOpen;
-				}}
-			>
-				<div class="btn-icon btn-icon-sm variant-filled-primary">▶</div>
-				{$_('modalEditTag.list.title')}
-			</button>
-		{:else}
-			<button
-				on:click={() => {
-					titleInputOpen = !titleInputOpen;
-				}}
-			>
-				<div class="btn-icon btn-icon-sm variant-filled-primary">▼</div>
-				{$_('modalEditTag.list.title')}</button
-			>
-			<div class=" card p-4">
-				<label class="label">
-					<span>title</span>
-					<input
-						class="input p-2"
-						type="text"
-						bind:value={res.value.title}
-						placeholder="Books"
-					/>
-				</label>
 
-				<label class="label">
-					<span>image</span>
-					<input
-						class="input p-2"
-						type="text"
-						bind:value={res.value.image}
-						placeholder="https://example.com/image.webp"
-					/>
-				</label>
+		<Accordion autocollapse>
+			<AccordionItem open>
+				<svelte:fragment slot="lead">{@html editIcon}</svelte:fragment>
+				<svelte:fragment slot="summary"
+					>{$_('nprofile.modal.editTags.body')}</svelte:fragment
+				>
+				<svelte:fragment slot="content">
+					<div class="card p-4">
+						<!-- Enable for debugging: -->
+						<label class="label">
+							<span>ID{$_('modalEditTag.list.ID')}</span>
+							<input
+								class="input p-2"
+								type="text"
+								bind:value={res.value.id}
+								placeholder="bookmark"
+							/>
+						</label>
 
-				<label class="label">
-					<span>summary</span>
-					<input
-						class="input p-2"
-						type="text"
-						bind:value={res.value.summary}
-						placeholder="Recommended Books Collection"
-					/>
-				</label>
-			</div>
-		{/if}
-		<!-- prettier-ignore -->
-		<footer class="modal-footer {parent.regionFooter}">
-        <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-        <button class="btn {parent.buttonPositive}" on:click={clickAddButton}>Create List</button>
-    </footer>
+						<div class="mt-4">{$_('modalEditTag.list.title')}</div>
+						<div class=" card p-4">
+							<label class="label">
+								<span>title</span>
+								<input
+									class="input p-2"
+									type="text"
+									bind:value={res.value.title}
+									placeholder="Books"
+								/>
+							</label>
 
-		{#if $identifierList.length > 0}
-			<article class="whitespace-pre-wrap break-words">
-				{@html $_('ModalEditTag.delete_body')}
-			</article>
-			<select
-				class="select"
-				size="1"
-				bind:value={selectedValue}
-				on:change={handleChange}
-			>
-				{#each $identifierList as tag, index}
-					<option value={index}>{tag.identifier}</option>
-				{/each}
-			</select>
-			<!-- prettier-ignore -->
-			<footer class="modal-footer {parent.regionFooter}">
-            <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-           
-            <button class="btn variant-filled-warning" on:click={ ()=> {res.btn = 'delete';
-       onFormSubmit();}}>Delete List</button>
-        </footer>
-		{/if}
+							<label class="label">
+								<span>image</span>
+								<input
+									class="input p-2"
+									type="text"
+									bind:value={res.value.image}
+									placeholder="https://example.com/image.webp"
+								/>
+							</label>
+
+							<label class="label">
+								<span>summary</span>
+								<input
+									class="input p-2"
+									type="text"
+									bind:value={res.value.summary}
+									placeholder="Recommended Books Collection"
+								/>
+							</label>
+						</div>
+
+						<footer class="modal-footer {parent.regionFooter}">
+							<button
+								class="btn {parent.buttonNeutral}"
+								on:click={parent.onClose}>{parent.buttonTextCancel}</button
+							>
+							<button
+								class="btn {parent.buttonPositive}"
+								on:click={clickAddButton}>Create List</button
+							>
+						</footer>
+					</div>
+				</svelte:fragment>
+			</AccordionItem>
+
+			<AccordionItem>
+				<svelte:fragment slot="lead">{@html deleteIcon}</svelte:fragment>
+				<svelte:fragment slot="summary"
+					>{$_('ModalEditTag.delete_body')}</svelte:fragment
+				>
+				<svelte:fragment slot="content">
+					<div class="card p-4">
+						{#if $identifierList.length > 0}
+							<select
+								class="select mb-4"
+								size="1"
+								bind:value={selectedValue}
+								on:change={handleChange}
+							>
+								{#each $identifierList as tag, index}
+									<option value={index}>{tag.identifier}</option>
+								{/each}
+							</select>
+
+							<footer class="modal-footer {parent.regionFooter}">
+								<button
+									class="btn {parent.buttonNeutral}"
+									on:click={parent.onClose}>{parent.buttonTextCancel}</button
+								>
+
+								<button
+									class="btn variant-filled-warning"
+									on:click={() => {
+										res.btn = 'delete';
+										onFormSubmit();
+									}}>Delete List</button
+								>
+							</footer>
+						{:else}no lists{/if}
+					</div>
+				</svelte:fragment>
+			</AccordionItem>
+		</Accordion>
 	</div>
 {/if}

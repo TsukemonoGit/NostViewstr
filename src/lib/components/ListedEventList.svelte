@@ -587,10 +587,10 @@
 			</div>
 		{/if}
 		<div
-			class="min-w-[8rem] max-w-[12rem] variant-ghost-primary border-b border-surface-400-500-token px-2 pb-0 break-keep overflow-hidden"
+			class="min-w-[8rem] max-w-[12rem] variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"
 		>
 			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
-				<div class="h3 flex h-full items-end">
+				<div class="h3 flex h-full items-center">
 					{$identifierList[$listNum].identifier}
 				</div>
 			{:else}

@@ -142,7 +142,7 @@
 			component: editTagModalComponent,
 			// Provide arbitrary metadata to your modal instance:
 			title: $_('nprofile.modal.editTags.title'),
-			body: $_('nprofile.modal.editTags.body'),
+
 			value: { selectedValue: 0 },
 			// Returns the updated response value
 			response: (res) => {

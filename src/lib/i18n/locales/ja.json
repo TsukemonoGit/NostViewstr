@@ -71,7 +71,8 @@
   },
   "modalEditTag": {
     "list": {
-      "title": "title,image,summaryも入れたいなぁ"
+      "title": "追加情報（あとから変更可能）",
+      "ID": "（必須 変更不可）"
     }
   }
 }
