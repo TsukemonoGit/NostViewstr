@@ -95,7 +95,8 @@
 
 	function onChangeCheckList(
 		idx: number,
-		event: Nostr.Event<number> | undefined
+		event: Nostr.Event<number> | undefined,
+		tagArray: string[]
 	) {
 		if ($checkedIndexList.map((item) => item.index).includes(idx)) {
 			$checkedIndexList.splice(
@@ -104,9 +105,13 @@
 			);
 		} else {
 			if (event !== undefined) {
-				$checkedIndexList.push({ index: idx, event: event });
+				$checkedIndexList.push({
+					index: idx,
+					event: event,
+					tagArray: tagArray
+				});
 			} else {
-				$checkedIndexList.push({ index: idx, event: {} });
+				$checkedIndexList.push({ index: idx, event: {}, tagArray: tagArray });
 			}
 		}
 		//背景色変えるやつ
@@ -173,8 +178,8 @@
 			.map((item) => item.index)
 			.includes(myIndex !== undefined ? myIndex : -1)}
 		on:change={() => {
-			if (myIndex !== undefined) {
-				onChangeCheckList(myIndex, note);
+			if (myIndex !== undefined && tagArray !== undefined) {
+				onChangeCheckList(myIndex, note, tagArray);
 				handleClick(State.Check);
 			}
 		}}

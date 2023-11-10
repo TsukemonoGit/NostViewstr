@@ -202,6 +202,7 @@
 				toastStore.trigger(t);
 			}
 		}
+		$checkedIndexList = [];
 	}
 
 	//---------------------------------------------move
@@ -465,16 +466,73 @@
 		$listNum += arg0;
 	}
 
-	function onClickMultiMove(
-		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
-	) {
-		throw new Error('Function not implemented.');
+	function onClickMultiMove() {
+		const listNumber = $listNum;
+		const _bkm = bkm;
+		const indexes = $checkedIndexList.map(
+			(item) => item.index + $pageNum * $amount
+		);
+		const tagArrays = $checkedIndexList.map((item) => item.tagArray);
+		//どこに移動させるのか画面を出す。
+		const modal: ModalSettings = {
+			type: 'component',
+			component: moveModalComponent,
+			title: $_('nprofile.modal.moveNote.title'),
+			body: `${$_('nprofile.modal.moveNote.body_from')} ${
+				$identifierList[listNumber]
+			}[${_bkm === 'pub' ? $_('public') : $_('private')}] ${$_(
+				'nprofile.modal.moveNote.body_to'
+			)}`,
+			value: {
+				bkm: _bkm,
+				tag: listNumber
+			},
+			response: (res) => {
+				//console.log(res);
+				if (res) {
+					//$nowProgress = true;
+					console.log(res.bkm);
+					moveNoteSuruyatu(
+						indexes,
+						tagArrays,
+						{ tag: listNumber, bkm: _bkm },
+						{ tag: res.tag, bkm: res.bkm }
+					);
+				}
+			}
+		};
+		modalStore.trigger(modal);
 	}
 
-	function onClickMultiDelete(
-		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
-	) {
-		throw new Error('Function not implemented.');
+	function onClickMultiDelete() {
+		console.log($checkedIndexList);
+		//クリックした時点のあれをあれしておく
+		const listN = $listNum;
+		const indexes = $checkedIndexList.map(
+			(item) => item.index + $pageNum * $amount
+		);
+		console.log(indexes);
+		//ほんとに消すのか出す
+		const modal: ModalSettings = {
+			type: 'component',
+			component: deleteModalComponent,
+			title: $_('nprofile.modal.deleteNote.title'),
+			body: `${$_('nprofile.modal.deleteNote.body')}`,
+			value: {
+				event: $checkedIndexList.map((item) => item.event)
+			},
+			response: async (res) => {
+				//console.log(res);
+				if (res) {
+					await deleteNotesfromLists(listN, indexes);
+					//    deleteNoteIndexes = [];
+				} else {
+					//  deleteNoteIndexes = [];
+				}
+			}
+		};
+		modalStore.trigger(modal);
+		//deleteNotesfromLists(listN,)
 	}
 
 	async function moveNoteSuruyatu(
@@ -490,12 +548,12 @@
 			//toの方にaddNoteする。
 			await updateBkmTag(from.tag); //最新の状態に更新
 
-			const addRes = await addNotesToLists(from.tag, from.bkm, tags);
+			const addRes = await addNotesToLists(to.tag, to.bkm, tags);
 			if (!addRes) {
 				$nowProgress = false;
 				return;
 			}
-			const deleteRes = await deleteNotesfromLists(to.tag, indexes);
+			const deleteRes = await deleteNotesfromLists(from.tag, indexes);
 			$nowProgress = false;
 		}
 	}
@@ -560,9 +618,9 @@
 		</div>
 		<button
 			class={'btn p-1 pr-2  arrow'}
-			on:click={() => {
+			on:click={async () => {
 				$nowProgress = true;
-				updateBkmTag($listNum);
+				await updateBkmTag($listNum);
 				$nowProgress = false;
 			}}>{@html updateIcon}</button
 		>
