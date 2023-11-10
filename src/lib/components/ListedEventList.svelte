@@ -465,8 +465,8 @@
 	// 	}
 	// 	console.log(identifier);
 	// }
-	const borderClassActive = `break-keep border-b-2 border-surface-900-50-token p-2 pb-0 h6`;
-	const borderClass = `break-keep border-b border-surface-400-500-token p-2 pb-0 h6`;
+	const borderClassActive = `break-keep border-b-2 border-white place-items-end  flex m-1 p-0.5 pb-0 h6`;
+	const borderClass = `break-keep  place-items-end p-0.5 flex m-1 h6`;
 
 	function onClickPage(arg0: number): any {
 		$listNum += arg0;
@@ -569,7 +569,7 @@
 {#if $bookmarkEvents && $bookmarkEvents.length > 0}
 	<!--header-->
 	<div
-		class="z-10 fixed h-[2.5em] top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
+		class="z-10 fixed h-[3em] top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
 	>
 		{#if $bookmarkEvents.length > 1}
 			<div class="flex">
@@ -586,15 +586,15 @@
 				>
 			</div>
 		{/if}
-		<div
-			class="min-w-[8rem] max-w-[12rem] variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"
-		>
+		<div class="min-w-[8rem] max-w-[12rem]">
+			<!--variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"-->
+
 			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
-				<div class="h3 flex h-full items-center">
+				<div class="h3 flex h-full items-center pt-1">
 					{$identifierList[$listNum].identifier}
 				</div>
 			{:else}
-				<div class="grid grid-cols-[auto_1fr]">
+				<div class="grid grid-cols-[auto_1fr] h-full items-center">
 					{#if $iconView && $identifierList[$listNum].image}
 						<button class="btn-icon btn-icon-sm"
 							><img
@@ -618,9 +618,9 @@
 					</div>
 				</div>
 
-				{#if $identifierList[$listNum].summary}
+				<!-- {#if $identifierList[$listNum].summary}
 					{$identifierList[$listNum].summary}
-				{/if}
+				{/if} -->
 			{/if}
 		</div>
 
@@ -644,7 +644,9 @@
 				}}>{$_('private')}</button
 			>
 		{/if}
-		<div class="flex-grow text-right text-sm break-keep">
+		<div
+			class="flex-grow text-right text-sm truncate break-keep m-0.5 place-self-end"
+		>
 			{$_('created_at')}<br />
 			{new Date(createdAt * 1000).toLocaleString([], {
 				year: 'numeric',
