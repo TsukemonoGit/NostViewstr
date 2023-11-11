@@ -51,7 +51,7 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { NostrApp, type Nostr } from 'nosvelte';
 	import ModalListInfo from './modals/ModalListInfo.svelte';
-
+	import ModalEventJson from './modals/ModalEventJson.svelte';
 	let size: number;
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number>;
@@ -590,7 +590,7 @@
 			// Provide arbitrary metadata to your modal instance:
 			title: $_('nprofile.modal.listInfo.title'),
 
-			value: {},
+			value: { pubkey: pubkey },
 			// Returns the updated response value
 			response: async (res) => {
 				console.log(res);
@@ -643,7 +643,7 @@
 		const event: Nostr.Event = {
 			id: '',
 			kind: $bookmarkEvents[listNumber].kind,
-			pubkey: $pubkey_viewer,
+			pubkey: pubkey,
 			content: $bookmarkEvents[listNumber].content,
 			tags: eventTag,
 			created_at: Math.floor(Date.now() / 1000),
@@ -670,85 +670,105 @@
 			toastStore.trigger(t);
 		}
 	}
+
+	//-------------------------------イベントJSON表示
+	const jsonModalComponent: ModalComponent = {
+		ref: ModalEventJson
+	};
+
+	const OpenNoteJson = (text: Nostr.Event) => {
+		const modal = {
+			type: 'component' as const,
+			title: 'Event Json',
+			backdropClasses: '!bg-surface-400/80',
+			meta: {
+				note: text
+			},
+
+			component: jsonModalComponent
+		};
+		modalStore.trigger(modal);
+	};
 </script>
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
 {#if $bookmarkEvents && $bookmarkEvents.length > 0}
 	<!--header-->
-	<div
-		class="z-10 fixed h-[3em] top-0 inline-flex flex-row space-x-0 w-screen bg-surface-500 text-white"
-	>
-		{#if $bookmarkEvents.length > 1}
-			<div class="flex">
-				<button
-					class="arrow btn p-0 rounded"
-					on:click={() => onClickPage(-1)}
-					disabled={$listNum <= 0}>{@html backIcon}</button
-				>
-				<button
-					class="arrow btn p-0 rounded"
-					on:click={() => onClickPage(1)}
-					disabled={$listNum >= $bookmarkEvents.length - 1}
-					>{@html nextIcon}</button
-				>
-			</div>
-		{/if}
-		<div class="min-w-[8rem] max-w-[12rem]">
-			<!--variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"-->
-
-			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
-				<div class="h4 flex h-full items-center pt-1">
+	<div class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row">
+		<div
+			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center"
+		>
+			{#if $bookmarkEvents.length > 1}
+				<div class="flex">
 					<button
-						class=" btn-icon btn-icon-sm fill-white place-self-center"
-						on:click={listInfoModalOpen}>{@html infoIcon}</button
-					>{$identifierList[$listNum].identifier}
+						class="arrow btn p-0 rounded"
+						on:click={() => onClickPage(-1)}
+						disabled={$listNum <= 0}>{@html backIcon}</button
+					>
+					<button
+						class="arrow btn p-0 rounded"
+						on:click={() => onClickPage(1)}
+						disabled={$listNum >= $bookmarkEvents.length - 1}
+						>{@html nextIcon}</button
+					>
 				</div>
-			{:else}
-				<div class="grid grid-cols-[auto_1fr] h-full items-center">
-					{#if $iconView && $identifierList[$listNum].image}
-						<button
-							class="btn-icon btn-icon-sm mr-1"
-							on:click={listInfoModalOpen}
-							><img
-								width={36}
-								class="min-w-[36px]"
-								alt=""
-								src={$identifierList[$listNum].image}
-							/></button
-						>
-					{:else}
-						<button
-							class="btn-icon btn-icon-sm fill-white place-self-center"
-							on:click={listInfoModalOpen}>{@html infoIcon}</button
-						>
-					{/if}
-					<div class="grid grid-rows-[auto_1fr]">
-						<div class="text-xs p-0">
-							{$identifierList[$listNum].identifier}
-						</div>
+			{/if}
+			<div class="min-w-[8rem] max-w-[12rem]">
+				<!--variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"-->
 
-						<div class="h5 overflow-hidden break-keep">
-							{$identifierList[$listNum].title}
+				{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
+					<div class="h4 flex h-full items-center pt-1">
+						<button
+							class=" btn-icon btn-icon-sm fill-white place-self-center"
+							on:click={listInfoModalOpen}>{@html infoIcon}</button
+						>{$identifierList[$listNum].identifier}
+					</div>
+				{:else}
+					<div class="grid grid-cols-[auto_1fr] h-full items-center">
+						{#if $iconView && $identifierList[$listNum].image}
+							<button
+								class="btn-icon btn-icon-sm mr-1"
+								on:click={listInfoModalOpen}
+								><img
+									width={36}
+									class="min-w-[36px]"
+									alt=""
+									src={$identifierList[$listNum].image}
+								/></button
+							>
+						{:else}
+							<button
+								class="btn-icon btn-icon-sm fill-white place-self-center"
+								on:click={listInfoModalOpen}>{@html infoIcon}</button
+							>
+						{/if}
+						<div class="grid grid-rows-[auto_1fr]">
+							<div class="text-xs p-0">
+								{$identifierList[$listNum].identifier}
+							</div>
+
+							<div class="h5 overflow-hidden break-keep">
+								{$identifierList[$listNum].title}
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<!-- {#if $identifierList[$listNum].summary}
+					<!-- {#if $identifierList[$listNum].summary}
 					{$identifierList[$listNum].summary}
 				{/if} -->
-			{/if}
-		</div>
+				{/if}
+			</div>
 
-		<button
-			class={bkm === 'pub' ? borderClassActive : borderClass}
-			disabled={bkm === 'pub'}
-			on:click={() => {
-				bkm = 'pub';
-				console.log(bkm);
-				$pageNum = 0;
-			}}
-			><PubBkm />
-			<!--	<svg
+			<button
+				class={bkm === 'pub' ? borderClassActive : borderClass}
+				disabled={bkm === 'pub'}
+				on:click={() => {
+					bkm = 'pub';
+					console.log(bkm);
+					$pageNum = 0;
+				}}
+				><PubBkm />
+				<!--	<svg
 				xmlns="http://www.w3.org/2000/svg"
 				height="24"
 				viewBox="0 -960 960 960"
@@ -759,19 +779,19 @@
 				/></svg
 			>{@html KidStar}
 			{$_('public')}--></button
-		>
-		{#if viewEvent?.content !== ''}
-			<button
-				class={bkm === 'prv' ? borderClassActive : borderClass}
-				disabled={bkm === 'prv'}
-				on:click={() => {
-					bkm = 'prv';
-					console.log(bkm);
-					$pageNum = 0;
-				}}
 			>
-				<PrvBkm />
-				<!--<svg
+			{#if viewEvent?.content !== ''}
+				<button
+					class={bkm === 'prv' ? borderClassActive : borderClass}
+					disabled={bkm === 'prv'}
+					on:click={() => {
+						bkm = 'prv';
+						console.log(bkm);
+						$pageNum = 0;
+					}}
+				>
+					<PrvBkm />
+					<!--<svg
 					xmlns="http://www.w3.org/2000/svg"
 					height="24"
 					viewBox="0 -960 960 960"
@@ -782,49 +802,57 @@
 					/></svg
 				>{@html LockIcon}
 			{$_('private')}-->
-			</button>
-		{/if}
+				</button>
+			{/if}
 
-		<div class="flex-grow grid grid-rows-[auto_atuo]">
-			<div class="truncate place-self-end text-xs">
-				{$_('created_at')}
-			</div>
-			<div class="flex text-right place-self-end text-sm">
-				<div class=" pl-1 keep-all text-sm">
-					{new Date(createdAt * 1000).toLocaleDateString([], {
-						year: 'numeric',
-						month: '2-digit',
-						day: '2-digit'
-					})}
+			<div class="flex-grow grid grid-rows-[auto_atuo]">
+				<div class="truncate place-self-end text-xs">
+					{$_('created_at')}
 				</div>
-				<div class=" pl-1 overflow-hidden text-sm">
-					{new Date(createdAt * 1000).toLocaleTimeString([], {
-						hour: '2-digit',
-						minute: '2-digit'
-					})}
-				</div>
-			</div>
+				<button
+					class="flex text-right place-self-end text-sm underline decoration-secondary-200"
+					on:click={() => {
+						OpenNoteJson(viewEvent);
+					}}
+				>
+					<div class=" keep-all text-sm">
+						{new Date(createdAt * 1000).toLocaleDateString([], {
+							year: 'numeric',
+							month: '2-digit',
+							day: '2-digit'
+						})}
+					</div>
+					<div class=" pl-0.5 overflow-hidden text-sm">
+						{new Date(createdAt * 1000).toLocaleTimeString([], {
+							hour: '2-digit',
+							minute: '2-digit'
+						})}
+					</div>
+				</button>
 
-			<!-- {new Date(createdAt * 1000).toLocaleString([], {
+				<!-- {new Date(createdAt * 1000).toLocaleString([], {
 				year: 'numeric',
 				month: '2-digit',
 				day: '2-digit',
 				hour: '2-digit',
 				minute: '2-digit'
 			})} -->
+			</div>
+			<button
+				class={'btn p-1 pr-2  arrow'}
+				on:click={async () => {
+					$nowProgress = true;
+					await updateBkmTag($listNum);
+					$nowProgress = false;
+				}}>{@html updateIcon}</button
+			>
 		</div>
-		<button
-			class={'btn p-1 pr-2  arrow'}
-			on:click={async () => {
-				$nowProgress = true;
-				await updateBkmTag($listNum);
-				$nowProgress = false;
-			}}>{@html updateIcon}</button
-		>
 	</div>
 
 	<!---->
-	<main class="my-10 overflow-w-hidden">
+	<main
+		class="my-12 overflow-w-hidden container max-w-[1024px] h-full mx-auto justify-center items-center"
+	>
 		<!-- <LightSwitch />
 	<button
 		on:click={() => {

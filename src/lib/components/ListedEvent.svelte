@@ -321,7 +321,7 @@
 						{CheckNote}
 					/> 
 				{/if}-->
-			{:else if tag[0] === 'd'}
+			{:else if tag[0] === 'd' || tag[0] === 'title' || tag[0] === 'image' || tag[0] === 'summary'}
 				<!--なんもしない-->
 			{:else}
 				<!--a,e,d以外あとでかく-->

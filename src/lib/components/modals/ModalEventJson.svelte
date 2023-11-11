@@ -51,12 +51,16 @@
 			{$modalStore[0].title ?? '(title missing)'}
 		</header>
 
-		<div class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto">
+		<div
+			class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto break-all max-w-[768px] p-1"
+		>
 			{JSON.stringify($modalStore[0].meta.note, undefined, 4)}
 		</div>
 		{#if $modalStore[0].meta.tagArray}
 			<div class="mt-2"><b>list tag</b></div>
-			<div class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto">
+			<div
+				class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto p-1"
+			>
 				{JSON.stringify($modalStore[0].meta.tagArray)}
 			</div>
 		{/if}
@@ -75,8 +79,10 @@
 					on:click={() => onClickButton('hex')}>copy hexID</button
 				>
 
-				<button type="button" class="btn variant-filled-surface p-2" on:click={parent.onClose}
-					>{parent.buttonTextCancel}</button
+				<button
+					type="button"
+					class="btn variant-filled-surface p-2"
+					on:click={parent.onClose}>{parent.buttonTextCancel}</button
 				>
 			</div>
 		</footer>

@@ -3,6 +3,7 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 
 	import { identifierList, listNum } from '$lib/stores/bookmarkEvents';
+	import { pubkey_viewer } from '$lib/stores/settings';
 
 	export let parent: any;
 
@@ -34,6 +35,7 @@
 				<input
 					class="input p-2"
 					type="text"
+					disabled={$modalStore[0].value.pubkey !== $pubkey_viewer}
 					bind:value={res.title}
 					placeholder="Books"
 				/>
@@ -44,6 +46,7 @@
 				<input
 					class="input p-2"
 					type="text"
+					disabled={$modalStore[0].value.pubkey !== $pubkey_viewer}
 					bind:value={res.image}
 					placeholder="https://example.com/image.webp"
 				/>
@@ -53,6 +56,7 @@
 				<span>summary</span>
 				<textarea
 					class="input p-2 max-h-24 overflow-y-auto break-all"
+					disabled={$modalStore[0].value.pubkey !== $pubkey_viewer}
 					bind:value={res.summary}
 					placeholder="Recommended Books Collection"
 				/>
@@ -62,7 +66,7 @@
 		<footer class="modal-footer {parent.regionFooter}">
         <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
         
-        <button class="btn {parent.buttonPositive}" on:click={onFormSubmit}>Update</button>
+        <button class="btn {parent.buttonPositive}" on:click={onFormSubmit}  disabled={$modalStore[0].value.pubkey!==$pubkey_viewer}>Update</button>
        
     </footer>
 	</div>

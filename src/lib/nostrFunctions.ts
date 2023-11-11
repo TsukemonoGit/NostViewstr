@@ -46,6 +46,7 @@ import {
 import { get } from 'svelte/store';
 import {
 	bookmarkEvents,
+	identifierList,
 	naddrStore,
 	type NaddrStore
 } from './stores/bookmarkEvents';
@@ -890,6 +891,21 @@ export async function updateBkmTag(num: number) {
 		if (res.length > 0 && res[0].created_at > bkm[num].created_at) {
 			bkm[num] = res[0];
 			bookmarkEvents.set(bkm);
+			// //newIdentifierListも更新してーーー
+			// const newIdentifierList =
+			// 	bkm.map((item) => {
+			// 		const tag = item.tags.find((tag) => tag[0] === 'd');
+			// 		const title = item.tags.find((tag) => tag[0] === 'title');
+			// 		const image = item.tags.find((tag) => tag[0] === 'image');
+			// 		const summary = item.tags.find((tag) => tag[0] === 'summary');
+			// 		return {
+			// 			identifier: tag ? tag[1] : undefined,
+			// 			title: title ? title[1] : undefined,
+			// 			image: image ? image[1] : undefined,
+			// 			summary: summary ? summary[1] : undefined
+			// 		};
+			// 	}) ?? [];
+			// identifierList.set(newIdentifierList);
 		}
 	}
 }
