@@ -32,6 +32,9 @@
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 	import updateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
+	//	import LockIcon from '@material-design-icons/svg/round/shield_lock.svg?raw';
+	//	import KidStar from '@material-design-icons/svg/round/kid_star.svg?raw';
+
 	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
 	import {
 		iconView,
@@ -47,6 +50,7 @@
 	import ModalMove from '$lib/components/modals/ModalMove.svelte';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { NostrApp, type Nostr } from 'nosvelte';
+
 	let size: number;
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number>;
@@ -58,7 +62,9 @@
 	$: createdAt = viewEvent?.created_at;
 	$: isOwner = $pubkey_viewer === pubkey;
 	onMount(async () => {
+		$nowProgress = true;
 		await bkminit(pubkey);
+		$nowProgress = false;
 	});
 	async function bkminit(pub: string) {
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
@@ -590,13 +596,15 @@
 			<!--variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"-->
 
 			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
-				<div class="h3 flex h-full items-center pt-1">
-					{$identifierList[$listNum].identifier}
+				<div class="h4 flex h-full items-center pt-1">
+					<button class=" btn-icon btn-icon-sm fill-white place-self-center"
+						>{@html infoIcon}</button
+					>{$identifierList[$listNum].identifier}
 				</div>
 			{:else}
 				<div class="grid grid-cols-[auto_1fr] h-full items-center">
 					{#if $iconView && $identifierList[$listNum].image}
-						<button class="btn-icon btn-icon-sm"
+						<button class="btn-icon btn-icon-sm mr-1"
 							><img
 								width={36}
 								class="min-w-[36px]"
@@ -631,7 +639,19 @@
 				bkm = 'pub';
 				console.log(bkm);
 				$pageNum = 0;
-			}}>{$_('public')}</button
+			}}
+			><svg
+				xmlns="http://www.w3.org/2000/svg"
+				height="24"
+				viewBox="0 -960 960 960"
+				width="24"
+				class="fill-tertiary-300"
+				><path
+					d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Zm49 69-194 64 124 179-4 191 200-55 200 56-4-192 124-177-194-66-126-165-126 165Zm126 135Z"
+				/></svg
+			>
+			<!--	{@html KidStar}
+			{$_('public')}--></button
 		>
 		{#if viewEvent?.content !== ''}
 			<button
@@ -641,20 +661,49 @@
 					bkm = 'prv';
 					console.log(bkm);
 					$pageNum = 0;
-				}}>{$_('private')}</button
-			>
+				}}
+				><svg
+					xmlns="http://www.w3.org/2000/svg"
+					height="24"
+					viewBox="0 -960 960 960"
+					width="24"
+					class="fill-tertiary-300"
+					><path
+						d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Zm-80 160h160q17 0 28.5-11.5T600-360v-120q0-17-11.5-28.5T560-520v-40q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560v40q-17 0-28.5 11.5T360-480v120q0 17 11.5 28.5T400-320Zm40-200v-40q0-17 11.5-28.5T480-600q17 0 28.5 11.5T520-560v40h-80Z"
+					/></svg
+				>
+				<!--{@html LockIcon}
+			{$_('private')}-->
+			</button>
 		{/if}
-		<div
-			class="flex-grow text-right text-sm truncate break-keep m-0.5 place-self-end"
-		>
-			{$_('created_at')}<br />
-			{new Date(createdAt * 1000).toLocaleString([], {
+
+		<div class="flex-grow grid grid-rows-[auto_atuo]">
+			<div class="truncate place-self-end text-xs">
+				{$_('created_at')}
+			</div>
+			<div class="flex text-right place-self-end text-sm">
+				<div class=" pl-1 keep-all text-sm">
+					{new Date(createdAt * 1000).toLocaleDateString([], {
+						year: 'numeric',
+						month: '2-digit',
+						day: '2-digit'
+					})}
+				</div>
+				<div class=" pl-1 overflow-hidden text-sm">
+					{new Date(createdAt * 1000).toLocaleTimeString([], {
+						hour: '2-digit',
+						minute: '2-digit'
+					})}
+				</div>
+			</div>
+
+			<!-- {new Date(createdAt * 1000).toLocaleString([], {
 				year: 'numeric',
 				month: '2-digit',
 				day: '2-digit',
 				hour: '2-digit',
 				minute: '2-digit'
-			})}
+			})} -->
 		</div>
 		<button
 			class={'btn p-1 pr-2  arrow'}
@@ -667,7 +716,7 @@
 	</div>
 
 	<!---->
-	<main class="my-10">
+	<main class="my-10 overflow-w-hidden">
 		<!-- <LightSwitch />
 	<button
 		on:click={() => {
@@ -740,5 +789,10 @@
 		width: 2em;
 		height: 2em;
 		fill: white;
+	}
+	:global(.test1 g) {
+		width: 2em;
+		height: 2em;
+		fill: black;
 	}
 </style>

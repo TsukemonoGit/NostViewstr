@@ -228,12 +228,28 @@ export async function publishEventWithTimeout(
 		const rxNostr = createRxNostr();
 
 		await rxNostr.setRelays(relays);
-		rxNostr.send(event).subscribe((packet) => {
-			console.log(packet);
-			//	console.log(`relay: ${packet.from} -> ${packet.ok ? "succeeded" : "failed"}`);
+
+		// Promiseを作成してObservableを待機
+		const result = await new Promise<{
+			isSuccess: boolean;
+			msg: string;
+		}>((resolve) => {
+			rxNostr.send(event).subscribe({
+				next: (packet) => {
+					console.log(packet);
+					msgObj[packet.from] = true;
+					isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
+				},
+				complete: () => {
+					resolve({ isSuccess, msg: formatResults(msgObj) }); // complete時に結果を解決してresolve
+				}
+			});
 		});
-	} catch (error) {}
-	return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+
+		return result;
+	} catch (error) {
+		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+	}
 }
 
 // リレーの結果を指定の形式に整形
@@ -642,42 +658,52 @@ export async function getRelays(author: string) {
 	return kekka;
 }
 
-export function setRelays(events: NostrEvent[]) {
+export async function setRelays(events: NostrEvent[]) {
 	let read: string[] = [];
 	let write: string[] = [];
 	const kind10002 = events.find((item) => item.kind === 10002);
 	const kind3 = events.find((item) => item.kind === 3);
+
 	if (kind10002 && kind10002.tags.length > 0) {
-		kind10002.tags.map((item) => {
+		for (const item of kind10002.tags) {
+			// mapからfor...ofに変更
 			if (item[0] === 'r') {
-				if (item.length < 3) {
-					read.push(item[1]);
-					write.push(item[1]);
-				} else if (item[2] === 'read') {
-					read.push(item[1]);
-				} else if (item[2] === 'write') {
-					write.push(item[1]);
+				const existRelay = await checkRelayExist(item[1]);
+				if (existRelay) {
+					if (item.length < 3) {
+						read.push(item[1]);
+						write.push(item[1]);
+					} else if (item[2] === 'read') {
+						read.push(item[1]);
+					} else if (item[2] === 'write') {
+						write.push(item[1]);
+					}
 				}
 			}
 			relayEvent.set(kind10002);
-		});
+		}
 	} else if (kind3 && kind3.content !== '') {
 		try {
 			const relays = JSON.parse(kind3.content);
 			console.log(relays);
-			Object.keys(relays).map((item) => {
-				if (relays[item].read) {
-					read.push(item);
+			for (const item of Object.keys(relays)) {
+				// mapからfor...ofに変更
+				const existRelay = await checkRelayExist(item);
+				if (existRelay) {
+					if (relays[item].read) {
+						read.push(item);
+					}
+					if (relays[item].write) {
+						write.push(item);
+					}
 				}
-				if (relays[item].write) {
-					write.push(item);
-				}
-			});
+			}
 			relayEvent.set(kind3);
 		} catch (error) {
-			console.log(error);
+			console.error('JSON parse error:', error);
 		}
 	}
+
 	console.log(read);
 	console.log(write);
 	if (read.length > 0) {
@@ -695,6 +721,62 @@ export function setRelays(events: NostrEvent[]) {
 	}
 	if (get(postRelays).length === 0) {
 		postRelays.set(defaultRelays);
+	}
+}
+
+// そのURLのリレーが存在するか確認 NIP11
+async function checkRelayExist(relay: string, timeout: number = 1000) {
+	let urlstr, url; //protocol,
+	if (relay.startsWith('ws://')) {
+		// inputValueがws://から始まる場合
+		//protocol = 'ws';
+		urlstr = relay.slice(5); // ws://の部分を削除した残りの文字列を取得する
+		url = new URL('http://' + urlstr);
+	} else if (relay.startsWith('wss://')) {
+		// inputValueがwss://から始まる場合
+		//protocol = 'wss';
+		urlstr = relay.slice(6); // wss://の部分を削除した残りの文字列を取得する
+		url = new URL('https://' + urlstr);
+	} else {
+		// console.log('test');
+		return false;
+		// throw new Error('error');
+	}
+
+	let header = new Headers();
+	header.set('Accept', 'application/nostr+json');
+
+	// AbortControllerを作成し、timeoutミリ秒後にabort()を呼び出す
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+	try {
+		let response = await fetch(url, {
+			headers: header,
+			signal: controller.signal
+		});
+		console.log(response);
+		console.log(response.ok);
+
+		// タイムアウトが発生した場合、response.okもfalseになります
+		if (response.ok) {
+			return true;
+		} else {
+			return false;
+		}
+	} catch (error) {
+		if (error instanceof Error) {
+			if (error.name === 'AbortError') {
+				console.log('Request timed out');
+			} else {
+				console.error(error);
+			}
+		}
+		return false;
+		// throw new Error('error');
+	} finally {
+		// クリーンアップ: タイムアウト用のタイマーをクリア
+		clearTimeout(timeoutId);
 	}
 }
 

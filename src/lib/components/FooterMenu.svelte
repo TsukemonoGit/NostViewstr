@@ -44,31 +44,23 @@
 		`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
 	);
 	$: last = Math.floor($listSize / $amount);
-	function next(
-		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
-	) {
+	function next() {
 		if ($pageNum < Math.floor($listSize / $amount)) {
 			$pageNum++;
 		}
 	}
 
-	function back(
-		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
-	) {
+	function back() {
 		if ($pageNum > 0) {
 			$pageNum--;
 		}
 	}
 
-	function firstPage(
-		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
-	) {
+	function firstPage() {
 		$pageNum = 0;
 	}
 
-	function lastPage(
-		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
-	) {
+	function lastPage() {
 		$pageNum = last;
 	}
 
@@ -84,9 +76,7 @@
 		slot: `<p>Skeleton</p>`
 	};
 
-	function openLists(
-		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
-	) {
+	function openLists() {
 		if ($bookmarkEvents) {
 			const modal: ModalSettings = {
 				type: 'component',
@@ -161,7 +151,7 @@
 								title: $_('nprofile.modal.deleteTag.title'),
 								body: `${$_('nprofile.modal.deleteTag.body')}`,
 								value: {
-									tag: $identifierList[res.tagIndex]
+									tag: $identifierList[res.tagIndex].identifier
 								},
 								response: async (res2) => {
 									//console.log(res);

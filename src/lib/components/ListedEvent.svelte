@@ -325,7 +325,7 @@
 				<!--なんもしない-->
 			{:else}
 				<!--a,e,d以外あとでかく-->
-				<div class="z-0 card drop-shadow px-1 py-1 my-0.5">
+				<div class="z-0 card drop-shadow px-1 py-1 my-0.5 break-all">
 					{JSON.stringify(tag)}
 				</div>
 			{/if}
