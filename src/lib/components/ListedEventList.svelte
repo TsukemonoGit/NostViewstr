@@ -724,7 +724,7 @@
 						>{$identifierList[$listNum].identifier}
 					</div>
 				{:else}
-					<div class="grid grid-cols-[auto_1fr] h-full items-center">
+					<div class="grid grid-cols-[auto_1fr] h-full items-center pr-0.5">
 						{#if $iconView && $identifierList[$listNum].image}
 							<button
 								class="btn-icon btn-icon-sm mr-1"
