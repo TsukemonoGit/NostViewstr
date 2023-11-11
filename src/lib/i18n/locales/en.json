@@ -36,5 +36,10 @@
   "mode_light_exp": "use mobile communication, etc.",
   "mode": {
     "light_switch": "Switch between Light and Dark Mode"
+  },
+  "modalEditTag": {
+    "list": {
+      "ID": "(Required / Cannot be changed / Only alphanumeric characters)"
+    }
   }
 }

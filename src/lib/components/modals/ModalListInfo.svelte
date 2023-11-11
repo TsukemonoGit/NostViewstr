@@ -13,9 +13,9 @@
 	}
 	// Form Data
 	let res: { title?: string; image?: string; summary?: string } = {
-		title: $identifierList[$listNum].title,
-		image: $identifierList[$listNum].image,
-		summary: $identifierList[$listNum].summary
+		title: $identifierList[$listNum].title ?? '',
+		image: $identifierList[$listNum].image ?? '',
+		summary: $identifierList[$listNum].summary ?? ''
 	};
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';

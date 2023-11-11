@@ -123,6 +123,8 @@
 								class="input p-2"
 								type="text"
 								bind:value={res.value.id}
+								on:input={() =>
+									(res.value.id = res.value.id.replace(/[^a-zA-Z0-9-_]/g, ''))}
 								placeholder="bookmark"
 							/>
 						</label>
