@@ -3,7 +3,9 @@
     "Share": "Post on Nostr",
     "open": "Open other app",
     "move": "Move ather list",
-    "delete": "Delete"
+    "delete": "Delete",
+    "pub": "public list",
+    "prv": "private list"
   },
   "modal": {
     "failed_copy": "failed to copy"

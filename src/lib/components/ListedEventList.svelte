@@ -34,7 +34,8 @@
 	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
 	//	import LockIcon from '@material-design-icons/svg/round/shield_lock.svg?raw';
 	//	import KidStar from '@material-design-icons/svg/round/kid_star.svg?raw';
-
+	import PubBkm from './Button/PubBkm.svelte';
+	import PrvBkm from './Button/PrvBkm.svelte';
 	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
 	import {
 		iconView,
@@ -50,6 +51,7 @@
 	import ModalMove from '$lib/components/modals/ModalMove.svelte';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { NostrApp, type Nostr } from 'nosvelte';
+	import ModalListInfo from './modals/ModalListInfo.svelte';
 
 	let size: number;
 	let bkm: string = 'pub';
@@ -569,6 +571,36 @@
 			$nowProgress = false;
 		}
 	}
+
+	//-------------------------------------------------------edit tag
+	const listInfoModalComponent: ModalComponent = {
+		// Pass a reference to your custom component
+		ref: ModalListInfo,
+		// Add the component properties as key/value pairs
+		props: { background: 'bg-red-500' },
+		// Provide a template literal for the default component slot
+		slot: '<p>Skeleton</p>'
+	};
+
+	function listInfoModalOpen() {
+		const modal: ModalSettings = {
+			type: 'component',
+
+			// Pass the component directly:
+			component: listInfoModalComponent,
+			// Provide arbitrary metadata to your modal instance:
+			title: $_('nprofile.modal.listInfo.title'),
+
+			value: {},
+			// Returns the updated response value
+			response: (res) => {
+				console.log(res);
+				if (res) {
+				}
+			}
+		};
+		modalStore.trigger(modal);
+	}
 </script>
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
@@ -597,14 +629,17 @@
 
 			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
 				<div class="h4 flex h-full items-center pt-1">
-					<button class=" btn-icon btn-icon-sm fill-white place-self-center"
-						>{@html infoIcon}</button
+					<button
+						class=" btn-icon btn-icon-sm fill-white place-self-center"
+						on:click={listInfoModalOpen}>{@html infoIcon}</button
 					>{$identifierList[$listNum].identifier}
 				</div>
 			{:else}
 				<div class="grid grid-cols-[auto_1fr] h-full items-center">
 					{#if $iconView && $identifierList[$listNum].image}
-						<button class="btn-icon btn-icon-sm mr-1"
+						<button
+							class="btn-icon btn-icon-sm mr-1"
+							on:click={listInfoModalOpen}
 							><img
 								width={36}
 								class="min-w-[36px]"
@@ -613,8 +648,9 @@
 							/></button
 						>
 					{:else}
-						<button class="btn-icon btn-icon-sm fill-white place-self-center"
-							>{@html infoIcon}</button
+						<button
+							class="btn-icon btn-icon-sm fill-white place-self-center"
+							on:click={listInfoModalOpen}>{@html infoIcon}</button
 						>
 					{/if}
 					<div class="grid grid-rows-[auto_1fr]">
@@ -640,7 +676,8 @@
 				console.log(bkm);
 				$pageNum = 0;
 			}}
-			><svg
+			><PubBkm />
+			<!--	<svg
 				xmlns="http://www.w3.org/2000/svg"
 				height="24"
 				viewBox="0 -960 960 960"
@@ -649,8 +686,7 @@
 				><path
 					d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Zm49 69-194 64 124 179-4 191 200-55 200 56-4-192 124-177-194-66-126-165-126 165Zm126 135Z"
 				/></svg
-			>
-			<!--	{@html KidStar}
+			>{@html KidStar}
 			{$_('public')}--></button
 		>
 		{#if viewEvent?.content !== ''}
@@ -662,7 +698,9 @@
 					console.log(bkm);
 					$pageNum = 0;
 				}}
-				><svg
+			>
+				<PrvBkm />
+				<!--<svg
 					xmlns="http://www.w3.org/2000/svg"
 					height="24"
 					viewBox="0 -960 960 960"
@@ -671,8 +709,7 @@
 					><path
 						d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Zm-80 160h160q17 0 28.5-11.5T600-360v-120q0-17-11.5-28.5T560-520v-40q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560v40q-17 0-28.5 11.5T360-480v120q0 17 11.5 28.5T400-320Zm40-200v-40q0-17 11.5-28.5T480-600q17 0 28.5 11.5T520-560v40h-80Z"
 					/></svg
-				>
-				<!--{@html LockIcon}
+				>{@html LockIcon}
 			{$_('private')}-->
 			</button>
 		{/if}
@@ -776,6 +813,15 @@
 		</div>
 	{/if}
 {/if}
+
+<div class="card p-1 variant-filled-secondary z-20" data-popup="popupPub">
+	<p>{$_('popup.pub')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
+</div>
+<div class="card p-1 variant-filled-secondary z-20" data-popup="popupPrv">
+	<p>{$_('popup.prv')}</p>
+	<div class="arrow variant-filled-secondary z-20" />
+</div>
 
 <!-- {/await} -->
 
