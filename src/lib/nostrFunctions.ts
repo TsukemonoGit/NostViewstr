@@ -233,6 +233,7 @@ export async function publishEventWithTimeout(
 		const result = await new Promise<{
 			isSuccess: boolean;
 			msg: string;
+			event?: Nostr.Event;
 		}>((resolve) => {
 			rxNostr.send(event).subscribe({
 				next: (packet) => {
@@ -241,7 +242,7 @@ export async function publishEventWithTimeout(
 					isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
 				},
 				complete: () => {
-					resolve({ isSuccess, msg: formatResults(msgObj) }); // complete時に結果を解決してresolve
+					resolve({ isSuccess, event: event, msg: formatResults(msgObj) }); // complete時に結果を解決してresolve
 				}
 			});
 		});

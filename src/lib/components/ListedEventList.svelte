@@ -24,8 +24,7 @@
 		updateBkmTag
 	} from '$lib/nostrFunctions';
 	import { afterUpdate, onMount } from 'svelte';
-	import { testRelay } from '$lib/testData/test.js';
-	import { bookmarks } from '$lib/testData/bookmarks';
+
 	import backIcon from '@material-design-icons/svg/round/chevron_left.svg?raw';
 	import nextIcon from '@material-design-icons/svg/round/chevron_right.svg?raw';
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
@@ -582,7 +581,7 @@
 		slot: '<p>Skeleton</p>'
 	};
 
-	function listInfoModalOpen() {
+	async function listInfoModalOpen() {
 		const modal: ModalSettings = {
 			type: 'component',
 
@@ -593,13 +592,83 @@
 
 			value: {},
 			// Returns the updated response value
-			response: (res) => {
+			response: async (res) => {
 				console.log(res);
 				if (res) {
+					await updateListInfo(res);
 				}
 			}
 		};
 		modalStore.trigger(modal);
+	}
+
+	async function updateListInfo(res: {
+		title: string;
+		image: string;
+		summary: string;
+	}) {
+		console.log(res);
+		const listNumber = $listNum;
+		const eventTag = $bookmarkEvents[listNumber].tags;
+
+		let titleIndex = eventTag.findIndex((item) => item[0] === 'title');
+		if (titleIndex !== -1) {
+			// すでに "title" タグが存在する場合、値を更新
+			eventTag[titleIndex][1] = res.title;
+		} else {
+			// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
+			eventTag.splice(1, 0, ['title', res.title]);
+			titleIndex = 1;
+		}
+
+		let imageIndex = eventTag.findIndex((item) => item[0] === 'image');
+		if (imageIndex !== -1) {
+			// すでに "title" タグが存在する場合、値を更新
+			eventTag[imageIndex][1] = res.image;
+		} else {
+			// "image" タグが存在しない場合、titleのうしろに挿入
+			imageIndex = titleIndex + 1;
+			eventTag.splice(imageIndex, 0, ['image', res.image]);
+		}
+
+		const summaryIndex = eventTag.findIndex((item) => item[0] === 'summary');
+		if (summaryIndex !== -1) {
+			// すでに "title" タグが存在する場合、値を更新
+			eventTag[summaryIndex][1] = res.summary;
+		} else {
+			// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
+			eventTag.splice(imageIndex + 1, 0, ['summary', res.summary]);
+		}
+		console.log(eventTag);
+		const event: Nostr.Event = {
+			id: '',
+			kind: $bookmarkEvents[listNumber].kind,
+			pubkey: $pubkey_viewer,
+			content: $bookmarkEvents[listNumber].content,
+			tags: eventTag,
+			created_at: Math.floor(Date.now() / 1000),
+			sig: ''
+		};
+		const result = await publishEventWithTimeout(event, $bookmarkRelays);
+		console.log(result);
+		if (result.isSuccess && $bookmarkEvents && result.event) {
+			$bookmarkEvents[listNumber] = result.event;
+			viewEvent = $bookmarkEvents[listNumber];
+			const t = {
+				message: 'Add note<br>' + result.msg,
+				timeout: 3000
+			};
+
+			toastStore.trigger(t);
+		} else {
+			const t = {
+				message: $_('nprofile.toast.failed_publish'),
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
+		}
 	}
 </script>
 
@@ -658,7 +727,9 @@
 							{$identifierList[$listNum].identifier}
 						</div>
 
-						<div class="h5">{$identifierList[$listNum].title}</div>
+						<div class="h5 overflow-hidden break-keep">
+							{$identifierList[$listNum].title}
+						</div>
 					</div>
 				</div>
 
