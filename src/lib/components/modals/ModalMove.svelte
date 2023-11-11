@@ -14,6 +14,7 @@
 	// Handle Form Submission
 	function onFormSubmit(): void {
 		res.tag = selectTag;
+		console.log(selectTag);
 		if ($modalStore[0].response) {
 			$modalStore[0].response(res);
 		}
@@ -46,9 +47,10 @@
 				{#each $identifierList as list, index}
 					<ListBoxItem
 						bind:group={selectTag}
-						name={list}
+						name={list.identifier ?? ''}
 						value={index}
-						on:change={() => onChange(list)}>{list}</ListBoxItem
+						on:change={() => onChange(list.identifier ?? '')}
+						>{list.identifier}</ListBoxItem
 					>
 				{/each}
 			{/if}

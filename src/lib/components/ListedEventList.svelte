@@ -191,7 +191,7 @@
 					$bookmarkEvents[listNumber] = result.event;
 					viewEvent = $bookmarkEvents[listNumber];
 					const t = {
-						message: 'Add note<br>' + result.msg,
+						message: 'Delete note<br>' + result.msg,
 						timeout: 3000
 					};
 
@@ -893,22 +893,28 @@
 
 	<!-------------------------------あど----->
 	{#if !$nowProgress && $pubkey_viewer === pubkey}
-		<div class="fixed bottom-14 z-10 left-2 fill-white">
-			{#if !$isMulti}
-				<button
-					class="addIcon btn-icon variant-filled-primary fill-white"
-					on:click={onClickAdd}>{@html addIcon}</button
-				>
-			{:else}
-				<button
-					class="addIcon btn-icon variant-filled-primary fill-white"
-					on:click={onClickMultiMove}>{@html MoveIcon}</button
-				>
-				<button
-					class="addIcon btn-icon variant-filled-primary fill-warning-400"
-					on:click={onClickMultiDelete}>{@html DeleteIcon}</button
-				>
-			{/if}
+		<div class="fixed bottom-14 z-10 w-full inline-flex flex-row space-x-0">
+			<div
+				class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token justify-start rounded-none"
+			>
+				<div class="justify-self-start px-2 z-10 fill-white">
+					{#if !$isMulti}
+						<button
+							class="addIcon btn-icon variant-filled-primary fill-white hover:variant-ghost-primary hover:stroke-primary-500"
+							on:click={onClickAdd}>{@html addIcon}</button
+						>
+					{:else}
+						<button
+							class="addIcon btn-icon variant-filled-primary fill-white hover:variant-ghost-primary hover:stroke-primary-500"
+							on:click={onClickMultiMove}>{@html MoveIcon}</button
+						>
+						<button
+							class="addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
+							on:click={onClickMultiDelete}>{@html DeleteIcon}</button
+						>
+					{/if}
+				</div>
+			</div>
 		</div>
 	{/if}
 {/if}
