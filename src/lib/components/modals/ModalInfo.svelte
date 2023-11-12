@@ -2,7 +2,7 @@
 	import { searchRelays, bookmarkRelays, relayEvent } from '$lib/stores/relays';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { LightSwitch, clipboard } from '@skeletonlabs/skeleton';
+	import { LightSwitch, SlideToggle, clipboard } from '@skeletonlabs/skeleton';
 
 	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
 	import loginIcon from '@material-design-icons/svg/round/login.svg?raw';
@@ -10,7 +10,7 @@
 	import lightningIcon from '@material-design-icons/svg/round/bolt.svg?raw';
 
 	import { getPub } from '$lib/nostrFunctions';
-	import { pubkey_viewer } from '$lib/stores/settings';
+	import { URLPreview, iconView, pubkey_viewer } from '$lib/stores/settings';
 	import githubIcon from '$lib/assets/github-mark.png';
 	import { nostrIcon } from '$lib/components/icons';
 	export let parent: any;
@@ -52,6 +52,14 @@
 			console.log('failed to login');
 		}
 	}
+	let toggleValue: boolean = $URLPreview;
+	$: if (toggleValue) {
+		$URLPreview = true;
+		$iconView = true;
+	} else {
+		$URLPreview = false;
+		$iconView = false;
+	}
 </script>
 
 {#if $modalStore[0]}
@@ -60,7 +68,9 @@
 		<article class="body">{$modalStore[0].body ?? '(body missing)'}</article>
 		<!-- Enable for debugging: -->
 		<div>{$_('modal.info.light_switch')}<LightSwitch /></div>
+
 		<!--ログインの許可のやつ全スキップした人のためとか-->
+
 		{#if !$pubkey_viewer || $pubkey_viewer === ''}
 			<button
 				class="btn variant-filled-primary fill-white"
@@ -68,6 +78,12 @@
 			>
 		{/if}
 
+		<!--oconとかURLとかの表示切替-->
+		<div class="flex gap-1">
+			{$_('modal.info.urlandIconOff')}
+			<SlideToggle name="slide" bind:checked={toggleValue} />
+			{$_('modal.info.urlandIconOn')}
+		</div>
 		<!--まるっと共有-->
 		{$_('modal.info.share')}
 		<button
