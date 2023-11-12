@@ -472,7 +472,7 @@
 	// 	}
 	// 	console.log(identifier);
 	// }
-	const borderClassActive = `break-keep border-b-2 border-white place-items-end  flex m-1 p-0.5 pb-0 h6`;
+	const borderClassActive = `break-keep border-b-2 border-white place-items-end  flex m-1 p-0.5 pb-0 h6 `;
 	const borderClass = `break-keep  place-items-end p-0.5 flex m-1 h6`;
 
 	function onClickPage(arg0: number): any {
@@ -694,7 +694,9 @@
 <!-- {#await bkminit(pubkey) then bkminti} -->
 {#if $bookmarkEvents && $bookmarkEvents.length > 0}
 	<!--header-->
-	<div class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row">
+	<div
+		class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden"
+	>
 		<div
 			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center"
 		>
@@ -713,139 +715,114 @@
 					>
 				</div>
 			{/if}
-			<div class="min-w-[8rem] max-w-[12rem]">
-				<!--variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"-->
 
-				{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
-					<div class="h4 flex h-full items-center pt-1">
+			<!--variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"-->
+
+			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
+				<div class="h4 flex h-full items-center pt-1">
+					<button
+						class=" btn-icon btn-icon-sm fill-white place-self-center"
+						on:click={listInfoModalOpen}>{@html infoIcon}</button
+					>{$identifierList[$listNum].identifier}
+				</div>
+			{:else}
+				<div class="grid grid-cols-[auto_1fr] h-full items-center pr-0.5">
+					{#if $iconView && $identifierList[$listNum].image}
 						<button
-							class=" btn-icon btn-icon-sm fill-white place-self-center"
+							class="btn-icon btn-icon-sm mr-1"
+							on:click={listInfoModalOpen}
+							><img
+								width={36}
+								class="min-w-[36px]"
+								alt=""
+								src={$identifierList[$listNum].image}
+							/></button
+						>
+					{:else}
+						<button
+							class="btn-icon btn-icon-sm fill-white place-self-center"
 							on:click={listInfoModalOpen}>{@html infoIcon}</button
-						>{$identifierList[$listNum].identifier}
-					</div>
-				{:else}
-					<div class="grid grid-cols-[auto_1fr] h-full items-center pr-0.5">
-						{#if $iconView && $identifierList[$listNum].image}
-							<button
-								class="btn-icon btn-icon-sm mr-1"
-								on:click={listInfoModalOpen}
-								><img
-									width={36}
-									class="min-w-[36px]"
-									alt=""
-									src={$identifierList[$listNum].image}
-								/></button
-							>
-						{:else}
-							<button
-								class="btn-icon btn-icon-sm fill-white place-self-center"
-								on:click={listInfoModalOpen}>{@html infoIcon}</button
-							>
-						{/if}
-						<div class="grid grid-rows-[auto_1fr]">
-							<div class="text-xs p-0">
-								{$identifierList[$listNum].identifier}
-							</div>
+						>
+					{/if}
+					<div class="grid grid-rows-[auto_1fr]">
+						<div class="text-xs p-0">
+							{$identifierList[$listNum].identifier}
+						</div>
 
-							<div class="h5 overflow-hidden break-keep">
-								{$identifierList[$listNum].title}
-							</div>
+						<div class="h5 overflow-hidden break-keep">
+							{$identifierList[$listNum].title}
 						</div>
 					</div>
+				</div>
 
-					<!-- {#if $identifierList[$listNum].summary}
+				<!-- {#if $identifierList[$listNum].summary}
 					{$identifierList[$listNum].summary}
 				{/if} -->
-				{/if}
-			</div>
-
-			<button
-				class={bkm === 'pub' ? borderClassActive : borderClass}
-				disabled={bkm === 'pub'}
-				on:click={() => {
-					bkm = 'pub';
-					console.log(bkm);
-					$pageNum = 0;
-				}}
-				><PubBkm />
-				<!--	<svg
-				xmlns="http://www.w3.org/2000/svg"
-				height="24"
-				viewBox="0 -960 960 960"
-				width="24"
-				class="fill-tertiary-300"
-				><path
-					d="m305-704 112-145q12-16 28.5-23.5T480-880q18 0 34.5 7.5T543-849l112 145 170 57q26 8 41 29.5t15 47.5q0 12-3.5 24T866-523L756-367l4 164q1 35-23 59t-56 24q-2 0-22-3l-179-50-179 50q-5 2-11 2.5t-11 .5q-32 0-56-24t-23-59l4-165L95-523q-8-11-11.5-23T80-570q0-25 14.5-46.5T135-647l170-57Zm49 69-194 64 124 179-4 191 200-55 200 56-4-192 124-177-194-66-126-165-126 165Zm126 135Z"
-				/></svg
-			>{@html KidStar}
-			{$_('public')}--></button
-			>
-			{#if viewEvent?.content !== ''}
-				<button
-					class={bkm === 'prv' ? borderClassActive : borderClass}
-					disabled={bkm === 'prv'}
-					on:click={() => {
-						bkm = 'prv';
-						console.log(bkm);
-						$pageNum = 0;
-					}}
-				>
-					<PrvBkm />
-					<!--<svg
-					xmlns="http://www.w3.org/2000/svg"
-					height="24"
-					viewBox="0 -960 960 960"
-					width="24"
-					class="fill-tertiary-300"
-					><path
-						d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Zm-80 160h160q17 0 28.5-11.5T600-360v-120q0-17-11.5-28.5T560-520v-40q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560v40q-17 0-28.5 11.5T360-480v120q0 17 11.5 28.5T400-320Zm40-200v-40q0-17 11.5-28.5T480-600q17 0 28.5 11.5T520-560v40h-80Z"
-					/></svg
-				>{@html LockIcon}
-			{$_('private')}-->
-				</button>
 			{/if}
 
-			<div class="flex-grow grid grid-rows-[auto_atuo]">
-				<div class="truncate place-self-end text-xs">
-					{$_('created_at')}
+			<div class="flex-grow overflow-hidden">
+				<div class="grid grid-cols-[1fr_auto_auto] gap-2 overflow-hidden">
+					<div />
+					<div class="grid grid-cols-[auto_auto]">
+						<button
+							class={bkm === 'pub' ? borderClassActive : borderClass}
+							disabled={bkm === 'pub'}
+							on:click={() => {
+								bkm = 'pub';
+								console.log(bkm);
+								$pageNum = 0;
+							}}
+							><PubBkm />
+						</button>
+						{#if viewEvent?.content !== ''}
+							<button
+								class={bkm === 'prv' ? borderClassActive : borderClass}
+								disabled={bkm === 'prv'}
+								on:click={() => {
+									bkm = 'prv';
+									console.log(bkm);
+									$pageNum = 0;
+								}}
+							>
+								<PrvBkm />
+							</button>
+						{:else}
+							<div />
+						{/if}
+					</div>
+					<div class="grid grid-cols-[auto_auto]">
+						<div class=" grid grid-rows-[auto_atuo] overflow-hidden">
+							<div class=" place-self-end h6">
+								{$_('created_at')}
+							</div>
+							<button
+								class="flex text-right place-self-end text-sm underline decoration-secondary-200"
+								on:click={() => {
+									OpenNoteJson(viewEvent);
+								}}
+							>
+								<div class="whitespace-nowrap overflow-hidden h6">
+									{new Date(createdAt * 1000).toLocaleDateString([], {
+										year: 'numeric',
+										month: '2-digit',
+										day: '2-digit',
+										hour: '2-digit',
+										minute: '2-digit'
+									})}
+								</div></button
+							>
+						</div>
+						<button
+							class={'btn p-0 pr-1  arrow'}
+							on:click={async () => {
+								$nowProgress = true;
+								await updateBkmTag($listNum);
+								$nowProgress = false;
+							}}>{@html updateIcon}</button
+						>
+					</div>
 				</div>
-				<button
-					class="flex text-right place-self-end text-sm underline decoration-secondary-200"
-					on:click={() => {
-						OpenNoteJson(viewEvent);
-					}}
-				>
-					<div class=" keep-all text-sm">
-						{new Date(createdAt * 1000).toLocaleDateString([], {
-							year: 'numeric',
-							month: '2-digit',
-							day: '2-digit'
-						})}
-					</div>
-					<div class=" pl-0.5 overflow-hidden text-sm">
-						{new Date(createdAt * 1000).toLocaleTimeString([], {
-							hour: '2-digit',
-							minute: '2-digit'
-						})}
-					</div>
-				</button>
-
-				<!-- {new Date(createdAt * 1000).toLocaleString([], {
-				year: 'numeric',
-				month: '2-digit',
-				day: '2-digit',
-				hour: '2-digit',
-				minute: '2-digit'
-			})} -->
 			</div>
-			<button
-				class={'btn p-1 pr-2  arrow'}
-				on:click={async () => {
-					$nowProgress = true;
-					await updateBkmTag($listNum);
-					$nowProgress = false;
-				}}>{@html updateIcon}</button
-			>
 		</div>
 	</div>
 

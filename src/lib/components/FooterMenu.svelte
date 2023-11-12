@@ -306,7 +306,9 @@
 </script>
 
 {#if $settings}
-	<div class=" fixed bottom-0 z-10 w-screen inline-flex flex-row space-x-0">
+	<div
+		class=" fixed bottom-0 z-10 w-full inline-flex flex-row space-x-0 overflow-x-hidden"
+	>
 		<div
 			class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token; variant-filled-primary justify-center rounded-none"
 		>
