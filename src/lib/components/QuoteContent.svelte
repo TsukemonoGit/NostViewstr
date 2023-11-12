@@ -141,12 +141,12 @@
 		if (decodeData.type === 'naddr') {
 			const data = decodeData.data as nip19.AddressPointer;
 			return ['a', `${data.kind}:${data.pubkey}:${data.identifier}`];
-		} else if (
-			decodeData.type === 'note' ||
-			nip19.decode(encodedId).type === 'nevent'
-		) {
+		} else if (decodeData.type === 'note') {
 			const data = decodeData.data as string;
 			return ['e', data];
+		} else if (decodeData.type === 'nevent') {
+			const data = decodeData.data as nip19.EventPointer;
+			return ['e', data.id];
 		} else if (decodeData.type === 'npub') {
 			const data = decodeData.data as string;
 			return ['p', data];
