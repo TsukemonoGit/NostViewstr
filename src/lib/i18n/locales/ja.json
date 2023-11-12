@@ -1,83 +1,84 @@
 {
-	"popup": {
-		"Share": "nostrで引用",
-		"delete": "削除",
-		"open": "外部サイトで開く",
-		"move": "別のリストに移動",
-		"pub": "公開リスト",
-		"prv": "非公開リスト"
-	},
-	"PostNote": {
-		"copied": "クリップボードにコピーしました",
-		"failed_copy": "コピーに失敗しました",
-		"popup_copy": "クリップボードにコピー",
-		"p_tag": "引用元のpubkeyを含める"
-	},
-	"modal": {
-		"failed_copy": "コピーに失敗しました",
-		"postNote": {
-			"title": "Post Note"
-		},
-		"tagList": {
-			"title": "リスト一覧",
-			"noList": "no list 編集ボタンから新しいリストを作成できます"
-		},
-		"editTags": {
-			"title": "リストの編集",
-			"body": "新規リストの作成",
-			"editTag": "編集"
-		},
-		"deleteTag": {
-			"title": "リストの削除",
-			"body": "下記リストを削除します"
-		},
-		"info": {
-			"title": "情報と設定",
-			"relay": {
-				"list": "リストの取得更新リレー",
-				"search": "リスト内のノートの検索用リレー",
-				"title": "設定中のリレー情報"
-			},
-			"light_switch": "表示モード"
-		},
-		"listInfo": {
-			"ex": {
-				"title": "(例: 本情報)",
-				"image": "(例: https://example.com/image.webp)",
-				"summary": "(例: みんなのおすすめの本情報たち)"
-			}
-		}
-	},
-	"created_at": "最終更新日時",
-	"public": "公開",
-	"private": "非公開",
-	"ModalEditTag": {
-		"delete_body": "リストの削除"
-	},
-	"msg": {
-		"nanka": "ログインエラー"
-	},
-	"ModalAddNote": {
-		"add_note": "ブックマークに追加",
-		"add_note_to1": "[",
-		"add_note_to2": "] にノートを追加",
-		"add_note_tag": "ブックマークに追加（タグから追加）",
-		"create": "ノートを作成して追加"
-	},
-	"main": {
-		"title": "ぶくまびうあ改二",
-		"input_public_key": "公開鍵を入力してください"
-	},
-	"mode": {
-		"normal": "通常モード",
-		"light": "通信量軽量モード",
-		"light_exp": "※モバイル通信時など",
-		"light_switch": "ライトモード / ダークモードの切り替え"
-	},
-	"modalEditTag": {
-		"list": {
-			"title": "追加情報（あとから変更可能）",
-			"ID": "（必須/変更不可/英数字のみ入力可能）"
-		}
-	}
+  "popup": {
+    "Share": "nostrで引用",
+    "delete": "削除",
+    "open": "外部サイトで開く",
+    "move": "別のリストに移動",
+    "pub": "公開リスト",
+    "prv": "非公開リスト"
+  },
+  "PostNote": {
+    "copied": "クリップボードにコピーしました",
+    "failed_copy": "コピーに失敗しました",
+    "popup_copy": "クリップボードにコピー",
+    "p_tag": "引用元のpubkeyを含める"
+  },
+  "modal": {
+    "failed_copy": "コピーに失敗しました",
+    "postNote": {
+      "title": "Post Note"
+    },
+    "tagList": {
+      "title": "リスト一覧",
+      "noList": "no list 編集ボタンから新しいリストを作成できます"
+    },
+    "editTags": {
+      "title": "リストの編集",
+      "body": "新規リストの作成",
+      "editTag": "編集"
+    },
+    "deleteTag": {
+      "title": "リストの削除",
+      "body": "下記リストを削除します"
+    },
+    "info": {
+      "title": "情報と設定",
+      "relay": {
+        "list": "リストの取得更新リレー",
+        "search": "リスト内のノートの検索用リレー",
+        "title": "設定中のリレー情報"
+      },
+      "light_switch": "表示モード",
+      "share": "myListたち(閲覧中のURL)をnostrで共有"
+    },
+    "listInfo": {
+      "ex": {
+        "title": "(例: 本情報)",
+        "image": "(例: https://example.com/image.webp)",
+        "summary": "(例: みんなのおすすめの本情報たち)"
+      }
+    }
+  },
+  "created_at": "最終更新日時",
+  "public": "公開",
+  "private": "非公開",
+  "ModalEditTag": {
+    "delete_body": "リストの削除"
+  },
+  "msg": {
+    "nanka": "ログインエラー"
+  },
+  "ModalAddNote": {
+    "add_note": "ブックマークに追加",
+    "add_note_to1": "[",
+    "add_note_to2": "] にノートを追加",
+    "add_note_tag": "ブックマークに追加（タグから追加）",
+    "create": "ノートを作成して追加"
+  },
+  "main": {
+    "title": "ぶくまびうあ改二",
+    "input_public_key": "公開鍵を入力してください"
+  },
+  "mode": {
+    "normal": "通常モード",
+    "light": "通信量軽量モード",
+    "light_exp": "※モバイル通信時など",
+    "light_switch": "ライトモード / ダークモードの切り替え"
+  },
+  "modalEditTag": {
+    "list": {
+      "title": "追加情報（あとから変更可能）",
+      "ID": "（必須/変更不可/英数字のみ入力可能）"
+    }
+  }
 }

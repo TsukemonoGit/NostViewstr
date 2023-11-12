@@ -68,7 +68,8 @@ interface Kind3Relay {
 
 export function parseNaddr(tag: string[]): AddressPointer {
 	const parts = tag[1].split(':');
-	return tag.length >= 2
+	console.log([tag[2]]);
+	return tag.length > 2 && tag[2] !== ''
 		? {
 				kind: Number(parts[0]),
 				pubkey: parts.length > 1 ? parts[1] : '',

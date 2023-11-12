@@ -140,7 +140,14 @@
 		$checkedIndexList = [];
 		window.scrollTo({ top: 0 });
 	}
-
+	$: listNaddr = viewEvent
+		? [
+				'a',
+				`${viewEvent.kind}:${viewEvent.pubkey}:${
+					$identifierList[$listNum].identifier ?? ''
+				}`
+		  ]
+		: [];
 	//---------------------------------------------delete?modal
 	const deleteModalComponent: ModalComponent = {
 		// Pass a reference to your custom component
@@ -730,13 +737,14 @@
 		ref: ModalEventJson
 	};
 
-	const OpenNoteJson = (text: Nostr.Event) => {
+	const OpenNoteJson = (text: Nostr.Event, tagArray: string[]) => {
 		const modal = {
 			type: 'component' as const,
 			title: 'Event Json',
 			backdropClasses: '!bg-surface-400/80',
 			meta: {
-				note: text
+				note: text,
+				tagArray: tagArray
 			},
 
 			component: jsonModalComponent
@@ -855,7 +863,7 @@
 							<button
 								class="flex text-right place-self-end text-sm underline decoration-secondary-200"
 								on:click={() => {
-									OpenNoteJson(viewEvent);
+									OpenNoteJson(viewEvent, listNaddr);
 								}}
 							>
 								<div class="whitespace-nowrap overflow-hidden h6">

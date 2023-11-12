@@ -10,6 +10,7 @@ import {
 	defaultRelays
 } from '$lib/stores/relays';
 import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
+
 //https://kit.svelte.jp/docs/load
 //ページを読み込む前に有効なparamかチェック
 
@@ -26,24 +27,30 @@ export const load: PageLoad<{
 	searchRelays.set([]);
 	try {
 		const { type, data } = nip19.decode(params.naddr);
-		console.log('[decode]', type, data);
-		//AddressPointer
-		const address = data as AddressPointer;
-		//pubkey.set(address.pubkey);
-		if (address.relays && address.relays) {
-			bookmarkRelays.set(address.relays);
-			postRelays.set(address.relays);
-			searchRelays.set(defaultRelays);
-		}
 
-		return {
-			pubkey: address.pubkey,
-			kind: address.kind,
-			identifier: address.identifier,
-			relays: address.relays ? address.relays : []
-		};
+		console.log('[decode]', type, data);
+		if (type === 'naddr') {
+			//AddressPointer
+			const address = data as AddressPointer;
+			//pubkey.set(address.pubkey);
+			if (address.relays && address.relays) {
+				bookmarkRelays.set(address.relays);
+				postRelays.set(address.relays);
+				searchRelays.set(defaultRelays);
+			}
+
+			return {
+				pubkey: address.pubkey,
+				kind: address.kind,
+				identifier: address.identifier,
+				relays: address.relays ? address.relays : []
+			};
+		} else {
+			console.error('[type error]', type);
+			throw error(404, 'Not Found');
+		}
 	} catch (e) {
-		console.error('[npub decode error]', e);
+		console.error('[naddr decode error]', e);
 		throw error(404, 'Not Found');
 	}
 };

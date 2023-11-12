@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { extractTextParts, type TextPart } from '$lib/content';
 	import type { ModalComponent } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';

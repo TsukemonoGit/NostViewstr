@@ -21,6 +21,7 @@
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
 	import ModalEditTag from './modals/ModalEditTag.svelte';
 	import ModalDelete from './modals/ModalDelete.svelte';
+	import ModalPostNote from './modals/ModalPostNote.svelte';
 	import {
 		bookmarkEvents,
 		checkedIndexList,
@@ -81,7 +82,7 @@
 			const modal: ModalSettings = {
 				type: 'component',
 				component: tagListModalComponent,
-				title: $_('nprofile.modal.tagList.title'),
+				title: $_('modal.tagList.title'),
 				body: ``,
 				value: {
 					tagList: $identifierList,
@@ -131,7 +132,7 @@
 			// Pass the component directly:
 			component: editTagModalComponent,
 			// Provide arbitrary metadata to your modal instance:
-			title: $_('nprofile.modal.editTags.title'),
+			title: $_('modal.editTags.title'),
 
 			value: { selectedValue: 0 },
 			// Returns the updated response value
@@ -148,8 +149,8 @@
 							const modal: ModalSettings = {
 								type: 'component',
 								component: deleteModalComponent,
-								title: $_('nprofile.modal.deleteTag.title'),
-								body: `${$_('nprofile.modal.deleteTag.body')}`,
+								title: $_('modal.deleteTag.title'),
+								body: `${$_('modal.deleteTag.body')}`,
 								value: {
 									tag: $identifierList[res.tagIndex].identifier
 								},
@@ -278,7 +279,10 @@
 		console.log(res);
 		//	throw new Error('Function not implemented.');
 	}
-
+	//-----------------------------------------------引用ポスト
+	const postNoteModalComponent: ModalComponent = {
+		ref: ModalPostNote
+	};
 	//-------------------------------------------------------infomation
 	const infoComponent: ModalComponent = {
 		// Pass a reference to your custom component
@@ -287,8 +291,30 @@
 	const modal: ModalSettings = {
 		type: 'component',
 		component: infoComponent,
-		title: $_('nprofile.modal.info.title'),
-		body: `${$_('nprofile.modal.info.body')}`
+		title: $_('modal.info.title'),
+		body: `${$_('modal.info.body')}`,
+		response: (res) => {
+			if (res && res.share) {
+				const url = window.location.href;
+				const tags = [['r', url]];
+				console.log(tags);
+				const modal: ModalSettings = {
+					type: 'component',
+					component: postNoteModalComponent,
+					title: $_('modal.postNote.title'),
+					body: ``,
+					value: {
+						content: `\r\n${url}\r\n`,
+						tags: tags
+					},
+					response: async (res) => {
+						console.log(res);
+						//postNoteまでmodalでやるらしい
+					}
+				};
+				modalStore.trigger(modal);
+			}
+		}
 	};
 
 	function onClickInfo() {
