@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import EventCard from '$lib/components/EventCard.svelte';
-	import { MenuMode } from '$lib/functions';
-
+	//import { MenuMode } from '$lib/functions';
+	enum MenuMode {
+		Multi, //複数選択モード
+		Owner, //追加削除ボタン込み
+		Viewer, //追加削除ボタンなし
+		other, //追加削除ボタンだけ（ノート読み込めてないときとか、ノートじゃないときとか）
+		none //ぼたんなし
+	}
 	import { Metadata, NostrApp, Text, UniqueEventList } from 'nosvelte';
 	import type { Event as NostrEvent } from 'nostr-tools';
 	import { getIdByTag, nip04De } from '$lib/nostrFunctions';
