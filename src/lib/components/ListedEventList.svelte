@@ -872,7 +872,7 @@
 	{#if !$nowProgress && $pubkey_viewer === pubkey}
 		<div class="fixed bottom-14 z-10 w-full inline-flex flex-row space-x-0">
 			<div
-				class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token justify-start rounded-none"
+				class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token justify-end rounded-none"
 			>
 				<div class="justify-self-start px-2 z-10 fill-white">
 					{#if !$isMulti}

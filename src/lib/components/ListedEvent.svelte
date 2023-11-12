@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import EventCard from '$lib/components/EventCard.svelte';
 	import { MenuMode } from '$lib/functions';
-	import { searchRelays } from '$lib/stores/relays';
+
 	import { Metadata, NostrApp, Text, UniqueEventList } from 'nosvelte';
 	import type { Event as NostrEvent } from 'nostr-tools';
 	import { getIdByTag, nip04De } from '$lib/nostrFunctions';
