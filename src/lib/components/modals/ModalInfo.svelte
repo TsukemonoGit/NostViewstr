@@ -10,7 +10,12 @@
 	import lightningIcon from '@material-design-icons/svg/round/bolt.svg?raw';
 
 	import { getPub } from '$lib/nostrFunctions';
-	import { URLPreview, iconView, pubkey_viewer } from '$lib/stores/settings';
+	import {
+		URLPreview,
+		allView,
+		iconView,
+		pubkey_viewer
+	} from '$lib/stores/settings';
 	import githubIcon from '$lib/assets/github-mark.png';
 	import { nostrIcon } from '$lib/components/icons';
 	export let parent: any;
@@ -60,6 +65,8 @@
 		$URLPreview = false;
 		$iconView = false;
 	}
+	let warningToggle: boolean = $allView;
+	$: $allView = warningToggle;
 </script>
 
 {#if $modalStore[0]}
@@ -78,12 +85,19 @@
 			>
 		{/if}
 
-		<!--oconとかURLとかの表示切替-->
+		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-1">
 			{$_('modal.info.urlandIconOff')}
 			<SlideToggle name="slide" bind:checked={toggleValue} />
 			{$_('modal.info.urlandIconOn')}
 		</div>
+
+		<!--iconとかURLとかの表示切替-->
+		<div class="flex gap-1">
+			{$_('modal.info.contentwarning')}
+			<SlideToggle name="slide" bind:checked={warningToggle} />
+		</div>
+
 		<!--まるっと共有-->
 		{$_('modal.info.share')}
 		<button
