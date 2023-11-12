@@ -8,7 +8,7 @@
 
 	import { Metadata, Nostr, NostrApp, Text } from 'nosvelte';
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
-	import { getOgp } from '$lib/functions';
+	import { getOgp } from '$lib/otherFunctions';
 	import OGP from './OGP.svelte';
 	import { contentStore, ogpStore } from '$lib/stores/bookmarkEvents';
 	import { URLPreview } from '$lib/stores/settings';

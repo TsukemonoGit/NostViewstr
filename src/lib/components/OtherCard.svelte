@@ -11,9 +11,9 @@
 	import { createEventDispatcher } from 'svelte';
 	import { nip19, type Event } from 'nostr-tools';
 	import { parseNaddr, windowOpen } from '$lib/nostrFunctions';
-	import { uniqueTags } from '$lib/functions';
+	import { uniqueTags, MenuMode } from '$lib/iroiroFunctions';
 	import { _ } from 'svelte-i18n';
-	import { MenuMode } from '$lib/functions';
+
 	import EventTag from './EventTag.svelte';
 	import { NostrApp } from 'nosvelte';
 	import { searchRelays } from '$lib/stores/relays';

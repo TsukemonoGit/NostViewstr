@@ -5,9 +5,9 @@
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { nip19, type Event } from 'nostr-tools';
 
-	import { uniqueTags } from '$lib/functions';
+	import { uniqueTags } from '$lib/iroiroFunctions';
 	import { _ } from 'svelte-i18n';
-	//import type { MenuMode } from '$lib/functions';
+	import type { MenuMode } from '$lib/iroiroFunctions';
 	import EventTag from './EventTag.svelte';
 
 	import Ogp from './OGP.svelte';
@@ -15,13 +15,6 @@
 	import { allView, iconView } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
 
-	enum MenuMode {
-		Multi, //複数選択モード
-		Owner, //追加削除ボタン込み
-		Viewer, //追加削除ボタンなし
-		other, //追加削除ボタンだけ（ノート読み込めてないときとか、ノートじゃないときとか）
-		none //ぼたんなし
-	}
 	export let isPageOwner: boolean;
 	export let note: Event;
 
