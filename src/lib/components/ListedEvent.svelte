@@ -26,13 +26,14 @@
 	};
 	const privateList = async (list: NostrEvent) => {
 		if (list.content !== '') {
-			try {
-				const decypt = await nip04De(list.pubkey, list.content);
-				return JSON.parse(decypt);
-			} catch (error) {
-				console.error('復号失敗');
-				return [];
-			}
+			//	try {
+			const decypt = await nip04De(list.pubkey, list.content);
+			return JSON.parse(decypt);
+			//		} catch (error) {
+			//			console.error('復号失敗');
+
+			//		return [];
+			//	}
 		} else {
 			console.log('プライベートブクマなんもないよ');
 			return [];
@@ -54,9 +55,14 @@
 				$listSize = listEvent?.tags.length;
 				viewList = listEvent?.tags;
 			} else {
-				const res = await privateList(listEvent);
-				$listSize = res.length;
-				viewList = res;
+				try {
+					const res = await privateList(listEvent);
+					$listSize = res.length;
+					viewList = res;
+				} catch (error) {
+					bkm = 'pub';
+					viewUpdate();
+				}
 			}
 		} else {
 			$listSize = 0;

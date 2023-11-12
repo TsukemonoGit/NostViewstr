@@ -831,7 +831,7 @@
 							}}
 							><PubBkm />
 						</button>
-						{#if viewEvent?.content !== ''}
+						{#if isOwner && viewEvent?.content !== ''}
 							<button
 								class={bkm === 'prv' ? borderClassActive : borderClass}
 								disabled={bkm === 'prv'}
