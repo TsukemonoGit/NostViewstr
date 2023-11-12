@@ -216,6 +216,7 @@
 			}
 		}
 		$checkedIndexList = [];
+		$isMulti = false;
 	}
 
 	//---------------------------------------------move
@@ -874,15 +875,15 @@
 			<div
 				class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token justify-end rounded-none"
 			>
-				<div class="justify-self-start px-2 z-10 fill-white">
+				<div class="justify-self-start px-4 z-10 fill-white">
 					{#if !$isMulti}
 						<button
-							class="addIcon btn-icon variant-filled-primary fill-white hover:variant-ghost-primary hover:stroke-primary-500"
+							class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
 							on:click={onClickAdd}>{@html addIcon}</button
 						>
 					{:else}
 						<button
-							class="addIcon btn-icon variant-filled-primary fill-white hover:variant-ghost-primary hover:stroke-primary-500"
+							class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
 							on:click={onClickMultiMove}>{@html MoveIcon}</button
 						>
 						<button
