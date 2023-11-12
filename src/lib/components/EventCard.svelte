@@ -5,9 +5,9 @@
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { nip19, type Event } from 'nostr-tools';
 
-	import { uniqueTags } from '$lib/iroiroFunctions';
+	import { uniqueTags } from '$lib/otherFunctions.js';
 	import { _ } from 'svelte-i18n';
-	import type { MenuMode } from '$lib/iroiroFunctions';
+	import type { MenuMode } from '$lib/otherFunctions.js';
 	import EventTag from './EventTag.svelte';
 
 	import Ogp from './OGP.svelte';

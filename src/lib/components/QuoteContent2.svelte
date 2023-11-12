@@ -3,7 +3,7 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { Metadata, Nostr, Text } from 'nosvelte';
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
-	import { uniqueTags } from '$lib/functions';
+	import { uniqueTags } from '$lib/otherFunctions.js';
 	import { allView, iconView } from '$lib/stores/settings';
 
 	import ModalEventJson from './modals/ModalEventJson.svelte';

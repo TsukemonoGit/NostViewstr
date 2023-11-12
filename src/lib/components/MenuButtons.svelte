@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MenuMode } from '$lib/functions';
+	import { MenuMode } from '$lib/otherFunctions.js';
 	import DeleteBtn from './Button/DeleteBtn.svelte';
 	import Share from './Button/Share.svelte';
 	import Move from './Button/Move.svelte';

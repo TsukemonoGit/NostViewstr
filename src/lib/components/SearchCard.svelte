@@ -9,7 +9,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	import { _ } from 'svelte-i18n';
-	import type { MenuMode } from '$lib/functions';
+	import type { MenuMode } from '$lib/otherFunctions.js';
 
 	import MenuButtons from './MenuButtons.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;

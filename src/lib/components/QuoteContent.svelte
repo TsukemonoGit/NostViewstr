@@ -6,7 +6,7 @@
 	import { Metadata, Nostr, Text } from 'nosvelte';
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
 	import { fetchFilteredEvents } from '$lib/nostrFunctions';
-	import { uniqueTags } from '$lib/functions';
+	import { uniqueTags } from '$lib/otherFunctions.js';
 	import { naddrStore } from '$lib/stores/bookmarkEvents';
 	import { allView, iconView } from '$lib/stores/settings';
 	import { searchRelays } from '$lib/stores/relays';
