@@ -6,6 +6,7 @@
 	import type { Event } from 'nostr-tools';
 	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
 	import { pubkey_viewer } from '$lib/stores/settings';
+	import postIcon from '@material-design-icons/svg/round/post_add.svg?raw';
 	export let parent: any;
 	let checked: boolean;
 	let contents = {
@@ -62,7 +63,7 @@
 
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
-	const cHeader = 'text-2xl font-bold';
+	const cHeader = 'text-2xl font-bold flex  ';
 	// const cForm =
 	//   'border border-surface-500 p-4 space-y-4 rounded-container-token';
 
@@ -95,7 +96,7 @@
 	<div class="modal-example-form {cBase}">
 		<div class="grid grid-cols-[1fr_auto]">
 			<header class={cHeader}>
-				{$modalStore[0].title ?? '(title missing)'}
+				{@html postIcon}{$modalStore[0].title ?? '(title missing)'}
 			</header>
 
 			<button class="btn-icon variant-filled-surface" on:click={onClickCopy}

@@ -112,7 +112,7 @@
 			<AccordionItem open>
 				<svelte:fragment slot="lead">{@html editIcon}</svelte:fragment>
 				<svelte:fragment slot="summary"
-					>{$_('nprofile.modal.editTags.body')}</svelte:fragment
+					>{$_('modal.editTags.body')}</svelte:fragment
 				>
 				<svelte:fragment slot="content">
 					<div class="card p-4">

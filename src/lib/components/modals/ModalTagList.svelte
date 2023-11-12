@@ -56,7 +56,7 @@
 					>
 				{/each}
 			{:else}
-				{$_('nprofile.modal.tagList.noList')}
+				{$_('modal.tagList.noList')}
 			{/if}
 		</ListBox>
 
@@ -72,7 +72,7 @@
 					res.index = -1;
 					res.edit = true;
 					onFormSubmit();
-				}}>{$_('editTag')}</button
+				}}>{$_('modal.tagList.editTag')}</button
 			>
 		</footer>
 	</div>

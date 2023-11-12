@@ -47,7 +47,10 @@
 		ref: ModalEventJson
 	};
 
-	function handleClickDate(text: Nostr.Event<number>) {
+	function handleClickDate(
+		text: Nostr.Event<number>,
+		tag?: string[] | undefined
+	) {
 		console.log('click');
 		const modal = {
 			type: 'component' as const,
@@ -56,7 +59,8 @@
 			title: 'Event Json',
 			meta: {
 				//    position: `x-${clientX} y-${clientY}`,
-				note: text
+				note: text,
+				tagArray: tag
 			},
 
 			component: jsonModalComponent
@@ -132,6 +136,25 @@
 		};
 		modalStore.trigger(modal);
 	}
+
+	const toArray = (decodeData: nip19.DecodeResult) => {
+		if (decodeData.type === 'naddr') {
+			const data = decodeData.data as nip19.AddressPointer;
+			return ['a', `${data.kind}:${data.pubkey}:${data.identifier}`];
+		} else if (
+			decodeData.type === 'note' ||
+			nip19.decode(encodedId).type === 'nevent'
+		) {
+			const data = decodeData.data as string;
+			return ['e', data];
+		} else if (decodeData.type === 'npub') {
+			const data = decodeData.data as string;
+			return ['p', data];
+		} else if (decodeData.type === 'nprofile') {
+			const data = decodeData.data as nip19.ProfilePointer;
+			return ['p', data.pubkey];
+		}
+	};
 </script>
 
 {#if nip19.decode(encodedId).type === 'note' || nip19.decode(encodedId).type === 'nevent'}
@@ -235,7 +258,7 @@
 							<button
 								class="text-xs underline decoration-secondary-500"
 								on:click={() => {
-									handleClickDate(text);
+									handleClickDate(text, toArray(nip19.decode(encodedId)));
 								}}
 								>{new Date(text.created_at * 1000).toLocaleString([], {
 									year: 'numeric',
@@ -274,7 +297,7 @@
 							<button
 								class="text-xs underline decoration-secondary-500"
 								on:click={() => {
-									handleClickDate(text);
+									handleClickDate(text, toArray(nip19.decode(encodedId)));
 								}}
 								>{new Date(text.created_at * 1000).toLocaleString([], {
 									year: 'numeric',
@@ -370,7 +393,7 @@
 							<button
 								class="text-xs underline decoration-secondary-500"
 								on:click={() => {
-									handleClickDate(text);
+									handleClickDate(text, toArray(nip19.decode(encodedId)));
 								}}
 								>{new Date(text.created_at * 1000).toLocaleString([], {
 									year: 'numeric',
@@ -468,7 +491,10 @@
 												<button
 													class="text-emerald-800 dark:text-blue-400 overflow-hidden text-ellipsis"
 													on:click={() => {
-														handleClickDate(text);
+														handleClickDate(
+															text,
+															toArray(nip19.decode(encodedId))
+														);
 													}}
 													>{#if tags.some((tag) => tag[0] === 'content-warning') && $allView == false}
 														{'<content-warning>'}
@@ -639,7 +665,7 @@
 				<button
 					class="-mt-0.5 ml-2 text-xs underline decoration-secondary-500"
 					on:click={() => {
-						handleClickDate(text);
+						handleClickDate(text, toArray(nip19.decode(encodedId)));
 					}}
 					>{new Date(text.created_at * 1000).toLocaleString([], {
 						year: 'numeric',
@@ -681,7 +707,7 @@
 											[e] <button
 												class="text-emerald-800 dark:text-blue-400 overflow-hidden text-ellipsis"
 												on:click={() => {
-													handleClickDate(text);
+													handleClickDate(text, tag);
 												}}>{text.content}</button
 											>
 										</div>

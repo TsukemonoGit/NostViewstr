@@ -14,7 +14,10 @@
 		listNum
 	} from '$lib/stores/bookmarkEvents';
 	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
+	import loginIcon from '@material-design-icons/svg/round/login.svg?raw';
 	import { nip19 } from 'nostr-tools';
+	import { getPub } from '$lib/nostrFunctions';
+	import { pubkey_viewer } from '$lib/stores/settings';
 	export let parent: any;
 
 	function onFormSubmit(): void {
@@ -42,6 +45,17 @@
 			copied = false;
 		}, 1000);
 	}
+
+	async function onClickLogin() {
+		try {
+			const res = await getPub();
+			if (res !== '') {
+				$pubkey_viewer = res;
+			}
+		} catch (error) {
+			console.log('failed to login');
+		}
+	}
 </script>
 
 {#if $modalStore[0]}
@@ -49,20 +63,27 @@
 		<header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
 		<article class="body">{$modalStore[0].body ?? '(body missing)'}</article>
 		<!-- Enable for debugging: -->
-		<div>{$_('nprofile.modal.info.light_switch')}<LightSwitch /></div>
+		<div>{$_('modal.info.light_switch')}<LightSwitch /></div>
+		<!--ログインの許可のやつ全スキップした人のためとか-->
+		{#if !$pubkey_viewer || $pubkey_viewer === ''}
+			<button
+				class="btn variant-filled-primary fill-white"
+				on:click={onClickLogin}>{@html loginIcon}</button
+			>
+		{/if}
 		<!--きょうゆう-->
-
-		list name: {$identifierList[$listNum]}
-		<button
-			use:clipboard={copyData}
-			class="btn variant-filled"
-			disabled={copied}
-			on:click={onClickHandler}>{copied ? 'Copied 👍' : 'Copy'}</button
-		>
-
+		<div>
+			list name: {$identifierList[$listNum].identifier}
+			<button
+				use:clipboard={copyData}
+				class="btn variant-filled"
+				disabled={copied}
+				on:click={onClickHandler}>{copied ? 'Copied 👍' : 'Copy'}</button
+			>
+		</div>
 		<!--リレーの情報たち-->
 		<div class="card p-3">
-			<p>{$_('nprofile.modal.info.relay.title')}</p>
+			<p>{$_('modal.info.relay.title')}</p>
 			{#if $relayEvent}
 				relay from kind:({$relayEvent.kind}) created_at: {new Date(
 					$relayEvent.created_at * 1000
@@ -84,7 +105,7 @@
 					minute: '2-digit'
 				})} -->
 			{/if}
-			<p>{$_('nprofile.modal.info.relay.list')}</p>
+			<p>{$_('modal.info.relay.list')}</p>
 			<ul
 				class="bg-surface-50-900-token card max-h-[4em] overflow-y-auto overflow-x-hidden"
 			>
@@ -93,7 +114,7 @@
 				{/each}
 			</ul>
 
-			<p>{$_('nprofile.modal.info.relay.search')}</p>
+			<p>{$_('modal.info.relay.search')}</p>
 			<ul class="bg-surface-50-900-token card max-h-[4em] overflow-y-auto">
 				{#each $searchRelays as relays}
 					<li>{relays}</li>

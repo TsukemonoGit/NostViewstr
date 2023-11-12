@@ -327,39 +327,37 @@
 					>
 				{/if}
 
-				<div class="grid grid-rows-[auto_auto] gap-0">
-					<div class="flex">
-						<button
-							class={buttonClass}
-							on:click={firstPage}
-							disabled={$pageNum === 0 ? true : false}>{@html firstIcon}</button
-						>
-						<button
-							class={buttonClass}
-							on:click={back}
-							disabled={$pageNum === 0 ? true : false}>{@html backIcon}</button
-						>
+				<!-- <div class="grid grid-rows-[auto_auto] gap-0"> -->
+				<div class="flex">
+					<button
+						class={buttonClass}
+						on:click={firstPage}
+						disabled={$pageNum === 0 ? true : false}>{@html firstIcon}</button
+					>
+					<button
+						class={buttonClass}
+						on:click={back}
+						disabled={$pageNum === 0 ? true : false}>{@html backIcon}</button
+					>
 
-						<button
-							class={buttonClass}
-							on:click={next}
-							disabled={$pageNum === last ? true : false}
-							>{@html nextIcon}</button
-						>
-						<button
-							class={buttonClass}
-							on:click={lastPage}
-							disabled={$pageNum === last ? true : false}
-							>{@html lastIcon}</button
-						>
-					</div>
-					<div class="flex justify-center items-center m-0 p-0 text-xs">
+					<button
+						class={buttonClass}
+						on:click={next}
+						disabled={$pageNum === last ? true : false}>{@html nextIcon}</button
+					>
+					<button
+						class={buttonClass}
+						on:click={lastPage}
+						disabled={$pageNum === last ? true : false}>{@html lastIcon}</button
+					>
+				</div>
+				<!-- <div class="flex justify-center items-center m-0 p-0 text-xs">
 						{`${$amount * $pageNum} - ${Math.min(
 							($pageNum + 1) * $amount,
 							$listSize
 						)} / ${$listSize}`}
 					</div>
-				</div>
+				</div> -->
 
 				<button
 					class="btn btn-icon pageIcon {multiButtonClass}"

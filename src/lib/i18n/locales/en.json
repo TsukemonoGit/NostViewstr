@@ -7,29 +7,32 @@
     "pub": "public list",
     "prv": "private list"
   },
-  "modal": {
-    "failed_copy": "failed to copy"
-  },
   "PostNote": {
     "copied": "copied clipboard",
     "failed_copy": "failed to copy clipboard",
     "popup_copy": "copy to clipboard",
     "p_tag": "Include the p tag of the quoted source"
   },
-  "nprofile": {
-    "modal": {
-      "postNote": {
-        "title": "Post Note"
-      },
-      "tagList": {
-        "title": "Lists"
+  "modal": {
+    "failed_copy": "failed to copy",
+    "postNote": {
+      "title": "Post Note"
+    },
+    "tagList": {
+      "title": "Lists",
+      "editTag": "Edit"
+    },
+    "listInfo": {
+      "ex": {
+        "title": "(ex. Books)",
+        "image": "(ex. https://example.com/image.webp)",
+        "summary": "(ex. Recommended Books Collection)"
       }
     }
   },
   "created_at": "最終更新日時",
   "public": "public",
   "private": "private",
-  "editTag": "Edit",
   "main": {
     "title": "bkmstr"
   },

@@ -52,6 +52,9 @@
 	import { NostrApp, type Nostr } from 'nosvelte';
 	import ModalListInfo from './modals/ModalListInfo.svelte';
 	import ModalEventJson from './modals/ModalEventJson.svelte';
+	import ModalPostNote from './modals/ModalPostNote.svelte';
+	import { nip19 } from 'nostr-tools';
+
 	let size: number;
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number>;
@@ -63,6 +66,16 @@
 	$: createdAt = viewEvent?.created_at;
 	$: isOwner = $pubkey_viewer === pubkey;
 	onMount(async () => {
+		if ($pubkey_viewer === '') {
+			try {
+				const res = await getPub();
+				if (res !== '') {
+					$pubkey_viewer = res;
+				}
+			} catch (error) {
+				console.log('failed to login');
+			}
+		}
 		$nowProgress = true;
 		await bkminit(pubkey);
 		$nowProgress = false;
@@ -169,6 +182,7 @@
 	async function deleteNotesfromLists(listNumber: number, numList: number[]) {
 		if ($bookmarkEvents) {
 			$nowProgress = true;
+
 			await updateBkmTag(listNumber); //最新の状態に更新
 			try {
 				const bkmk = $bookmarkEvents[listNumber];
@@ -575,11 +589,12 @@
 	//-------------------------------------------------------edit tag
 	const listInfoModalComponent: ModalComponent = {
 		// Pass a reference to your custom component
-		ref: ModalListInfo,
+		ref: ModalListInfo
 		// Add the component properties as key/value pairs
-		props: { background: 'bg-red-500' },
-		// Provide a template literal for the default component slot
-		slot: '<p>Skeleton</p>'
+	};
+	//-----------------------------------------------引用ポスト
+	const postNoteModalComponent: ModalComponent = {
+		ref: ModalPostNote
 	};
 
 	async function listInfoModalOpen() {
@@ -596,8 +611,46 @@
 			response: async (res) => {
 				console.log(res);
 				if (res) {
-					await updateListInfo(res);
+					if (res.update) {
+						await updateListInfo(res);
+					} else if (res.share) {
+						//postNoteModalをだす
+						openModaltoShare();
+					}
 				}
+			}
+		};
+		modalStore.trigger(modal);
+	}
+
+	function openModaltoShare() {
+		const listNumber = $listNum;
+		//const test = window.location;		console.log(test);
+		const address: nip19.AddressPointer = {
+			identifier: $identifierList[listNumber].identifier ?? '',
+			pubkey: pubkey,
+			kind: kind,
+			relays: $bookmarkRelays
+		};
+
+		const url = window.location.origin + '/' + nip19.naddrEncode(address);
+		const tags = [
+			['a', `${kind}:${pubkey}:${$identifierList[listNumber].identifier}`],
+			['r', url]
+		];
+		console.log(tags);
+		const modal: ModalSettings = {
+			type: 'component',
+			component: postNoteModalComponent,
+			title: $_('nprofile.modal.postNote.title'),
+			body: ``,
+			value: {
+				content: `\r\n${url}\r\n`,
+				tags: tags
+			},
+			response: async (res) => {
+				console.log(res);
+				//postNoteまでmodalでやるらしい
 			}
 		};
 		modalStore.trigger(modal);
@@ -720,33 +773,36 @@
 			<!--variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"-->
 
 			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
-				<div class="h4 flex h-full items-center pt-1">
-					<button
-						class=" btn-icon btn-icon-sm fill-white place-self-center"
-						on:click={listInfoModalOpen}>{@html infoIcon}</button
-					>{$identifierList[$listNum].identifier}
-				</div>
+				<button
+					class="h4 flex h-full items-center pt-1"
+					on:click={listInfoModalOpen}
+				>
+					<div class=" btn-icon btn-icon-sm fill-white place-self-center">
+						{@html infoIcon}
+					</div>
+					{$identifierList[$listNum].identifier}
+				</button>
 			{:else}
-				<div class="grid grid-cols-[auto_1fr] h-full items-center pr-0.5">
+				<button
+					class="grid grid-cols-[auto_1fr] h-full items-center pr-0.5"
+					on:click={listInfoModalOpen}
+				>
 					{#if $iconView && $identifierList[$listNum].image}
-						<button
-							class="btn-icon btn-icon-sm mr-1"
-							on:click={listInfoModalOpen}
-							><img
+						<div class="btn-icon btn-icon-sm mr-1">
+							<img
 								width={36}
 								class="min-w-[36px]"
 								alt=""
 								src={$identifierList[$listNum].image}
-							/></button
-						>
+							/>
+						</div>
 					{:else}
-						<button
-							class="btn-icon btn-icon-sm fill-white place-self-center"
-							on:click={listInfoModalOpen}>{@html infoIcon}</button
-						>
+						<div class="btn-icon btn-icon-sm fill-white place-self-center">
+							{@html infoIcon}
+						</div>
 					{/if}
 					<div class="grid grid-rows-[auto_1fr]">
-						<div class="text-xs p-0">
+						<div class="place-self-start text-xs p-0">
 							{$identifierList[$listNum].identifier}
 						</div>
 
@@ -754,7 +810,7 @@
 							{$identifierList[$listNum].title}
 						</div>
 					</div>
-				</div>
+				</button>
 
 				<!-- {#if $identifierList[$listNum].summary}
 					{$identifierList[$listNum].summary}

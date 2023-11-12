@@ -29,9 +29,7 @@
 					<div class="card flex p-2 m-1 break-all">
 						<div>{index + 1}.</div>
 						<div class=" ml-2">
-							{e.content !== ''
-								? e.content
-								: $_('nprofile.modal.deleteNote.content')}
+							{e.content !== '' ? e.content : $_('modal.deleteNote.content')}
 						</div>
 					</div>
 				{/each}
