@@ -760,7 +760,7 @@
 		class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden"
 	>
 		<div
-			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center"
+			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center gap-x-0 md:gap-x-3 md:pl-5"
 		>
 			{#if $bookmarkEvents.length > 1}
 				<div class="flex">
@@ -826,7 +826,9 @@
 			{/if}
 
 			<div class="flex-grow overflow-hidden">
-				<div class="grid grid-cols-[1fr_auto_auto] gap-2 overflow-hidden">
+				<div
+					class="grid grid-cols-[1fr_auto_auto] gap-x-0 md:gap-x-5 overflow-hidden h-[3em]"
+				>
 					<div />
 					<div class="grid grid-cols-[auto_auto]">
 						<button
@@ -878,7 +880,7 @@
 							>
 						</div>
 						<button
-							class={'btn p-0 pr-1  arrow'}
+							class={'btn p-0 pr-1  arrow  md:pr-5 md:pl-2'}
 							on:click={async () => {
 								$nowProgress = true;
 								await updateBkmTag($listNum);
