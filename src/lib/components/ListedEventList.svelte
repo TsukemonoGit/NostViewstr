@@ -44,7 +44,12 @@
 	} from '$lib/stores/settings';
 	//import type { Event } from 'nostr-tools';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
-	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
+	import {
+		ListBox,
+		ListBoxItem,
+		type ModalComponent,
+		type ModalSettings
+	} from '@skeletonlabs/skeleton';
 	import ModalAddNote from '$lib/components/modals/ModalAddNote.svelte';
 	import ModalDelete from '$lib/components/modals/ModalDelete.svelte';
 	import ModalMove from '$lib/components/modals/ModalMove.svelte';
@@ -760,7 +765,7 @@
 		class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden"
 	>
 		<div
-			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center gap-x-0 md:gap-x-3 md:pl-5"
+			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center gap-x-0 md:gap-x-3 md:pl-5 overflow-x-hidden"
 		>
 			{#if $bookmarkEvents.length > 1}
 				<div class="flex">
@@ -893,48 +898,56 @@
 		</div>
 	</div>
 
-	<!---->
-	<main
-		class="my-12 overflow-w-hidden container max-w-[1024px] h-full mx-auto justify-center items-center"
+	<div
+		class="my-12 overflow-x-hidden container max-w-[1024px] h-full mx-auto justify-center items-center overflow-x-hidden"
 	>
-		<!-- <LightSwitch />
-	<button
-		on:click={() => {
-			if ($bookmarkEvents && $listNum > 0) {
-				$listNum--;
-				//viewEvent = $bookmarkEvents[$listNum];
-				$pageNum = 0;
-				bkm = 'pub';
-			}
-		}}>{'<'}</button
-	>
+		<div class="flex">
+			<!-- Left Sidebar (Hidden on small screens) -->
+			<div
+				class="hidden md:flex h-full w-[12em] bg-surface-200 overflow-y-auto fixed"
+			>
+				<!-- Your sidebar content goes here -->
+				<!-- For example, you can add links or other elements -->
+				{#if $identifierList.length > 0}
+					<ListBox class=" overflow-y-auto">
+						{#each $identifierList as list, index}
+							<ListBoxItem
+								bind:group={$listNum}
+								name={list.identifier ?? ''}
+								value={index}
+								class="truncate"
+								on:change={() => {
+									$listNum = index;
+								}}
+								>{list.identifier}
+								{list.title ? `【${list.title}】` : ''}</ListBoxItem
+							>
+						{/each}
+					</ListBox>
+				{:else}
+					{$_('modal.tagList.noList')}
+				{/if}
+			</div>
 
-	<button
-		on:click={() => {
-			if ($bookmarkEvents && $listNum < $bookmarkEvents.length - 1) {
-				$pageNum = 0;
-				$listNum++;
-				//	viewEvent = $bookmarkEvents[$listNum];
-				bkm = 'pub';
-			}
-		}}>{'>'}</button
-	> -->
-		{#if $searchRelays && $searchRelays.length > 0}
-			<NostrApp relays={$searchRelays}>
-				<ListedEvent
-					listEvent={viewEvent}
-					{DeleteNote}
-					{MoveNote}
-					{CheckNote}
-					bind:bkm
-					bind:isOwner
-				/>
-			</NostrApp>
-		{:else}
-			{`relay has not been set`}
-		{/if}
-	</main>
-
+			<main class="flex-1 md:ml-[12em] overflow-y-auto">
+				<!-- Add ml-64 to push main to the right -->
+				{#if $searchRelays && $searchRelays.length > 0}
+					<NostrApp relays={$searchRelays}>
+						<ListedEvent
+							listEvent={viewEvent}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+							bind:bkm
+							bind:isOwner
+						/>
+					</NostrApp>
+				{:else}
+					{`relay has not been set`}
+				{/if}
+			</main>
+		</div>
+	</div>
 	<!-------------------------------あど----->
 	{#if !$nowProgress && $pubkey_viewer === pubkey}
 		<div class="fixed bottom-14 z-10 w-full inline-flex flex-row space-x-0">
