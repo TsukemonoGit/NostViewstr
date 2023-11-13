@@ -901,7 +901,7 @@
 	<div
 		class="my-12 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
 	>
-		<div class="flex">
+		<div class="flex overflow-x-hidden">
 			<!-- Left Sidebar (Hidden on small screens) -->
 			<div
 				class="hidden md:flex h-full w-[12em] pb-[3em] bg-surface-200-700-token overflow-y-auto fixed"
@@ -972,7 +972,7 @@
 				? 'multi'
 				: 'add'}"
 		>
-			<div class="fill-white">
+			<div class="fill-white overflow-x-hidden">
 				{#if !$isMulti}
 					<button
 						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
@@ -1023,9 +1023,11 @@
 	.add {
 		/* コンテナのMAXサイズが1024pxなので半分の512より手前らへんに */
 		left: min(calc(50% + 440px), calc(100% - 50px));
+		overflow-x: hidden;
 	}
 	.multi {
 		/* コンテナのMAXサイズが1024pxなので半分の512より手前らへんに */
 		left: min(calc(50% + 400px), calc(100% - 100px));
+		overflow-x: hidden;
 	}
 </style>
