@@ -44,9 +44,9 @@
 	$: console.log(
 		`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
 	);
-	$: last = Math.floor($listSize / $amount);
+	$: last = Math.floor($listSize - 1 / $amount);
 	function next() {
-		if ($pageNum < Math.floor($listSize / $amount)) {
+		if ($pageNum < Math.floor($listSize - 1 / $amount)) {
 			$pageNum++;
 		}
 	}

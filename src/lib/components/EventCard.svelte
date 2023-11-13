@@ -219,7 +219,7 @@
 			{#await uniqueTags(note.tags) then tags}
 				{#if tags.length > 0}
 					<div
-						class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50"
+						class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50 box-border"
 					>
 						{#each tags as tag}
 							<EventTag
@@ -231,7 +231,7 @@
 					</div>
 				{/if}
 				<!--note-->
-				<div class="break-all overflow-x-hidden">
+				<div class="break-all box-border">
 					{#if note.kind === 31990}
 						{#await JsonCheck(note.content) then data}
 							{#if data !== ''}
