@@ -909,7 +909,10 @@
 				<!-- Your sidebar content goes here -->
 				<!-- For example, you can add links or other elements -->
 				{#if $identifierList.length > 0}
-					<ListBox class=" overflow-y-auto " active="variant-ghost-primary">
+					<ListBox
+						class=" overflow-y-auto w-full"
+						active="variant-ghost-primary"
+					>
 						{#each $identifierList as list, index}
 							<ListBoxItem
 								bind:group={$listNum}
