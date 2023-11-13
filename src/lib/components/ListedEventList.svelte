@@ -946,7 +946,7 @@
 				{/if}
 			</div>
 
-			<main class="flex-1 md:ml-[12em] overflow-y-auto">
+			<main class="flex-1 md:ml-[12em] overflow-y-auto h-fit">
 				<!-- Add ml-64 to push main to the right -->
 				{#if $searchRelays && $searchRelays.length > 0}
 					<NostrApp relays={$searchRelays}>
@@ -972,7 +972,7 @@
 				? 'multi'
 				: 'add'}"
 		>
-			<div class="fill-white overflow-x-hidden">
+			<div class="fill-white overflow-x-hidden h-fit overflow-y-auto">
 				{#if !$isMulti}
 					<button
 						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
