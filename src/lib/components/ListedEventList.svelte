@@ -814,7 +814,7 @@
 							{$identifierList[$listNum].identifier}
 						</div>
 
-						<div class="h5 overflow-hidden break-keep">
+						<div class="h5 truncate break-keep max-w-[10em] sm:max-w-fit">
 							{$identifierList[$listNum].title}
 						</div>
 					</div>
