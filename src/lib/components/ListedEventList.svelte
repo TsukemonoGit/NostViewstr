@@ -761,11 +761,9 @@
 <!-- {#await bkminit(pubkey) then bkminti} -->
 {#if $bookmarkEvents && $bookmarkEvents.length > 0}
 	<!--header-->
-	<div
-		class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden"
-	>
+	<div class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row">
 		<div
-			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center gap-x-0 md:gap-x-3 md:pl-5 overflow-x-hidden"
+			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center gap-x-0 md:gap-x-3 md:pl-5"
 		>
 			{#if $bookmarkEvents.length > 1}
 				<div class="flex">
@@ -899,7 +897,7 @@
 	</div>
 
 	<div
-		class="my-12 overflow-x-hidden container max-w-[1024px] h-full mx-auto justify-center items-center overflow-x-hidden"
+		class="my-12 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
 	>
 		<div class="flex">
 			<!-- Left Sidebar (Hidden on small screens) -->
