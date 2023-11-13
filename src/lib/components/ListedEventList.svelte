@@ -761,7 +761,9 @@
 <!-- {#await bkminit(pubkey) then bkminti} -->
 {#if $bookmarkEvents && $bookmarkEvents.length > 0}
 	<!--header-->
-	<div class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row">
+	<div
+		class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden"
+	>
 		<div
 			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center gap-x-0 md:gap-x-3 md:pl-10 pl-1"
 		>

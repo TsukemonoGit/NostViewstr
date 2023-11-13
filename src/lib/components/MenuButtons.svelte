@@ -123,7 +123,7 @@
 </script>
 
 {#if menuMode === MenuMode.Owner}
-	<div class="grid grid-rows-[auto_1fr] w-14">
+	<div class="grid grid-rows-[auto_1fr] w-14 pt-1">
 		<div>
 			<button class="btn m-0 p-0 bg-surface-500" on:click={shareNote}
 				><Share /></button

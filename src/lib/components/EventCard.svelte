@@ -101,7 +101,7 @@
 	class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
 >
 	<!-- icon | その他-->
-	<div class="grid grid-cols-[auto_1fr] gap-1.5">
+	<div class="pl-1 grid grid-cols-[auto_1fr] gap-1.5">
 		<!--icon-->
 		{#if $iconView && metadata}
 			<div
