@@ -967,27 +967,27 @@
 	</div>
 	<!-------------------------------あど----->
 	{#if !$nowProgress && $pubkey_viewer === pubkey}
-		<div class="fixed bottom-14 z-10 w-full inline-flex flex-row space-x-0">
-			<div
-				class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token justify-end rounded-none"
-			>
-				<div class="justify-self-start px-4 z-10 fill-white">
-					{#if !$isMulti}
-						<button
-							class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
-							on:click={onClickAdd}>{@html addIcon}</button
-						>
-					{:else}
-						<button
-							class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
-							on:click={onClickMultiMove}>{@html MoveIcon}</button
-						>
-						<button
-							class="addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
-							on:click={onClickMultiDelete}>{@html DeleteIcon}</button
-						>
-					{/if}
-				</div>
+		<div
+			class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
+				? 'multi'
+				: 'add'}"
+		>
+			<div class="fill-white">
+				{#if !$isMulti}
+					<button
+						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
+						on:click={onClickAdd}>{@html addIcon}</button
+					>
+				{:else}
+					<button
+						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
+						on:click={onClickMultiMove}>{@html MoveIcon}</button
+					>
+					<button
+						class="addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
+						on:click={onClickMultiDelete}>{@html DeleteIcon}</button
+					>
+				{/if}
 			</div>
 		</div>
 	{/if}
@@ -1019,5 +1019,13 @@
 		width: 2em;
 		height: 2em;
 		fill: black;
+	}
+	.add {
+		left: min(calc(50% + 440px), calc(100% - 50px));
+		/* 他のスタイルプロパティ */
+	}
+	.multi {
+		left: min(calc(50% + 400px), calc(100% - 100px));
+		/* 他のスタイルプロパティ */
 	}
 </style>
