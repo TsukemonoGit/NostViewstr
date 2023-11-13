@@ -763,9 +763,9 @@
 	<!--header-->
 	<div class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row">
 		<div
-			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center gap-x-0 md:gap-x-3 md:pl-5"
+			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center gap-x-0 md:gap-x-3 md:pl-10 pl-1"
 		>
-			{#if $bookmarkEvents.length > 1}
+			<!-- {#if $bookmarkEvents.length > 1}
 				<div class="flex">
 					<button
 						class="arrow btn p-0 rounded"
@@ -779,7 +779,7 @@
 						>{@html nextIcon}</button
 					>
 				</div>
-			{/if}
+			{/if} -->
 
 			<!--variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"-->
 
@@ -909,20 +909,34 @@
 				{#if $identifierList.length > 0}
 					<ListBox
 						class=" overflow-y-auto w-full"
-						active="variant-ghost-primary"
+						active="variant-ghost-primary box-border"
 					>
 						{#each $identifierList as list, index}
 							<ListBoxItem
 								bind:group={$listNum}
 								name={list.identifier ?? ''}
 								value={index}
-								class="truncate"
+								class="truncate "
+								padding="px-2 py-2"
+								labelledby="truncate"
 								on:change={() => {
 									$listNum = index;
 								}}
-								>{list.identifier}
-								{list.title ? `【${list.title}】` : ''}</ListBoxItem
-							>
+								><svelte:fragment slot="lead"
+									><div
+										class="rounded-full w-[1.5em] h-[1.5em] variant-soft-primary h6 text-center"
+									>
+										{(index + 1).toString().padStart(2, '0')}
+									</div></svelte:fragment
+								>
+								{#if list.title}
+									<div class="text-xs">{list.identifier}</div>
+									<div>{list.title}</div>
+								{:else}
+									{list.identifier}
+								{/if}
+							</ListBoxItem>
+							<hr />
 						{/each}
 					</ListBox>
 				{:else}
