@@ -88,14 +88,14 @@
 		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-1">
 			{$_('modal.info.urlandIconOff')}
-			<SlideToggle name="slide" bind:checked={toggleValue} />
+			<SlideToggle size="sm" name="slide" bind:checked={toggleValue} />
 			{$_('modal.info.urlandIconOn')}
 		</div>
 
 		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-1">
 			{$_('modal.info.contentwarning')}
-			<SlideToggle name="slide" bind:checked={warningToggle} />
+			<SlideToggle size="sm" name="slide" bind:checked={warningToggle} />
 		</div>
 
 		<!--まるっと共有-->

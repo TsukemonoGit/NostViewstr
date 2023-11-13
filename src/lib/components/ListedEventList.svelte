@@ -904,12 +904,12 @@
 		<div class="flex">
 			<!-- Left Sidebar (Hidden on small screens) -->
 			<div
-				class="hidden md:flex h-full w-[12em] bg-surface-200 overflow-y-auto fixed"
+				class="hidden md:flex h-full w-[12em] bg-surface-200-700-token overflow-y-auto fixed"
 			>
 				<!-- Your sidebar content goes here -->
 				<!-- For example, you can add links or other elements -->
 				{#if $identifierList.length > 0}
-					<ListBox class=" overflow-y-auto">
+					<ListBox class=" overflow-y-auto " active="variant-ghost-primary">
 						{#each $identifierList as list, index}
 							<ListBoxItem
 								bind:group={$listNum}
