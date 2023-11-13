@@ -904,7 +904,7 @@
 		<div class="flex">
 			<!-- Left Sidebar (Hidden on small screens) -->
 			<div
-				class="hidden md:flex h-full w-[12em] bg-surface-200-700-token overflow-y-auto fixed"
+				class="hidden md:flex h-full w-[12em] pb-[3em] bg-surface-200-700-token overflow-y-auto fixed"
 			>
 				<!-- Your sidebar content goes here -->
 				<!-- For example, you can add links or other elements -->
