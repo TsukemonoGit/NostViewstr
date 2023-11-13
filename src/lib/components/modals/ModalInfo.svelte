@@ -17,6 +17,7 @@
 		pubkey_viewer
 	} from '$lib/stores/settings';
 	import githubIcon from '$lib/assets/github-mark.png';
+	import githubIconWhite from '$lib/assets/github-mark-white.png';
 	import { nostrIcon } from '$lib/components/icons';
 	export let parent: any;
 
@@ -162,16 +163,20 @@
 
 		<div class="flex gap-3">
 			<a
-				class="btn p-0 badge-icon w-6"
+				class="btn p-0 badge-icon w-[24px] h-[24px] variant-filled-surface rounded-full"
 				rel="external noreferrer"
 				target="_blank"
 				href="https://github.com/TsukemonoGit/nostr-bookamrk-viewer5"
 			>
-				<img src={githubIcon} alt="githubLink" />
+				<img
+					src={githubIconWhite}
+					class=" w-[18px] h-[18px]"
+					alt="githubLink"
+				/>
 			</a>
 
 			<a
-				class="btn p-0 badge-icon w-6 nostr h-full"
+				class="btn p-0 badge-icon w-[24px] h-[24px] nostr variant-filled-surface rounded-full"
 				rel="external noreferrer"
 				target="_blank"
 				href="https://nostter.vercel.app/mono@tsukemonogit.github.io"
@@ -179,7 +184,7 @@
 				{@html nostrIcon}
 			</a>
 			<button
-				class="light btn p-0 m-0 w-[24px] h-[24px] badge-icon rounded-full"
+				class="light btn p-0 m-0 w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full"
 				data-npub="npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw"
 				data-note-id="note1sgfa7nh4p4k76k23e0vr0k95svg5hp3xqshq6ewd9jaut6hnp7jq8jhpy8"
 				data-relays="wss://yabu.me.io,wss://nos.lol,wss://relay-jp.nostr.wirednet.jp,wss://relay.nostr.band"
@@ -199,6 +204,6 @@
 	:global(.light svg) {
 		width: 24px;
 		height: 24px;
-		fill: rgb(230, 187, 0);
+		fill: yellow;
 	}
 </style>
