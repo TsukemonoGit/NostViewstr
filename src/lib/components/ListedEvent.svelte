@@ -10,6 +10,7 @@
 
 	import { amount, pageNum, listSize } from '$lib/stores/pagination';
 	import { isMulti } from '$lib/stores/settings';
+	import MenuButtons from './MenuButtons.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -336,7 +337,19 @@
 			{:else}
 				<!--a,e,d以外あとでかく-->
 				<div class="z-0 card drop-shadow px-1 py-1 my-0.5 break-all">
-					{JSON.stringify(tag)}
+					<div class="grid grid-cols-[1fr_auto]">
+						{JSON.stringify(tag)}
+
+						<MenuButtons
+							myIndex={index}
+							tagArray={tag}
+							note={undefined}
+							menuMode={isOwner ? MenuMode.Owner : MenuMode.none}
+							on:DeleteNote={DeleteNote}
+							on:MoveNote={MoveNote}
+							on:CheckNote={CheckNote}
+						/>
+					</div>
 				</div>
 			{/if}
 		{/await}

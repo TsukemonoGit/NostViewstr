@@ -300,7 +300,7 @@
 					<!-- svelte-ignore a11y-no-noninteractive-element-interactions --><span
 						class=" break-all anchor"
 						on:click={() => {
-							goto(`../t/${item.content.slice(1)}`);
+							goto(`${window.location.origin}/t/${item.content.slice(1)}`);
 						}}
 						>{item.content}
 					</span>{:else if item.content.length > 0}

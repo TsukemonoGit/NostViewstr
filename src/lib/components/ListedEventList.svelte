@@ -931,7 +931,7 @@
 			<main
 				class="flex-1 {isNaddr
 					? ''
-					: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden"
+					: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
 			>
 				<!-- Add ml-64 to push main to the right -->
 				{#if $searchRelays && $searchRelays.length > 0}
