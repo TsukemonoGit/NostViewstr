@@ -102,9 +102,13 @@
 		return $naddrStore[naddr];
 	}
 	const noteId = (encodedId: string) => {
-		return nip19.decode(encodedId).type === 'note'
-			? nip19.decode(encodedId).data
-			: nip19.decode(encodedId).data.id;
+		if (nip19.decode(encodedId).type === 'note') {
+			const data = nip19.decode(encodedId).data as string;
+			return data;
+		} else if (nip19.decode(encodedId).type === 'nevent') {
+			const data = nip19.decode(encodedId).data as nip19.EventPointer;
+			return data.id;
+		} else return '';
 	};
 
 	//-----------------------------------------------
@@ -154,6 +158,38 @@
 			const data = decodeData.data as nip19.ProfilePointer;
 			return ['p', data.pubkey];
 		}
+	};
+	const nip19DecodeData = (decodeData: string) => {
+		const data = nip19DecodeData as unknown as nip19.DecodeResult;
+		if (data.type === 'naddr') {
+			return data.data as nip19.AddressPointer;
+		} else if (data.type === 'note') {
+			return data.data as string;
+		} else if (data.type === 'nevent') {
+			return data.data as nip19.EventPointer;
+		} else if (data.type === 'npub') {
+			return data.data as string;
+		} else if (data.type === 'nprofile') {
+			return data.data as nip19.ProfilePointer;
+		} else if (data.type === 'nsec') {
+			return data.data as string;
+		} else {
+			return data.data as string;
+		}
+	};
+	const nip19Npub = (decodeData: string) => {
+		const data = nip19DecodeData as unknown as nip19.DecodeResult;
+		return data.data as string;
+	};
+	const nip19Nprofile = (decodeData: string) => {
+		const data = nip19DecodeData as unknown as nip19.DecodeResult;
+
+		return data.data as nip19.ProfilePointer;
+	};
+	const nip19Naddr = (decodeData: string) => {
+		const data = nip19DecodeData as unknown as nip19.DecodeResult;
+
+		return data.data as nip19.AddressPointer;
 	};
 </script>
 
@@ -545,7 +581,7 @@
 {:else if nip19.decode(encodedId).type === 'npub'}
 	<Metadata
 		queryKey={['metadata', nip19.decode(encodedId).data]}
-		pubkey={nip19.decode(encodedId).data}
+		pubkey={nip19Npub(encodedId)}
 		let:metadata
 	>
 		<div slot="loading">
@@ -581,22 +617,22 @@
 	</Metadata>
 {:else if nip19.decode(encodedId).type === 'nprofile'}
 	<Metadata
-		queryKey={['metadata', nip19.decode(encodedId).data.pubkey]}
-		pubkey={nip19.decode(encodedId).data.pubkey}
+		queryKey={['metadata', nip19Nprofile(encodedId).pubkey]}
+		pubkey={nip19Nprofile(encodedId).pubkey}
 		let:metadata
 	>
 		<div slot="loading">
 			<div
 				class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-hidden break-all whitespace-pre-wrap"
 			>
-				{nip19.decode(encodedId).data.pubkey}
+				{nip19Nprofile(encodedId).pubkey}
 			</div>
 		</div>
 		<div slot="error">
 			<div
 				class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-hidden break-all whitespace-pre-wrap"
 			>
-				{nip19.decode(encodedId).data.pubkey}
+				{nip19Nprofile(encodedId).pubkey}
 			</div>
 		</div>
 
@@ -604,7 +640,7 @@
 			<div
 				class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-hidden break-all whitespace-pre-wrap"
 			>
-				{nip19.decode(encodedId).data.pubkey}
+				{nip19Nprofile(encodedId).pubkey}
 			</div>
 		</div>
 		<button
@@ -618,22 +654,22 @@
 {:else if nip19.decode(encodedId).type === 'naddr'}
 	<div class="card border border-surface-400 px-3 py-2">
 		<Metadata
-			queryKey={['metadata', nip19.decode(encodedId).data.pubkey]}
-			pubkey={nip19.decode(encodedId).data.pubkey}
+			queryKey={['metadata', nip19Naddr(encodedId).pubkey]}
+			pubkey={nip19Naddr(encodedId).pubkey}
 			let:metadata
 		>
 			<div slot="loading">
 				<div
 					class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden break-all whitespace-pre-wrap"
 				>
-					{nip19.decode(encodedId).data.pubkey}
+					{nip19Naddr(encodedId).pubkey}
 				</div>
 			</div>
 			<div slot="error">
 				<div
 					class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden break-all whitespace-pre-wrap"
 				>
-					{nip19.decode(encodedId).data.pubkey}
+					{nip19Naddr(encodedId).pubkey}
 				</div>
 			</div>
 
@@ -641,7 +677,7 @@
 				<div
 					class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden break-all whitespace-pre-wrap"
 				>
-					{nip19.decode(encodedId).data.pubkey}
+					{nip19Naddr(encodedId).pubkey}
 				</div>
 			</div>
 

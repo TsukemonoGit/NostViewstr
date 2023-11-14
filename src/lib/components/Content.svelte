@@ -153,17 +153,15 @@
 		{#each viewContent as item, index}
 			{#if item.content.length > 0}
 				<!-- <div class="break-all  overflow-x-hidden"> -->
-				{#if item.type === 'emoji'}<span
-						class="w-[fit-content] inline-flex flex align-bottom break-all"
-						><!-- svelte-ignore a11y-click-events-have-key-events -->
-						<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-						<img
-							class="max-h-[1.5em] object-contain"
-							src={item.url}
-							alt=""
-							on:click={() => handleClickImage(item.url)}
-						/></span
-					>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
+				{#if item.type === 'emoji'}
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+					<img
+						class="align-bottom inline-flex max-h-[1.5em] object-contain -m-[2.5px]"
+						src={item.url}
+						alt=""
+						on:click={() => handleClickImage(item.url)}
+					/>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
 							<div class="max-h-[24rem] max-w-[36rem] overflow-auto break-all">
 								<blockquote class="twitter-tweet">
 									<p lang="ja" dir="ltr">
@@ -297,17 +295,17 @@
 							}}>#{tag[item.number][1]}</button
 						>
 					{:else}{tag[item.number][1]}
-					{/if}{:else if item.type === 'hashtag'}<span
+					{/if}{:else if item.type === 'hashtag'}<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
+					<!-- svelte-ignore a11y-no-noninteractive-element-interactions --><span
 						class=" break-all anchor"
 						on:click={() => {
 							goto(`../t/${item.content.slice(1)}`);
 						}}
 						>{item.content}
 					</span>{:else if item.content.length > 0}
-					<span style="	white-space: pre-wrap; word-break: break-word;">
-						<!-- {#if item.beforeSpace}{Array(item.beforeSpace)
-                .fill('\u00A0')
-                .join('')}{/if}-->{item.content}</span
+					<span style="	white-space: pre-wrap; word-break: break-word;"
+						>{item.content}</span
 					>{/if}
 				<!-- </div> -->
 			{/if}
