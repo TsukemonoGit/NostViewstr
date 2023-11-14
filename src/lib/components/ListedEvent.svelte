@@ -49,7 +49,9 @@
 		viewList = [];
 		$listSize = 0;
 	}
+	let message: string;
 	async function viewUpdate() {
+		message = '';
 		if (listEvent) {
 			if (bkm === 'pub') {
 				$listSize = listEvent?.tags.length;
@@ -60,8 +62,10 @@
 					$listSize = res.length;
 					viewList = res;
 				} catch (error) {
-					bkm = 'pub';
-					viewUpdate();
+					viewList = [];
+					message = listEvent.content;
+					// bkm = 'pub';
+					// viewUpdate();
 				}
 			}
 		} else {
@@ -337,6 +341,9 @@
 			{/if}
 		{/await}
 	{/each}
+{:else if message}
+	<p>List's content</p>
+	<div class="break-all">{message}</div>
 {/if}
 
 <div class="card p-1 variant-filled-secondary z-20" data-popup="popupShare">

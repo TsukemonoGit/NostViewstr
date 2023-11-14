@@ -526,8 +526,11 @@ export async function fetchFilteredEvents(
 		console.error('relay設定されてない');
 		return [];
 	}
+	console.log(filters);
+
 	const rxNostr = createRxNostr();
 	console.log(relays);
+
 	rxNostr.setRelays(relays);
 	console.log(rxNostr.getRelays());
 	const rxReq = createRxOneshotReq({ filters });

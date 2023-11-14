@@ -772,6 +772,7 @@
 			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
 				<button
 					class="h4 flex h-full items-center pt-1 overflow-hidden min-w-[7em]"
+					disabled={!(kind >= 30000 && kind < 40000)}
 					on:click={listInfoModalOpen}
 				>
 					<div class=" btn-icon btn-icon-sm fill-white place-self-center">

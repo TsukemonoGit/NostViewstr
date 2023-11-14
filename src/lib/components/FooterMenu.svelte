@@ -348,8 +348,10 @@
 				/>
 			{:else}
 				{#if !naddr}
-					<button class={buttonClass} on:click={openLists}
-						>{@html menuIcon}</button
+					<button
+						class={buttonClass}
+						on:click={openLists}
+						disabled={!(kind >= 30000 && kind < 40000)}>{@html menuIcon}</button
 					>
 				{/if}
 
