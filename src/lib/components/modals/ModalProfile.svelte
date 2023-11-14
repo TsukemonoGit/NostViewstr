@@ -3,6 +3,7 @@
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
+	import { goto } from '$app/navigation';
 
 	export let parent: any;
 
@@ -19,6 +20,15 @@
 			console.log('failed to open profileJSON');
 		}
 	}
+
+	let res: { openList?: boolean } = { openList: false };
+
+	function onFormSubmit(): void {
+		if ($modalStore[0].response) $modalStore[0].response(res);
+
+		modalStore.close();
+	}
+
 	//$modalStore[0]?.meta.hexKey
 	function onClickButton(str: string) {
 		const text =
@@ -61,7 +71,9 @@
 
 		<div class="grid grid-row-[auto_auto_auto] gap-1 max-w-md">
 			<div class="grid grid-cols-[auto_1fr] gap-2 max-w-md">
-				<div class="w-16 h-16 rounded-lg flex justify-center overflow-hidden bg-surface-500/25">
+				<div
+					class="w-16 h-16 rounded-lg flex justify-center overflow-hidden bg-surface-500/25"
+				>
 					{#if profileContent && profileContent.picture}
 						<img
 							class="w-16 object-contain justify-center"
@@ -79,7 +91,9 @@
 			<div class="rounded-sm border-4 border-dotted border-surface-300 p-1">
 				<div class="font-bold">about</div>
 				{#if profileContent && profileContent.about}
-					<div class="break-all whitespace-pre-wrap text-sm max-h-32 overflow-auto">
+					<div
+						class="break-all whitespace-pre-wrap text-sm max-h-32 overflow-auto"
+					>
 						{profileContent.about}
 					</div>
 				{/if}
@@ -87,7 +101,9 @@
 			<div class="rounded-sm border-4 border-dotted border-surface-300 p-1">
 				<div class="font-bold">profileJSON</div>
 				{#if profileContent}
-					<div class="break-all whitespace-pre-wrap text-sm max-h-24 overflow-auto">
+					<div
+						class="break-all whitespace-pre-wrap text-sm max-h-24 overflow-auto"
+					>
 						{JSON.stringify(profileContent, undefined, 4)}
 					</div>
 				{/if}
@@ -100,13 +116,15 @@
 				<button
 					type="button"
 					class="btn variant-filled-secondary p-1"
-					on:click={() => onClickButton('npub')}>copy pubKey</button
+					on:click={() => {
+						res.openList = true;
+						onFormSubmit();
+					}}>open Lists</button
 				>
-
 				<button
 					type="button"
 					class="btn variant-filled-secondary p-1"
-					on:click={() => onClickButton('hex')}>copy hexKey</button
+					on:click={() => onClickButton('npub')}>copy pubKey</button
 				>
 			</div>
 			<div class="grid grid-row-[auto_auto] gap-2">
@@ -120,8 +138,10 @@
 					}}>Open in external app</button
 				>
 
-				<button type="button" class="btn variant-filled-surface p-2" on:click={parent.onClose}
-					>{parent.buttonTextCancel}</button
+				<button
+					type="button"
+					class="btn variant-filled-surface p-2"
+					on:click={parent.onClose}>{parent.buttonTextCancel}</button
 				>
 			</div>
 		</div>

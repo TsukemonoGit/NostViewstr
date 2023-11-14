@@ -2,7 +2,6 @@ import { writable } from 'svelte/store';
 import type { Event } from 'nostr-tools';
 import type { Nostr } from 'nosvelte';
 import type { TextPart } from '$lib/content';
-import type { U } from 'vitest/dist/reporters-5f784f42';
 
 interface IdentifierList {
 	identifier: string | undefined;

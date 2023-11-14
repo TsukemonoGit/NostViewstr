@@ -59,6 +59,7 @@
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import ModalPostNote from './modals/ModalPostNote.svelte';
 	import { nip19 } from 'nostr-tools';
+	import { afterNavigate } from '$app/navigation';
 
 	let size: number;
 	let bkm: string = 'pub';
@@ -73,6 +74,19 @@
 	$: createdAt = viewEvent?.created_at;
 	$: isOwner = $pubkey_viewer === pubkey;
 	onMount(async () => {
+		init();
+	});
+
+	afterNavigate(() => {
+		init();
+	});
+	//ぷぶきーがかわるごとにしょきか？
+	// $: if (pubkey) {
+	// 	init();
+	// }
+
+	const init = async () => {
+		console.log('onMount executed');
 		if ($pubkey_viewer === '') {
 			try {
 				const res = await getPub();
@@ -86,8 +100,9 @@
 		$nowProgress = true;
 		await bkminit(pubkey);
 		$nowProgress = false;
-	});
-	async function bkminit(pub: string) {
+	};
+
+	export async function bkminit(pub: string) {
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
 			$pubkey_viewer = await getPub();

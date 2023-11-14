@@ -14,6 +14,18 @@
 	import Content from './Content.svelte';
 	import { allView, iconView } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
+	import { goto } from '$app/navigation';
+	import {
+		bookmarkEvents,
+		identifierList,
+		listNum
+	} from '$lib/stores/bookmarkEvents';
+	import {
+		bookmarkRelays,
+		postRelays,
+		relayEvent,
+		searchRelays
+	} from '$lib/stores/relays';
 
 	export let isPageOwner: boolean;
 	export let note: Event;
@@ -59,7 +71,22 @@
 			meta: {
 				metadata: metadata
 			},
-			component: profileModalComponent
+			component: profileModalComponent,
+			response: (res) => {
+				if (res && res.openList) {
+					//storeのリセット
+					$bookmarkEvents = [];
+					$bookmarkRelays = [];
+					$postRelays = [];
+					$searchRelays = [];
+					$identifierList = [];
+					$listNum = 0;
+
+					goto(
+						`${window.location.origin}/${nip19.npubEncode(metadata.pubkey)}`
+					);
+				}
+			}
 		};
 
 		modalStore.trigger(modal);

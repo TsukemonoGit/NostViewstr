@@ -26,7 +26,11 @@
 	export let data: PageData;
 	const kind = 30001;
 	console.log('PageData', data.pubkey);
-
+	let onmount: boolean = false;
+	// onMount(() => {
+	// 	console.log('test');
+	// 	onmount = true;
+	// });
 	// $: console.log($URLPreview);
 	// $: console.log($iconView);
 	// onMount(async () => {
