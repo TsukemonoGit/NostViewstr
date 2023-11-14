@@ -68,23 +68,20 @@
 			</div>
 		</div>
 
-		<div
-			class="-mt-0.5 px-2 opacity-70 text-sm whitespace-nowrap overflow-x-hidden"
+		<button
+			class="-mt-0.5 px-2 opacity-70 text-sm w-full truncate overflow-x-hidden text-start"
+			on:click={() => {
+				handleClickDate(text, tag);
+			}}
 		>
 			[{tag[0]}]
-			<button
-				class="text-tertiary-800 dark:text-tertiary-400 whitespace-nowrap overflow-x-hidden text-ellipsis"
-				on:click={() => {
-					handleClickDate(text, tag);
-				}}
-			>
-				{#if text.tags.some((tag) => tag[0] === 'content-warning') && $allView == false}
-					{'<content-warning>'}
-				{:else}
-					{text.content}
-				{/if}</button
-			>
-		</div>
+
+			{#if text.tags.some((tag) => tag[0] === 'content-warning') && $allView == false}
+				{'<content-warning>'}
+			{:else}
+				{text.content}
+			{/if}</button
+		>
 	</Text>
 {:else}
 	<div

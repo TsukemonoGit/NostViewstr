@@ -499,8 +499,8 @@
 	// 	}
 	// 	console.log(identifier);
 	// }
-	const borderClassActive = `break-keep border-b-2 border-white place-items-end  flex m-1 p-0.5 pb-0 h6 `;
-	const borderClass = `break-keep  place-items-end p-0.5 flex m-1 h6`;
+	const borderClassActive = `break-keep border-b-2 border-white place-items-end  flex m-1 p-0.5 pb-0 h6 bkm`;
+	const borderClass = `break-keep  place-items-end p-0.5 flex m-1 h6 bkm`;
 
 	function onClickPage(arg0: number): any {
 		$listNum += arg0;
@@ -762,32 +762,14 @@
 {#if $bookmarkEvents && $bookmarkEvents.length > 0}
 	<!--header-->
 	<div
-		class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden"
+		class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden box-border"
 	>
 		<div
-			class="h-[3em] flex space-x-0 bg-surface-500 text-white container max-w-[1024px] mx-auto justify-center items-center gap-x-0 md:gap-x-3 md:pl-10 pl-1"
+			class="h-[3em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-x-hidden"
 		>
-			<!-- {#if $bookmarkEvents.length > 1}
-				<div class="flex">
-					<button
-						class="arrow btn p-0 rounded"
-						on:click={() => onClickPage(-1)}
-						disabled={$listNum <= 0}>{@html backIcon}</button
-					>
-					<button
-						class="arrow btn p-0 rounded"
-						on:click={() => onClickPage(1)}
-						disabled={$listNum >= $bookmarkEvents.length - 1}
-						>{@html nextIcon}</button
-					>
-				</div>
-			{/if} -->
-
-			<!--variant-ghost-primary border-b border-surface-400-500-token pb-0 break-keep overflow-hidden"-->
-
 			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
 				<button
-					class="h4 flex h-full items-center pt-1"
+					class="h4 flex h-full items-center pt-1 overflow-hidden min-w-[7em]"
 					on:click={listInfoModalOpen}
 				>
 					<div class=" btn-icon btn-icon-sm fill-white place-self-center">
@@ -797,7 +779,7 @@
 				</button>
 			{:else}
 				<button
-					class="grid grid-cols-[auto_1fr] h-full items-center pr-0.5"
+					class="grid grid-cols-[auto_1fr] h-full items-center min-w-[7em] pr-0.5 overflow-hidden truncate"
 					on:click={listInfoModalOpen}
 				>
 					{#if $iconView && $identifierList[$listNum].image}
@@ -814,12 +796,12 @@
 							{@html infoIcon}
 						</div>
 					{/if}
-					<div class="grid grid-rows-[auto_1fr]">
+					<div class="grid grid-rows-[auto_1fr] truncate overflow-hidden">
 						<div class="place-self-start text-xs p-0">
 							{$identifierList[$listNum].identifier}
 						</div>
 
-						<div class="h5 truncate break-keep max-w-[10em] sm:max-w-fit">
+						<div class="h5 truncate place-self-start">
 							{$identifierList[$listNum].title}
 						</div>
 					</div>
@@ -830,84 +812,79 @@
 				{/if} -->
 			{/if}
 
-			<div class="flex-grow overflow-hidden">
-				<div
-					class="grid grid-cols-[1fr_auto_auto] gap-x-0 md:gap-x-5 overflow-hidden h-[3em]"
-				>
+			<div class="grid grid-cols-[auto_auto]">
+				<button
+					class={bkm === 'pub' ? borderClassActive : borderClass}
+					disabled={bkm === 'pub'}
+					on:click={() => {
+						bkm = 'pub';
+						console.log(bkm);
+						$pageNum = 0;
+					}}
+					><PubBkm />
+				</button>
+				{#if isOwner && viewEvent?.content !== ''}
+					<button
+						class={bkm === 'prv' ? borderClassActive : borderClass}
+						disabled={bkm === 'prv'}
+						on:click={() => {
+							bkm = 'prv';
+							console.log(bkm);
+							$pageNum = 0;
+						}}
+					>
+						<PrvBkm />
+					</button>
+				{:else}
 					<div />
-					<div class="grid grid-cols-[auto_auto]">
-						<button
-							class={bkm === 'pub' ? borderClassActive : borderClass}
-							disabled={bkm === 'pub'}
-							on:click={() => {
-								bkm = 'pub';
-								console.log(bkm);
-								$pageNum = 0;
-							}}
-							><PubBkm />
-						</button>
-						{#if isOwner && viewEvent?.content !== ''}
-							<button
-								class={bkm === 'prv' ? borderClassActive : borderClass}
-								disabled={bkm === 'prv'}
-								on:click={() => {
-									bkm = 'prv';
-									console.log(bkm);
-									$pageNum = 0;
-								}}
-							>
-								<PrvBkm />
-							</button>
-						{:else}
-							<div />
-						{/if}
-					</div>
-					<div class="grid grid-cols-[auto_auto]">
-						<div class=" grid grid-rows-[auto_atuo] overflow-hidden">
-							<div class=" place-self-end h6">
-								{$_('created_at')}
-							</div>
-							<button
-								class="flex text-right place-self-end text-sm underline decoration-secondary-200"
-								on:click={() => {
-									OpenNoteJson(viewEvent, listNaddr);
-								}}
-							>
-								<div class="whitespace-nowrap overflow-hidden h6">
-									{new Date(createdAt * 1000).toLocaleDateString([], {
-										year: 'numeric',
-										month: '2-digit',
-										day: '2-digit',
-										hour: '2-digit',
-										minute: '2-digit'
-									})}
-								</div></button
-							>
-						</div>
-						<button
-							class={'btn p-0 pr-1  arrow  md:pr-5 md:pl-2'}
-							on:click={async () => {
-								$nowProgress = true;
-								await updateBkmTag($listNum);
-								$nowProgress = false;
-							}}>{@html updateIcon}</button
-						>
-					</div>
-				</div>
+				{/if}
 			</div>
+
+			<div class=" grid grid-rows-[auto_auto] box-border">
+				<div class=" place-self-end h6 truncate overflow-hidden">
+					{$_('created_at')}
+				</div>
+				<button
+					class="flex text-right text-sm underline decoration-secondary-200 overflow-hidden"
+					on:click={() => {
+						OpenNoteJson(viewEvent, listNaddr);
+					}}
+				>
+					<div class="truncate h6">
+						{new Date(createdAt * 1000).toLocaleDateString([], {
+							year: 'numeric',
+							month: '2-digit',
+							day: '2-digit',
+							hour: '2-digit',
+							minute: '2-digit'
+						})}
+					</div></button
+				>
+			</div>
+
+			<button
+				class={'btn p-0 pr-2  arrow  '}
+				on:click={async () => {
+					$nowProgress = true;
+					await updateBkmTag($listNum);
+					$nowProgress = false;
+				}}>{@html updateIcon}</button
+			>
 		</div>
 	</div>
 
+	<!--サイドバーとメイン-->
 	<div
 		class="my-12 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
 	>
 		<div class="flex overflow-x-hidden">
 			<!-- Left Sidebar (Hidden on small screens) -->
 			<div
-				class="hidden md:flex h-full w-[12em] pb-[3em] bg-surface-200-700-token overflow-y-auto fixed"
+				class="hidden md:flex h-full w-[12em] pb-[6em] bg-surface-200-700-token overflow-y-auto fixed"
 			>
 				<!-- Your sidebar content goes here -->
 				<!-- For example, you can add links or other elements -->
+				<!--さいどばー-->
 				{#if $identifierList.length > 0}
 					<ListBox
 						class=" overflow-y-auto w-full"
@@ -946,6 +923,7 @@
 				{/if}
 			</div>
 
+			<!--めいん-->
 			<main class="flex-1 md:ml-[12em] overflow-y-auto h-fit">
 				<!-- Add ml-64 to push main to the right -->
 				{#if $searchRelays && $searchRelays.length > 0}
@@ -975,16 +953,16 @@
 			<div class="fill-white overflow-x-hidden h-fit overflow-y-auto">
 				{#if !$isMulti}
 					<button
-						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
+						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
 						on:click={onClickAdd}>{@html addIcon}</button
 					>
 				{:else}
 					<button
-						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500"
+						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
 						on:click={onClickMultiMove}>{@html MoveIcon}</button
 					>
 					<button
-						class="addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
+						class="overflow-x-hidden addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
 						on:click={onClickMultiDelete}>{@html DeleteIcon}</button
 					>
 				{/if}
@@ -993,13 +971,19 @@
 	{/if}
 {/if}
 
-<div class="card p-1 variant-filled-secondary z-20" data-popup="popupPub">
+<div
+	class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden"
+	data-popup="popupPub"
+>
 	<p>{$_('popup.pub')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
+	<div class="arrow variant-filled-secondary z-20 box-border overflow-hidden" />
 </div>
-<div class="card p-1 variant-filled-secondary z-20" data-popup="popupPrv">
+<div
+	class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden"
+	data-popup="popupPrv"
+>
 	<p>{$_('popup.prv')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
+	<div class="arrow variant-filled-secondary z-20 box-border overflow-hidden" />
 </div>
 
 <!-- {/await} -->
@@ -1029,5 +1013,9 @@
 		/* コンテナのMAXサイズが1024pxなので半分の512より手前らへんに */
 		left: min(calc(50% + 400px), calc(100% - 100px));
 		overflow-x: hidden;
+	}
+	:global(.bkm svg) {
+		width: 24px;
+		height: 24px;
 	}
 </style>
