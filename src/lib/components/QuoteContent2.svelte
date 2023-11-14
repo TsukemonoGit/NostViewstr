@@ -12,6 +12,7 @@
 	import Search from '$lib/components/Search.svelte';
 	import { nip19 } from 'nostr-tools';
 	import Ogp from './OGP.svelte';
+	import EventTag from './EventTag.svelte';
 
 	export let id: string;
 	export let isPageOwner: boolean;
@@ -53,7 +54,7 @@
 		slot: `<p>Skeleton</p>`
 	};
 
-	function handleClickDate(text: Nostr.Event<number>) {
+	function handleClickDate(text: Nostr.Event<number>, tagArray?: string[]) {
 		console.log('click');
 		const modal = {
 			type: 'component' as const,
@@ -62,7 +63,8 @@
 			title: 'Event Json',
 			meta: {
 				//    position: `x-${clientX} y-${clientY}`,
-				note: text
+				note: text,
+				tagArray: tagArray
 			},
 
 			component: jsonModalComponent
@@ -297,7 +299,7 @@
 
 					<div class="truncate wid justify-items-end">
 						<button
-							class="text-emerald-800 dark:text-blue-500 text-sm"
+							class="text-secondary-500 text-sm"
 							on:click={() => {
 								handleClickPubkey(metadata);
 							}}
@@ -330,103 +332,10 @@
 				{#await uniqueTags(text.tags) then tags}
 					{#if tags.length > 0}
 						<div
-							class="max-h-[4em] overflow-auto whitespace-nowrap border-s-4 border-s-rose-800/25 dark:border-s-rose-100/25"
+							class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50 box-border"
 						>
 							{#each tags as tag}
-								{#if tag[0] === 'p'}
-									<Metadata
-										queryKey={['metadata', tag[1]]}
-										pubkey={tag[1]}
-										let:metadata
-									>
-										<div slot="loading">
-											<div
-												class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden"
-											>
-												{tag[tag.length - 1] === 'mention'
-													? 'mention'
-													: 'to'}[p] {tag[1]}
-											</div>
-										</div>
-										<div slot="error">
-											<div
-												class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden"
-											>
-												{tag[tag.length - 1] === 'mention'
-													? 'mention'
-													: 'to'}[p] {tag[1]}
-											</div>
-										</div>
-
-										<div slot="nodata">
-											<div
-												class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden"
-											>
-												{tag[tag.length - 1] === 'mention'
-													? 'mention'
-													: 'to'}[p] {tag[1]}
-											</div>
-										</div>
-										<div
-											class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden"
-										>
-											{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p]
-											<button
-												class="text-emerald-800 dark:text-blue-400 overflow-hidden text-ellipsis"
-												on:click={() => {
-													handleClickPubkey(metadata);
-												}}>@<u>{JSON.parse(metadata.content).name}</u></button
-											>
-										</div>
-									</Metadata>
-								{:else if tag[0] === 'e' || tag[0] === 'q'}
-									<Text queryKey={[tag[1]]} id={tag[1]} let:text>
-										<div slot="loading">
-											<div
-												class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden"
-											>
-												[e] {tag[1]}
-											</div>
-										</div>
-										<div slot="error">
-											<div
-												class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden"
-											>
-												[e] {tag[1]}
-											</div>
-										</div>
-
-										<div slot="nodata">
-											<div
-												class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden"
-											>
-												[e] {tag[1]}
-											</div>
-										</div>
-
-										<div
-											class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden"
-										>
-											[e] <button
-												class="text-emerald-800 dark:text-blue-400 overflow-hidden text-ellipsis"
-												on:click={() => {
-													handleClickDate(text);
-												}}
-											>
-												{#if tags.some((tag) => tag[0] === 'content-warning') && $allView == false}
-													{'<content-warning>'}
-												{:else}
-													{text.content}
-												{/if}</button
-											>
-										</div>
-									</Text>
-								{:else}
-									<div class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden">
-										[{tag[0]}]
-										{tag[1]}
-									</div>
-								{/if}
+								<EventTag {tag} {handleClickDate} {handleClickPubkey} />
 							{/each}
 						</div>
 					{/if}

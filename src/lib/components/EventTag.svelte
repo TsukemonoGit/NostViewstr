@@ -14,7 +14,7 @@
 {#if tag[0] === 'p'}
 	<Metadata queryKey={['metadata', tag[1]]} pubkey={tag[1]} let:metadata>
 		<div slot="loading">
-			<div class="-mt- px-2 opacity-70 text-sm">
+			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
 				{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p] {tag[1]}
 			</div>
 		</div>
