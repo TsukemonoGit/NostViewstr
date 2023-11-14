@@ -68,20 +68,22 @@
 			</div>
 		</div>
 
-		<button
-			class="-mt-0.5 px-2 opacity-70 text-sm w-full truncate overflow-x-hidden text-start"
-			on:click={() => {
-				handleClickDate(text, tag);
-			}}
-		>
-			[{tag[0]}]
+		<div class="-mt-1 px-2">
+			<button
+				class=" opacity-70 text-sm w-full truncate overflow-x-hidden text-start"
+				on:click={() => {
+					handleClickDate(text, tag);
+				}}
+			>
+				[{tag[0]}]
 
-			{#if text.tags.some((tag) => tag[0] === 'content-warning') && $allView == false}
-				{'<content-warning>'}
-			{:else}
-				{text.content}
-			{/if}</button
-		>
+				{#if text.tags.some((tag) => tag[0] === 'content-warning') && $allView == false}
+					{'<content-warning>'}
+				{:else}
+					{text.content}
+				{/if}</button
+			>
+		</div>
 	</Text>
 {:else}
 	<div
