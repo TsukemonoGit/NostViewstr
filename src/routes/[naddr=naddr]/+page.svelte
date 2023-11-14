@@ -49,6 +49,6 @@
 {#if !$settings}
 	<Settings />
 {:else}
-	<ListedEventList pubkey={data.pubkey} {kind} {identifier} />
+	<ListedEventList pubkey={data.pubkey} {kind} {identifier} isNaddr={true} />
 {/if}
 <FooterMenu pubkey={data.pubkey} {kind} naddr={true} />

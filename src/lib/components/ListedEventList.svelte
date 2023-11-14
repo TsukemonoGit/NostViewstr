@@ -66,7 +66,9 @@
 	export let pubkey: string;
 	export let kind: number;
 	export let identifier: string | undefined = undefined;
+	export let isNaddr: boolean;
 	let isOwner: boolean;
+
 	//let num: number = 0;
 	$: createdAt = viewEvent?.created_at;
 	$: isOwner = $pubkey_viewer === pubkey;
@@ -765,7 +767,7 @@
 		class="z-10 fixed h-[3em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden box-border"
 	>
 		<div
-			class="h-[3em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-x-hidden"
+			class="h-[3em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-x-hidden rounded-b"
 		>
 			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
 				<button
@@ -879,52 +881,57 @@
 	>
 		<div class="flex overflow-x-hidden">
 			<!-- Left Sidebar (Hidden on small screens) -->
-			<div
-				class="hidden md:flex h-full w-[12em] pb-[6em] bg-surface-200-700-token overflow-y-auto fixed"
-			>
-				<!-- Your sidebar content goes here -->
-				<!-- For example, you can add links or other elements -->
-				<!--さいどばー-->
-				{#if $identifierList.length > 0}
-					<ListBox
-						class=" overflow-y-auto w-full"
-						active="variant-ghost-primary box-border"
-					>
-						{#each $identifierList as list, index}
-							<ListBoxItem
-								bind:group={$listNum}
-								name={list.identifier ?? ''}
-								value={index}
-								class="truncate "
-								padding="px-2 py-2"
-								labelledby="truncate"
-								on:change={() => {
-									$listNum = index;
-								}}
-								><svelte:fragment slot="lead"
-									><div
-										class="rounded-full w-[1.5em] h-[1.5em] variant-soft-primary h6 text-center"
+			{#if !isNaddr}
+				<div
+					class="hidden md:flex h-full w-[12em] pb-[6em] bg-surface-200-700-token overflow-y-auto fixed"
+				>
+					<!-- Your sidebar content goes here -->
+					<!-- For example, you can add links or other elements -->
+					<!--さいどばー-->
+					{#if $identifierList.length > 0}
+						<ListBox
+							class=" overflow-y-auto w-full"
+							active="variant-ghost-primary box-border"
+						>
+							{#each $identifierList as list, index}
+								<ListBoxItem
+									bind:group={$listNum}
+									name={list.identifier ?? ''}
+									value={index}
+									class="truncate "
+									padding="px-2 py-2"
+									labelledby="truncate"
+									on:change={() => {
+										$listNum = index;
+									}}
+									><svelte:fragment slot="lead"
+										><div
+											class="rounded-full w-[1.5em] h-[1.5em] variant-soft-primary h6 text-center"
+										>
+											{(index + 1).toString().padStart(2, '0')}
+										</div></svelte:fragment
 									>
-										{(index + 1).toString().padStart(2, '0')}
-									</div></svelte:fragment
-								>
-								{#if list.title}
-									<div class="text-xs">{list.identifier}</div>
-									<div>{list.title}</div>
-								{:else}
-									{list.identifier}
-								{/if}
-							</ListBoxItem>
-							<hr />
-						{/each}
-					</ListBox>
-				{:else}
-					{$_('modal.tagList.noList')}
-				{/if}
-			</div>
-
+									{#if list.title}
+										<div class="text-xs">{list.identifier}</div>
+										<div>{list.title}</div>
+									{:else}
+										{list.identifier}
+									{/if}
+								</ListBoxItem>
+								<hr />
+							{/each}
+						</ListBox>
+					{:else}
+						{$_('modal.tagList.noList')}
+					{/if}
+				</div>
+			{/if}
 			<!--めいん-->
-			<main class="flex-1 md:ml-[12em] overflow-y-auto h-fit">
+			<main
+				class="flex-1 {isNaddr
+					? ''
+					: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden"
+			>
 				<!-- Add ml-64 to push main to the right -->
 				{#if $searchRelays && $searchRelays.length > 0}
 					<NostrApp relays={$searchRelays}>
