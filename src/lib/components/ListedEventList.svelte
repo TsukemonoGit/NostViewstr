@@ -73,9 +73,9 @@
 	//let num: number = 0;
 	$: createdAt = viewEvent?.created_at;
 	$: isOwner = $pubkey_viewer === pubkey;
-	onMount(async () => {
-		init();
-	});
+	// onMount(async () => {
+	// 	init();
+	// });
 
 	afterNavigate(() => {
 		$listNum = 0;
@@ -333,7 +333,7 @@
 			component: addModalComponent,
 			// Provide arbitrary metadata to your modal instance:
 			title: $identifierList[$listNum].identifier,
-			body: $_('nprofile.modal.addNote_body'),
+			body: $_('modal.addNote_body'),
 			response: async (res) => {
 				console.log(res);
 				await addNotesuruyatu(res);
