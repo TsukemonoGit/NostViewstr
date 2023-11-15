@@ -788,7 +788,7 @@
 		>
 			{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
 				<button
-					class="h4 flex h-full items-center pt-1 overflow-hidden min-w-[7em]"
+					class="h4 flex h-full items-center pt-1 overflow-hidden min-w-[7em] text-left"
 					disabled={!(kind >= 30000 && kind < 40000)}
 					on:click={listInfoModalOpen}
 				>
@@ -843,7 +843,7 @@
 					}}
 					><PubBkm />
 				</button>
-				{#if isOwner && viewEvent?.content !== ''}
+				{#if viewEvent?.content !== ''}
 					<button
 						class={bkm === 'prv' ? borderClassActive : borderClass}
 						disabled={bkm === 'prv'}

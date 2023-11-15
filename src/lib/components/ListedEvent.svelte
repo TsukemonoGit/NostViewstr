@@ -57,7 +57,7 @@
 			if (bkm === 'pub') {
 				$listSize = listEvent?.tags.length;
 				viewList = listEvent?.tags;
-			} else {
+			} else if (isOwner) {
 				try {
 					const res = await privateList(listEvent);
 					$listSize = res.length;
@@ -68,6 +68,9 @@
 					// bkm = 'pub';
 					// viewUpdate();
 				}
+			} else {
+				viewList = [];
+				message = listEvent.content;
 			}
 		} else {
 			$listSize = 0;
@@ -355,8 +358,8 @@
 		{/await}
 	{/each}
 {:else if message}
-	<p>List's content</p>
-	<div class="break-all">{message}</div>
+	<p class="h5 font-bold">【List's content】</p>
+	<div class="break-all whitespace-break-spaces">{message}</div>
 {/if}
 
 <div class="card p-1 variant-filled-secondary z-20" data-popup="popupShare">

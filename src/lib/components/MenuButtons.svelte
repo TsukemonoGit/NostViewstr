@@ -133,24 +133,25 @@
 				on:click={() => handleClick(State.Move)}><Move /></button
 			>
 		</div>
-		{#if note}
-			<div>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => {
-						if (tagArray && note) {
-							windowOpen(note.id);
-						}
-					}}><Open /></button
-				>
-				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => {
-						handleClick(State.Delete);
-					}}><DeleteBtn /></button
-				>
-			</div>
-		{/if}
+
+		<div>
+			<button
+				class="btn m-0 p-0 bg-surface-500"
+				disabled={note === undefined}
+				on:click={() => {
+					if (tagArray && note) {
+						windowOpen(note.id);
+					}
+				}}><Open /></button
+			>
+
+			<button
+				class="btn m-0 p-0 bg-surface-500"
+				on:click={() => {
+					handleClick(State.Delete);
+				}}><DeleteBtn /></button
+			>
+		</div>
 	</div>
 {:else if menuMode === MenuMode.Viewer}
 	<!--修正ボタンなし-->
