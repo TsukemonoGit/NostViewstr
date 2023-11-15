@@ -6,7 +6,7 @@
 
 	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
 	import loginIcon from '@material-design-icons/svg/round/login.svg?raw';
-	import shareIcon from '@material-design-icons/svg/round/share.svg?raw';
+	import shareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import lightningIcon from '@material-design-icons/svg/round/bolt.svg?raw';
 
 	import { getPub } from '$lib/nostrFunctions';
@@ -21,7 +21,10 @@
 	import { nostrIcon } from '$lib/components/icons';
 	export let parent: any;
 
-	let res: { share: boolean } = { share: false };
+	let res: { share: boolean; openJson: boolean } = {
+		share: false,
+		openJson: false
+	};
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(res);
 
@@ -75,7 +78,7 @@
 		<header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
 		<article class="body">{$modalStore[0].body ?? '(body missing)'}</article>
 		<!-- Enable for debugging: -->
-		<div>{$_('modal.info.light_switch')}<LightSwitch /></div>
+		<div class="flex gap-2">{$_('modal.info.light_switch')}<LightSwitch /></div>
 
 		<!--ログインの許可のやつ全スキップした人のためとか-->
 
@@ -87,28 +90,30 @@
 		{/if}
 
 		<!--iconとかURLとかの表示切替-->
-		<div class="flex gap-1">
+		<div class="flex gap-2">
 			{$_('modal.info.urlandIconOff')}
 			<SlideToggle size="sm" name="slide" bind:checked={toggleValue} />
 			{$_('modal.info.urlandIconOn')}
 		</div>
 
 		<!--iconとかURLとかの表示切替-->
-		<div class="flex gap-1">
+		<div class="flex gap-2">
 			{$_('modal.info.contentwarning')}
 			<SlideToggle size="sm" name="slide" bind:checked={warningToggle} />
 		</div>
 
 		<!--まるっと共有-->
-		{$_('modal.info.share')}
-		<button
-			class="btn-icon variant-filled fill-white"
-			disabled={copied}
-			on:click={() => {
-				res.share = true;
-				onFormSubmit();
-			}}>{@html shareIcon}</button
-		>
+		<div class="flex gap-2">
+			{$_('modal.info.share')}
+			<button
+				class="btn-icon btn-icon-sm m-0 p-0 variant-filled-primary fill-white"
+				disabled={copied}
+				on:click={() => {
+					res.share = true;
+					onFormSubmit();
+				}}>{@html shareIcon}</button
+			>
+		</div>
 		<!--きょうゆう-->
 		<!-- <div>
 			list name: {$identifierList[$listNum].identifier}
@@ -120,19 +125,27 @@
 			>
 		</div> -->
 		<!--リレーの情報たち-->
-		<div class="card p-3">
-			<p>{$_('modal.info.relay.title')}</p>
-			{#if $relayEvent}
-				relay from kind:({$relayEvent.kind}) created_at: {new Date(
-					$relayEvent.created_at * 1000
-				).toLocaleString([], {
-					year: 'numeric',
-					month: '2-digit',
-					day: '2-digit',
-					hour: '2-digit',
-					minute: '2-digit'
-				})}
-				<!-- {:else}
+		<div>
+			{$_('modal.info.relay.title')}
+			<div class="card p-3">
+				{#if $relayEvent}
+					<div class="flex gap-3">
+						<button
+							class=" underline decoration-secondary-400"
+							on:click={() => {
+								res.openJson = true;
+								onFormSubmit();
+							}}>kind:{$relayEvent.kind}</button
+						>
+						{new Date($relayEvent.created_at * 1000).toLocaleString([], {
+							year: 'numeric',
+							month: '2-digit',
+							day: '2-digit',
+							hour: '2-digit',
+							minute: '2-digit'
+						})}
+					</div>
+					<!-- {:else}
 				relay from kind:({$relayEvent.kind}) created_at: {new Date(
 					$relayEvent.created_at * 1000
 				).toLocaleString([], {
@@ -142,23 +155,31 @@
 					hour: '2-digit',
 					minute: '2-digit'
 				})} -->
-			{/if}
-			<p>{$_('modal.info.relay.list')}</p>
-			<ul
-				class="bg-surface-50-900-token card max-h-[4em] overflow-y-auto overflow-x-hidden"
-			>
-				{#each $bookmarkRelays as relays}
-					<li>{relays}</li>
-				{/each}
-			</ul>
+				{/if}
+				<p class="pt-1">{$_('modal.info.relay.list')}</p>
+				<ol
+					class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
+				>
+					{#each $bookmarkRelays as relays, index}
+						<li>
+							<span>{index + 1}.</span><span class="break-all">{relays}</span>
+						</li>
+					{/each}
+				</ol>
 
-			<p>{$_('modal.info.relay.search')}</p>
-			<ul class="bg-surface-50-900-token card max-h-[4em] overflow-y-auto">
-				{#each $searchRelays as relays}
-					<li>{relays}</li>
-				{/each}
-			</ul>
+				<p class="pt-1">{$_('modal.info.relay.search')}</p>
+				<ol
+					class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto px-2"
+				>
+					{#each $searchRelays as relays, index}
+						<li>
+							<span>{index + 1}.</span><span class="break-all">{relays}</span>
+						</li>
+					{/each}
+				</ol>
+			</div>
 		</div>
+
 		<hr />
 
 		<div class="flex gap-3">

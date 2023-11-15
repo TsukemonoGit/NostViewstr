@@ -61,12 +61,24 @@
 							placeholder="note..."
 						/>
 
-						<!-- prettier-ignore -->
-						<footer class=" rid grid-cols-3 gap-2 flex  justify-end mt-2">
-        <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-        <button class="btn variant-filled-warning {parent.buttonPositive}" on:click={()=>{res.type=AddTyle.Id;res.btn='prv';onFormSubmit()}}>Add Private</button>
-        <button class="btn {parent.buttonPositive}" on:click={()=>{ res.type=AddTyle.Id;res.btn='pub';onFormSubmit()}}>Add Public</button>
-    </footer>
+						<footer class=" gap-2 flex flex-wrap justify-end mt-2">
+							<button
+								class="btn variant-filled-warning {parent.buttonPositive}"
+								on:click={() => {
+									res.type = AddTyle.Id;
+									res.btn = 'prv';
+									onFormSubmit();
+								}}>Private</button
+							>
+							<button
+								class="btn {parent.buttonPositive}"
+								on:click={() => {
+									res.type = AddTyle.Id;
+									res.btn = 'pub';
+									onFormSubmit();
+								}}>Public</button
+							>
+						</footer>
 					</div>
 				</svelte:fragment>
 			</AccordionItem>
@@ -103,12 +115,24 @@
 							placeholder="[”e”,”1234”]"
 						/>
 
-						<!-- prettier-ignore -->
-						<footer class=" rid grid-cols-3 gap-2 flex  justify-end mt-2">
-        <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-        <button class="btn variant-filled-warning {parent.buttonPositive}" on:click={()=>{res.type=AddTyle.Tag;res.btn='prv';onFormSubmit()}}>Add Private</button>
-        <button class="btn {parent.buttonPositive}" on:click={()=>{res.type=AddTyle.Tag;res.btn='pub';onFormSubmit()}}>Add Public</button>
-    </footer>
+						<footer class=" rid grid-cols-3 gap-2 flex justify-end mt-2">
+							<button
+								class="btn variant-filled-warning {parent.buttonPositive}"
+								on:click={() => {
+									res.type = AddTyle.Tag;
+									res.btn = 'prv';
+									onFormSubmit();
+								}}>Private</button
+							>
+							<button
+								class="btn {parent.buttonPositive}"
+								on:click={() => {
+									res.type = AddTyle.Tag;
+									res.btn = 'pub';
+									onFormSubmit();
+								}}>Public</button
+							>
+						</footer>
 					</div>
 				</svelte:fragment>
 			</AccordionItem>
@@ -134,23 +158,38 @@
 							placeholder="memo..."
 						/>
 
-						<!-- prettier-ignore -->
-						<footer class=" rid grid-cols-3 gap-2 flex  justify-end mt-2">
-        <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-        <button class="btn variant-filled-warning {parent.buttonPositive}" 
-        on:click={()=>{
-          if(res.value=='') {return;} 
-          res.btn='prv';res.create=true; onFormSubmit()}
-          }>Add Private</button>
-        <button class="btn {parent.buttonPositive}" 
-        on:click={()=>{
-          if(res.value=='') {return;}
-          res.btn='pub';res.create=true;onFormSubmit()}
-          }>Add Public</button>
-    </footer>
+						<footer class=" rid grid-cols-3 gap-2 flex justify-end mt-2">
+							<button
+								class="btn variant-filled-warning {parent.buttonPositive}"
+								on:click={() => {
+									if (res.value == '') {
+										return;
+									}
+									res.btn = 'prv';
+									res.create = true;
+									onFormSubmit();
+								}}>Private</button
+							>
+							<button
+								class="btn {parent.buttonPositive}"
+								on:click={() => {
+									if (res.value == '') {
+										return;
+									}
+									res.btn = 'pub';
+									res.create = true;
+									onFormSubmit();
+								}}>Public</button
+							>
+						</footer>
 					</div>
 				</svelte:fragment>
 			</AccordionItem>
 		</Accordion>
+		<footer class=" flex justify-end mt-2 mr-5">
+			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>
+				{parent.buttonTextCancel}
+			</button>
+		</footer>
 	</div>
 {/if}

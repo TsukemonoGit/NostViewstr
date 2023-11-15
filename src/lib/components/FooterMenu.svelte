@@ -22,6 +22,7 @@
 	import ModalEditTag from './modals/ModalEditTag.svelte';
 	import ModalDelete from './modals/ModalDelete.svelte';
 	import ModalPostNote from './modals/ModalPostNote.svelte';
+	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import {
 		bookmarkEvents,
 		checkedIndexList,
@@ -35,7 +36,7 @@
 	} from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
-	import { bookmarkRelays } from '$lib/stores/relays';
+	import { bookmarkRelays, relayEvent } from '$lib/stores/relays';
 	import { get } from 'svelte/store';
 	import type { Event } from 'nostr-tools';
 	export let pubkey: string;
@@ -283,6 +284,11 @@
 	const postNoteModalComponent: ModalComponent = {
 		ref: ModalPostNote
 	};
+
+	//-------------------------------イベントJSON表示
+	const jsonModalComponent: ModalComponent = {
+		ref: ModalEventJson
+	};
 	//-------------------------------------------------------infomation
 	const infoComponent: ModalComponent = {
 		// Pass a reference to your custom component
@@ -294,25 +300,39 @@
 		title: $_('modal.info.title'),
 		body: `${$_('modal.info.body')}`,
 		response: (res) => {
-			if (res && res.share) {
-				const url = window.location.href;
-				const tags = [['r', url]];
-				console.log(tags);
-				const modal: ModalSettings = {
-					type: 'component',
-					component: postNoteModalComponent,
-					title: $_('modal.postNote.title'),
-					body: ``,
-					value: {
-						content: `\r\n${url}\r\n`,
-						tags: tags
-					},
-					response: async (res) => {
-						console.log(res);
-						//postNoteまでmodalでやるらしい
-					}
-				};
-				modalStore.trigger(modal);
+			if (res) {
+				if (res.share) {
+					const url = window.location.href;
+					const tags = [['r', url]];
+					console.log(tags);
+					const modal: ModalSettings = {
+						type: 'component',
+						component: postNoteModalComponent,
+						title: $_('modal.postNote.title'),
+						body: ``,
+						value: {
+							content: `\r\n${url}\r\n`,
+							tags: tags
+						},
+						response: async (res) => {
+							console.log(res);
+							//postNoteまでmodalでやるらしい
+						}
+					};
+					modalStore.trigger(modal);
+				} else if (res.openJson) {
+					const modal = {
+						type: 'component' as const,
+						title: 'Event Json',
+						backdropClasses: '!bg-surface-400/80',
+						meta: {
+							note: $relayEvent
+						},
+
+						component: jsonModalComponent
+					};
+					modalStore.trigger(modal);
+				}
 			}
 		}
 	};
