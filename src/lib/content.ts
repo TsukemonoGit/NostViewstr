@@ -27,7 +27,7 @@ const imageRegex = /\.(?:jpg|jpeg|png|gif|webp)$/i;
 const nostrRegex2 = /(nostr:[A-Za-z0-9]+)/; // 「+」を追加して1文字以上の文字列にマッチするように修正
 
 const numberRegex = /(#\[\d+\])/i;
-const hashtagRegex = /(\B#[^\s#.-?:/。、　()（）]+)/gi;
+const hashtagRegex = /(\B#[^\s#.?:/。、　()（）]+)/gi;
 
 //const hashtagRegex = /(?:^|\s)(\B#[^\s#\/.\-?:。、　()（）]+)(?=\s|$)/gi;
 //hashtagRegex の中で(?:^|\s)と(?=\s|$)を追加したことです。これにより、ハッシュタグの前後に空白か行の先頭/末尾がある場合にのみマッチするようになります

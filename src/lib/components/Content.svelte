@@ -135,6 +135,12 @@
 	function clickView() {
 		view = true;
 	}
+	const encodedURL = (str: string): string => {
+		//https://github.com/akiomik/nosey
+		const encodedstr = encodeURIComponent(str);
+		const url = `https://nosey.vercel.app/?q=${encodedstr}`;
+		return url;
+	};
 </script>
 
 {#if tag.some((tag) => tag[0] === 'content-warning') && view == false}
@@ -297,13 +303,25 @@
 					{:else}{tag[item.number][1]}
 					{/if}{:else if item.type === 'hashtag'}<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<!-- svelte-ignore a11y-no-static-element-interactions -->
-					<!-- svelte-ignore a11y-no-noninteractive-element-interactions --><span
+					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+					<a
+						class="anchor"
+						rel="external noreferrer"
+						target="_blank"
+						href={encodedURL(item.content)}>{item.content}</a
+					>
+					<!-- <span
 						class=" break-all anchor"
 						on:click={() => {
+							//https://github.com/akiomik/nosey
+							const url=`https://nosey.vercel.app/?q=${item.content}`
+							 
+							//const url=`${window.location.origin}/t/${item.content.slice(1)}`
 							goto(`${window.location.origin}/t/${item.content.slice(1)}`);
 						}}
 						>{item.content}
-					</span>{:else if item.content.length > 0}
+					</span> -->
+				{:else if item.content.length > 0}
 					<span style="	white-space: pre-wrap; word-break: break-word;"
 						>{item.content}</span
 					>{/if}

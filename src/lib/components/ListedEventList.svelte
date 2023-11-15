@@ -78,6 +78,8 @@
 	});
 
 	afterNavigate(() => {
+		$listNum = 0;
+		$pageNum = 0;
 		init();
 	});
 	//ぷぶきーがかわるごとにしょきか？
