@@ -21,25 +21,27 @@
 	};
 </script>
 
-📶{$_('mode.viewMode')}*
-<div class="flex gap-4 mt-2">
-	<div>
-		<button class="btn variant-filled-primary" on:click={clickDefault}
-			>{$_('mode.normal')}</button
-		>
-	</div>
-	<div>
-		<button class="btn variant-filled-primary" on:click={clickLight}
-			>{$_('mode.light')}</button
-		>
+<div class="mt-10">
+	📶{$_('mode.viewMode')}*
+	<div class="flex gap-4 mt-1">
+		<div>
+			<button class="btn variant-filled-primary" on:click={clickDefault}
+				>{$_('mode.normal')}</button
+			>
+		</div>
+		<div>
+			<button class="btn variant-filled-primary" on:click={clickLight}
+				>{$_('mode.light')}</button
+			>
+		</div>
 	</div>
 </div>
-<div class="mt-5">
+<!-- <div class="mt-5">
 	🌆{$_('mode.light_switch')}
 	<div class="mt-2">
 		<LightSwitch />
-	</div>
-</div>
+	</div> 
+</div>-->
 <div class="mt-10">
 	<div class="grid grid-cols-[auto_1fr]">
 		<div class="ml-1">*</div>

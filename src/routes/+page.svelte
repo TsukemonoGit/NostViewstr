@@ -81,7 +81,7 @@
 
 		<div class="space-t-5 min-w-[80vw]">
 			{$_('main.input_public_key')}
-			<div class="input-group input-group-divider grid-cols-[auto_1fr]">
+			<div class="mt-1 input-group input-group-divider grid-cols-[auto_1fr]">
 				<button
 					class="p-0 input-group-shim btn variant-filled-secondary"
 					on:click={onClickExtension}>nip07<br />extension</button
