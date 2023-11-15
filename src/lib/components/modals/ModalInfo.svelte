@@ -76,7 +76,7 @@
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
-		<article class="body">{$modalStore[0].body ?? '(body missing)'}</article>
+
 		<!-- Enable for debugging: -->
 		<div class="flex gap-2">{$_('modal.info.light_switch')}<LightSwitch /></div>
 
