@@ -20,7 +20,8 @@
     },
     "tagList": {
       "title": "リスト一覧",
-      "noList": "no list 編集ボタンから新しいリストを作成できます"
+      "noList": "no list 編集ボタンから新しいリストを作成できます",
+      "editTag": "編集"
     },
     "editTags": {
       "title": "リストの編集",
@@ -32,11 +33,11 @@
       "body": "下記リストを削除します"
     },
     "info": {
-      "title": "情報と設定",
+      "title": "設定",
       "relay": {
         "list": "リストの取得更新リレー",
         "search": "リスト内のノートの検索用リレー",
-        "title": "設定中のリレー情報"
+        "title": "設定中のリレー"
       },
       "light_switch": "表示モード",
       "share": "myListたち(閲覧中のURL)をnostrで共有",
@@ -51,7 +52,8 @@
         "image": "(例: https://example.com/image.webp)",
         "summary": "(例: みんなのおすすめの本情報たち)"
       }
-    }
+    },
+    "addNote_body": "'note' , 'nevent' , 'nostr:' or 'naddr'のいずれかから始まるIDを入力してください."
   },
   "created_at": "最終更新日時",
   "public": "公開",
@@ -63,26 +65,37 @@
     "nanka": "ログインエラー"
   },
   "ModalAddNote": {
-    "add_note": "ブックマークに追加",
+    "add_note": "リスト\nに追加",
     "add_note_to1": "[",
     "add_note_to2": "] にノートを追加",
-    "add_note_tag": "ブックマークに追加（タグから追加）",
+    "add_note_tag": "（タグから追加）",
     "create": "ノートを作成して追加"
   },
   "main": {
     "title": "ぶくまびうあ改二",
-    "input_public_key": "公開鍵を入力してください"
+    "input_public_key": "🔑公開鍵(public key)"
   },
   "mode": {
     "normal": "通常モード",
     "light": "通信量軽量モード",
-    "light_exp": "※モバイル通信時など",
-    "light_switch": "ライトモード / ダークモードの切り替え"
+    "light_exp": "【通信量軽量モード】",
+    "light_switch": "ライトモード / ダークモードの切り替え",
+    "normal_exp": "【通常モード】",
+    "normal_exp2": "URLプレビュー(OGP), プロフィールアイコンが表示されます。",
+    "light_exp2": "URLプレビュー(OGP), プロフィールアイコンが表示されません。（通信量が削減できます）",
+    "viewMode": "表示モードを選択してください"
   },
   "modalEditTag": {
     "list": {
       "title": "追加情報（あとから変更可能）",
       "ID": "（必須/変更不可/英数字のみ入力可能）"
+    }
+  },
+  "nprofile": {
+    "modal": {
+      "listInfo": {
+        "title": "情報"
+      }
     }
   }
 }

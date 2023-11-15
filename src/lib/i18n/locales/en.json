@@ -1,48 +1,101 @@
 {
-  "popup": {
-    "Share": "Post on Nostr",
-    "open": "Open other app",
-    "move": "Move ather list",
-    "delete": "Delete",
-    "pub": "public list",
-    "prv": "private list"
-  },
-  "PostNote": {
-    "copied": "copied clipboard",
-    "failed_copy": "failed to copy clipboard",
-    "popup_copy": "copy to clipboard",
-    "p_tag": "Include the p tag of the quoted source"
-  },
-  "modal": {
-    "failed_copy": "failed to copy",
-    "postNote": {
-      "title": "Post Note"
-    },
-    "tagList": {
-      "title": "Lists",
-      "editTag": "Edit"
-    },
-    "listInfo": {
-      "ex": {
-        "title": "(ex. Books)",
-        "image": "(ex. https://example.com/image.webp)",
-        "summary": "(ex. Recommended Books Collection)"
-      }
-    }
-  },
-  "created_at": "最終更新日時",
-  "public": "public",
-  "private": "private",
-  "main": {
-    "title": "bkmstr"
-  },
-  "mode_light_exp": "use mobile communication, etc.",
-  "mode": {
-    "light_switch": "Switch between Light and Dark Mode"
-  },
-  "modalEditTag": {
-    "list": {
-      "ID": "(Required / Cannot be changed / Only alphanumeric characters)"
-    }
-  }
+	"popup": {
+		"Share": "Post on Nostr",
+		"open": "Open other app",
+		"move": "Move ather list",
+		"delete": "Delete",
+		"pub": "public list",
+		"prv": "private list"
+	},
+	"PostNote": {
+		"copied": "copied clipboard",
+		"failed_copy": "failed to copy clipboard",
+		"popup_copy": "copy to clipboard",
+		"p_tag": "Include the p tag of the quoted source"
+	},
+	"modal": {
+		"failed_copy": "failed to copy",
+		"postNote": {
+			"title": "Post Note"
+		},
+		"tagList": {
+			"title": "Lists",
+			"editTag": "Edit",
+			"noList": "no list. You can create a new list from the Edit button"
+		},
+		"listInfo": {
+			"ex": {
+				"title": "(ex. Books)",
+				"image": "(ex. https://example.com/image.webp)",
+				"summary": "(ex. Recommended Books Collection)"
+			}
+		},
+		"info": {
+			"title": "settings",
+			"contentwarning": "Show all content warnings",
+			"light_switch": "View mode",
+			"relay": {
+				"list": "Acquisition and update relays",
+				"search": "Relay for searching notes",
+				"title": "Relay in setting"
+			},
+			"share": "Share myLists (URLs you are browsing) with nostr",
+			"urlandIcon": "Show/hide icons and URL previews",
+			"urlandIconOff": "Light mode",
+			"urlandIconOn": "Normal mode"
+		},
+		"addNote_body": "Enter an ID starting with 'note' , 'nevent' , 'nostr:' or 'naddr'.",
+		"deleteTag": {
+			"body": "Delete the following listings",
+			"title": "Delete a list"
+		},
+		"editTags": {
+			"body": "Create a new list",
+			"editTag": "Edit",
+			"title": "edit a list"
+		}
+	},
+	"created_at": "最終更新日時",
+	"public": "public",
+	"private": "private",
+	"main": {
+		"title": "bkmstr",
+		"input_public_key": "🔑 public key"
+	},
+	"mode": {
+		"light_switch": "Switch between Light and Dark Mode",
+		"light": "Light mode",
+		"light_exp": "【Light mode】",
+		"light_exp2": "URL preview (OGP) and Profile icon are not displayed. (reduces the amount of traffic)",
+		"normal": "Normal mode",
+		"normal_exp": "【Normal mode】",
+		"normal_exp2": "URL preview (OGP), Profile icon will be displayed.",
+		"viewMode": "Please select a display mode"
+	},
+	"modalEditTag": {
+		"list": {
+			"ID": "(Required / Cannot be changed / Only alphanumeric characters)",
+			"title": "Additional information (can be changed later)"
+		}
+	},
+	"nprofile": {
+		"modal": {
+			"listInfo": {
+				"title": "info"
+			}
+		}
+	},
+	"ModalAddNote": {
+		"add_note": "Add to list",
+		"add_note_tag": "（Add by Tag）",
+		"add_note_to1": "Add Note to [",
+		"add_note_to2": "]",
+		"create": "Create & AddNote"
+	},
+	"ModalEditTag": {
+		"delete_body": "Delete list"
+	},
+	"msg": {
+		"nanka": "login error"
+	}
 }

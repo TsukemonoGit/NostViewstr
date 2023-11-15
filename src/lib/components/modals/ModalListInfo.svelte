@@ -45,8 +45,6 @@
 				>{@html shareIcon}</button
 			>
 		</div>
-		<article class="body">{$modalStore[0].body ?? '(body missing)'}</article>
-		<!-- Enable for debugging: -->
 
 		<div class=" ">
 			<label class="label mt-2">

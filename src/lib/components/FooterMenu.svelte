@@ -298,7 +298,7 @@
 		type: 'component',
 		component: infoComponent,
 		title: $_('modal.info.title'),
-		body: `${$_('modal.info.body')}`,
+
 		response: (res) => {
 			if (res) {
 				if (res.share) {
