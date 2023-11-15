@@ -73,14 +73,21 @@
 	//let num: number = 0;
 	$: createdAt = viewEvent?.created_at;
 	$: isOwner = $pubkey_viewer === pubkey;
-	// onMount(async () => {
-	// 	init();
-	// });
+	let isOnMount = true;
+
+	onMount(async () => {
+		if (isOnMount) {
+			init();
+			isOnMount = false; // onMountが呼ばれたことを示すフラグを変更
+		}
+	});
 
 	afterNavigate(() => {
-		$listNum = 0;
-		$pageNum = 0;
-		init();
+		if (!isOnMount) {
+			$listNum = 0;
+			$pageNum = 0;
+			init();
+		}
 	});
 	//ぷぶきーがかわるごとにしょきか？
 	// $: if (pubkey) {
@@ -88,6 +95,7 @@
 	// }
 
 	const init = async () => {
+		$nowProgress = true;
 		console.log('onMount executed');
 		if ($pubkey_viewer === '') {
 			try {
@@ -96,10 +104,11 @@
 					$pubkey_viewer = res;
 				}
 			} catch (error) {
+				$nowProgress = false;
 				console.log('failed to login');
 			}
 		}
-		$nowProgress = true;
+
 		await bkminit(pubkey);
 		$nowProgress = false;
 	};
@@ -1031,12 +1040,12 @@
 	}
 	.add {
 		/* コンテナのMAXサイズが1024pxなので半分の512より手前らへんに */
-		left: min(calc(50% + 440px), calc(100% - 50px));
+		left: min(calc(50% + 440px), calc(100% - 60px));
 		overflow-x: hidden;
 	}
 	.multi {
 		/* コンテナのMAXサイズが1024pxなので半分の512より手前らへんに */
-		left: min(calc(50% + 400px), calc(100% - 100px));
+		left: min(calc(50% + 400px), calc(100% - 110px));
 		overflow-x: hidden;
 	}
 	:global(.bkm svg) {

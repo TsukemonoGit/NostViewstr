@@ -154,7 +154,7 @@
 				class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix overflow-x-hidden"
 			>
 				<!--profile-->
-				{#if metadata}
+				{#if metadata && JsonCheck(metadata.content) !== ''}
 					<!--name-->
 					<div class="truncate wid justify-items-end">
 						<button

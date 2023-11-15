@@ -18,7 +18,7 @@
 	export let tagArray: string[] | undefined;
 	export let note: Event | undefined;
 	export let myIndex: number | undefined;
-
+	export let share = true;
 	enum State {
 		Default,
 		Delete,
@@ -125,8 +125,10 @@
 {#if menuMode === MenuMode.Owner}
 	<div class="grid grid-rows-[auto_1fr] w-14 pt-1">
 		<div>
-			<button class="btn m-0 p-0 bg-surface-500" on:click={shareNote}
-				><Share /></button
+			<button
+				class="btn m-0 p-0 bg-surface-500"
+				on:click={shareNote}
+				disabled={!share}><Share /></button
 			>
 			<button
 				class="btn m-0 p-0 bg-surface-500"
@@ -156,8 +158,10 @@
 {:else if menuMode === MenuMode.Viewer}
 	<!--修正ボタンなし-->
 	<div class="flex flex-col">
-		<button class="btn m-0 p-0 mb-1 bg-surface-500" on:click={shareNote}
-			><Share /></button
+		<button
+			class="btn m-0 p-0 mb-1 bg-surface-500"
+			on:click={shareNote}
+			disabled={!share}><Share /></button
 		>
 		{#if note}
 			<button

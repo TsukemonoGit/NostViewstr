@@ -11,6 +11,7 @@
 	import { amount, pageNum, listSize } from '$lib/stores/pagination';
 	import { isMulti } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
+	import ProfileCard from './ProfileCard.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -114,7 +115,7 @@
 						slot="loading"
 						{filter}
 						message={`loading [${tag}]`}
-						isPageOwner={true}
+						isPageOwner={isOwner}
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
@@ -127,7 +128,7 @@
 						slot="error"
 						{filter}
 						message={`error [${tag}]`}
-						isPageOwner={true}
+						isPageOwner={isOwner}
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
@@ -140,7 +141,7 @@
 						slot="nodata"
 						{filter}
 						message={`not found [${tag}]`}
-						isPageOwner={true}
+						isPageOwner={isOwner}
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
@@ -156,7 +157,7 @@
 					>
 						<EventCard
 							slot="loading"
-							isPageOwner={true}
+							isPageOwner={isOwner}
 							menuMode={menuEvent}
 							tagArray={tag}
 							note={text}
@@ -168,7 +169,7 @@
 						/>
 						<EventCard
 							slot="error"
-							isPageOwner={true}
+							isPageOwner={isOwner}
 							menuMode={menuEvent}
 							tagArray={tag}
 							note={text}
@@ -180,7 +181,7 @@
 						/>
 						<EventCard
 							slot="nodata"
-							isPageOwner={true}
+							isPageOwner={isOwner}
 							menuMode={menuEvent}
 							tagArray={tag}
 							note={text}
@@ -192,7 +193,7 @@
 						/>
 
 						<EventCard
-							isPageOwner={true}
+							isPageOwner={isOwner}
 							menuMode={menuEvent}
 							tagArray={tag}
 							note={text}
@@ -212,7 +213,7 @@
 					<SearchCard
 						{filter}
 						message={`not found [${tag}]`}
-						isPageOwner={true}
+						isPageOwner={isOwner}
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
@@ -229,7 +230,7 @@
 						slot="loading"
 						{filter}
 						message={`loading [${tag}]`}
-						isPageOwner={true}
+						isPageOwner={isOwner}
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
@@ -242,7 +243,7 @@
 						slot="error"
 						{filter}
 						message={`error [${tag}]`}
-						isPageOwner={true}
+						isPageOwner={isOwner}
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
@@ -255,7 +256,7 @@
 						slot="nodata"
 						{filter}
 						message={`not found [${tag}]`}
-						isPageOwner={true}
+						isPageOwner={isOwner}
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
@@ -271,7 +272,7 @@
 					>
 						<EventCard
 							slot="loading"
-							isPageOwner={true}
+							isPageOwner={isOwner}
 							menuMode={menuEvent}
 							tagArray={tag}
 							note={uniqueEvent(events)}
@@ -283,7 +284,7 @@
 						/>
 						<EventCard
 							slot="error"
-							isPageOwner={true}
+							isPageOwner={isOwner}
 							menuMode={menuEvent}
 							tagArray={tag}
 							note={uniqueEvent(events)}
@@ -295,7 +296,7 @@
 						/>
 						<EventCard
 							slot="nodata"
-							isPageOwner={true}
+							isPageOwner={isOwner}
 							menuMode={menuEvent}
 							tagArray={tag}
 							note={uniqueEvent(events)}
@@ -307,7 +308,7 @@
 						/>
 
 						<EventCard
-							isPageOwner={true}
+							isPageOwner={isOwner}
 							menuMode={menuEvent}
 							tagArray={tag}
 							note={uniqueEvent(events)}
@@ -326,7 +327,7 @@
 					<SearchCard
 						{filter}
 						message={`not found [${tag}]`}
-						isPageOwner={true}
+						isPageOwner={isOwner}
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
@@ -335,6 +336,22 @@
 						{CheckNote}
 					/> 
 				{/if}-->
+			{:else if tag[0] === 'p'}
+				<Metadata queryKey={['metadata', tag[1]]} pubkey={tag[1]} let:metadata>
+					<div slot="loading">{JSON.stringify(tag)}</div>
+					<div slot="error">{JSON.stringify(tag)}</div>
+					<div slot="nodata">{JSON.stringify(tag)}</div>
+					<ProfileCard
+						isPageOwner={isOwner}
+						menuMode={menuEvent}
+						tagArray={tag}
+						{metadata}
+						myIndex={index}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+					/>
+				</Metadata>
 			{:else if tag[0] === 'd' || tag[0] === 'title' || tag[0] === 'image' || tag[0] === 'summary'}
 				<!--なんもしない-->
 			{:else}
