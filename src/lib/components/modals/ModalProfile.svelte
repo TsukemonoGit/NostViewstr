@@ -50,7 +50,7 @@
 			() => {
 				// コピーに失敗したときの処理
 				console.log('failed to copy');
-				/**@type {import('@skeletonlabs/skeleton').ToastSettings}*/
+
 				const t: ToastSettings = {
 					message: 'failed to copy',
 					timeout: 3000,

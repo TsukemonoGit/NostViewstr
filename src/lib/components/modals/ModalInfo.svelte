@@ -213,11 +213,13 @@
 			> <script src="https://cdn.jsdelivr.net/npm/nostr-zap@0.21.0"></script>
 		</div>
 
-		<!-- prettier-ignore -->
 		<footer class="modal-footer {parent.regionFooter}">
-        <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-        <!-- <button class="btn {parent.buttonPositive}" on:click={onFormSubmit}>Create List</button>
-    --></footer>
+			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
+				>{parent.buttonTextCancel}</button
+			>
+			<!-- <button class="btn {parent.buttonPositive}" on:click={onFormSubmit}>Create List</button>
+    -->
+		</footer>
 	</div>
 {/if}
 

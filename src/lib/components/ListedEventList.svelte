@@ -201,8 +201,8 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: deleteModalComponent,
-			title: $_('nprofile.modal.deleteNote.title'),
-			body: `${$_('nprofile.modal.deleteNote.body')}`,
+			title: $_('modal.deleteNote.title'),
+			body: `${$_('modal.deleteNote.body')}`,
 			value: {
 				event: [e.detail.event]
 			},
@@ -252,7 +252,7 @@
 					toastStore.trigger(t);
 				} else {
 					const t = {
-						message: $_('nprofile.toast.failed_publish'),
+						message: $_('toast.failed_publish'),
 						timeout: 3000,
 						background: 'bg-orange-500 text-white width-filled '
 					};
@@ -261,7 +261,7 @@
 				}
 			} catch (error) {
 				const t = {
-					message: $_('nprofile.toast.failed_publish'),
+					message: $_('toast.failed_publish'),
 					timeout: 3000,
 					background: 'bg-orange-500 text-white width-filled '
 				};
@@ -290,11 +290,11 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: moveModalComponent,
-			title: $_('nprofile.modal.moveNote.title'),
-			body: `${$_('nprofile.modal.moveNote.body_from')} ${
+			title: $_('modal.moveNote.title'),
+			body: `${$_('modal.moveNote.body_from')} ${
 				$identifierList[listNumber].identifier
 			}[${_bkm === 'pub' ? $_('public') : $_('private')}] ${$_(
-				'nprofile.modal.moveNote.body_to'
+				'modal.moveNote.body_to'
 			)}`,
 			value: {
 				bkm: _bkm,
@@ -423,7 +423,7 @@
 					check = { error: false, tag: tagArray };
 				} catch (error) {
 					const t = {
-						message: $_('nprofile.toast.failed_publish'),
+						message: $_('toast.failed_publish'),
 						timeout: 3000,
 						background: 'bg-orange-500 text-white width-filled '
 					};
@@ -491,7 +491,7 @@
 					isSuccess = true;
 				} else {
 					const t = {
-						message: $_('nprofile.toast.failed_publish'),
+						message: $_('toast.failed_publish'),
 						timeout: 3000,
 						background: 'bg-orange-500 text-white width-filled '
 					};
@@ -500,7 +500,7 @@
 				}
 			} catch (error) {
 				const t = {
-					message: $_('nprofile.toast.failed_publish'),
+					message: $_('toast.failed_publish'),
 					timeout: 3000,
 					background: 'bg-orange-500 text-white width-filled '
 				};
@@ -545,12 +545,10 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: moveModalComponent,
-			title: $_('nprofile.modal.moveNote.title'),
-			body: `${$_('nprofile.modal.moveNote.body_from')} ${
-				$identifierList[listNumber]
-			}[${_bkm === 'pub' ? $_('public') : $_('private')}] ${$_(
-				'nprofile.modal.moveNote.body_to'
-			)}`,
+			title: $_('modal.moveNote.title'),
+			body: `${$_('modal.moveNote.body_from')} ${$identifierList[listNumber]}[${
+				_bkm === 'pub' ? $_('public') : $_('private')
+			}] ${$_('modal.moveNote.body_to')}`,
 			value: {
 				bkm: _bkm,
 				tag: listNumber
@@ -584,8 +582,8 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: deleteModalComponent,
-			title: $_('nprofile.modal.deleteNote.title'),
-			body: `${$_('nprofile.modal.deleteNote.body')}`,
+			title: $_('modal.deleteNote.title'),
+			body: `${$_('modal.deleteNote.body')}`,
 			value: {
 				event: $checkedIndexList.map((item) => item.event)
 			},
@@ -644,7 +642,7 @@
 			// Pass the component directly:
 			component: listInfoModalComponent,
 			// Provide arbitrary metadata to your modal instance:
-			title: $_('nprofile.modal.listInfo.title'),
+			title: $_('modal.listInfo.title'),
 
 			value: { pubkey: pubkey },
 			// Returns the updated response value
@@ -682,7 +680,7 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: postNoteModalComponent,
-			title: $_('nprofile.modal.postNote.title'),
+			title: $_('modal.postNote.title'),
 			body: ``,
 			value: {
 				content: `\r\n${url}\r\n`,
@@ -756,7 +754,7 @@
 			toastStore.trigger(t);
 		} else {
 			const t = {
-				message: $_('nprofile.toast.failed_publish'),
+				message: $_('toast.failed_publish'),
 				timeout: 3000,
 				background: 'bg-orange-500 text-white width-filled '
 			};

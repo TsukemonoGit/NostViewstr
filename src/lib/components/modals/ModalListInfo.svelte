@@ -82,13 +82,21 @@
 				/>
 			</label>
 		</div>
-		<!-- prettier-ignore -->
+
 		<footer class="modal-footer {parent.regionFooter}">
-        <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-        
-        <button class="btn {parent.buttonPositive}" on:click={()=>{res.update=true;onFormSubmit()}}  disabled={$modalStore[0].value.pubkey!==$pubkey_viewer}>Update</button>
-       
-    </footer>
+			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
+				>{parent.buttonTextCancel}</button
+			>
+
+			<button
+				class="btn {parent.buttonPositive}"
+				on:click={() => {
+					res.update = true;
+					onFormSubmit();
+				}}
+				disabled={$modalStore[0].value.pubkey !== $pubkey_viewer}>Update</button
+			>
+		</footer>
 	</div>
 {/if}
 

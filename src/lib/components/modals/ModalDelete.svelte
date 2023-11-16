@@ -40,10 +40,17 @@
 			</div>
 		{/if}
 
-		<!-- prettier-ignore -->
-		<footer class=" rid grid-cols-3 gap-2 flex  justify-end mt-2">
-        <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>{parent.buttonTextCancel}</button>
-        <button class="btn variant-filled-warning {parent.buttonPositive}" on:click={()=>{response=true;onFormSubmit()}}>Delete</button>
-    </footer>
+		<footer class=" rid grid-cols-3 gap-2 flex justify-end mt-2">
+			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
+				>{parent.buttonTextCancel}</button
+			>
+			<button
+				class="btn variant-filled-warning {parent.buttonPositive}"
+				on:click={() => {
+					response = true;
+					onFormSubmit();
+				}}>Delete</button
+			>
+		</footer>
 	</div>
 {/if}

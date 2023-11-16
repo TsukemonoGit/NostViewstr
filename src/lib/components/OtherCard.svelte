@@ -124,7 +124,7 @@
 			type: 'component',
 			component: postNoteModalComponent,
 			backdropClasses: '!bg-surface-400/80 ',
-			title: $_('nprofile.modal.postNote.title'),
+			title: $_('modal.postNote.title'),
 			body: ``,
 			value: {
 				content: `${

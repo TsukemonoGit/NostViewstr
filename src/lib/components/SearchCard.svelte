@@ -89,7 +89,7 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: searchModalComponent,
-			title: $_('nprofile.modal.search.title'),
+			title: $_('modal.search.title'),
 			body: ``,
 			value: {
 				filter: filter,
