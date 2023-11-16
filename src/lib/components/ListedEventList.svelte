@@ -104,7 +104,7 @@
 					$pubkey_viewer = res;
 				}
 			} catch (error) {
-				$nowProgress = false;
+				//			$nowProgress = false;
 				console.log('failed to login');
 			}
 		}
@@ -139,7 +139,7 @@
 							'#d': [identifier]
 						}
 				  ];
-		$nowProgress = true;
+		//$nowProgress = true;
 		const res = await fetchFilteredEvents($bookmarkRelays, filter);
 		console.log(res);
 		//const res = bookmarks;
@@ -153,7 +153,7 @@
 		});
 		$bookmarkEvents = res;
 		//viewEvent = $bookmarkEvents[0];
-		$nowProgress = false;
+		//	$nowProgress = false;
 		console.log(res);
 	}
 
@@ -209,7 +209,9 @@
 			response: async (res) => {
 				//console.log(res);
 				if (res) {
+					$nowProgress = true;
 					await deleteNotesfromLists(listNumber, [number]);
+					$nowProgress = false;
 					//    deleteNoteIndexes = [];
 				} else {
 					//  deleteNoteIndexes = [];
@@ -221,7 +223,7 @@
 
 	async function deleteNotesfromLists(listNumber: number, numList: number[]) {
 		if ($bookmarkEvents) {
-			$nowProgress = true;
+			//$nowProgress = true;
 
 			await updateBkmTag(listNumber); //最新の状態に更新
 			try {
@@ -300,16 +302,17 @@
 				bkm: _bkm,
 				tag: listNumber
 			},
-			response: (res) => {
+			response: async (res) => {
 				//console.log(res);
 				if (res) {
-					//$nowProgress = true;
-					moveNoteSuruyatu(
+					$nowProgress = true;
+					await moveNoteSuruyatu(
 						[number],
 						[e.detail.tagArray],
 						{ tag: listNumber, bkm: _bkm },
 						{ tag: res.tag, bkm: res.bkm }
 					);
+					$nowProgress = false;
 				}
 			}
 		};
@@ -345,7 +348,9 @@
 			body: $_('modal.addNote_body'),
 			response: async (res) => {
 				console.log(res);
+				$nowProgress = true;
 				await addNotesuruyatu(res);
+				$nowProgress = false;
 			}
 		};
 		modalStore.trigger(modal);
@@ -359,7 +364,7 @@
 				error: false
 			};
 
-			$nowProgress = true;
+			//$nowProgress = true;
 			let noteID = res.value;
 
 			//まず追加するタグを作る（checkにいれる）
@@ -394,7 +399,7 @@
 								background: 'bg-orange-500 text-white width-filled '
 							};
 							toastStore.trigger(t);
-							$nowProgress = false;
+							//		$nowProgress = false;
 							return;
 						}
 					}
@@ -410,7 +415,7 @@
 					};
 
 					toastStore.trigger(t);
-					$nowProgress = false;
+					//		$nowProgress = false;
 					return;
 				}
 			} else if (res.type === 'tag') {
@@ -429,7 +434,7 @@
 					};
 
 					toastStore.trigger(t);
-					$nowProgress = false;
+					//		$nowProgress = false;
 					return;
 				}
 			}
@@ -443,12 +448,13 @@
 				};
 
 				toastStore.trigger(t);
+				//$nowProgress = false;
 				return;
 			} else if (check.tag && check.tag.length > 0 && $bookmarkEvents) {
 				await updateBkmTag(listNumber); //最新の状態に更新
 				await addNotesToLists(listNumber, res.btn, [check.tag]);
+				//		$nowProgress = false;
 			}
-			$nowProgress = false;
 		}
 	}
 	async function addNotesToLists(
@@ -553,17 +559,18 @@
 				bkm: _bkm,
 				tag: listNumber
 			},
-			response: (res) => {
+			response: async (res) => {
 				//console.log(res);
 				if (res) {
-					//$nowProgress = true;
+					$nowProgress = true;
 					console.log(res.bkm);
-					moveNoteSuruyatu(
+					await moveNoteSuruyatu(
 						indexes,
 						tagArrays,
 						{ tag: listNumber, bkm: _bkm },
 						{ tag: res.tag, bkm: res.bkm }
 					);
+					$nowProgress = false;
 				}
 			}
 		};
@@ -590,7 +597,9 @@
 			response: async (res) => {
 				//console.log(res);
 				if (res) {
+					$nowProgress = true;
 					await deleteNotesfromLists(listN, indexes);
+					$nowProgress = false;
 					//    deleteNoteIndexes = [];
 				} else {
 					//  deleteNoteIndexes = [];
@@ -612,15 +621,16 @@
 		);
 		if ($bookmarkEvents.length > 0) {
 			//toの方にaddNoteする。
+
 			await updateBkmTag(from.tag); //最新の状態に更新
 
 			const addRes = await addNotesToLists(to.tag, to.bkm, tags);
 			if (!addRes) {
-				$nowProgress = false;
+				//		$nowProgress = false;
 				return;
 			}
 			const deleteRes = await deleteNotesfromLists(from.tag, indexes);
-			$nowProgress = false;
+			//		$nowProgress = false;
 		}
 	}
 
@@ -650,7 +660,9 @@
 				console.log(res);
 				if (res) {
 					if (res.update) {
+						$nowProgress = true;
 						await updateListInfo(res);
+						$nowProgress = true;
 					} else if (res.share) {
 						//postNoteModalをだす
 						openModaltoShare();
@@ -894,7 +906,7 @@
 				on:click={async () => {
 					$nowProgress = true;
 					await updateBkmTag($listNum);
-					$nowProgress = false;
+					//		$nowProgress = false;
 				}}>{@html updateIcon}</button
 			>
 		</div>

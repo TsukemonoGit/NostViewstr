@@ -606,7 +606,7 @@ export async function fetchFilteredEvents(
 	});
 
 	console.log(eventList);
-	nowProgress.set(false);
+	//nowProgress.set(false);
 	return eventList;
 	// if (returnEvent.id !== '') {
 	// 	return [returnEvent];
