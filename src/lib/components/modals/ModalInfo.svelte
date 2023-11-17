@@ -200,7 +200,7 @@
 				class="btn p-0 badge-icon w-[24px] h-[24px] nostr variant-filled-surface rounded-full"
 				rel="external noreferrer"
 				target="_blank"
-				href="https://nostter.vercel.app/mono@tsukemonogit.github.io"
+				href="https://nostter.app/mono@tsukemonogit.github.io"
 			>
 				{@html nostrIcon}
 			</a>

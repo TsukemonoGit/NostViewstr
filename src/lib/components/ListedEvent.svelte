@@ -78,15 +78,15 @@
 			viewList = [];
 		}
 	}
-	$: console.log($listSize, $amount, $pageNum);
+	//	$: console.log($listSize, $amount, $pageNum);
 
 	$: viewPage = viewList.slice(
 		Math.min($pageNum, Math.floor($listSize / $amount)) * $amount,
 		($pageNum + 1) * Math.min($amount, $listSize)
 	);
-	$: console.log(viewPage);
-	$: console.log(Math.min($pageNum, Math.floor($listSize / $amount)) * $amount);
-	$: console.log(($pageNum + 1) * Math.min($amount, $listSize));
+	//$: console.log(viewPage);
+	//$: console.log(Math.min($pageNum, Math.floor($listSize / $amount)) * $amount);
+	//$: console.log(($pageNum + 1) * Math.min($amount, $listSize));
 	$: menuSearch = $isMulti
 		? MenuMode.Multi
 		: isOwner
@@ -360,7 +360,6 @@
 					<div slot="error">{JSON.stringify(tag)}</div>
 					<div slot="nodata">{JSON.stringify(tag)}</div>
 					<ProfileCard
-						isPageOwner={isOwner}
 						menuMode={menuEvent}
 						tagArray={tag}
 						{metadata}

@@ -533,6 +533,7 @@ export async function fetchFilteredEvents(
 	//console.log(relays);
 
 	rxNostr.setRelays(relays);
+	console.log('[rx-nostr getRelays]');
 	console.log(rxNostr.getRelays());
 	const rxReq = createRxOneshotReq({ filters });
 	//	console.log(filters[0].kinds);
@@ -557,6 +558,7 @@ export async function fetchFilteredEvents(
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
 		next: (packet: { event: Nostr.Event<number> }) => {
+			console.log('[rx-nostr packet]');
 			console.log(packet);
 			eventList.push(packet.event);
 			// if (filters[0].kinds) {
@@ -606,7 +608,7 @@ export async function fetchFilteredEvents(
 		});
 	});
 
-	console.log(`completed fetchFilteredEvents`);
+	console.log(`[fetchFilteredEvents]`);
 	console.log(eventList);
 	//nowProgress.set(false);
 	return eventList;
@@ -766,7 +768,7 @@ async function checkRelayExist(relay: string, timeout: number = 1000) {
 			signal: controller.signal
 		});
 		console.log(response);
-		console.log(response.ok);
+		//console.log(response.ok);
 
 		// タイムアウトが発生した場合、response.okもfalseになります
 		if (response.ok) {

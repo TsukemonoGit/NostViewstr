@@ -15,7 +15,6 @@
 	import nextIcon from '@material-design-icons/svg/round/chevron_right.svg?raw';
 	import multiIcon from '@material-design-icons/svg/round/checklist_rtl.svg?raw';
 	import menuIcon from '@material-design-icons/svg/round/menu.svg?raw';
-	import updateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import ModalTagList from '$lib/components/modals/ModalTagList.svelte';
 	import ModalInfo from '$lib/components/modals/ModalInfo.svelte';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
@@ -42,9 +41,9 @@
 	export let pubkey: string;
 	export let kind: number;
 	export let naddr: boolean = false;
-	$: console.log(
-		`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
-	);
+	//$: console.log(
+	//	`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
+	//);
 	$: last = Math.floor(($listSize - 1) / $amount);
 	function next() {
 		if ($pageNum < Math.floor(($listSize - 1) / $amount)) {

@@ -25,14 +25,11 @@
 	} from '$lib/nostrFunctions';
 	import { afterUpdate, onMount } from 'svelte';
 
-	import backIcon from '@material-design-icons/svg/round/chevron_left.svg?raw';
-	import nextIcon from '@material-design-icons/svg/round/chevron_right.svg?raw';
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 	import updateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
-	//	import LockIcon from '@material-design-icons/svg/round/shield_lock.svg?raw';
-	//	import KidStar from '@material-design-icons/svg/round/kid_star.svg?raw';
+
 	import PubBkm from './Button/PubBkm.svelte';
 	import PrvBkm from './Button/PrvBkm.svelte';
 	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
@@ -61,7 +58,6 @@
 	import { nip19 } from 'nostr-tools';
 	import { afterNavigate } from '$app/navigation';
 
-	let size: number;
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number>;
 	export let pubkey: string;
@@ -119,16 +115,20 @@
 	};
 
 	export async function bkminit(pub: string) {
+		bookmarkEvents.set([]);
+		bookmarkRelays.set([]);
+		postRelays.set([]);
+		searchRelays.set([]);
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
 			$pubkey_viewer = await getPub();
 		}
 
 		console.log($pubkey_viewer);
-		console.log(pub);
-		if ($bookmarkRelays.length === 0) {
-			console.log(await getRelays(pub));
-		}
+		//	console.log(pub);
+		//if ($bookmarkRelays.length === 0) {
+		console.log(await getRelays(pub));
+		//	}
 		const filter =
 			identifier === undefined
 				? [
@@ -146,9 +146,10 @@
 				  ];
 		//$nowProgress = true;
 		const res = await fetchFilteredEvents($bookmarkRelays, filter);
-		console.log(res);
+		//console.log(res);
 		//const res = bookmarks;
 		if (res.length === 0) {
+			console.log('bookmark not found');
 			return;
 		}
 		res.sort((a, b) => {

@@ -15,8 +15,7 @@
 	import { _ } from 'svelte-i18n';
 
 	import EventTag from './EventTag.svelte';
-	import { NostrApp } from 'nosvelte';
-	import { searchRelays } from '$lib/stores/relays';
+
 	import { checkedIndexList } from '$lib/stores/bookmarkEvents';
 	import Ogp from './OGP.svelte';
 	import Content from './Content.svelte';

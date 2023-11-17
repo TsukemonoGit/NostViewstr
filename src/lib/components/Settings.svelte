@@ -2,7 +2,6 @@
 	import { _ } from 'svelte-i18n';
 	import { iconView, URLPreview, settings } from '$lib/stores/settings';
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
-	import { LightSwitch } from '@skeletonlabs/skeleton';
 
 	const clickDefault = () => {
 		//bookmarkEventsのしょきか

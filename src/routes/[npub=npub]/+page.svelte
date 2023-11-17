@@ -1,31 +1,18 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { page } from '$app/stores';
+
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
 
-	import {
-		URLPreview,
-		iconView,
-		settings,
-		nowProgress,
-		pubkey_viewer
-	} from '$lib/stores/settings';
-	import {
-		LightSwitch,
-		ProgressBar,
-		ProgressRadial
-	} from '@skeletonlabs/skeleton';
+	import { settings } from '$lib/stores/settings';
+
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
-	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
-	import { onMount } from 'svelte';
-	import { getPub, getRelays } from '$lib/nostrFunctions';
 
 	export let data: PageData;
 	const kind = 30001;
-	console.log('PageData', data.pubkey);
+	//console.log('PageData', data.pubkey);
 
 	// onMount(() => {
 	// 	console.log('test');

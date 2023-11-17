@@ -10,7 +10,7 @@ export const load: PageLoad<{
 	pubkey: string;
 	relays?: string[];
 }> = ({ params }) => {
-	console.log(params.npub);
+	//	console.log(params.npub);
 	bookmarkEvents.set([]);
 	bookmarkRelays.set([]);
 	postRelays.set([]);
