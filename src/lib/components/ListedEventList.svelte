@@ -906,7 +906,7 @@
 				on:click={async () => {
 					$nowProgress = true;
 					await updateBkmTag($listNum);
-					//		$nowProgress = false;
+					$nowProgress = false;
 				}}>{@html updateIcon}</button
 			>
 		</div>
