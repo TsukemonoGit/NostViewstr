@@ -522,19 +522,20 @@ export async function fetchFilteredEvents(
 	relays: string[],
 	filters: Nostr.Filter[]
 ): Promise<Nostr.Event[]> {
+	console.log(`fetchFilteredEvents ` + JSON.stringify(filters[0]));
 	if (relays.length === 0) {
 		console.error('relay設定されてない');
 		return [];
 	}
-	console.log(filters);
+	//console.log(filters);
 
 	const rxNostr = createRxNostr();
-	console.log(relays);
+	//console.log(relays);
 
 	rxNostr.setRelays(relays);
 	console.log(rxNostr.getRelays());
 	const rxReq = createRxOneshotReq({ filters });
-	console.log(filters[0].kinds);
+	//	console.log(filters[0].kinds);
 	// データの購読
 	const observable =
 		filters[0].kinds &&
@@ -546,11 +547,11 @@ export async function fetchFilteredEvents(
 
 					idlatestEach(),
 					//	(packet) => packet.event.tags[0][1] //.find((item) => item[0] === 'd')
-					completeOnTimeout(5000)
+					completeOnTimeout(3000)
 			  )
 			: rxNostr
 					.use(rxReq)
-					.pipe(uniq(), verify(), latest(), completeOnTimeout(5000));
+					.pipe(uniq(), verify(), latest(), completeOnTimeout(3000));
 
 	let eventList: Nostr.Event<number>[] = [];
 	// オブザーバーオブジェクトの作成
@@ -605,6 +606,7 @@ export async function fetchFilteredEvents(
 		});
 	});
 
+	console.log(`completed fetchFilteredEvents`);
 	console.log(eventList);
 	//nowProgress.set(false);
 	return eventList;
@@ -665,6 +667,7 @@ export async function getRelays(author: string) {
 }
 
 export async function setRelays(events: NostrEvent[]) {
+	console.log(`setting relays...`);
 	let read: string[] = [];
 	let write: string[] = [];
 	const kind10002 = events.find((item) => item.kind === 10002);
@@ -691,7 +694,7 @@ export async function setRelays(events: NostrEvent[]) {
 	} else if (kind3 && kind3.content !== '') {
 		try {
 			const relays = JSON.parse(kind3.content);
-			console.log(relays);
+			//console.log(relays);
 			for (const item of Object.keys(relays)) {
 				// mapからfor...ofに変更
 				const existRelay = await checkRelayExist(item);
@@ -728,6 +731,7 @@ export async function setRelays(events: NostrEvent[]) {
 	if (get(postRelays).length === 0) {
 		postRelays.set(defaultRelays);
 	}
+	console.log(`complete set relsys`);
 }
 
 // そのURLのリレーが存在するか確認 NIP11
@@ -799,7 +803,7 @@ export async function checkInput(r: string | boolean): Promise<{
 	//rが適切なNoteIDなのかどうかのチェック
 	//適切であればHexのNoteIdを返してほしい
 	const noteId = await validateNoteId(r as string);
-	console.log(noteId);
+	//console.log(noteId);
 
 	return noteId;
 }
@@ -878,6 +882,8 @@ async function validateNoteId(str: string): Promise<{
 }
 
 export async function updateBkmTag(num: number) {
+	console.log(`updateBkmTag[${get(identifierList)[num]}] updating...`);
+
 	const bkm = get(bookmarkEvents);
 	const relays = get(bookmarkRelays);
 	if (bkm !== undefined && bkm.length > num && relays.length > 0) {
@@ -895,6 +901,7 @@ export async function updateBkmTag(num: number) {
 		if (res.length > 0 && res[0].created_at > bkm[num].created_at) {
 			bkm[num] = res[0];
 			bookmarkEvents.set(bkm);
+			console.log(`updateBkmTag[${get(identifierList)[num]}] updated`);
 			// //newIdentifierListも更新してーーー
 			// const newIdentifierList =
 			// 	bkm.map((item) => {
@@ -912,6 +919,7 @@ export async function updateBkmTag(num: number) {
 			// identifierList.set(newIdentifierList);
 		}
 	}
+	console.log(`updateBkmTag[${get(identifierList)[num]}] completed`);
 }
 
 //タグごと追加の項目で入力された値が一次元配列かどうかを確認

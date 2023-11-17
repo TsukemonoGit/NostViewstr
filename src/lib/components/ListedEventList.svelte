@@ -73,20 +73,25 @@
 	//let num: number = 0;
 	$: createdAt = viewEvent?.created_at;
 	$: isOwner = $pubkey_viewer === pubkey;
-	let isOnMount = true;
+	let isOnMount = false;
 
 	onMount(async () => {
-		if (isOnMount) {
-			init();
+		if (!isOnMount) {
+			console.log('onMount');
+			isOnMount = true; // onMountが呼ばれたことを示すフラグを変更
+			await init();
 			isOnMount = false; // onMountが呼ばれたことを示すフラグを変更
 		}
 	});
 
-	afterNavigate(() => {
+	afterNavigate(async () => {
 		if (!isOnMount) {
+			console.log('afterNavigate');
+			isOnMount = true; // onMountが呼ばれたことを示すフラグを変更
 			$listNum = 0;
 			$pageNum = 0;
-			init();
+			await init();
+			isOnMount = false; // onMountが呼ばれたことを示すフラグを変更
 		}
 	});
 	//ぷぶきーがかわるごとにしょきか？
