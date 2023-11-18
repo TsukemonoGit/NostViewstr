@@ -1,4 +1,41 @@
-nostr logo https://github.com/mbarulli/nostr-logo
-nostr-zap https://github.com/SamSamskies/nostr-zap
-nosey(ハッシュタグのリンク先に使用) https://github.com/akiomik/nosey
-nostr band(プロフィール,ノートのリンク先に使用) https://nostr.band/
+# nostr-bookmark-viewer5
+
+https://nostr-bookmark-viewer5.vercel.app/
+
+第五弾 SvelteKit と Skeleton と Tailwindcss と Nostr と Nosvelte と rx-nostr とその他諸々の勉強
+
+## About
+
+[nostr](https://github.com/nostr-protocol/nostr)の
+[NIP-51](https://github.com/nostr-protocol/nips/blob/master/51.md)
+Categorized Bookmarks を表示、編集するツール
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+##
+
+- [nostr logo] (https://github.com/mbarulli/nostr-logo)
+
+- [nostr-zap] (https://github.com/SamSamskies/nostr-zap)
+
+- [nosey(ハッシュタグのリンク先に使用)] (https://github.com/akiomik/nosey]
+
+- [nostr band(プロフィール,ノートのリンク先に使用)] (https://nostr.band/
+  )
