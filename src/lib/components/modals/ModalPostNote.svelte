@@ -46,7 +46,7 @@
 			content: res.content,
 			sig: ''
 		};
-		const response = await publishEvent(event, $postRelays);
+		const response = await publishEventWithTimeout(event, $postRelays);
 		const toastSettings: ToastSettings = response.isSuccess
 			? {
 					message: `publish result<br>${response.msg}`,

@@ -4,10 +4,13 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { LightSwitch, SlideToggle, clipboard } from '@skeletonlabs/skeleton';
 
-	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
 	import loginIcon from '@material-design-icons/svg/round/login.svg?raw';
 	import shareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import lightningIcon from '@material-design-icons/svg/round/bolt.svg?raw';
+
+	import ArrowCircleRight from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
+	import Delete from '@material-design-icons/svg/round/delete.svg?raw';
+	import OpenInBrowser from '@material-design-icons/svg/round/open_in_browser.svg?raw';
 
 	import { getPub } from '$lib/nostrFunctions';
 	import {
@@ -18,7 +21,7 @@
 	} from '$lib/stores/settings';
 	import githubIcon from '$lib/assets/github-mark.png';
 	import githubIconWhite from '$lib/assets/github-mark-white.png';
-	import { nostrIcon } from '$lib/components/icons';
+	import { nostrIcon, prvIcon, pubIcon } from '$lib/components/icons';
 	export let parent: any;
 
 	let res: { share: boolean; openJson: boolean } = {
@@ -181,7 +184,48 @@
 		</div>
 
 		<hr />
-
+		<div class="p-0 m-0">{$_('icon_description')}</div>
+		<div class="flex flex-wrap">
+			<div class="flex gap-1 pr-3">
+				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
+					{@html pubIcon}
+				</div>
+				{$_('popup.pub')}
+			</div>
+			<div class="flex gap-1 pr-3">
+				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
+					{@html prvIcon}
+				</div>
+				{$_('popup.prv')}
+			</div>
+		</div>
+		<div class="flex flex-wrap">
+			<div class="flex gap-1 pr-3">
+				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
+					{@html shareIcon}
+				</div>
+				{$_('popup.Share')}
+			</div>
+			<div class="flex gap-1 pr-3">
+				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
+					{@html OpenInBrowser}
+				</div>
+				{$_('popup.open')}
+			</div>
+			<div class="flex gap-1 pr-3">
+				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
+					{@html ArrowCircleRight}
+				</div>
+				{$_('popup.move')}
+			</div>
+			<div class="flex gap-1">
+				<div class="fill-warning-400 btn m-0 p-0 mb-1 bg-surface-500 h-fit">
+					{@html Delete}
+				</div>
+				{$_('popup.delete')}
+			</div>
+		</div>
+		<hr />
 		<div class="flex gap-3">
 			<a
 				class="btn p-0 badge-icon w-[24px] h-[24px] variant-filled-surface rounded-full"

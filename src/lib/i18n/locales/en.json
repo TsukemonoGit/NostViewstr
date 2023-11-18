@@ -110,5 +110,6 @@
   },
   "toast": {
     "failed_publish": "failed to publish"
-  }
+  },
+  "icon_description": "Icon description"
 }

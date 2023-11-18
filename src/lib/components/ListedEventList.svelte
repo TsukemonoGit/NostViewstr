@@ -805,8 +805,8 @@
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
 {#if $bookmarkEvents && $bookmarkEvents.length > 0}
-	<div
-		class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden"
+	<!-- <div
+		class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden top-0"
 		data-popup="popupPub"
 	>
 		<p>{$_('popup.pub')}</p>
@@ -815,14 +815,14 @@
 		/>
 	</div>
 	<div
-		class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden"
+		class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden top-0"
 		data-popup="popupPrv"
 	>
 		<p>{$_('popup.prv')}</p>
 		<div
 			class="arrow variant-filled-secondary z-20 box-border overflow-hidden"
 		/>
-	</div>
+	</div> -->
 
 	<!--header-->
 	<div

@@ -1,6 +1,6 @@
 {
   "popup": {
-    "Share": "nostrで引用",
+    "Share": "nostrで共有",
     "delete": "削除",
     "open": "外部サイトで開く",
     "move": "別のリストに移動",
@@ -110,5 +110,6 @@
   },
   "toast": {
     "failed_publish": "書き込みに失敗しました"
-  }
+  },
+  "icon_description": "アイコンについて"
 }

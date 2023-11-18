@@ -100,23 +100,23 @@
 </script>
 
 {#if viewPage && viewPage.length > 0}
-	<div class="card p-1 variant-filled-secondary z-20" data-popup="popupShare">
+	<!-- <div class="card p-1 variant-filled-secondary z-20 top-0" data-popup="popupShare">
 		<p>{$_('popup.Share')}</p>
 		<div class="arrow variant-filled-secondary z-20" />
 	</div>
 
-	<div class="card p-1 variant-filled-secondary z-20" data-popup="popupOpen">
+	<div class="card p-1 variant-filled-secondary z-20 top-0" data-popup="popupOpen">
 		<p>{$_('popup.open')}</p>
-		<div class="arrow variant-filled-secondary z-20" />
+		<div class="arrow variant-filled-secondary z-20 " />
 	</div>
-	<div class="card p-1 variant-filled-secondary z-20" data-popup="popupMove">
+	<div class="card p-1 variant-filled-secondary z-20 top-0" data-popup="popupMove">
 		<p>{$_('popup.move')}</p>
 		<div class="arrow variant-filled-secondary z-20" />
 	</div>
-	<div class="card p-1 variant-filled-secondary z-20" data-popup="popupDelete">
+	<div class="card p-1 variant-filled-secondary z-20 top-0" data-popup="popupDelete">
 		<p>{$_('popup.delete')}</p>
 		<div class="arrow variant-filled-secondary z-20" />
-	</div>
+	</div> -->
 
 	{#each viewPage as tag, index}
 		{#await getIdByTag(tag)}
