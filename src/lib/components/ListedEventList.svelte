@@ -98,23 +98,24 @@
 	const init = async () => {
 		$nowProgress = true;
 		console.log('onMount executed');
-		if ($pubkey_viewer === '') {
-			try {
-				const res = await getPub();
-				if (res !== '') {
-					$pubkey_viewer = res;
-				}
-			} catch (error) {
-				//			$nowProgress = false;
-				console.log('failed to login');
-			}
-		}
+		// if ($pubkey_viewer === '') {
+		// 	try {
+		// 		const res = await getPub();
+		// 		if (res !== '') {
+		// 			$pubkey_viewer = res;
+		// 		}
+		// 	} catch (error) {
+		// 		//			$nowProgress = false;
+		// 		console.log('failed to login');
+		// 	}
+		// }
 
 		await bkminit(pubkey);
 		$nowProgress = false;
 	};
 
 	export async function bkminit(pub: string) {
+		console.log('bkminit');
 		bookmarkEvents.set([]);
 		bookmarkRelays.set([]);
 		postRelays.set([]);
