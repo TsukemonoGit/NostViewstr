@@ -175,7 +175,7 @@
 		id: string;
 		title?: string;
 		image?: string;
-		summary?: string;
+		description?: string;
 	}) {
 		$nowProgress = true;
 		console.log(value);
@@ -187,8 +187,8 @@
 		if (value.image && value.image.trim() !== '') {
 			tags.push(['image', value.image]);
 		}
-		if (value.summary && value.summary.trim() !== '') {
-			tags.push(['summary', value.summary]);
+		if (value.description && value.description.trim() !== '') {
+			tags.push(['description', value.description]);
 		}
 		console.log(tags);
 		const event: NostrEvent = {

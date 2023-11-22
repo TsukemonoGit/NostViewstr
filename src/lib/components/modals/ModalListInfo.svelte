@@ -17,13 +17,13 @@
 	let res: {
 		title?: string;
 		image?: string;
-		summary?: string;
+		description?: string;
 		share?: boolean;
 		update?: boolean;
 	} = {
 		title: $identifierList[$listNum].title ?? '',
 		image: $identifierList[$listNum].image ?? '',
-		summary: $identifierList[$listNum].summary ?? ''
+		description: $identifierList[$listNum].description ?? ''
 	};
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
@@ -72,12 +72,12 @@
 			</label>
 			<img class="max-h-24 m-2" src={res.image} alt="" />
 			<label class="label mt-2">
-				<span class="font-bold">summary</span>
+				<span class="font-bold">description</span>
 				{$_('modal.listInfo.ex.summary')}
 				<textarea
 					class="input p-2 max-h-24 overflow-y-auto break-all"
 					disabled={$modalStore[0].value.pubkey !== $pubkey_viewer}
-					bind:value={res.summary}
+					bind:value={res.description}
 					placeholder=""
 				/>
 			</label>

@@ -1,4 +1,4 @@
-import { uniqueTags } from './functions';
+import { uniqueTags } from './otherFunctions';
 
 test('tag', async () => {
 	const result = await uniqueTags([

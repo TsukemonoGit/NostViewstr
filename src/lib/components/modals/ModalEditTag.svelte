@@ -14,7 +14,7 @@
 	let res: {
 		btn: string;
 		tagIndex: number;
-		value: { id: string; title?: string; image?: string; summary?: string };
+		value: { id: string; title?: string; image?: string; description?: string };
 	} = {
 		value: { id: '' },
 		btn: '',
@@ -152,11 +152,11 @@
 							</label>
 
 							<label class="label">
-								<span>summary</span>
+								<span>description</span>
 								<input
 									class="input p-2"
 									type="text"
-									bind:value={res.value.summary}
+									bind:value={res.value.description}
 									placeholder="Recommended Books Collection"
 								/>
 							</label>

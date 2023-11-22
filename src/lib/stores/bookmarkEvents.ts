@@ -7,7 +7,7 @@ interface IdentifierList {
 	identifier: string | undefined;
 	title: string | undefined;
 	image: string | undefined;
-	summary: string | undefined;
+	description: string | undefined;
 }
 export const bookmarkEvents = writable<Event[]>([]);
 export const identifierList = writable<IdentifierList[]>([]);
@@ -18,12 +18,12 @@ bookmarkEvents.subscribe(($bookmarkEvents) => {
 			const tag = item.tags.find((tag) => tag[0] === 'd');
 			const title = item.tags.find((tag) => tag[0] === 'title');
 			const image = item.tags.find((tag) => tag[0] === 'image');
-			const summary = item.tags.find((tag) => tag[0] === 'summary');
+			const description = item.tags.find((tag) => tag[0] === 'description');
 			return {
 				identifier: tag ? tag[1] : undefined,
 				title: title ? title[1] : undefined,
 				image: image ? image[1] : undefined,
-				summary: summary ? summary[1] : undefined
+				description: description ? description[1] : undefined
 			};
 		}) ?? [];
 	identifierList.set(newIdentifierList);

@@ -716,7 +716,7 @@
 	async function updateListInfo(res: {
 		title: string;
 		image: string;
-		summary: string;
+		description: string;
 	}) {
 		console.log(res);
 		const listNumber = $listNum;
@@ -742,13 +742,15 @@
 			eventTag.splice(imageIndex, 0, ['image', res.image]);
 		}
 
-		const summaryIndex = eventTag.findIndex((item) => item[0] === 'summary');
-		if (summaryIndex !== -1) {
+		const descriptionIndex = eventTag.findIndex(
+			(item) => item[0] === 'description'
+		);
+		if (descriptionIndex !== -1) {
 			// すでに "title" タグが存在する場合、値を更新
-			eventTag[summaryIndex][1] = res.summary;
+			eventTag[descriptionIndex][1] = res.description;
 		} else {
 			// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
-			eventTag.splice(imageIndex + 1, 0, ['summary', res.summary]);
+			eventTag.splice(imageIndex + 1, 0, ['description', res.description]);
 		}
 		console.log(eventTag);
 		const event: Nostr.Event = {
@@ -872,8 +874,8 @@
 					</div>
 				</button>
 
-				<!-- {#if $identifierList[$listNum].summary}
-					{$identifierList[$listNum].summary}
+				<!-- {#if $identifierList[$listNum].description}
+					{$identifierList[$listNum].description}
 				{/if} -->
 			{/if}
 
