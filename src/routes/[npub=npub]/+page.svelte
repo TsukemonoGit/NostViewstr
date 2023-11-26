@@ -9,9 +9,10 @@
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
+	import { kinds } from '$lib/kind';
 
 	export let data: PageData;
-	const kind = 30001;
+
 	//console.log('PageData', data.pubkey);
 
 	// onMount(() => {
@@ -28,6 +29,13 @@
 	// onMount(async () => {
 	// 	console.log(await getRelays(data.pubkey));
 	// }); //await setRelays(testRelay);}}
+	let kind: number;
+	let selectValue: any;
+	console.log(selectValue);
+	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
+		kind = Number(event.currentTarget.value);
+		console.log(kind);
+	}
 </script>
 
 <!-- <div class="break-all">
@@ -41,7 +49,24 @@
 	<div class="container h-full mx-auto flex justify-center items-center">
 		<div class="mt-5">
 			<h1 class="h1 mb-5">{$_('main.title')}</h1>
-			<Settings />
+			<div class="space-t-5 min-w-[80vw]">
+				<div class="mt-10">
+					<h5 class="h5">{`kind`}</h5>
+
+					<select
+						class="input p-1"
+						bind:value={selectValue}
+						on:change={handleKindChange}
+					>
+						{#each Object.keys(kinds) as value (value)}
+							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
+						{/each}
+					</select>
+				</div>
+			</div>
+			<div class="space-t-5">
+				<Settings />
+			</div>
 		</div>
 	</div>
 {:else}

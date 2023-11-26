@@ -22,6 +22,7 @@
 	import ModalPostNote from './modals/ModalPostNote.svelte';
 	import { nip19 } from 'nostr-tools';
 	import ModalEventJson from './modals/ModalEventJson.svelte';
+	import { kinds } from '$lib/kind';
 
 	export let bkm: string;
 	export let kind: number;
@@ -213,6 +214,7 @@
 		{#if $identifierList[$listNum] && $identifierList[$listNum].identifier}
 			<div class="text-xs">
 				kind:{kind}
+				{#if kinds[kind]} ({kinds[kind]}) {/if}
 				{#if kind === 30003}
 					{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
 						<button
@@ -271,6 +273,7 @@
 			<!---->
 			<div class="h4 self-center w-fit">
 				kind:{kind}
+				{#if kinds[kind]} ({kinds[kind]}) {/if}
 			</div>
 		{/if}
 

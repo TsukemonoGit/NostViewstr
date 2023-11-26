@@ -18,6 +18,7 @@
 	import AddTypeNpub from './Add/AddTypeNpub.svelte';
 	import AddTypeNote from './Add/AddTypeNote.svelte';
 	import AddTypeNaddr from './Add/AddTypeNaddr.svelte';
+	import AddTypeEmoji from './Add/AddTypeEmoji.svelte';
 
 	let input: string;
 	let content: string;
@@ -35,6 +36,8 @@
 	const includesA = kindsValidTag[$modalStore[0].value.kind].includes('a');
 	const includesE = kindsValidTag[$modalStore[0].value.kind].includes('e');
 	const includesP = kindsValidTag[$modalStore[0].value.kind].includes('p');
+	const includesEmoji =
+		kindsValidTag[$modalStore[0].value.kind].includes('emoji');
 	// We've created a custom submit function to pass the response and close the modal.
 	function onFormSubmit(): void {
 		console.log(res);
@@ -139,8 +142,16 @@
 							<AddTypeNote {res} {parent} {onFormSubmit} />
 						{:else if includesA}
 							<AddTypeNaddr {res} {parent} {onFormSubmit} />
-						{:else if includesP}
-							<AddTypeNpub {res} {parent} {onFormSubmit} />
+						{/if}
+						{#if includesP}
+							<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
+						{#if includesEmoji}
+							<AddTypeEmoji
+								{res}
+								{parent}
+								{onFormSubmit}
+								event={$modalStore[0].value.event}
+							/>
 						{/if}
 						<!-- <AddTypeNote/>
 						<AddTypeNpub/>
@@ -194,11 +205,15 @@
 							{$_('ModalAddNote.add_note_tag')}
 						</header>
 						<article class="body break-all">
-							{$_('ModalAddNote.example')}1 ["emoji" ,"wayo",
+							<!-- {$_('ModalAddNote.example')}1 ["emoji" ,"wayo",
 							"https://example.com/example.png"]<br />
 							{$_('ModalAddNote.example')}2 [ "a",
 							"30030:84b0c46ab699ac35eb2ca286470b85e081db2087cdef63932236c397417782f5:mono"
-							]<br />
+							]<br /> -->
+							valid tag:
+							{#each kindsValidTag[$modalStore[0].value.kind] as tag, index}
+								{tag},
+							{/each}
 							<!-- <span class="text-warning-500"
 								>{$_('ModalAddNote.caution')}
 							</span> -->

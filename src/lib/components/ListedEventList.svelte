@@ -344,10 +344,12 @@
 			// // Pass the component directly:
 			component: addModalComponent,
 			// Provide arbitrary metadata to your modal instance:
-			title: $identifierList[$listNum].identifier,
+			title:
+				$identifierList[$listNum].identifier ??
+				`kind:${$bookmarkEvents[$listNum].kind}`,
 
 			body: '',
-			value: { kind: kind, pubkey: pubkey },
+			value: { kind: kind, pubkey: pubkey, event: $bookmarkEvents[$listNum] },
 			response: async (res: { btn: string; tag: string[] }) => {
 				console.log(res); //有効だったらタグになって帰ってきてほしい
 				$nowProgress = true;

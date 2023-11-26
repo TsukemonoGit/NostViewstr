@@ -1,17 +1,14 @@
 <script lang="ts">
-	import { checkInputNoteOrNaddr } from '$lib/nostrFunctions';
+	import { checkInputNote } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	enum AddTyle {
-		Id = 'id',
-		Tag = 'tag'
-	}
+
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
 	export let onFormSubmit: any;
 	let input: string;
 	async function onClickCheck() {
-		const check = await checkInputNoteOrNaddr(input);
+		const check = await checkInputNote(input);
 		if (check.error && check.message) {
 			const t = {
 				message: check.message,
@@ -30,7 +27,7 @@
 </script>
 
 <article class="body">
-	{$_('modal.addNote_body')}
+	{`nostr:note... or note...`}
 </article>
 <!-- Enable for debugging: -->
 

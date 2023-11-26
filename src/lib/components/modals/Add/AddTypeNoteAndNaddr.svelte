@@ -2,10 +2,7 @@
 	import { checkInputNoteOrNaddr } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	enum AddTyle {
-		Id = 'id',
-		Tag = 'tag'
-	}
+
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
 	export let onFormSubmit: any;

@@ -792,6 +792,92 @@ async function checkRelayExist(relay: string, timeout: number = 1000) {
 	}
 }
 
+export async function checkInputNpub(r: string): Promise<{
+	tag?: string[];
+	message?: string;
+	error: boolean;
+}> {
+	if (r == null) {
+		return { message: '無効なIDです', error: true };
+	}
+
+	// nostr:で始まる場合、その部分をカット
+	if (r.startsWith('nostr:')) {
+		r = r.slice(6);
+	}
+
+	try {
+		const decoded = nip19.decode(r);
+		if (decoded.type == 'npub') {
+			return { tag: ['p', decoded.data], error: false };
+		} else {
+			throw new Error();
+		}
+	} catch (error) {
+		return { message: '無効なIDです', error: true };
+	}
+}
+
+export async function checkInputNaddr(r: string): Promise<{
+	tag?: string[];
+	message?: string;
+	error: boolean;
+}> {
+	if (r == null) {
+		return { message: '無効なIDです', error: true };
+	}
+
+	// nostr:で始まる場合、その部分をカット
+	if (r.startsWith('nostr:')) {
+		r = r.slice(6);
+	}
+
+	try {
+		const decoded = nip19.decode(r);
+		if (decoded.type == 'naddr') {
+			return {
+				tag: [
+					'a',
+					`${decoded.data.kind}:${decoded.data.pubkey}:${decoded.data.identifier}`
+				],
+				error: false
+			};
+		} else {
+			throw new Error();
+		}
+	} catch (error) {
+		return { message: '無効なIDです', error: true };
+	}
+}
+
+export async function checkInputNote(r: string): Promise<{
+	tag?: string[];
+	message?: string;
+	error: boolean;
+}> {
+	if (r == null) {
+		return { message: '無効なIDです', error: true };
+	}
+
+	// nostr:で始まる場合、その部分をカット
+	if (r.startsWith('nostr:')) {
+		r = r.slice(6);
+	}
+
+	try {
+		const decoded = nip19.decode(r);
+		if (decoded.type == 'note') {
+			return {
+				tag: ['e', decoded.data],
+				error: false
+			};
+		} else {
+			throw new Error();
+		}
+	} catch (error) {
+		return { message: '無効なIDです', error: true };
+	}
+}
 //無効ならエラーメッセージ、有効ならtagが帰るけどエラーならthrowerrorで良くない？まあいいかちぇっくだし（？）
 export async function checkInputNoteOrNaddr(r: string | boolean): Promise<{
 	tag?: string[];
