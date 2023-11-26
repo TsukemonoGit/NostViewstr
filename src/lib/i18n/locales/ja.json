@@ -81,7 +81,7 @@
   "ModalAddNote": {
     "add_note": "リスト\nに追加",
     "add_note_to1": "[",
-    "add_note_to2": "] にノートを追加",
+    "add_note_to2": "] に追加",
     "add_note_tag": "（タグから追加）",
     "create": "ノートを作成して追加",
     "create_to1": "ノートを作成して、[",

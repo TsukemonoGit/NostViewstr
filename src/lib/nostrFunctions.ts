@@ -793,7 +793,7 @@ async function checkRelayExist(relay: string, timeout: number = 1000) {
 }
 
 //無効ならエラーメッセージ、有効ならtagが帰るけどエラーならthrowerrorで良くない？まあいいかちぇっくだし（？）
-export async function checkInput(r: string | boolean): Promise<{
+export async function checkInputNoteOrNaddr(r: string | boolean): Promise<{
 	tag?: string[];
 	message?: string;
 	error: boolean;

@@ -7,21 +7,37 @@
 
 	// Stores
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-	enum AddTyle {
-		Id = 'id',
-		Tag = 'tag'
-	}
-	// Form Data
-	const res = {
-		value: '',
-		btn: 'pub',
-		create: false,
-		type: AddTyle.Id,
-		tagvalue: ''
-	};
+	import AddTypeNoteAndNaddr from './Add/AddTypeNoteAndNaddr.svelte';
+	import {
+		isOneDimensionalArray,
+		publishEventWithTimeout
+	} from '$lib/nostrFunctions';
+	import { kindsValidTag } from '$lib/kind';
+	import type { Nostr } from 'nosvelte';
+	import { postRelays } from '$lib/stores/relays';
+	import AddTypeNpub from './Add/AddTypeNpub.svelte';
+	import AddTypeNote from './Add/AddTypeNote.svelte';
+	import AddTypeNaddr from './Add/AddTypeNaddr.svelte';
 
+	let input: string;
+	let content: string;
+	// Form Data
+	const res: { btn: string; tag: string[] } = {
+		btn: 'pub',
+		tag: []
+		// value: '',
+		// btn: 'pub',
+		// create: false,
+		// type: AddTyle.Id,
+		// tagvalue: ''
+	};
+	// "a" と "e" が両方含まれているか確認
+	const includesA = kindsValidTag[$modalStore[0].value.kind].includes('a');
+	const includesE = kindsValidTag[$modalStore[0].value.kind].includes('e');
+	const includesP = kindsValidTag[$modalStore[0].value.kind].includes('p');
 	// We've created a custom submit function to pass the response and close the modal.
 	function onFormSubmit(): void {
+		console.log(res);
 		if ($modalStore[0].response) $modalStore[0].response(res);
 		modalStore.close();
 	}
@@ -31,6 +47,74 @@
 	const cHeader = 'text-2xl font-bold';
 	//const cForm =
 	//  'border border-surface-500 p-4 space-y-4 rounded-container-token';
+
+	function onTagkara() {
+		try {
+			const tagArray = JSON.parse(input);
+			if (!isOneDimensionalArray(tagArray)) {
+				throw new Error();
+			}
+
+			//validtagかちぇっく
+			if (
+				$modalStore[0].value.kind ||
+				!tagArray ||
+				!kindsValidTag[$modalStore[0].value.kind].includes(tagArray[0])
+			) {
+				throw new Error();
+			}
+			//タグが大丈夫そうだったら
+			onFormSubmit();
+		} catch (error) {
+			const t = {
+				message: $_('toast.invalidtag'),
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
+			return;
+		}
+	}
+
+	async function onClickCreate() {
+		//contentのなかみをkind1に書き込みしてたぐにして返す
+		const event: Nostr.Event<any> = {
+			id: '',
+			pubkey: $modalStore[0].value.pubkey,
+			created_at: Math.floor(Date.now() / 1000),
+			kind: 1,
+			tags: [],
+			content: content,
+			sig: ''
+		};
+		console.log($postRelays);
+		if ($postRelays.length > 0) {
+			const response = await publishEventWithTimeout(event, $postRelays);
+			if (response.isSuccess) {
+				const t = {
+					message: response.msg,
+					timeout: 3000
+				};
+
+				toastStore.trigger(t);
+
+				if (response.event) {
+					res.tag = ['e', response.event.id]; //追加するノートIDがこれ
+					onFormSubmit();
+				} else {
+					const t = {
+						message: 'failed to publish',
+						timeout: 3000,
+						background: 'bg-orange-500 text-white width-filled '
+					};
+					toastStore.trigger(t);
+					//		$nowProgress = false;
+					return;
+				}
+			}
+		}
+	}
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -49,10 +133,23 @@
 							🗒 {$_('ModalAddNote.add_note_to1')}{$modalStore[0].title ??
 								'(title missing)'}{$_('ModalAddNote.add_note_to2')}
 						</header>
-						<article class="body">
-							{$modalStore[0].body ?? '(body missing)'}
+						{#if includesA && includesE}
+							<AddTypeNoteAndNaddr {res} {parent} {onFormSubmit} />
+						{:else if includesE}
+							<AddTypeNote {res} {parent} {onFormSubmit} />
+						{:else if includesA}
+							<AddTypeNaddr {res} {parent} {onFormSubmit} />
+						{:else if includesP}
+							<AddTypeNpub {res} {parent} {onFormSubmit} />
+						{/if}
+						<!-- <AddTypeNote/>
+						<AddTypeNpub/>
+						<AddTypeNaddr /> -->
+
+						<!-- <article class="body">
+							{$_('modal.addNote_body')}
 						</article>
-						<!-- Enable for debugging: -->
+						
 
 						<input
 							class="input p-2 m-2"
@@ -78,7 +175,7 @@
 									onFormSubmit();
 								}}>Public</button
 							>
-						</footer>
+						</footer> -->
 					</div>
 				</svelte:fragment>
 			</AccordionItem>
@@ -111,7 +208,7 @@
 						<input
 							class="input p-2 m-2"
 							type="text"
-							bind:value={res.tagvalue}
+							bind:value={input}
 							placeholder="[”e”,”1234”]"
 						/>
 
@@ -119,17 +216,17 @@
 							<button
 								class="btn variant-filled-warning {parent.buttonPositive}"
 								on:click={() => {
-									res.type = AddTyle.Tag;
 									res.btn = 'prv';
-									onFormSubmit();
+									onTagkara();
+									//onFormSubmit();
 								}}>Private</button
 							>
 							<button
 								class="btn {parent.buttonPositive}"
 								on:click={() => {
-									res.type = AddTyle.Tag;
 									res.btn = 'pub';
-									onFormSubmit();
+									onTagkara();
+									//onFormSubmit();
 								}}>Public</button
 							>
 						</footer>
@@ -154,7 +251,7 @@
 							<textarea
 								class="textarea p-2 m-2"
 								rows="4"
-								bind:value={res.value}
+								bind:value={content}
 								placeholder="memo..."
 							/>
 
@@ -162,23 +259,21 @@
 								<button
 									class="btn variant-filled-warning {parent.buttonPositive}"
 									on:click={() => {
-										if (res.value == '') {
+										if (content == '') {
 											return;
 										}
 										res.btn = 'prv';
-										res.create = true;
-										onFormSubmit();
+										onClickCreate();
 									}}>Private</button
 								>
 								<button
 									class="btn {parent.buttonPositive}"
 									on:click={() => {
-										if (res.value == '') {
+										if (content == '') {
 											return;
 										}
 										res.btn = 'pub';
-										res.create = true;
-										onFormSubmit();
+										onClickCreate();
 									}}>Public</button
 								>
 							</footer>

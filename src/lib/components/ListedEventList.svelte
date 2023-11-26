@@ -12,7 +12,6 @@
 	} from '$lib/stores/bookmarkEvents';
 	import {
 		addPrivates,
-		checkInput,
 		deletePrivates,
 		deletePubs,
 		fetchFilteredEvents,
@@ -347,10 +346,10 @@
 			// Provide arbitrary metadata to your modal instance:
 			title: $identifierList[$listNum].identifier,
 
-			body: $_('modal.addNote_body'),
-			value: { kind: kind },
-			response: async (res) => {
-				console.log(res);
+			body: '',
+			value: { kind: kind, pubkey: pubkey },
+			response: async (res: { btn: string; tag: string[] }) => {
+				console.log(res); //有効だったらタグになって帰ってきてほしい
 				$nowProgress = true;
 				await addNotesuruyatu(res);
 				$nowProgress = false;
@@ -363,7 +362,7 @@
 		console.log(res);
 		if (res) {
 			const listNumber = $listNum;
-			let check: { tag?: string[]; error: boolean; message?: string } = {
+			/* 	let check: { tag?: string[]; error: boolean; message?: string } = {
 				error: false
 			};
 
@@ -409,18 +408,18 @@
 				}
 			}
 			if (res.type === 'id') {
-				check = await checkInput(noteID);
-				if (check.error && check.message) {
-					const t = {
-						message: check.message,
-						timeout: 3000,
-						background: 'bg-orange-500 text-white width-filled '
-					};
+				// check = await checkInput(noteID);
+				// if (check.error && check.message) {
+				// 	const t = {
+				// 		message: check.message,
+				// 		timeout: 3000,
+				// 		background: 'bg-orange-500 text-white width-filled '
+				// 	};
 
-					toastStore.trigger(t);
-					//		$nowProgress = false;
-					return;
-				}
+				// 	toastStore.trigger(t);
+				// 	//		$nowProgress = false;
+				// 	return;
+				// }
 			} else if (res.type === 'tag') {
 				try {
 					const tagArray = JSON.parse(res.tagvalue);
@@ -440,36 +439,37 @@
 					//		$nowProgress = false;
 					return;
 				}
-			}
-			//validtagかちぇっく
-			if (!check.tag || !kindsValidTag[kind].includes(check.tag[0])) {
-				const t = {
-					message: $_('toast.invalidtag'),
-					timeout: 3000,
-					background: 'bg-orange-500 text-white width-filled '
-				};
+			} */
+			// //validtagかちぇっく
+			// if (!check.tag || !kindsValidTag[kind].includes(check.tag[0])) {
+			// 	const t = {
+			// 		message: $_('toast.invalidtag'),
+			// 		timeout: 3000,
+			// 		background: 'bg-orange-500 text-white width-filled '
+			// 	};
 
-				toastStore.trigger(t);
-				return;
-			}
+			// 	toastStore.trigger(t);
+			// 	return;
+			// }
 			//idのチェックが終わったのでcheck.tagを入れる
-			if (check && check.error && check.message) {
-				const t = {
-					message: check.message,
-					timeout: 3000,
-					background: 'bg-orange-500 text-white width-filled '
-				};
+			// if (check && check.error && check.message) {
+			// 	const t = {
+			// 		message: check.message,
+			// 		timeout: 3000,
+			// 		background: 'bg-orange-500 text-white width-filled '
+			// 	};
 
-				toastStore.trigger(t);
-				//$nowProgress = false;
-				return;
-			} else if (check.tag && check.tag.length > 0 && $bookmarkEvents) {
-				await updateBkmTag(listNumber); //最新の状態に更新
-				await addNotesToLists(listNumber, res.btn, [check.tag]);
-				//		$nowProgress = false;
-			}
+			// 	toastStore.trigger(t);
+			// 	//$nowProgress = false;
+			// 	return;
+			// } else if (check.tag && check.tag.length > 0 && $bookmarkEvents) {
+			await updateBkmTag(listNumber); //最新の状態に更新
+			await addNotesToLists(listNumber, res.btn, [res.tag]);
+			//		$nowProgress = false;
 		}
+		//}
 	}
+
 	async function addNotesToLists(
 		listNumber: number,
 		btn: string,
