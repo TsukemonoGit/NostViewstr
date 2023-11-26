@@ -51,12 +51,13 @@ import {
 	type NaddrStore
 } from './stores/bookmarkEvents';
 import {
-	bookmarkRelays,
+	//bookmarkRelays,
 	defaultRelays,
-	postRelays,
-	relayEvent,
+	//	postRelays,
+	//relayEvent,
 	relaySearchRelays,
-	searchRelays
+	relaySet
+	//searchRelays
 } from './stores/relays';
 
 interface Kind3Relay {
@@ -145,7 +146,7 @@ async function getEvent(naddr: {
 	console.log(naddrStore);
 	// naddrStoreの内容を確認し、イベントが存在しない場合のみ取得と保存を行う
 	const naddrs = get(naddrStore);
-	const searchR = get(searchRelays);
+	const searchR = get(relaySet)[naddr.pubkey].searchRelays;
 	if (!(addressPointer in naddrs)) {
 		const relays = searchR && searchR.length > 0 ? searchR : defaultRelays;
 		// naddr.relays && naddr.relays.length > 0 ? naddr.relays : RelaysforSearch;
@@ -334,7 +335,7 @@ export async function publishEvent(
 				isSuccess = true;
 				msgObj[relays[index]] = true;
 			} else {
-				console.error(`failed ${relays[index]}: ${result.reason}`);
+				console.log(`failed ${relays[index]}: ${result.reason}`);
 			}
 		});
 
@@ -344,10 +345,10 @@ export async function publishEvent(
 			const { isSuccess, event, msg } = (
 				error as { errorOptions: ErrorOptions }
 			).errorOptions;
-			console.error('Timeout occurred');
+			console.log('Timeout occurred');
 			return { isSuccess, event, msg };
 		} else {
-			console.error(error);
+			console.log(error);
 			return { isSuccess: false, msg: `failed to publish` };
 		}
 	}
@@ -663,18 +664,18 @@ export async function getRelays(author: string) {
 	});
 
 	//リレー用イベント取ってきたらそれをセットする
-	await setRelays(kekka);
+	await setRelays(author, kekka);
 
 	return kekka;
 }
 
-export async function setRelays(events: NostrEvent[]) {
+export async function setRelays(pubkey: string, events: NostrEvent[]) {
 	console.log(`setting relays...`);
 	let read: string[] = [];
 	let write: string[] = [];
 	const kind10002 = events.find((item) => item.kind === 10002);
 	const kind3 = events.find((item) => item.kind === 3);
-
+	const tmp_relaySet = get(relaySet);
 	if (kind10002 && kind10002.tags.length > 0) {
 		for (const item of kind10002.tags) {
 			// mapからfor...ofに変更
@@ -691,7 +692,8 @@ export async function setRelays(events: NostrEvent[]) {
 					}
 				}
 			}
-			relayEvent.set(kind10002);
+
+			tmp_relaySet[pubkey].relayEvent = kind10002;
 		}
 	} else if (kind3 && kind3.content !== '') {
 		try {
@@ -709,7 +711,10 @@ export async function setRelays(events: NostrEvent[]) {
 					}
 				}
 			}
-			relayEvent.set(kind3);
+
+			tmp_relaySet[pubkey].relayEvent = kind3;
+
+			//	relayEvent.set(kind3);
 		} catch (error) {
 			console.error('JSON parse error:', error);
 		}
@@ -718,21 +723,25 @@ export async function setRelays(events: NostrEvent[]) {
 	console.log(read);
 	console.log(write);
 	if (read.length > 0) {
-		searchRelays.set(read);
+		tmp_relaySet[pubkey].searchRelays = read;
 	}
 	if (write.length > 0) {
-		bookmarkRelays.set(write);
-		postRelays.set(write);
+		tmp_relaySet[pubkey].bookmarkRelays = write;
+		tmp_relaySet[pubkey].postRelays = write;
+		//	bookmarkRelays.set(write);
+		//postRelays.set(write);
 	}
-	if (get(searchRelays).length === 0) {
-		searchRelays.set(defaultRelays);
+	if (tmp_relaySet[pubkey].searchRelays.length === 0) {
+		tmp_relaySet[pubkey].searchRelays = defaultRelays;
 	}
-	if (get(bookmarkRelays).length === 0) {
-		bookmarkRelays.set(defaultRelays);
+	if (tmp_relaySet[pubkey].bookmarkRelays.length === 0) {
+		tmp_relaySet[pubkey].bookmarkRelays = defaultRelays;
+		//	bookmarkRelays.set(defaultRelays);
 	}
-	if (get(postRelays).length === 0) {
-		postRelays.set(defaultRelays);
+	if (tmp_relaySet[pubkey].postRelays.length === 0) {
+		tmp_relaySet[pubkey].postRelays = defaultRelays;
 	}
+	relaySet.set(tmp_relaySet);
 	console.log(`complete set relsys`);
 }
 
@@ -781,7 +790,7 @@ async function checkRelayExist(relay: string, timeout: number = 1000) {
 			if (error.name === 'AbortError') {
 				console.log('Request timed out');
 			} else {
-				console.error(error);
+				console.log(error);
 			}
 		}
 		return false;
@@ -973,7 +982,8 @@ export async function updateBkmTag(num: number) {
 	console.log(`updateBkmTag[${get(identifierList)[num]}] updating...`);
 
 	const bkm = get(bookmarkEvents);
-	const relays = get(bookmarkRelays);
+
+	const relays = get(relaySet)[bkm[0].pubkey].bookmarkRelays;
 	if (bkm !== undefined && bkm.length > num && relays.length > 0) {
 		const dtag = bkm[num].tags.find((tag) => tag[0] === 'd');
 		const filter: Nostr.Filter =

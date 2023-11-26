@@ -3,9 +3,14 @@ import { writable } from 'svelte/store';
 //search relay 各ノートの内容を取得するためのリレー
 //bookmark relay ブックマークの取得、書き込みに使うリレー
 //post relay 共有、引用ポスト用のリレー
-
+interface RelayConfig {
+	searchRelays: string[];
+	bookmarkRelays: string[];
+	postRelays: string[];
+	relayEvent: NostrEvent;
+}
 //参考 https://nostter.app/nevent1qqsy739r2nqh59p8w4ufwf7ujtp4qxdwjae3uexk5fhn3pf4ntreq8q77psv7
-export const relayPubkey = writable<string>();
+export const relaySet = writable<{ [pubkey: string]: RelayConfig }>();
 export const relaySearchRelays = [
 	//'wss://tes'
 	//'wss://relay.nostr.band'
@@ -28,11 +33,12 @@ export const defaultRelays = [
 	'wss://nos.lol',
 	'wss://relayable.org'
 ];
-export const searchRelays = writable<string[]>([]);
-export const bookmarkRelays = writable<string[]>([]);
-export const postRelays = writable<string[]>([]);
 
-export const relayEvent = writable<NostrEvent>();
+// export const searchRelays = writable<string[]>([]);
+// export const bookmarkRelays = writable<string[]>([]);
+// export const postRelays = writable<string[]>([]);
+
+//export const relayEvent = writable<NostrEvent>();
 // export const Relays = (): Relays => {
 // 	let relay: Relays = {
 // 		searchRelays: [],

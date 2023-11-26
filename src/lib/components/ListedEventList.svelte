@@ -28,10 +28,11 @@
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 
 	import {
-		searchRelays,
-		postRelays,
-		bookmarkRelays,
-		relayPubkey
+		// searchRelays,
+		// postRelays,
+		// bookmarkRelays,
+		// relayPubkey
+		relaySet
 	} from '$lib/stores/relays';
 	import {
 		iconView,
@@ -122,13 +123,15 @@
 		console.log($pubkey_viewer);
 		//	console.log(pub);
 		//if ($bookmarkRelays.length === 0) {
-		if (pubkey !== $relayPubkey || $bookmarkRelays.length === 0) {
-			bookmarkEvents.set([]);
-			bookmarkRelays.set([]);
-			postRelays.set([]);
-			searchRelays.set([]);
+
+		//パブキーに対するリレーセットが設定されてなかったら取得する（戻るボタンとかで同じユーザーになった場合に省略されるはず）
+		bookmarkEvents.set([]);
+		if (!$relaySet[pubkey]) {
+			// bookmarkRelays.set([]);
+			// postRelays.set([]);
+			// searchRelays.set([]);
 			console.log(await getRelays(pub));
-			$relayPubkey = pubkey;
+			//$relayPubkey = pubkey;
 		}
 		//	}
 		const filter =
@@ -147,7 +150,10 @@
 						}
 				  ];
 		//$nowProgress = true;
-		const res = await fetchFilteredEvents($bookmarkRelays, filter);
+		const res = await fetchFilteredEvents(
+			$relaySet[pubkey].bookmarkRelays,
+			filter
+		);
 		//console.log(res);
 		//const res = bookmarks;
 		if (res.length === 0) {
@@ -181,14 +187,14 @@
 		$checkedIndexList = [];
 		window.scrollTo({ top: 0 });
 	}
-	$: listNaddr = viewEvent
-		? [
-				'a',
-				`${viewEvent.kind}:${viewEvent.pubkey}:${
-					$identifierList[$listNum].identifier ?? ''
-				}`
-		  ]
-		: [];
+	// $: listNaddr = viewEvent
+	// 	? [
+	// 			'a',
+	// 			`${viewEvent.kind}:${viewEvent.pubkey}:${
+	// 				$identifierList[$listNum].identifier ?? ''
+	// 			}`
+	// 	  ]
+	// 	: [];
 	//---------------------------------------------delete?modal
 	const deleteModalComponent: ModalComponent = {
 		// Pass a reference to your custom component
@@ -250,7 +256,10 @@
 							: await deletePrivates(bkmk.content, bkmk.pubkey, numList), //ここでエラーの可能性ある
 					sig: ''
 				};
-				const result = await publishEventWithTimeout(event, $bookmarkRelays);
+				const result = await publishEventWithTimeout(
+					event,
+					$relaySet[pubkey].bookmarkRelays
+				);
 				//   console.log(result);
 				if (result.isSuccess && $bookmarkEvents && result.event) {
 					$bookmarkEvents[listNumber] = result.event;
@@ -506,7 +515,10 @@
 							: await addPrivates(bkmk.content, bkmk.pubkey, idTagList), //ここでエラーの可能性ある
 					sig: ''
 				};
-				const result = await publishEventWithTimeout(event, $bookmarkRelays);
+				const result = await publishEventWithTimeout(
+					event,
+					$relaySet[pubkey].bookmarkRelays
+				);
 				//   console.log(result);
 				if (result.isSuccess && $bookmarkEvents && result.event) {
 					$bookmarkEvents[listNumber] = result.event;
@@ -739,8 +751,8 @@
 					: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
 			>
 				<!-- Add ml-64 to push main to the right -->
-				{#if $searchRelays && $searchRelays.length > 0}
-					<NostrApp relays={$searchRelays}>
+				{#if $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+					<NostrApp relays={$relaySet[pubkey].searchRelays}>
 						<ListedEvent
 							listEvent={viewEvent}
 							{DeleteNote}
