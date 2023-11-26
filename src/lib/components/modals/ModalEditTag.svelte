@@ -128,40 +128,40 @@
 								placeholder="bookmark"
 							/>
 						</label>
+						{#if $modalStore[0].value.kind === 30003}
+							<div class="mt-4">{$_('modalEditTag.list.title')}</div>
+							<div class=" card p-4">
+								<label class="label">
+									<span>title</span>
+									<input
+										class="input p-2"
+										type="text"
+										bind:value={res.value.title}
+										placeholder="Books"
+									/>
+								</label>
 
-						<div class="mt-4">{$_('modalEditTag.list.title')}</div>
-						<div class=" card p-4">
-							<label class="label">
-								<span>title</span>
-								<input
-									class="input p-2"
-									type="text"
-									bind:value={res.value.title}
-									placeholder="Books"
-								/>
-							</label>
+								<label class="label">
+									<span>image</span>
+									<input
+										class="input p-2"
+										type="text"
+										bind:value={res.value.image}
+										placeholder="https://example.com/image.webp"
+									/>
+								</label>
 
-							<label class="label">
-								<span>image</span>
-								<input
-									class="input p-2"
-									type="text"
-									bind:value={res.value.image}
-									placeholder="https://example.com/image.webp"
-								/>
-							</label>
-
-							<label class="label">
-								<span>description</span>
-								<input
-									class="input p-2"
-									type="text"
-									bind:value={res.value.description}
-									placeholder="Recommended Books Collection"
-								/>
-							</label>
-						</div>
-
+								<label class="label">
+									<span>description</span>
+									<input
+										class="input p-2"
+										type="text"
+										bind:value={res.value.description}
+										placeholder="Recommended Books Collection"
+									/>
+								</label>
+							</div>
+						{/if}
 						<footer class="modal-footer {parent.regionFooter}">
 							<button
 								class="btn {parent.buttonNeutral}"

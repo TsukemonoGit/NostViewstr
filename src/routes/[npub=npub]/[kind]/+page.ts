@@ -28,6 +28,10 @@ export const load: PageLoad<{
 		const { type, data } = nip19.decode(npub);
 		console.log('[decode]', type, data);
 		//pubkey.set(data as string);
+		if (!Number(kind)) {
+			console.error('[kind error]');
+			throw error(404, 'Not Found');
+		}
 		return { pubkey: data as string, kind: Number(kind) };
 	} catch (e) {
 		console.error('[npub decode error]', e);

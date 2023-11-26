@@ -10,7 +10,8 @@
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
 	import { _ } from 'svelte-i18n';
 	import { kinds } from '$lib/kind';
-	let kind: number = Object.entries(kinds)[0][1];
+	let kind: number = Number(Object.keys(kinds)[0]); // Use Object.keys to get the first key
+
 	let name: string;
 	let inputValue: string;
 	//console.log(sortedKinds);
@@ -62,10 +63,9 @@
 			console.log('failed to get pubkey');
 		}
 	}
-
-	function handleKindChange(
-		event: Event & { currentTarget: EventTarget & HTMLSelectElement }
-	) {
+	let selectValue: any;
+	console.log(selectValue);
+	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
 		kind = Number(event.currentTarget.value);
 		console.log(kind);
 	}
@@ -107,11 +107,11 @@
 
 				<select
 					class="input p-1"
-					bind:value={name}
+					bind:value={selectValue}
 					on:change={handleKindChange}
 				>
-					{#each Object.entries(kinds) as [name, value] (name)}
-						<option {value}>{name}({value})</option>
+					{#each Object.keys(kinds) as value (value)}
+						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
 					{/each}
 				</select>
 			</div>

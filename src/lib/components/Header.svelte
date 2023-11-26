@@ -1,0 +1,336 @@
+<script lang="ts">
+	import { publishEventWithTimeout, updateBkmTag } from '$lib/nostrFunctions';
+	import {
+		bookmarkEvents,
+		identifierList,
+		listNum
+	} from '$lib/stores/bookmarkEvents';
+	import { pageNum } from '$lib/stores/pagination';
+	import { iconView, nowProgress } from '$lib/stores/settings';
+	import PrvBkm from './Button/PrvBkm.svelte';
+	import PubBkm from './Button/PubBkm.svelte';
+	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
+	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
+	import updateIcon from '@material-design-icons/svg/round/update.svg?raw';
+	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
+	import { bookmarkRelays } from '$lib/stores/relays';
+	import { modalStore, toastStore } from '$lib/stores/store';
+	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
+	import type { Nostr } from 'nosvelte';
+	import { _ } from 'svelte-i18n';
+	import ModalListInfo from './modals/ModalListInfo.svelte';
+	import ModalPostNote from './modals/ModalPostNote.svelte';
+	import { nip19 } from 'nostr-tools';
+	import ModalEventJson from './modals/ModalEventJson.svelte';
+
+	export let bkm: string;
+	export let kind: number;
+	export let pubkey: string;
+	export let viewEvent: Nostr.Event<number>;
+
+	$: listNaddr = viewEvent
+		? [
+				'a',
+				`${viewEvent.kind}:${viewEvent.pubkey}:${
+					$identifierList[$listNum].identifier ?? ''
+				}`
+		  ]
+		: [];
+	const borderClassActive = `break-keep border-b-2 border-white place-items-end  flex m-1 p-0.5 pb-0 h6 bkm`;
+	const borderClass = `break-keep  place-items-end p-0.5 flex m-1 h6 bkm`;
+
+	//-------------------------------------------------------edit tag
+	const listInfoModalComponent: ModalComponent = {
+		// Pass a reference to your custom component
+		ref: ModalListInfo
+		// Add the component properties as key/value pairs
+	};
+
+	//-----------------------------------------------引用ポスト
+	const postNoteModalComponent: ModalComponent = {
+		ref: ModalPostNote
+	};
+
+	async function listInfoModalOpen() {
+		const modal: ModalSettings = {
+			type: 'component',
+
+			// Pass the component directly:
+			component: listInfoModalComponent,
+			// Provide arbitrary metadata to your modal instance:
+			title: $_('modal.listInfo.title'),
+
+			value: { pubkey: pubkey },
+			// Returns the updated response value
+			response: async (res) => {
+				console.log(res);
+				if (res) {
+					if (res.update) {
+						$nowProgress = true;
+						await updateListInfo(res);
+						$nowProgress = true;
+					} else if (res.share) {
+						//postNoteModalをだす
+						openModaltoShare();
+					}
+				}
+			}
+		};
+		modalStore.trigger(modal);
+	}
+
+	async function updateListInfo(res: {
+		title: string;
+		image: string;
+		description: string;
+	}) {
+		console.log(res);
+		const listNumber = $listNum;
+		const eventTag = $bookmarkEvents[listNumber].tags;
+
+		let titleIndex = eventTag.findIndex((item) => item[0] === 'title');
+		if (titleIndex !== -1) {
+			// すでに "title" タグが存在する場合、値を更新
+			eventTag[titleIndex][1] = res.title;
+		} else {
+			// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
+			eventTag.splice(1, 0, ['title', res.title]);
+			titleIndex = 1;
+		}
+
+		let imageIndex = eventTag.findIndex((item) => item[0] === 'image');
+		if (imageIndex !== -1) {
+			// すでに "title" タグが存在する場合、値を更新
+			eventTag[imageIndex][1] = res.image;
+		} else {
+			// "image" タグが存在しない場合、titleのうしろに挿入
+			imageIndex = titleIndex + 1;
+			eventTag.splice(imageIndex, 0, ['image', res.image]);
+		}
+
+		const descriptionIndex = eventTag.findIndex(
+			(item) => item[0] === 'description'
+		);
+		if (descriptionIndex !== -1) {
+			// すでに "title" タグが存在する場合、値を更新
+			eventTag[descriptionIndex][1] = res.description;
+		} else {
+			// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
+			eventTag.splice(imageIndex + 1, 0, ['description', res.description]);
+		}
+		console.log(eventTag);
+		const event: Nostr.Event = {
+			id: '',
+			kind: $bookmarkEvents[listNumber].kind,
+			pubkey: pubkey,
+			content: $bookmarkEvents[listNumber].content,
+			tags: eventTag,
+			created_at: Math.floor(Date.now() / 1000),
+			sig: ''
+		};
+		const result = await publishEventWithTimeout(event, $bookmarkRelays);
+		console.log(result);
+		if (result.isSuccess && $bookmarkEvents && result.event) {
+			$bookmarkEvents[listNumber] = result.event;
+			viewEvent = $bookmarkEvents[listNumber];
+			const t = {
+				message: 'Add note<br>' + result.msg,
+				timeout: 3000
+			};
+
+			toastStore.trigger(t);
+		} else {
+			const t = {
+				message: $_('toast.failed_publish'),
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
+		}
+	}
+
+	function openModaltoShare() {
+		const listNumber = $listNum;
+		//const test = window.location;		console.log(test);
+		const address: nip19.AddressPointer = {
+			identifier: $identifierList[listNumber].identifier ?? '',
+			pubkey: pubkey,
+			kind: kind,
+			relays: $bookmarkRelays
+		};
+
+		const url = window.location.origin + '/' + nip19.naddrEncode(address);
+		const tags = [
+			['a', `${kind}:${pubkey}:${$identifierList[listNumber].identifier}`],
+			['r', url]
+		];
+		console.log(tags);
+		const modal: ModalSettings = {
+			type: 'component',
+			component: postNoteModalComponent,
+			title: $_('modal.postNote.title'),
+			body: ``,
+			value: {
+				content: `\r\n${url}\r\n`,
+				tags: tags
+			},
+			response: async (res) => {
+				console.log(res);
+				//postNoteまでmodalでやるらしい
+			}
+		};
+		modalStore.trigger(modal);
+	}
+
+	//-------------------------------イベントJSON表示
+	const jsonModalComponent: ModalComponent = {
+		ref: ModalEventJson
+	};
+
+	const OpenNoteJson = (text: Nostr.Event, tagArray: string[]) => {
+		const modal = {
+			type: 'component' as const,
+			title: 'Event Json',
+			backdropClasses: '!bg-surface-400/80',
+			meta: {
+				note: text,
+				tagArray: tagArray
+			},
+
+			component: jsonModalComponent
+		};
+		modalStore.trigger(modal);
+	};
+</script>
+
+<div
+	class="z-10 fixed h-[4em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden box-border"
+>
+	<div
+		class="h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-x-hidden rounded-b"
+	>
+		{#if $identifierList[$listNum] && $identifierList[$listNum].identifier}
+			<div class="text-xs">
+				kind:{kind}
+				{#if kind === 30003}
+					{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
+						<button
+							class=" flex items-center pt-1 overflow-hidden min-w-[7em] text-left"
+							disabled={!(kind >= 30000 && kind < 40000)}
+							on:click={listInfoModalOpen}
+						>
+							<div class=" btn-icon btn-icon-sm fill-white place-self-center">
+								{@html infoIcon}
+							</div>
+							<div class="h4">{$identifierList[$listNum].identifier}</div>
+						</button>
+					{:else}
+						<button
+							class="grid grid-cols-[auto_1fr] items-center min-w-[7em] pr-0.5 overflow-hidden truncate"
+							on:click={listInfoModalOpen}
+						>
+							{#if $iconView && $identifierList[$listNum].image}
+								<div class="p-0 btn-icon btn-icon-sm m-0 mr-1">
+									<img
+										width={36}
+										class="min-w-[36px]"
+										alt=""
+										src={$identifierList[$listNum].image}
+									/>
+								</div>
+							{:else}
+								<div class=" btn-icon btn-icon-sm fill-white place-self-center">
+									{@html infoIcon}
+								</div>
+							{/if}
+
+							<div class="grid grid-rows-[auto_1fr] truncate overflow-hidden">
+								<div class="place-self-start text-xs p-0">
+									{$identifierList[$listNum].identifier}
+								</div>
+
+								<div class="h5 truncate place-self-start">
+									{$identifierList[$listNum].title}
+								</div>
+							</div>
+						</button>
+
+						<!-- {#if $identifierList[$listNum].description}
+					{$identifierList[$listNum].description}
+				{/if} -->
+					{/if}
+				{:else}
+					<!---->
+					<div class=" h4 p-1">
+						{$identifierList[$listNum].identifier}
+					</div>
+				{/if}
+			</div>
+		{:else}
+			<!---->
+			<div class="h4 self-center w-fit">
+				kind:{kind}
+			</div>
+		{/if}
+
+		<div class="grid grid-cols-[auto_auto] p-1">
+			<button
+				class={bkm === 'pub' ? borderClassActive : borderClass}
+				disabled={bkm === 'pub'}
+				on:click={() => {
+					bkm = 'pub';
+					console.log(bkm);
+					$pageNum = 0;
+				}}
+				><PubBkm />
+			</button>
+			{#if viewEvent?.content !== ''}
+				<button
+					class={bkm === 'prv' ? borderClassActive : borderClass}
+					disabled={bkm === 'prv'}
+					on:click={() => {
+						bkm = 'prv';
+						console.log(bkm);
+						$pageNum = 0;
+					}}
+				>
+					<PrvBkm />
+				</button>
+			{:else}
+				<div />
+			{/if}
+		</div>
+
+		<div class=" grid grid-rows-[auto_auto] box-border">
+			<div class=" place-self-end h6 truncate overflow-hidden">
+				{$_('created_at')}
+			</div>
+			<button
+				class="flex text-right text-sm underline decoration-secondary-200 overflow-hidden"
+				on:click={() => {
+					OpenNoteJson(viewEvent, listNaddr);
+				}}
+			>
+				<div class="truncate h6">
+					{new Date(viewEvent?.created_at * 1000).toLocaleDateString([], {
+						year: 'numeric',
+						month: '2-digit',
+						day: '2-digit',
+						hour: '2-digit',
+						minute: '2-digit'
+					})}
+				</div></button
+			>
+		</div>
+
+		<button
+			class={'btn p-0 pr-2  arrow  '}
+			on:click={async () => {
+				$nowProgress = true;
+				await updateBkmTag($listNum);
+				$nowProgress = false;
+			}}>{@html updateIcon}</button
+		>
+	</div>
+</div>

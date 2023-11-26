@@ -134,7 +134,7 @@
 			// Provide arbitrary metadata to your modal instance:
 			title: $_('modal.editTags.title'),
 
-			value: { selectedValue: 0 },
+			value: { selectedValue: 0, kind: kind },
 			// Returns the updated response value
 			response: (res) => {
 				console.log(res);
