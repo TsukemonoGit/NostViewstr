@@ -21,7 +21,7 @@
 </script>
 
 <div class="mt-10">
-	📶{$_('mode.viewMode')}*
+	<h5 class="h5">📶{$_('mode.viewMode')}*</h5>
 	<div class="flex gap-4 mt-1">
 		<div>
 			<button class="btn variant-filled-primary" on:click={clickDefault}

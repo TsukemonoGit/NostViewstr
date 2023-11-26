@@ -29,7 +29,9 @@
 					<div class="card flex p-2 m-1 break-all">
 						<div>{index + 1}.</div>
 						<div class=" ml-2">
-							{e.content !== '' ? e.content : $_('modal.deleteNote.content')}
+							{e && e.hasOwnProperty('content') && e.content !== ''
+								? e.content
+								: `${$modalStore[0].value.tag}`}
 						</div>
 					</div>
 				{/each}

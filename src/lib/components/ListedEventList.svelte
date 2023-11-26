@@ -211,7 +211,8 @@
 			title: $_('modal.deleteNote.title'),
 			body: `${$_('modal.deleteNote.body')}`,
 			value: {
-				event: [e.detail.event]
+				event: [e.detail.event],
+				tag: e.detail.tagArray
 			},
 			response: async (res) => {
 				//console.log(res);

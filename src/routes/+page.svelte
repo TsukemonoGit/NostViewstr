@@ -9,6 +9,7 @@
 	import { browser } from '$app/environment';
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
 	import { _ } from 'svelte-i18n';
+	let kind: number = 30003;
 
 	let inputValue: string;
 
@@ -34,7 +35,7 @@
 					$bookmarkEvents = [];
 				}
 
-				goto(`./${input}`);
+				goto(`./${input}/${kind}`);
 			} else if (decode.type === 'nsec') {
 				$nsec = decode.data;
 
@@ -42,7 +43,7 @@
 				localStorage.setItem('npub', pub);
 				$pubkey_viewer = pub;
 				console.log(pub);
-				goto(`./${nip19.npubEncode(pub)}`);
+				goto(`./${nip19.npubEncode(pub)}/${kind}`);
 			}
 		} catch (error) {
 			console.error('npubを確認して');
@@ -80,7 +81,7 @@
 		</ul> -->
 
 		<div class="space-t-5 min-w-[80vw]">
-			{$_('main.input_public_key')}
+			<h5 class="h5">{$_('main.input_public_key')}</h5>
 			<div class="mt-1 input-group input-group-divider grid-cols-[auto_1fr]">
 				<button
 					class="p-0 input-group-shim btn variant-filled-secondary"
@@ -91,6 +92,16 @@
 					type="text"
 					placeholder="npub1..."
 					bind:value={inputValue}
+				/>
+			</div>
+			<div class="mt-10">
+				<h5 class="h5">{`kind`}</h5>
+
+				<input
+					class="input p-1 truncate"
+					type="number"
+					placeholder="30003"
+					bind:value={kind}
 				/>
 			</div>
 		</div>
