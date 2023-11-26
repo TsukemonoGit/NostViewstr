@@ -54,15 +54,16 @@ export const uniqueTags = async (tags: any[]): Promise<string[][]> => {
 				([existingTag1, existingTag2]) =>
 					existingTag1 === tag1 && existingTag2 === tag2
 			);
-			const isValidTag =
-				tag1 !== 'emoji' && tag1 !== 'r' && tag1 !== 't' && tag1 !== 'q';
+			//const isValidTag =
+			//	tag1 !== 'emoji' && tag1 !== 'r' && tag1 !== 't' && tag1 !== 'q';
 
 			// 追加: 最後の要素が"mention"でない場合にのみ追加する
 			//(mentionは引用でこんてんとのなかにnostr:~~ではいってるはずということから)
 			//mentionのeタグだけ除外
 			//const isMention = tag3[tag3.length - 1] === 'mention';
-			const isMention = tag3[tag3.length - 1] === 'mention' && tag1 === 'e';
-			if (!isDuplicate && isValidTag && !isMention) {
+			//	const isMention = tag3[tag3.length - 1] === 'mention' && tag1 === 'e';
+			if (!isDuplicate) {
+				//&& isValidTag && !isMention) {
 				acc.push([tag1, tag2, ...tag3]);
 			}
 			return acc;
