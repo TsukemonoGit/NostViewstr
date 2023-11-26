@@ -102,9 +102,9 @@
 							{$_('ModalAddNote.example')}2 [ "a",
 							"30030:84b0c46ab699ac35eb2ca286470b85e081db2087cdef63932236c397417782f5:mono"
 							]<br />
-							<span class="text-warning-500"
+							<!-- <span class="text-warning-500"
 								>{$_('ModalAddNote.caution')}
-							</span>
+							</span> -->
 						</article>
 						<!-- Enable for debugging: -->
 
@@ -136,55 +136,56 @@
 					</div>
 				</svelte:fragment>
 			</AccordionItem>
+			{#if $modalStore[0].value.kind === 30003 || $modalStore[0].value.kind === 10003}
+				<AccordionItem>
+					<svelte:fragment slot="lead">🖊</svelte:fragment>
+					<svelte:fragment slot="summary"
+						>{$_('ModalAddNote.create')}
+					</svelte:fragment>
+					<svelte:fragment slot="content">
+						<div class="card p-4">
+							<header class={cHeader}>
+								🖊 {$_('ModalAddNote.create_to1')}{$modalStore[0].title ??
+									'(title missing)'}{$_('ModalAddNote.create_to2')}
+							</header>
+							<article class="body">{$_('ModalAddNote.create_body')}</article>
+							<!-- Enable for debugging: -->
 
-			<AccordionItem>
-				<svelte:fragment slot="lead">🖊</svelte:fragment>
-				<svelte:fragment slot="summary"
-					>{$_('ModalAddNote.create')}
-				</svelte:fragment>
-				<svelte:fragment slot="content">
-					<div class="card p-4">
-						<header class={cHeader}>
-							🖊 {$_('ModalAddNote.create_to1')}{$modalStore[0].title ??
-								'(title missing)'}{$_('ModalAddNote.create_to2')}
-						</header>
-						<article class="body">{$_('ModalAddNote.create_body')}</article>
-						<!-- Enable for debugging: -->
+							<textarea
+								class="textarea p-2 m-2"
+								rows="4"
+								bind:value={res.value}
+								placeholder="memo..."
+							/>
 
-						<textarea
-							class="textarea p-2 m-2"
-							rows="4"
-							bind:value={res.value}
-							placeholder="memo..."
-						/>
-
-						<footer class=" rid grid-cols-3 gap-2 flex justify-end mt-2">
-							<button
-								class="btn variant-filled-warning {parent.buttonPositive}"
-								on:click={() => {
-									if (res.value == '') {
-										return;
-									}
-									res.btn = 'prv';
-									res.create = true;
-									onFormSubmit();
-								}}>Private</button
-							>
-							<button
-								class="btn {parent.buttonPositive}"
-								on:click={() => {
-									if (res.value == '') {
-										return;
-									}
-									res.btn = 'pub';
-									res.create = true;
-									onFormSubmit();
-								}}>Public</button
-							>
-						</footer>
-					</div>
-				</svelte:fragment>
-			</AccordionItem>
+							<footer class=" rid grid-cols-3 gap-2 flex justify-end mt-2">
+								<button
+									class="btn variant-filled-warning {parent.buttonPositive}"
+									on:click={() => {
+										if (res.value == '') {
+											return;
+										}
+										res.btn = 'prv';
+										res.create = true;
+										onFormSubmit();
+									}}>Private</button
+								>
+								<button
+									class="btn {parent.buttonPositive}"
+									on:click={() => {
+										if (res.value == '') {
+											return;
+										}
+										res.btn = 'pub';
+										res.create = true;
+										onFormSubmit();
+									}}>Public</button
+								>
+							</footer>
+						</div>
+					</svelte:fragment>
+				</AccordionItem>
+			{/if}
 		</Accordion>
 		<footer class=" flex justify-end mt-2 mr-5">
 			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>

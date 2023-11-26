@@ -109,7 +109,8 @@
     "nanka": "login error"
   },
   "toast": {
-    "failed_publish": "failed to publish"
+    "failed_publish": "failed to publish",
+    "invalidtag": "invalid tag"
   },
   "icon_description": "Icon description"
 }

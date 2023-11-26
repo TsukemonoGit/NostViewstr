@@ -51,6 +51,7 @@
 
 	import { afterNavigate } from '$app/navigation';
 	import Header from './Header.svelte';
+	import { kindsValidTag } from '$lib/kind';
 
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number>;
@@ -345,7 +346,9 @@
 			component: addModalComponent,
 			// Provide arbitrary metadata to your modal instance:
 			title: $identifierList[$listNum].identifier,
+
 			body: $_('modal.addNote_body'),
+			value: { kind: kind },
 			response: async (res) => {
 				console.log(res);
 				$nowProgress = true;
@@ -438,7 +441,17 @@
 					return;
 				}
 			}
+			//validtagかちぇっく
+			if (!check.tag || !kindsValidTag[kind].includes(check.tag[0])) {
+				const t = {
+					message: $_('toast.invalidtag'),
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
 
+				toastStore.trigger(t);
+				return;
+			}
 			//idのチェックが終わったのでcheck.tagを入れる
 			if (check && check.error && check.message) {
 				const t = {

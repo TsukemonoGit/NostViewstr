@@ -109,7 +109,8 @@
     }
   },
   "toast": {
-    "failed_publish": "書き込みに失敗しました"
+    "failed_publish": "書き込みに失敗しました",
+    "invalidtag": "無効なタグです"
   },
   "icon_description": "アイコンについて"
 }
