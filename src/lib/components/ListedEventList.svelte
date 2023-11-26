@@ -360,7 +360,7 @@
 		modalStore.trigger(modal);
 	}
 
-	async function addNotesuruyatu(res: any) {
+	async function addNotesuruyatu(res: { btn: string; tag: string[] }) {
 		console.log(res);
 		if (res) {
 			const listNumber = $listNum;

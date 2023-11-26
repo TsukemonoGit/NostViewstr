@@ -4,11 +4,11 @@ https://nostr-bookmark-viewer5.vercel.app/
 
 第五弾 SvelteKit と Skeleton と Tailwindcss と Nostr と Nosvelte と rx-nostr とその他諸々の勉強
 
-## About
+## Tool for Displaying and Editing
 
-[nostr](https://github.com/nostr-protocol/nostr)の
-[NIP-51](https://github.com/nostr-protocol/nips/blob/master/51.md)
-Categorized Bookmarks を表示、編集するツール
+The tool, based on NIP-51, provides functionality for displaying and editing categorized bookmarks. Additionally, it allows users to view information related to other categories such as 'bookmark sets,' 'blocked relays,' 'communities,' 'curation sets,' 'emojis,' 'emoji sets,' 'interests,' 'interest sets,' 'lists,' 'mute,' 'people sets,' 'pin,' 'profile badges,' 'public chats,' 'relay sets,' and 'search relays.'
+
+For more details, refer to the [NIP-51 documentation](https://github.com/nostr-protocol/nips/blob/master/51.md).
 
 ## Developing
 
