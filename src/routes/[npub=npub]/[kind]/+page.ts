@@ -3,7 +3,7 @@ import { nip19 } from 'nostr-tools';
 import { error } from '@sveltejs/kit';
 import type { PageLoad, RouteParams } from './$types';
 import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
-import { bookmarkRelays, postRelays, searchRelays } from '$lib/stores/relays';
+
 interface CustomParams {
 	npub: string;
 	kind?: string;

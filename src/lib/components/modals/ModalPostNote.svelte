@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { postRelays } from '$lib/stores/relays';
+	import { relaySet } from '$lib/stores/relays';
 	import type { Event } from 'nostr-tools';
 	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
 	import { pubkey_viewer } from '$lib/stores/settings';
@@ -46,7 +46,10 @@
 			content: res.content,
 			sig: ''
 		};
-		const response = await publishEventWithTimeout(event, $postRelays);
+		const response = await publishEventWithTimeout(
+			event,
+			$relaySet[$pubkey_viewer].postRelays
+		);
 		const toastSettings: ToastSettings = response.isSuccess
 			? {
 					message: `publish result<br>${response.msg}`,

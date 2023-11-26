@@ -19,7 +19,7 @@
 	export let text: string;
 	export let tag: string[][];
 	export let isPageOwner: boolean;
-
+	export let pubkey: string;
 	const imageModalComponent: ModalComponent = {
 		// Pass a reference to your custom component
 		ref: ModalImage,
@@ -242,7 +242,7 @@
 							></span
 						>{/if}{:else if item.type === 'nostr' && item.url}
 					{#if decodeCheck(item.url)}
-						<QuoteContent encodedId={item.url} {isPageOwner} />
+						<QuoteContent encodedId={item.url} {isPageOwner} {pubkey} />
 					{:else}<span>{item.content}</span>{/if}
 				{:else if item.type === 'quote' && item.number !== undefined}
 					<!--引用タグの中身がパブキーの時-->
@@ -289,7 +289,7 @@
 						</Metadata>
 					{:else if tag[item.number][0] === 'e' || tag[item.number][0] === 'q'}
 						<!--引用タグの中身がイベントIDの時-->
-						<QuoteContent2 id={tag[item.number][1]} {isPageOwner} />
+						<QuoteContent2 id={tag[item.number][1]} {isPageOwner} {pubkey} />
 					{:else if tag[item.number][0] === 't'}
 						<button
 							class="anchor"

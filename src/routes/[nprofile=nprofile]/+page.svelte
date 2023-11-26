@@ -2,30 +2,19 @@
 	import { page } from '$app/stores';
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
+	import { _ } from 'svelte-i18n';
+	import { settings } from '$lib/stores/settings';
 
-	import {
-		URLPreview,
-		iconView,
-		settings,
-		nowProgress,
-		pubkey_viewer
-	} from '$lib/stores/settings';
-	import {
-		LightSwitch,
-		ProgressBar,
-		ProgressRadial
-	} from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
-	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
-	import { onMount } from 'svelte';
-	import { getPub, getRelays } from '$lib/nostrFunctions';
+
+	import { kinds } from '$lib/kind';
 
 	export let data: PageData;
-	const kind = 30001;
+
 	console.log('PageData', data.pubkey);
-	$: console.log($bookmarkRelays);
+	//$: console.log($relaySet[data.pubkey].bookmarkRelays);
 	// $: console.log($URLPreview);
 	// $: console.log($iconView);
 	// onMount(async () => {
@@ -36,6 +25,13 @@
 	// onMount(async () => {
 	// 	console.log(await getRelays(data.pubkey));
 	// }); //await setRelays(testRelay);}}
+	let kind: number;
+	let selectValue: any;
+	console.log(selectValue);
+	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
+		kind = Number(event.currentTarget.value);
+		console.log(kind);
+	}
 </script>
 
 <!-- <div class="break-all">
@@ -46,8 +42,30 @@
 </div> -->
 
 {#if !$settings}
-	<Settings />
+	<div class="container h-full mx-auto flex justify-center items-center">
+		<div class="mt-5">
+			<h1 class="h1 mb-5">{$_('main.title')}</h1>
+			<div class="space-t-5 min-w-[80vw]">
+				<div class="mt-10">
+					<h5 class="h5">{`kind`}</h5>
+
+					<select
+						class="input p-1"
+						bind:value={selectValue}
+						on:change={handleKindChange}
+					>
+						{#each Object.keys(kinds) as value (value)}
+							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
+						{/each}
+					</select>
+				</div>
+			</div>
+			<div class="space-t-5">
+				<Settings />
+			</div>
+		</div>
+	</div>
 {:else}
-	<ListedEventList pubkey={data.pubkey} {kind} />
+	<ListedEventList pubkey={data.pubkey} {kind} isNaddr={false} />
 {/if}
 <FooterMenu pubkey={data.pubkey} {kind} />

@@ -9,7 +9,7 @@
 	import { uniqueTags } from '$lib/otherFunctions.js';
 	import { naddrStore } from '$lib/stores/bookmarkEvents';
 	import { allView, iconView } from '$lib/stores/settings';
-	import { searchRelays } from '$lib/stores/relays';
+	import { relaySet } from '$lib/stores/relays';
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import Content from './Content.svelte';
 	import searchIcon from '@material-design-icons/svg/round/search.svg?raw';
@@ -20,7 +20,7 @@
 	export let encodedId: string;
 
 	export let isPageOwner: boolean;
-
+	export let pubkey: string;
 	//-------------------------------プロフィール表示
 	const pubkeyModalComponent: ModalComponent = {
 		ref: ModalCopyPubkey
@@ -77,7 +77,7 @@
 			const relays =
 				addressPointer.relays && addressPointer.relays.length > 0
 					? addressPointer.relays
-					: $searchRelays;
+					: $relaySet[pubkey].searchRelays;
 			const filter = [
 				{
 					authors: [addressPointer.pubkey],
@@ -321,6 +321,7 @@
 									tag={text.tags}
 									id={text.id}
 									view={$allView}
+									{pubkey}
 									{isPageOwner}
 								/>
 							{/if}
@@ -364,6 +365,7 @@
 									tag={text.tags}
 									id={text.id}
 									view={$allView}
+									{pubkey}
 									{isPageOwner}
 								/>
 							{/if}
@@ -394,6 +396,7 @@
 									tag={text.tags}
 									id={text.id}
 									view={$allView}
+									{pubkey}
 									{isPageOwner}
 								/>{/if}
 						</div>
@@ -471,6 +474,7 @@
 									tag={text.tags}
 									id={text.id}
 									view={$allView}
+									{pubkey}
 									{isPageOwner}
 								/>{/if}
 						</div>
@@ -644,6 +648,7 @@
 								tag={text.tags}
 								id={text.id}
 								view={$allView}
+								{pubkey}
 								{isPageOwner}
 							/>
 						{/if}

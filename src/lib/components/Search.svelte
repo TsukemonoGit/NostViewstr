@@ -9,10 +9,11 @@
 		type EventPacket,
 		verify
 	} from 'rx-nostr';
-	import { postRelays, searchRelays } from '$lib/stores/relays';
+	import { relaySet } from '$lib/stores/relays';
 	import type { Observer, Subscription } from 'rxjs';
 
 	export let parent: any;
+	export let pubkey: string;
 	enum RelayState {
 		Preparing,
 		Connecting,
@@ -185,11 +186,11 @@
 		if (!subscription.closed) {
 			subscription.unsubscribe();
 		}
-		for (let i = 0; i < $postRelays.length; i++) {
-			const ws = new WebSocket($postRelays[i]);
+		for (let i = 0; i < $relaySet[pubkey].postRelays.length; i++) {
+			const ws = new WebSocket($relaySet[pubkey].postRelays[i]);
 			webSockets.push(ws);
 			ws.onopen = () => {
-				logs.push(`Connected to ${$postRelays[i]}`);
+				logs.push(`Connected to ${$relaySet[pubkey].postRelays[i]}`);
 				logs = logs;
 				ws.send(JSON.stringify(['EVENT', event]));
 			};
@@ -197,17 +198,17 @@
 				console.log(e);
 				const msg = JSON.parse(e.data);
 
-				logs.push(`message from ${$postRelays[i]}: ${e.data}`);
+				logs.push(`message from ${$relaySet[pubkey].postRelays[i]}: ${e.data}`);
 				logs = logs;
 				if (msg[2]) {
 					logs.push(
-						`<span class="font-bold">Success: ${$postRelays[i]}</span>`
+						`<span class="font-bold">Success: ${$relaySet[pubkey].postRelays[i]}</span>`
 					);
 					logs = logs;
 					// isSuccess = true;
 				} else {
 					logs.push(
-						`<span class="font-bold">Failed: ${$postRelays[1]}</span> (reason:  ${msg[3]})`
+						`<span class="font-bold">Failed: ${$relaySet[pubkey].postRelays[1]}</span> (reason:  ${msg[3]})`
 					);
 					logs = logs;
 				}

@@ -13,7 +13,7 @@
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 	import updateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
-	import { bookmarkRelays } from '$lib/stores/relays';
+	import { relaySet } from '$lib/stores/relays';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import type { Nostr } from 'nosvelte';
@@ -129,7 +129,10 @@
 			created_at: Math.floor(Date.now() / 1000),
 			sig: ''
 		};
-		const result = await publishEventWithTimeout(event, $bookmarkRelays);
+		const result = await publishEventWithTimeout(
+			event,
+			$relaySet[pubkey].bookmarkRelays
+		);
 		console.log(result);
 		if (result.isSuccess && $bookmarkEvents && result.event) {
 			$bookmarkEvents[listNumber] = result.event;
@@ -158,7 +161,7 @@
 			identifier: $identifierList[listNumber].identifier ?? '',
 			pubkey: pubkey,
 			kind: kind,
-			relays: $bookmarkRelays
+			relays: $relaySet[pubkey].bookmarkRelays
 		};
 
 		const url = window.location.origin + '/' + nip19.naddrEncode(address);

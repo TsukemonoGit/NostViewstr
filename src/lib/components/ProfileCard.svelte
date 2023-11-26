@@ -16,12 +16,7 @@
 		identifierList,
 		listNum
 	} from '$lib/stores/bookmarkEvents';
-	import {
-		bookmarkRelays,
-		postRelays,
-		relayEvent,
-		searchRelays
-	} from '$lib/stores/relays';
+	import { relaySet } from '$lib/stores/relays';
 
 	export let metadata: Event;
 
@@ -71,9 +66,7 @@
 				if (res && res.openList) {
 					//storeのリセット
 					$bookmarkEvents = [];
-					$bookmarkRelays = [];
-					$postRelays = [];
-					$searchRelays = [];
+
 					$identifierList = [];
 					$listNum = 0;
 

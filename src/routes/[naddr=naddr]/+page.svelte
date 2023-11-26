@@ -18,7 +18,7 @@
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
-	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
+	import { relaySet } from '$lib/stores/relays';
 	import { onMount } from 'svelte';
 	import { getPub, getRelays } from '$lib/nostrFunctions';
 
@@ -26,7 +26,7 @@
 	const kind = data.kind;
 	const identifier = data.identifier;
 	console.log('PageData', data.pubkey);
-	$: console.log($bookmarkRelays);
+
 	// $: console.log($URLPreview);
 	// $: console.log($iconView);
 	// onMount(async () => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { searchRelays, bookmarkRelays, relayEvent } from '$lib/stores/relays';
+	import { relaySet, type RelayConfig } from '$lib/stores/relays';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { LightSwitch, SlideToggle, clipboard } from '@skeletonlabs/skeleton';
@@ -22,6 +22,7 @@
 	import githubIcon from '$lib/assets/github-mark.png';
 	import githubIconWhite from '$lib/assets/github-mark-white.png';
 	import { nostrIcon, prvIcon, pubIcon } from '$lib/components/icons';
+	import type { Nostr } from 'nosvelte';
 	export let parent: any;
 
 	let res: { share: boolean; openJson: boolean } = {
@@ -74,6 +75,12 @@
 	}
 	let warningToggle: boolean = $allView;
 	$: $allView = warningToggle;
+
+	let relaySetInfo: RelayConfig;
+
+	$: if ($modalStore[0]?.value?.pubkey) {
+		relaySetInfo = $relaySet[$modalStore[0].value.pubkey];
+	}
 </script>
 
 {#if $modalStore[0]}
@@ -131,39 +138,35 @@
 		<div>
 			{$_('modal.info.relay.title')}
 			<div class="card p-3">
-				{#if $relayEvent}
+				{#if relaySetInfo.relayEvent}
 					<div class="flex gap-3">
 						<button
-							class=" underline decoration-secondary-400"
+							class="underline decoration-secondary-400"
 							on:click={() => {
 								res.openJson = true;
 								onFormSubmit();
-							}}>kind:{$relayEvent.kind}</button
+							}}
 						>
-						{new Date($relayEvent.created_at * 1000).toLocaleString([], {
-							year: 'numeric',
-							month: '2-digit',
-							day: '2-digit',
-							hour: '2-digit',
-							minute: '2-digit'
-						})}
+							kind: {relaySetInfo.relayEvent.kind}
+						</button>
+
+						{new Date(relaySetInfo.relayEvent.created_at * 1000).toLocaleString(
+							[],
+							{
+								year: 'numeric',
+								month: '2-digit',
+								day: '2-digit',
+								hour: '2-digit',
+								minute: '2-digit'
+							}
+						)}
 					</div>
-					<!-- {:else}
-				relay from kind:({$relayEvent.kind}) created_at: {new Date(
-					$relayEvent.created_at * 1000
-				).toLocaleString([], {
-					year: 'numeric',
-					month: '2-digit',
-					day: '2-digit',
-					hour: '2-digit',
-					minute: '2-digit'
-				})} -->
 				{/if}
 				<p class="pt-1">{$_('modal.info.relay.list')}</p>
 				<ol
 					class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
 				>
-					{#each $bookmarkRelays as relays, index}
+					{#each relaySetInfo.bookmarkRelays as relays, index}
 						<li>
 							<span>{index + 1}.</span><span class="break-all">{relays}</span>
 						</li>
@@ -174,7 +177,7 @@
 				<ol
 					class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto px-2"
 				>
-					{#each $searchRelays as relays, index}
+					{#each relaySetInfo.searchRelays as relays, index}
 						<li>
 							<span>{index + 1}.</span><span class="break-all">{relays}</span>
 						</li>

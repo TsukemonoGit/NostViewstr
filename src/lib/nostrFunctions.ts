@@ -53,6 +53,7 @@ import {
 import {
 	//bookmarkRelays,
 	defaultRelays,
+	initRelaySet,
 	//	postRelays,
 	//relayEvent,
 	relaySearchRelays,
@@ -69,7 +70,7 @@ interface Kind3Relay {
 
 export function parseNaddr(tag: string[]): AddressPointer {
 	const parts = tag[1].split(':');
-	console.log([tag[2]]);
+	//console.log([tag[2]]);
 	return tag.length > 2 && tag[2] !== ''
 		? {
 				kind: Number(parts[0]),
@@ -676,9 +677,14 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 	const kind10002 = events.find((item) => item.kind === 10002);
 	const kind3 = events.find((item) => item.kind === 3);
 	const tmp_relaySet = get(relaySet);
+
+	// もし pubKey が存在しなければ初期化
+	if (!tmp_relaySet[pubkey]) {
+		tmp_relaySet[pubkey] = { ...initRelaySet };
+	}
+
 	if (kind10002 && kind10002.tags.length > 0) {
 		for (const item of kind10002.tags) {
-			// mapからfor...ofに変更
 			if (item[0] === 'r') {
 				const existRelay = await checkRelayExist(item[1]);
 				if (existRelay) {
@@ -698,9 +704,7 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 	} else if (kind3 && kind3.content !== '') {
 		try {
 			const relays = JSON.parse(kind3.content);
-			//console.log(relays);
 			for (const item of Object.keys(relays)) {
-				// mapからfor...ofに変更
 				const existRelay = await checkRelayExist(item);
 				if (existRelay) {
 					if (relays[item].read) {
@@ -713,35 +717,34 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 			}
 
 			tmp_relaySet[pubkey].relayEvent = kind3;
-
-			//	relayEvent.set(kind3);
 		} catch (error) {
 			console.error('JSON parse error:', error);
 		}
 	}
 
-	console.log(read);
-	console.log(write);
 	if (read.length > 0) {
 		tmp_relaySet[pubkey].searchRelays = read;
 	}
 	if (write.length > 0) {
 		tmp_relaySet[pubkey].bookmarkRelays = write;
 		tmp_relaySet[pubkey].postRelays = write;
-		//	bookmarkRelays.set(write);
-		//postRelays.set(write);
 	}
 	if (tmp_relaySet[pubkey].searchRelays.length === 0) {
 		tmp_relaySet[pubkey].searchRelays = defaultRelays;
 	}
 	if (tmp_relaySet[pubkey].bookmarkRelays.length === 0) {
 		tmp_relaySet[pubkey].bookmarkRelays = defaultRelays;
-		//	bookmarkRelays.set(defaultRelays);
 	}
 	if (tmp_relaySet[pubkey].postRelays.length === 0) {
 		tmp_relaySet[pubkey].postRelays = defaultRelays;
 	}
-	relaySet.set(tmp_relaySet);
+
+	// Subscribe を使って直接変更を検知し、それに基づいて更新
+	relaySet.update((prev) => ({
+		...prev,
+		[pubkey]: { ...prev[pubkey], ...tmp_relaySet[pubkey] }
+	}));
+
 	console.log(`complete set relsys`);
 }
 

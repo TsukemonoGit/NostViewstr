@@ -14,7 +14,7 @@
 	} from '$lib/nostrFunctions';
 	import { kindsValidTag } from '$lib/kind';
 	import type { Nostr } from 'nosvelte';
-	import { postRelays } from '$lib/stores/relays';
+	import { relaySet } from '$lib/stores/relays';
 	import AddTypeNpub from './Add/AddTypeNpub.svelte';
 	import AddTypeNote from './Add/AddTypeNote.svelte';
 	import AddTypeNaddr from './Add/AddTypeNaddr.svelte';
@@ -91,9 +91,12 @@
 			content: content,
 			sig: ''
 		};
-		console.log($postRelays);
-		if ($postRelays.length > 0) {
-			const response = await publishEventWithTimeout(event, $postRelays);
+		console.log($relaySet[$modalStore[0].value.pubkey].postRelays);
+		if ($relaySet[$modalStore[0].value.pubkey].postRelays.length > 0) {
+			const response = await publishEventWithTimeout(
+				event,
+				$relaySet[$modalStore[0].value.pubkey].postRelays
+			);
 			if (response.isSuccess) {
 				const t = {
 					message: response.msg,

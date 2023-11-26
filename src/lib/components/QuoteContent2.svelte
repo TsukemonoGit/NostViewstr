@@ -16,7 +16,7 @@
 
 	export let id: string;
 	export let isPageOwner: boolean;
-
+	export let pubkey: string;
 	//-------------------------------プロフィール表示
 	const pubkeyModalComponent: ModalComponent = {
 		// Pass a reference to your custom component
@@ -217,6 +217,7 @@
 								tag={text.tags}
 								id={text.id}
 								view={$allView}
+								{pubkey}
 								{isPageOwner}
 							/>
 						{/if}
@@ -251,6 +252,7 @@
 								tag={text.tags}
 								id={text.id}
 								view={$allView}
+								{pubkey}
 								{isPageOwner}
 							/>
 						{/if}
@@ -279,6 +281,7 @@
 								tag={text.tags}
 								id={text.id}
 								view={$allView}
+								{pubkey}
 								{isPageOwner}
 							/>
 						{/if}
@@ -357,6 +360,7 @@
 							tag={text.tags}
 							id={text.id}
 							view={$allView}
+							{pubkey}
 							{isPageOwner}
 						/>
 					{/if}

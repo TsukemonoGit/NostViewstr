@@ -137,6 +137,7 @@
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
+						pubkey={listEvent.pubkey}
 						{DeleteNote}
 						{MoveNote}
 						{CheckNote}
@@ -150,6 +151,7 @@
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
+						pubkey={listEvent.pubkey}
 						{DeleteNote}
 						{MoveNote}
 						{CheckNote}
@@ -163,6 +165,7 @@
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
+						pubkey={listEvent.pubkey}
 						{DeleteNote}
 						{MoveNote}
 						{CheckNote}
@@ -181,6 +184,7 @@
 							note={text}
 							metadata={undefined}
 							myIndex={index}
+							pubkey={listEvent.pubkey}
 							{DeleteNote}
 							{MoveNote}
 							{CheckNote}
@@ -193,6 +197,7 @@
 							note={text}
 							metadata={undefined}
 							myIndex={index}
+							pubkey={listEvent.pubkey}
 							{DeleteNote}
 							{MoveNote}
 							{CheckNote}
@@ -205,6 +210,7 @@
 							note={text}
 							metadata={undefined}
 							myIndex={index}
+							pubkey={listEvent.pubkey}
 							{DeleteNote}
 							{MoveNote}
 							{CheckNote}
@@ -217,6 +223,7 @@
 							note={text}
 							{metadata}
 							myIndex={index}
+							pubkey={listEvent.pubkey}
 							{DeleteNote}
 							{MoveNote}
 							{CheckNote}
@@ -252,6 +259,7 @@
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
+						pubkey={listEvent.pubkey}
 						{DeleteNote}
 						{MoveNote}
 						{CheckNote}
@@ -265,6 +273,7 @@
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
+						pubkey={listEvent.pubkey}
 						{DeleteNote}
 						{MoveNote}
 						{CheckNote}
@@ -278,6 +287,7 @@
 						menuMode={menuSearch}
 						tagArray={tag}
 						myIndex={index}
+						pubkey={listEvent.pubkey}
 						{DeleteNote}
 						{MoveNote}
 						{CheckNote}
@@ -296,6 +306,7 @@
 							note={uniqueEvent(events)}
 							metadata={undefined}
 							myIndex={index}
+							pubkey={listEvent.pubkey}
 							{DeleteNote}
 							{MoveNote}
 							{CheckNote}
@@ -308,6 +319,7 @@
 							note={uniqueEvent(events)}
 							metadata={undefined}
 							myIndex={index}
+							pubkey={listEvent.pubkey}
 							{DeleteNote}
 							{MoveNote}
 							{CheckNote}
@@ -320,6 +332,7 @@
 							note={uniqueEvent(events)}
 							metadata={undefined}
 							myIndex={index}
+							pubkey={listEvent.pubkey}
 							{DeleteNote}
 							{MoveNote}
 							{CheckNote}
@@ -332,6 +345,7 @@
 							note={uniqueEvent(events)}
 							{metadata}
 							myIndex={index}
+							pubkey={listEvent.pubkey}
 							{DeleteNote}
 							{MoveNote}
 							{CheckNote}

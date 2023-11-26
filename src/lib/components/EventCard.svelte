@@ -20,12 +20,6 @@
 		identifierList,
 		listNum
 	} from '$lib/stores/bookmarkEvents';
-	import {
-		bookmarkRelays,
-		postRelays,
-		relayEvent,
-		searchRelays
-	} from '$lib/stores/relays';
 
 	export let isPageOwner: boolean;
 	export let note: Event;
@@ -38,7 +32,7 @@
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
-
+	export let pubkey: string;
 	//const dispatch = createEventDispatcher();
 
 	let metadataContent: NostrProfile;
@@ -278,6 +272,7 @@
 							id={note.id}
 							view={$allView}
 							{isPageOwner}
+							{pubkey}
 						/>{/if}
 				</div>
 			{/await}

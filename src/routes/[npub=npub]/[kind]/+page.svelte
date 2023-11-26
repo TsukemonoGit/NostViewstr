@@ -1,27 +1,14 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { page } from '$app/stores';
+
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
 
-	import {
-		URLPreview,
-		iconView,
-		settings,
-		nowProgress,
-		pubkey_viewer
-	} from '$lib/stores/settings';
-	import {
-		LightSwitch,
-		ProgressBar,
-		ProgressRadial
-	} from '@skeletonlabs/skeleton';
+	import { settings } from '$lib/stores/settings';
+
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
-	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
-	import { onMount } from 'svelte';
-	import { getPub, getRelays } from '$lib/nostrFunctions';
 
 	export let data: PageData;
 
@@ -50,7 +37,11 @@
 	<div class="container h-full mx-auto flex justify-center items-center">
 		<div class="mt-5">
 			<h1 class="h1 mb-5">{$_('main.title')}</h1>
-			<Settings />
+
+			<div class="space-t-5">
+				kind:{data.kind}
+				<Settings />
+			</div>
 		</div>
 	</div>
 {:else}

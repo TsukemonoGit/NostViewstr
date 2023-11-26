@@ -29,6 +29,7 @@
 	export let menuMode: MenuMode;
 	export let myIndex: number | undefined;
 	export let tagArray: string[] | undefined;
+	export let pubkey: string;
 	const dispatch = createEventDispatcher();
 
 	let metadataContent: NostrProfile;
@@ -300,6 +301,7 @@
 							tag={note.tags}
 							id={note.id}
 							view={$allView}
+							{pubkey}
 							{isPageOwner}
 						/>
 					{/if}

@@ -18,6 +18,7 @@
 	export let isPageOwner: boolean;
 	export let filter: {};
 	export let message: string;
+	export let pubkey: string;
 
 	export let menuMode: MenuMode;
 	export let myIndex: number | undefined;
@@ -93,7 +94,8 @@
 			body: ``,
 			value: {
 				filter: filter,
-				isPageOwner: isPageOwner
+				isPageOwner: isPageOwner,
+				pubkey: pubkey
 			},
 			response: async (res) => {
 				//  console.log(res);

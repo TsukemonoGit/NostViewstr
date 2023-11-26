@@ -28,6 +28,7 @@
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 
 	import {
+		initRelaySet,
 		// searchRelays,
 		// postRelays,
 		// bookmarkRelays,
@@ -65,7 +66,7 @@
 	export let identifier: string | undefined = undefined;
 	export let isNaddr: boolean;
 	let isOwner: boolean;
-
+	$: console.log($relaySet);
 	$: isOwner = $pubkey_viewer === pubkey;
 	let isOnMount = false;
 
@@ -126,11 +127,20 @@
 
 		//パブキーに対するリレーセットが設定されてなかったら取得する（戻るボタンとかで同じユーザーになった場合に省略されるはず）
 		bookmarkEvents.set([]);
-		if (!$relaySet[pubkey]) {
+		if (!$relaySet || !$relaySet[pub]) {
+			$relaySet[pub] = initRelaySet;
 			// bookmarkRelays.set([]);
 			// postRelays.set([]);
 			// searchRelays.set([]);
-			console.log(await getRelays(pub));
+			await getRelays(pub);
+			//$relayPubkey = pubkey;
+		}
+		if (!$relaySet[$pubkey_viewer]) {
+			$relaySet[$pubkey_viewer] = initRelaySet;
+			// bookmarkRelays.set([]);
+			// postRelays.set([]);
+			// searchRelays.set([]);
+			getRelays($pubkey_viewer);
 			//$relayPubkey = pubkey;
 		}
 		//	}

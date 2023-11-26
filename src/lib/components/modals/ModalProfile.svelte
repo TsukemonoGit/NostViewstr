@@ -3,7 +3,7 @@
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
-	import { goto } from '$app/navigation';
+
 	import { kinds } from '$lib/kind';
 
 	export let parent: any;

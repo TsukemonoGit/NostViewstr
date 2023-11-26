@@ -35,7 +35,7 @@
 	} from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
-	import { bookmarkRelays, relayEvent } from '$lib/stores/relays';
+	import { relaySet } from '$lib/stores/relays';
 	import { get } from 'svelte/store';
 	import type { Event } from 'nostr-tools';
 	export let pubkey: string;
@@ -200,7 +200,10 @@
 			created_at: Math.floor(Date.now() / 1000),
 			kind: kind
 		};
-		const res = await publishEventWithTimeout(event, $bookmarkRelays); // = { isSuccess: false, msg: '' }; //
+		const res = await publishEventWithTimeout(
+			event,
+			$relaySet[pubkey].bookmarkRelays
+		); // = { isSuccess: false, msg: '' }; //
 		console.log(res.msg);
 
 		if (res.isSuccess) {
@@ -247,7 +250,10 @@
 			created_at: Math.floor(Date.now() / 1000),
 			kind: 5
 		};
-		const res = await publishEventWithTimeout(event, $bookmarkRelays);
+		const res = await publishEventWithTimeout(
+			event,
+			$relaySet[pubkey].bookmarkRelays
+		);
 		console.log(res.msg);
 
 		if (res.isSuccess) {
@@ -297,7 +303,7 @@
 		type: 'component',
 		component: infoComponent,
 		title: $_('modal.info.title'),
-
+		value: { pubkey: pubkey },
 		response: (res) => {
 			if (res) {
 				if (res.share) {
@@ -325,7 +331,7 @@
 						title: 'Event Json',
 						backdropClasses: '!bg-surface-400/80',
 						meta: {
-							note: $relayEvent
+							note: $relaySet[pubkey].relayEvent
 						},
 
 						component: jsonModalComponent
