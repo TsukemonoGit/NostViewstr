@@ -27,7 +27,12 @@
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 
-	import { searchRelays, postRelays, bookmarkRelays } from '$lib/stores/relays';
+	import {
+		searchRelays,
+		postRelays,
+		bookmarkRelays,
+		relayPubkey
+	} from '$lib/stores/relays';
 	import {
 		iconView,
 		isMulti,
@@ -108,10 +113,7 @@
 
 	export async function bkminit(pub: string) {
 		console.log('bkminit');
-		bookmarkEvents.set([]);
-		bookmarkRelays.set([]);
-		postRelays.set([]);
-		searchRelays.set([]);
+
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
 			$pubkey_viewer = await getPub();
@@ -120,7 +122,14 @@
 		console.log($pubkey_viewer);
 		//	console.log(pub);
 		//if ($bookmarkRelays.length === 0) {
-		console.log(await getRelays(pub));
+		if (pubkey !== $relayPubkey || $bookmarkRelays.length === 0) {
+			bookmarkEvents.set([]);
+			bookmarkRelays.set([]);
+			postRelays.set([]);
+			searchRelays.set([]);
+			console.log(await getRelays(pub));
+			$relayPubkey = pubkey;
+		}
 		//	}
 		const filter =
 			identifier === undefined

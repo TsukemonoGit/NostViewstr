@@ -21,9 +21,9 @@ export const load: PageLoad<{
 	console.log(kind); // kindの情報をログに出力
 
 	bookmarkEvents.set([]);
-	bookmarkRelays.set([]);
-	postRelays.set([]);
-	searchRelays.set([]);
+	// bookmarkRelays.set([]);
+	// postRelays.set([]);
+	// searchRelays.set([]);
 	try {
 		const { type, data } = nip19.decode(npub);
 		console.log('[decode]', type, data);

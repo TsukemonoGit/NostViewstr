@@ -4,8 +4,11 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
 	import { goto } from '$app/navigation';
+	import { kinds } from '$lib/kind';
 
 	export let parent: any;
+	let selectValue: number;
+	let kind: number;
 
 	let profileContent: {
 		[x: string]: string | null | undefined;
@@ -21,8 +24,11 @@
 		}
 	}
 
-	let res: { openList?: boolean } = { openList: false };
-
+	let res: { openList?: boolean; kind: number } = {
+		openList: false,
+		kind: Number(Object.keys(kinds)[0])
+	};
+	$: console.log(res);
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(res);
 
@@ -61,6 +67,11 @@
 		);
 
 		parent.onClose();
+	}
+
+	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
+		kind = Number(event.currentTarget.value);
+		console.log(kind);
 	}
 </script>
 
@@ -113,14 +124,26 @@
 		<!--button-->
 		<div class="grid grid-cols-[auto_auto] gap-2">
 			<div class="grid grid-row-[auto_auto] gap-2">
-				<button
-					type="button"
-					class="btn variant-filled-secondary p-1"
-					on:click={() => {
-						res.openList = true;
-						onFormSubmit();
-					}}>open Lists</button
-				>
+				<div class="flex">
+					<select
+						class="input p-1"
+						bind:value={selectValue}
+						on:change={handleKindChange}
+					>
+						{#each Object.keys(kinds) as value (value)}
+							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
+						{/each}
+					</select>
+					<button
+						type="button"
+						class="btn variant-filled-secondary p-1"
+						on:click={() => {
+							res.openList = true;
+							res.kind = kind;
+							onFormSubmit();
+						}}>open Lists</button
+					>
+				</div>
 				<button
 					type="button"
 					class="btn variant-filled-secondary p-1"

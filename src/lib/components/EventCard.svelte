@@ -72,18 +72,17 @@
 				metadata: metadata
 			},
 			component: profileModalComponent,
-			response: (res) => {
+			response: (res: { openList?: boolean; kind: number }) => {
 				if (res && res.openList) {
 					//storeのリセット
 					$bookmarkEvents = [];
-					$bookmarkRelays = [];
-					$postRelays = [];
-					$searchRelays = [];
-					$identifierList = [];
+
 					$listNum = 0;
 
 					goto(
-						`${window.location.origin}/${nip19.npubEncode(metadata.pubkey)}`
+						`${window.location.origin}/${nip19.npubEncode(metadata.pubkey)}/${
+							res.kind
+						}`
 					);
 				}
 			}

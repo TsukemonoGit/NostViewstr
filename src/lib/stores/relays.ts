@@ -5,7 +5,7 @@ import { writable } from 'svelte/store';
 //post relay 共有、引用ポスト用のリレー
 
 //参考 https://nostter.app/nevent1qqsy739r2nqh59p8w4ufwf7ujtp4qxdwjae3uexk5fhn3pf4ntreq8q77psv7
-
+export const relayPubkey = writable<string>();
 export const relaySearchRelays = [
 	//'wss://tes'
 	//'wss://relay.nostr.band'

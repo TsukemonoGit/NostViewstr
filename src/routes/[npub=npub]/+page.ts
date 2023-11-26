@@ -12,9 +12,9 @@ export const load: PageLoad<{
 }> = ({ params }) => {
 	//	console.log(params.npub);
 	bookmarkEvents.set([]);
-	bookmarkRelays.set([]);
-	postRelays.set([]);
-	searchRelays.set([]);
+	// bookmarkRelays.set([]);
+	// postRelays.set([]);
+	// searchRelays.set([]);
 	try {
 		const { type, data } = nip19.decode(params.npub);
 		console.log('[decode]', type, data);
