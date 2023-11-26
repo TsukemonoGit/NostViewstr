@@ -9,10 +9,11 @@
 	import { browser } from '$app/environment';
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
 	import { _ } from 'svelte-i18n';
-	let kind: number = 30003;
-
+	import { kinds } from '$lib/kind';
+	let kind: number = Object.entries(kinds)[0][1];
+	let name: string;
 	let inputValue: string;
-
+	//console.log(sortedKinds);
 	//$settings = false;
 	const npub = browser ? localStorage.getItem('npub') : undefined;
 	if (npub) {
@@ -61,6 +62,13 @@
 			console.log('failed to get pubkey');
 		}
 	}
+
+	function handleKindChange(
+		event: Event & { currentTarget: EventTarget & HTMLSelectElement }
+	) {
+		kind = Number(event.currentTarget.value);
+		console.log(kind);
+	}
 </script>
 
 <!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
@@ -97,12 +105,15 @@
 			<div class="mt-10">
 				<h5 class="h5">{`kind`}</h5>
 
-				<input
-					class="input p-1 truncate"
-					type="number"
-					placeholder="30003"
-					bind:value={kind}
-				/>
+				<select
+					class="input p-1"
+					bind:value={name}
+					on:change={handleKindChange}
+				>
+					{#each Object.entries(kinds) as [name, value] (name)}
+						<option {value}>{name}({value})</option>
+					{/each}
+				</select>
 			</div>
 		</div>
 		<!-- <label class="label space-t-5 ">

@@ -1,11 +1,20 @@
-
-export const kinds={
-  bookmark:30001,
-  cateborized_people:30000,
-  profile_badges:30008,
-  long_formContent:30023,
-  mute:10001,
-  pin:10001,
-  relay:10002,
-  
+export const kinds: { [name: string]: number } = {
+	bookmark: 10003,
+	bookmark_sets: 30003,
+	blocked_relays: 10006,
+	communities: 10004,
+	curation_sets: 30004,
+	emojis: 10030,
+	emoji_sets: 30030,
+	interests: 10015,
+	interest_sets: 30015,
+	lists: 30001,
+	//long_formContent: 30023,
+	mute: 10000,
+	people_sets: 30000,
+	pin: 10001,
+	profile_badges: 30008,
+	public_chats: 10005,
+	relay_sets: 10002,
+	search_relays: 10007
 };
