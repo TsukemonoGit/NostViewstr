@@ -556,8 +556,8 @@ export async function StoreFetchFilteredEvents(
 			//so-tosite
 			if (newEvent.length > 1) {
 				newEvent.sort((a, b) => {
-					const tagID_A = a.tags[0][1];
-					const tagID_B = b.tags[0][1];
+					const tagID_A = a.tags[0]?.[1];
+					const tagID_B = b.tags[0]?.[1];
 					return tagID_A.localeCompare(tagID_B);
 				});
 			}

@@ -46,7 +46,16 @@
 				goto(`./${nip19.npubEncode(pub)}/${kind}`);
 			}
 		} catch (error) {
-			console.error('npubを確認して');
+			const t = {
+				message: $_('toast.failed_npub'),
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
+			$settings = false;
+			presettings = false;
+			//console.error('npubを確認して');
 		}
 		//okだったらgotoする　NGだったらsettingsをfalseにする
 	}

@@ -113,7 +113,8 @@
     "invalidtag": "invalid tag",
     "invalidJson": "File format not allowed, please select JSON file.",
     "selectJson": "please select JSON file.",
-    "checkJson": "Invalid JSON file."
+    "checkJson": "Invalid JSON file.",
+    "failed_npub": "check public key"
   },
   "icon_description": "Icon description"
 }

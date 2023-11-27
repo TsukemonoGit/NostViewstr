@@ -113,7 +113,8 @@
     "invalidtag": "無効なタグです",
     "invalidJson": "許可されていないファイル形式です。JSONファイルを選択してください",
     "selectJson": "JSONファイルを選択してください",
-    "checkJson": "無効なJSONファイルです"
+    "checkJson": "無効なJSONファイルです",
+    "failed_npub": "公開鍵を確認してください"
   },
   "icon_description": "アイコンについて"
 }
