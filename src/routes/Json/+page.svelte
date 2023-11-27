@@ -39,29 +39,31 @@
 	};
 	$: console.log(fileData);
 
-	const clickDefault = () => {
-		const check = CheckJson();
+	const clickDefault = async () => {
+		const check = await CheckJson();
 		//bookmarkEventsのしょきか
 		if (!check) {
 			return;
+		} else {
+			iconView.set(true);
+			URLPreview.set(true);
+			//settings.set(true);
+			goto(`/Json/View`);
 		}
-
-		iconView.set(true);
-		URLPreview.set(true);
-		//settings.set(true);
-		goto(`/Json/View`);
 	};
 
 	const clickLight = async () => {
 		//bookmarkEventsのしょきか
-		const check = CheckJson();
+		const check = await CheckJson();
+
 		if (!check) {
 			return;
+		} else {
+			iconView.set(false);
+			URLPreview.set(false);
+			//settings.set(true);
+			goto(`/Json/View`);
 		}
-		iconView.set(false);
-		URLPreview.set(false);
-		//settings.set(true);
-		goto(`/Json/View`);
 	};
 
 	async function CheckJson(): Promise<boolean> {
