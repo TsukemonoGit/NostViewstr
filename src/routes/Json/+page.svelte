@@ -5,7 +5,7 @@
 
 	import { _ } from 'svelte-i18n';
 
-	import { iconView, URLPreview, settings } from '$lib/stores/settings';
+	import { iconView, URLPreview } from '$lib/stores/settings';
 
 	import { toastStore } from '$lib/stores/store';
 	import { JsonEventData } from '$lib/stores/bookmarkEvents';
@@ -48,7 +48,7 @@
 
 		iconView.set(true);
 		URLPreview.set(true);
-		settings.set(true);
+		//settings.set(true);
 		goto(`/Json/View`);
 	};
 
@@ -60,7 +60,7 @@
 		}
 		iconView.set(false);
 		URLPreview.set(false);
-		settings.set(true);
+		//settings.set(true);
 		goto(`/Json/View`);
 	};
 

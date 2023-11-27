@@ -4,7 +4,7 @@ import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
 
-import { pubkey_viewer, settings } from '$lib/stores/settings';
+import { pubkey_viewer } from '$lib/stores/settings';
 //https://kit.svelte.jp/docs/load
 //ページを読み込む前に有効なparamかチェック
 export const load: PageLoad<void> = ({ params }) => {
@@ -12,6 +12,6 @@ export const load: PageLoad<void> = ({ params }) => {
 	// bookmarkRelays.set([]);
 	// postRelays.set([]);
 	// searchRelays.set([]);
-	settings.set(false);
+	//settings.set(false);
 	//pubkey_viewer.set('');
 };

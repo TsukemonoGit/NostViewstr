@@ -3,7 +3,7 @@
 
 	import Settings from '$lib/components/Settings.svelte';
 
-	import { settings, nsec, pubkey_viewer } from '$lib/stores/settings';
+	import { nsec, pubkey_viewer } from '$lib/stores/settings';
 	import { getPublicKey, nip19 } from 'nostr-tools';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
@@ -21,12 +21,13 @@
 	if (npub) {
 		inputValue = nip19.npubEncode(npub);
 	}
-	let presettings = false;
-	$: console.log($settings);
+	//let presettings = false;
+	//$: console.log($settings);
 
 	//なんでかわからんけど無限ループしたからpresettingsをつけた応急処置
-	$: if ($settings === true && !presettings) {
-		presettings = true;
+	//$: if ($settings === true && !presettings) {
+	async function settingFunc() {
+		//presettings = true;
 		console.log('settings true');
 		//inputのpubkeyチェック
 		try {
@@ -53,8 +54,8 @@
 			};
 
 			toastStore.trigger(t);
-			$settings = false;
-			presettings = false;
+			//$settings = false;
+			//	presettings = false;
 			//console.error('npubを確認して');
 		}
 		//okだったらgotoする　NGだったらsettingsをfalseにする
@@ -189,7 +190,7 @@
 			/>
 		</label> -->
 		<div class="space-t-5">
-			<Settings />
+			<Settings {settingFunc} />
 		</div>
 	</div>
 </div>

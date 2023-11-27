@@ -4,8 +4,6 @@
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
 
-	import { settings } from '$lib/stores/settings';
-
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
@@ -13,7 +11,10 @@
 	export let data: PageData;
 
 	console.log('PageData', data.pubkey);
-
+	let settings: boolean = false;
+	async function settingFunc() {
+		settings = true;
+	}
 	// $: console.log($URLPreview);
 	// $: console.log($iconView);
 	// onMount(async () => {
@@ -33,18 +34,18 @@
 	<p>kind:?</p>
 </div> -->
 
-{#if !$settings}
+{#if settings}
 	<div class="container h-full mx-auto flex justify-center items-center">
 		<div class="mt-5">
 			<h1 class="h1 mb-5">{$_('main.title')}</h1>
 
 			<div class="space-t-5">
 				kind:{data.kind}
-				<Settings />
+				<Settings {settingFunc} />
 			</div>
 		</div>
 	</div>
 {:else}
 	<ListedEventList pubkey={data.pubkey} kind={data.kind} isNaddr={false} />
+	<FooterMenu pubkey={data.pubkey} kind={data.kind} />
 {/if}
-<FooterMenu pubkey={data.pubkey} kind={data.kind} />

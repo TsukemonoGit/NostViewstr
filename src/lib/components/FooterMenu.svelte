@@ -4,8 +4,7 @@
 		allView,
 		isMulti,
 		nowProgress,
-		pubkey_viewer,
-		settings
+		pubkey_viewer
 	} from '$lib/stores/settings';
 	import type { Event as NostrEvent } from 'nostr-tools';
 	import Setting from '@material-design-icons/svg/round/settings.svg?raw';
@@ -42,6 +41,7 @@
 	export let pubkey: string;
 	export let kind: number;
 	export let naddr: boolean = false;
+
 	//$: console.log(
 	//	`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
 	//);
@@ -386,56 +386,55 @@
 	export let disabled: boolean = false;
 </script>
 
-{#if $settings}
+<div
+	class=" fixed bottom-0 z-10 w-full inline-flex flex-row space-x-0 overflow-x-hidden h-10"
+>
 	<div
-		class=" fixed bottom-0 z-10 w-full inline-flex flex-row space-x-0 overflow-x-hidden h-10"
+		class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token; variant-filled-primary justify-center rounded-none sm:gap-5 gap-0"
 	>
-		<div
-			class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token; variant-filled-primary justify-center rounded-none sm:gap-5 gap-0"
-		>
-			{#if $nowProgress}
-				<!----><ProgressRadial
-					class="btn btn-sm "
-					meter="stroke-primary-300"
-					track="stroke-primary-300/30"
-					width={'w-14'}
-					stroke={60}
-				/>
-			{:else}
-				{#if !naddr}
-					<button
-						class={buttonClass}
-						on:click={openLists}
-						disabled={!(kind >= 30000 && kind < 40000) || disabled}
-						>{@html menuIcon}</button
-					>
-				{/if}
+		{#if $nowProgress}
+			<!----><ProgressRadial
+				class="btn btn-sm "
+				meter="stroke-primary-300"
+				track="stroke-primary-300/30"
+				width={'w-14'}
+				stroke={60}
+			/>
+		{:else}
+			{#if !naddr}
+				<button
+					class={buttonClass}
+					on:click={openLists}
+					disabled={!(kind >= 30000 && kind < 40000) || disabled}
+					>{@html menuIcon}</button
+				>
+			{/if}
 
-				<!-- <div class="grid grid-rows-[auto_auto] gap-0"> -->
-				<div class="flex">
-					<button
-						class={buttonClass}
-						on:click={firstPage}
-						disabled={$pageNum === 0 ? true : false}>{@html firstIcon}</button
-					>
-					<button
-						class={buttonClass}
-						on:click={back}
-						disabled={$pageNum === 0 ? true : false}>{@html backIcon}</button
-					>
+			<!-- <div class="grid grid-rows-[auto_auto] gap-0"> -->
+			<div class="flex">
+				<button
+					class={buttonClass}
+					on:click={firstPage}
+					disabled={$pageNum === 0 ? true : false}>{@html firstIcon}</button
+				>
+				<button
+					class={buttonClass}
+					on:click={back}
+					disabled={$pageNum === 0 ? true : false}>{@html backIcon}</button
+				>
 
-					<button
-						class={buttonClass}
-						on:click={next}
-						disabled={$pageNum === last ? true : false}>{@html nextIcon}</button
-					>
-					<button
-						class={buttonClass}
-						on:click={lastPage}
-						disabled={$pageNum === last ? true : false}>{@html lastIcon}</button
-					>
-				</div>
-				<!-- <div class="flex justify-center items-center m-0 p-0 text-xs">
+				<button
+					class={buttonClass}
+					on:click={next}
+					disabled={$pageNum === last ? true : false}>{@html nextIcon}</button
+				>
+				<button
+					class={buttonClass}
+					on:click={lastPage}
+					disabled={$pageNum === last ? true : false}>{@html lastIcon}</button
+				>
+			</div>
+			<!-- <div class="flex justify-center items-center m-0 p-0 text-xs">
 						{`${$amount * $pageNum} - ${Math.min(
 							($pageNum + 1) * $amount,
 							$listSize
@@ -443,21 +442,19 @@
 					</div>
 				</div> -->
 
-				<button
-					class="btn btn-icon pageIcon {multiButtonClass}"
-					disabled={pubkey !== $pubkey_viewer}
-					on:click={onClickMulti}>{@html multiIcon}</button
-				>
+			<button
+				class="btn btn-icon pageIcon {multiButtonClass}"
+				disabled={pubkey !== $pubkey_viewer}
+				on:click={onClickMulti}>{@html multiIcon}</button
+			>
 
-				<!-- <button class={buttonClass}>{@html updateIcon}</button> -->
+			<!-- <button class={buttonClass}>{@html updateIcon}</button> -->
 
-				<button class={buttonClass} on:click={onClickInfo}
-					>{@html Setting}</button
-				>
-			{/if}
-		</div>
+			<button class={buttonClass} on:click={onClickInfo}>{@html Setting}</button
+			>
+		{/if}
 	</div>
-{/if}
+</div>
 
 <style>
 	:global(.pageIcon svg) {

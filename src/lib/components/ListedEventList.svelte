@@ -827,6 +827,16 @@
 			</main>
 		</div>
 	</div>
+{:else}
+	<div
+		class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
+	>
+		{#if $nowProgress}
+			{`now loading...`}
+		{:else}
+			{`no data`}
+		{/if}
+	</div>
 {/if}
 <!-------------------------------あど----->
 {#if !$nowProgress && $pubkey_viewer === pubkey}

@@ -6,7 +6,6 @@
 	import {
 		URLPreview,
 		iconView,
-		settings,
 		nowProgress,
 		pubkey_viewer
 	} from '$lib/stores/settings';
@@ -26,7 +25,10 @@
 	const kind = data.kind;
 	const identifier = data.identifier;
 	console.log('PageData', data.pubkey);
-
+	let settings: boolean = false;
+	async function settingFunc() {
+		settings = true;
+	}
 	// $: console.log($URLPreview);
 	// $: console.log($iconView);
 	// onMount(async () => {
@@ -46,9 +48,9 @@
 	<p>kind:?</p>
 </div> -->
 
-{#if !$settings}
-	<Settings />
+{#if !settings}
+	<Settings {settingFunc} />
 {:else}
 	<ListedEventList pubkey={data.pubkey} {kind} {identifier} isNaddr={true} />
+	<FooterMenu pubkey={data.pubkey} {kind} naddr={true} />
 {/if}
-<FooterMenu pubkey={data.pubkey} {kind} naddr={true} />
