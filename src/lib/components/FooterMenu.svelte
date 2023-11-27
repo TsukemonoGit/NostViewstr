@@ -26,7 +26,8 @@
 		bookmarkEvents,
 		checkedIndexList,
 		identifierList,
-		listNum
+		listNum,
+		type Identifiers
 	} from '$lib/stores/bookmarkEvents';
 	import {
 		ProgressRadial,
@@ -85,7 +86,7 @@
 				title: $_('modal.tagList.title'),
 				body: ``,
 				value: {
-					tagList: $identifierList,
+					tagList: $identifierList[pubkey][kind],
 					pubkey: pubkey
 				},
 				response: (res) => {
@@ -96,7 +97,8 @@
 						} else if (
 							res.index !== -1 &&
 							$bookmarkEvents !== undefined &&
-							$bookmarkEvents.length > 1
+							$bookmarkEvents[pubkey] &&
+							$bookmarkEvents[pubkey][kind].length > 1
 						) {
 							$listNum = res.index;
 						}
@@ -134,7 +136,7 @@
 			// Provide arbitrary metadata to your modal instance:
 			title: $_('modal.editTags.title'),
 
-			value: { selectedValue: 0, kind: kind },
+			value: { selectedValue: 0, kind: kind, pubkey: pubkey },
 			// Returns the updated response value
 			response: (res) => {
 				console.log(res);
@@ -152,7 +154,7 @@
 								title: $_('modal.deleteTag.title'),
 								body: `${$_('modal.deleteTag.body')}`,
 								value: {
-									tag: $identifierList[res.tagIndex].identifier
+									tag: $identifierList[pubkey][kind][res.tagIndex].identifier
 								},
 								response: async (res2) => {
 									//console.log(res);
@@ -216,12 +218,36 @@
 
 			const tmp = get(bookmarkEvents);
 			if (res.event !== undefined) {
-				if (tmp !== undefined) {
-					tmp.push(res.event);
+				if (tmp && tmp[pubkey][kind]) {
+					tmp[pubkey][kind].push(res.event);
 					bookmarkEvents.set(tmp);
 				} else {
-					bookmarkEvents.set([res.event]);
+					bookmarkEvents.set({ [pubkey]: { [kind]: [res.event] } });
 				}
+
+				//IdentifierListも更新する
+				const identifierListData = get(identifierList);
+
+				const tag = res.event.tags.find((tag) => tag[0] === 'd');
+				const title = res.event.tags.find((tag) => tag[0] === 'title');
+				const image = res.event.tags.find((tag) => tag[0] === 'image');
+				const description = res.event.tags.find(
+					(tag) => tag[0] === 'description'
+				);
+				const newIdentifierList: Identifiers = {
+					identifier: tag ? tag[1] : undefined,
+					title: title ? title[1] : undefined,
+					image: image ? image[1] : undefined,
+					description: description ? description[1] : undefined
+				};
+				if (identifierListData !== undefined) {
+					identifierListData[pubkey][kind].push(newIdentifierList);
+					identifierList.set(identifierListData);
+				} else {
+					identifierList.set({ [pubkey]: { [kind]: [newIdentifierList] } });
+				}
+				// identifierListData[pubkey][kind][num] = newIdentifierList;
+				// identifierList.set(identifierListData);
 			}
 		} else {
 			const t = {
@@ -239,7 +265,7 @@
 	async function deleteTag(tagIndex: any) {
 		console.log(tagIndex);
 		$nowProgress = true;
-		const bkm = get(bookmarkEvents) as Event[];
+		const bkm = get(bookmarkEvents)[pubkey][kind] as Event[];
 
 		const event: NostrEvent = {
 			id: '',
@@ -267,7 +293,7 @@
 			const tmp = get(bookmarkEvents);
 
 			if (tmp !== undefined) {
-				tmp.splice(tagIndex, 1); //削除
+				tmp[pubkey][kind].splice(tagIndex, 1); //削除
 				bookmarkEvents.set(tmp);
 			} else {
 				//ないことはないと思う

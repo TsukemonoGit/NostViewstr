@@ -10,6 +10,7 @@
 	let res = { index: -1, edit: false };
 
 	let selectTag: number;
+
 	//$: moveList = $tags.filter((item) => item !== $tags[$tabSet]);
 	// Handle Form Submission
 	function onFormSubmit(): void {

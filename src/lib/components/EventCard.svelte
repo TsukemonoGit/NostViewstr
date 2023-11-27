@@ -68,9 +68,6 @@
 			component: profileModalComponent,
 			response: (res: { openList?: boolean; kind: number }) => {
 				if (res && res.openList) {
-					//storeのリセット
-					$bookmarkEvents = [];
-
 					$listNum = 0;
 
 					goto(

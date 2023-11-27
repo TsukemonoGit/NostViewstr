@@ -33,7 +33,7 @@
 		? [
 				'a',
 				`${viewEvent.kind}:${viewEvent.pubkey}:${
-					$identifierList[$listNum].identifier ?? ''
+					$identifierList[pubkey][kind][$listNum].identifier ?? ''
 				}`
 		  ]
 		: [];
@@ -87,7 +87,7 @@
 	}) {
 		console.log(res);
 		const listNumber = $listNum;
-		const eventTag = $bookmarkEvents[listNumber].tags;
+		const eventTag = $bookmarkEvents[pubkey][kind][listNumber].tags;
 
 		let titleIndex = eventTag.findIndex((item) => item[0] === 'title');
 		if (titleIndex !== -1) {
@@ -122,9 +122,9 @@
 		console.log(eventTag);
 		const event: Nostr.Event = {
 			id: '',
-			kind: $bookmarkEvents[listNumber].kind,
+			kind: $bookmarkEvents[pubkey][kind][listNumber].kind,
 			pubkey: pubkey,
-			content: $bookmarkEvents[listNumber].content,
+			content: $bookmarkEvents[pubkey][kind][listNumber].content,
 			tags: eventTag,
 			created_at: Math.floor(Date.now() / 1000),
 			sig: ''
@@ -135,8 +135,8 @@
 		);
 		console.log(result);
 		if (result.isSuccess && $bookmarkEvents && result.event) {
-			$bookmarkEvents[listNumber] = result.event;
-			viewEvent = $bookmarkEvents[listNumber];
+			$bookmarkEvents[pubkey][kind][listNumber] = result.event;
+			viewEvent = $bookmarkEvents[pubkey][kind][listNumber];
 			const t = {
 				message: 'Add note<br>' + result.msg,
 				timeout: 3000
@@ -158,7 +158,7 @@
 		const listNumber = $listNum;
 		//const test = window.location;		console.log(test);
 		const address: nip19.AddressPointer = {
-			identifier: $identifierList[listNumber].identifier ?? '',
+			identifier: $identifierList[pubkey][kind][listNumber].identifier ?? '',
 			pubkey: pubkey,
 			kind: kind,
 			relays: $relaySet[pubkey].bookmarkRelays
@@ -166,7 +166,10 @@
 
 		const url = window.location.origin + '/' + nip19.naddrEncode(address);
 		const tags = [
-			['a', `${kind}:${pubkey}:${$identifierList[listNumber].identifier}`],
+			[
+				'a',
+				`${kind}:${pubkey}:${$identifierList[pubkey][kind][listNumber].identifier}`
+			],
 			['r', url]
 		];
 		console.log(tags);
@@ -214,12 +217,12 @@
 	<div
 		class="h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-x-hidden rounded-b"
 	>
-		{#if $identifierList[$listNum] && $identifierList[$listNum].identifier}
+		{#if $identifierList[pubkey] && $identifierList[pubkey][kind] && $identifierList[pubkey][kind][$listNum] && $identifierList[pubkey][kind][$listNum].identifier}
 			<div class="text-xs">
 				kind:{kind}
 				{#if kinds[kind]} ({kinds[kind]}) {/if}
 				{#if kind === 30003}
-					{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
+					{#if !$identifierList[pubkey][kind][$listNum].title || $identifierList[pubkey][kind][$listNum].title === ''}
 						<button
 							class=" flex items-center pt-1 overflow-hidden min-w-[7em] text-left"
 							disabled={!(kind >= 30000 && kind < 40000)}
@@ -228,20 +231,22 @@
 							<div class=" btn-icon btn-icon-sm fill-white place-self-center">
 								{@html infoIcon}
 							</div>
-							<div class="h4">{$identifierList[$listNum].identifier}</div>
+							<div class="h4">
+								{$identifierList[pubkey][kind][$listNum].identifier}
+							</div>
 						</button>
 					{:else}
 						<button
 							class="grid grid-cols-[auto_1fr] items-center min-w-[7em] pr-0.5 overflow-hidden truncate"
 							on:click={listInfoModalOpen}
 						>
-							{#if $iconView && $identifierList[$listNum].image}
+							{#if $iconView && $identifierList[pubkey][kind][$listNum].image}
 								<div class="p-0 btn-icon btn-icon-sm m-0 mr-1">
 									<img
 										width={36}
 										class="min-w-[36px]"
 										alt=""
-										src={$identifierList[$listNum].image}
+										src={$identifierList[pubkey][kind][$listNum].image}
 									/>
 								</div>
 							{:else}
@@ -252,11 +257,11 @@
 
 							<div class="grid grid-rows-[auto_1fr] truncate overflow-hidden">
 								<div class="place-self-start text-xs p-0">
-									{$identifierList[$listNum].identifier}
+									{$identifierList[pubkey][kind][$listNum].identifier}
 								</div>
 
 								<div class="h5 truncate place-self-start">
-									{$identifierList[$listNum].title}
+									{$identifierList[pubkey][kind][$listNum].title}
 								</div>
 							</div>
 						</button>
@@ -268,7 +273,7 @@
 				{:else}
 					<!---->
 					<div class=" h4 p-1">
-						{$identifierList[$listNum].identifier}
+						{$identifierList[pubkey][kind][$listNum].identifier}
 					</div>
 				{/if}
 			</div>
@@ -334,7 +339,7 @@
 			class={'btn p-0 pr-2  arrow  '}
 			on:click={async () => {
 				$nowProgress = true;
-				await updateBkmTag($listNum);
+				await updateBkmTag(pubkey, kind, $listNum);
 				$nowProgress = false;
 			}}>{@html updateIcon}</button
 		>

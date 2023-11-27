@@ -48,6 +48,7 @@ import {
 	bookmarkEvents,
 	identifierList,
 	naddrStore,
+	type Identifiers,
 	type NaddrStore
 } from './stores/bookmarkEvents';
 import {
@@ -519,6 +520,72 @@ export function idlatestEach(): MonoTypeOperatorFunction<EventPacket> {
 		);
 	};
 }
+
+//---------------------------------------------------------------
+export async function StoreFetchFilteredEvents(
+	pubkey: string,
+	kind: number,
+	data: {
+		relays: string[];
+		filters: Nostr.Filter[];
+	}
+): Promise<void> {
+	nowProgress.set(true);
+	let eventsData = get(bookmarkEvents);
+	try {
+		const check = eventsData[pubkey][kind]; // すでにデータがあるか確認
+
+		// データがある場合は何もせず終了
+		nowProgress.set(false);
+		return;
+	} catch (error) {
+		// データがない場合にデータを取得する
+		if (!eventsData[pubkey]) {
+			eventsData = { ...eventsData, [pubkey]: {} };
+		}
+
+		try {
+			// 新しいイベントを作成してデータに追加
+			const newEvent: Nostr.Event[] = await fetchFilteredEvents(
+				data.relays,
+				data.filters
+			);
+			eventsData = {
+				...eventsData,
+				[pubkey]: { ...eventsData[pubkey], [kind]: newEvent }
+			};
+			// 更新したデータをストアにセット
+			bookmarkEvents.set(eventsData);
+
+			//IdentifierListも更新する
+			const identifierListData = get(identifierList);
+			const newIdentifierList: Identifiers[] =
+				newEvent.map((item) => {
+					const tag = item.tags.find((tag) => tag[0] === 'd');
+					const title = item.tags.find((tag) => tag[0] === 'title');
+					const image = item.tags.find((tag) => tag[0] === 'image');
+					const description = item.tags.find((tag) => tag[0] === 'description');
+					return {
+						identifier: tag ? tag[1] : undefined,
+						title: title ? title[1] : undefined,
+						image: image ? image[1] : undefined,
+						description: description ? description[1] : undefined
+					};
+				}) ?? [];
+
+			identifierList.set({
+				...identifierListData,
+				[pubkey]: { ...identifierListData[pubkey], [kind]: newIdentifierList }
+			});
+		} catch (error) {
+			console.error('Failed to fetch filtered events:', error);
+			// エラー処理が必要な場合に追加
+		}
+
+		nowProgress.set(false);
+	}
+}
+
 //----------------------------------------------------------------
 export async function fetchFilteredEvents(
 	relays: string[],
@@ -981,28 +1048,64 @@ async function validateNoteId(str: string): Promise<{
 	return res;
 }
 
-export async function updateBkmTag(num: number) {
+export async function updateBkmTag(pubkey: string, kind: number, num: number) {
 	console.log(`updateBkmTag[${get(identifierList)[num]}] updating...`);
 
 	const bkm = get(bookmarkEvents);
 
-	const relays = get(relaySet)[bkm[0].pubkey].bookmarkRelays;
-	if (bkm !== undefined && bkm.length > num && relays.length > 0) {
-		const dtag = bkm[num].tags.find((tag) => tag[0] === 'd');
+	const relays = get(relaySet)[pubkey].bookmarkRelays;
+	if (
+		bkm[pubkey][kind] !== undefined &&
+		bkm[pubkey][kind].length > num &&
+		relays.length > 0
+	) {
+		const dtag = bkm[pubkey][kind][num].tags.find((tag) => tag[0] === 'd');
 		const filter: Nostr.Filter =
 			dtag !== undefined
 				? {
-						kinds: [bkm[num].kind],
-						authors: [bkm[num].pubkey],
+						kinds: [bkm[pubkey][kind][num].kind],
+						authors: [bkm[pubkey][kind][num].pubkey],
 						'#d': [dtag[1]]
 				  }
-				: { kinds: [bkm[num].kind], authors: [bkm[num].pubkey] };
+				: {
+						kinds: [bkm[pubkey][kind][num].kind],
+						authors: [bkm[pubkey][kind][num].pubkey]
+				  };
 
 		const res = await fetchFilteredEvents(relays, [filter]);
-		if (res.length > 0 && res[0].created_at > bkm[num].created_at) {
-			bkm[num] = res[0];
+		if (
+			res.length > 0 &&
+			res[0].created_at > bkm[pubkey][kind][num].created_at
+		) {
+			bkm[pubkey][kind][num] = res[0];
 			bookmarkEvents.set(bkm);
-			console.log(`updateBkmTag[${get(identifierList)[num]}] updated`);
+
+			//IdentifierListも更新する
+			const identifierListData = get(identifierList);
+
+			const tag = bkm[pubkey][kind][num].tags.find((tag) => tag[0] === 'd');
+			const title = bkm[pubkey][kind][num].tags.find(
+				(tag) => tag[0] === 'title'
+			);
+			const image = bkm[pubkey][kind][num].tags.find(
+				(tag) => tag[0] === 'image'
+			);
+			const description = bkm[pubkey][kind][num].tags.find(
+				(tag) => tag[0] === 'description'
+			);
+			const newIdentifierList: Identifiers = {
+				identifier: tag ? tag[1] : undefined,
+				title: title ? title[1] : undefined,
+				image: image ? image[1] : undefined,
+				description: description ? description[1] : undefined
+			};
+
+			identifierListData[pubkey][kind][num] = newIdentifierList;
+			identifierList.set(identifierListData);
+
+			console.log(
+				`updateBkmTag[${get(identifierList)[pubkey][kind][num]}] updated`
+			);
 			// //newIdentifierListも更新してーーー
 			// const newIdentifierList =
 			// 	bkm.map((item) => {
@@ -1020,7 +1123,11 @@ export async function updateBkmTag(num: number) {
 			// identifierList.set(newIdentifierList);
 		}
 	}
-	console.log(`updateBkmTag[${get(identifierList)[num]}] completed`);
+	console.log(
+		`updateBkmTag[${
+			get(identifierList)[pubkey][kind][num].identifier
+		}] completed`
+	);
 }
 
 //タグごと追加の項目で入力された値が一次元配列かどうかを確認
@@ -1038,6 +1145,7 @@ export async function addPrivates(
 	pubkey: string,
 	tags: string[][]
 ): Promise<string> {
+	console.log(content, pubkey, tags);
 	let array: string[][] = [];
 	if (content.length > 0) {
 		try {
@@ -1073,6 +1181,7 @@ export async function deletePrivates(
 	pubkey: string,
 	numList: number[]
 ): Promise<string> {
+	console.log(content, numList, numList.length);
 	let array: string[][] = [];
 	if (content.length > 0 && numList.length > 0) {
 		numList.sort((a, b) => b - a); //大きい順にソート
@@ -1101,7 +1210,7 @@ export async function deletePrivates(
 			throw new Error('Encode error');
 		}
 	} else {
-		throw new Error('error');
+		return '';
 	}
 }
 

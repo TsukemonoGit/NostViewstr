@@ -8,6 +8,9 @@
 
 	export let parent: any;
 
+	$: pubkey = $modalStore[0]?.value?.pubkey;
+	$: kind = $modalStore[0]?.value?.kind;
+
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(res);
 
@@ -21,9 +24,9 @@
 		share?: boolean;
 		update?: boolean;
 	} = {
-		title: $identifierList[$listNum].title ?? '',
-		image: $identifierList[$listNum].image ?? '',
-		description: $identifierList[$listNum].description ?? ''
+		title: $identifierList[pubkey][kind][$listNum].title ?? '',
+		image: $identifierList[pubkey][kind][$listNum].image ?? '',
+		description: $identifierList[pubkey][kind][$listNum].description ?? ''
 	};
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
