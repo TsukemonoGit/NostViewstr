@@ -600,7 +600,7 @@
 					message: toastMessage,
 					timeout: 3000,
 					background: result.isSuccess
-						? 'bg-green-500 text-white width-filled '
+						? 'variant-filled-secondary width-filled'
 						: 'bg-orange-500 text-white width-filled '
 				};
 
