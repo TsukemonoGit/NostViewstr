@@ -191,7 +191,7 @@
 	}
 
 	//リストが変わったら1ページ目に戻す
-	$: if ($listNum !== -1) {
+	$: if ($listNum !== -1 && typeof window !== 'undefined') {
 		$isMulti = false;
 		$pageNum = 0;
 		$checkedIndexList = [];
@@ -199,7 +199,7 @@
 		window.scrollTo({ top: 0 });
 	}
 	//ページが変わったらチェックリスト空にする
-	$: if ($pageNum !== -1 || bkm) {
+	$: if (($pageNum !== -1 || bkm) && typeof window !== 'undefined') {
 		$checkedIndexList = [];
 		window.scrollTo({ top: 0 });
 	}

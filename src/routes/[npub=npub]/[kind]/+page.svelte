@@ -34,7 +34,7 @@
 	<p>kind:?</p>
 </div> -->
 
-{#if settings}
+{#if !settings}
 	<div class="container h-full mx-auto flex justify-center items-center">
 		<div class="mt-5">
 			<h1 class="h1 mb-5">{$_('main.title')}</h1>

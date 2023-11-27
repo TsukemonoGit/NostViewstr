@@ -2,7 +2,6 @@ import { nip19 } from 'nostr-tools';
 //import { pubkey } from '$lib/stores/settings';
 import { error } from '@sveltejs/kit';
 import type { PageLoad, RouteParams } from './$types';
-import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
 
 interface CustomParams {
 	npub: string;
@@ -20,7 +19,7 @@ export const load: PageLoad<{
 	console.log(npub);
 	console.log(kind); // kindの情報をログに出力
 
-	bookmarkEvents.set([]);
+	//	bookmarkEvents.set([]);
 	// bookmarkRelays.set([]);
 	// postRelays.set([]);
 	// searchRelays.set([]);
