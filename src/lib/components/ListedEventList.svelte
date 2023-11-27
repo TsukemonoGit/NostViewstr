@@ -537,7 +537,7 @@
 
 			const contentToAdd =
 				btn === 'pub'
-					? ''
+					? bkmk.content
 					: btn === 'prv'
 					? await addPrivates(bkmk?.content || '', pubkey || '', idTagList)
 					: '';
@@ -748,7 +748,7 @@
 </script>
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
-{#if $bookmarkEvents[pubkey] && $bookmarkEvents[pubkey][kind] && $bookmarkEvents[pubkey][kind].length > 0}
+{#if $bookmarkEvents && $bookmarkEvents[pubkey] && $bookmarkEvents[pubkey][kind] && $bookmarkEvents[pubkey][kind].length > 0}
 	<!--header-->
 	<Header {kind} bind:bkm {pubkey} bind:viewEvent />
 
@@ -765,7 +765,7 @@
 					<!-- Your sidebar content goes here -->
 					<!-- For example, you can add links or other elements -->
 					<!--さいどばー-->
-					{#if $identifierList[pubkey] && $identifierList[pubkey][kind].length > 0}
+					{#if $identifierList && $identifierList[pubkey] && $identifierList[pubkey][kind].length > 0}
 						<ListBox
 							class=" overflow-y-auto w-full"
 							active="variant-ghost-primary box-border"
@@ -810,7 +810,7 @@
 					: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
 			>
 				<!-- Add ml-64 to push main to the right -->
-				{#if $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+				{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
 					<NostrApp relays={$relaySet[pubkey].searchRelays}>
 						<ListedEvent
 							listEvent={viewEvent}

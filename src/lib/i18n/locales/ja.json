@@ -110,7 +110,10 @@
   },
   "toast": {
     "failed_publish": "書き込みに失敗しました",
-    "invalidtag": "無効なタグです"
+    "invalidtag": "無効なタグです",
+    "invalidJson": "許可されていないファイル形式です。JSONファイルを選択してください",
+    "selectJson": "JSONファイルを選択してください",
+    "checkJson": "無効なJSONファイルです"
   },
   "icon_description": "アイコンについて"
 }

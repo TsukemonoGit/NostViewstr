@@ -383,6 +383,7 @@
 		multiButtonClass = $isMulti ? 'variant-ghost-secondary rounded-full ' : '';
 		$checkedIndexList = [];
 	}
+	export let disabled: boolean = false;
 </script>
 
 {#if $settings}
@@ -405,7 +406,8 @@
 					<button
 						class={buttonClass}
 						on:click={openLists}
-						disabled={!(kind >= 30000 && kind < 40000)}>{@html menuIcon}</button
+						disabled={!(kind >= 30000 && kind < 40000) || disabled}
+						>{@html menuIcon}</button
 					>
 				{/if}
 

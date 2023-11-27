@@ -33,7 +33,12 @@
 		? [
 				'a',
 				`${viewEvent.kind}:${viewEvent.pubkey}:${
-					$identifierList[pubkey][kind][$listNum].identifier ?? ''
+					$identifierList &&
+					$identifierList[pubkey] &&
+					$identifierList[pubkey][kind] &&
+					$identifierList[pubkey][kind][$listNum].identifier
+						? $identifierList[pubkey][kind][$listNum].identifier
+						: ''
 				}`
 		  ]
 		: [];
@@ -217,7 +222,7 @@
 	<div
 		class="h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-x-hidden rounded-b"
 	>
-		{#if $identifierList[pubkey] && $identifierList[pubkey][kind] && $identifierList[pubkey][kind][$listNum] && $identifierList[pubkey][kind][$listNum].identifier}
+		{#if $identifierList && $identifierList[pubkey] && $identifierList[pubkey][kind] && $identifierList[pubkey][kind][$listNum] && $identifierList[pubkey][kind][$listNum].identifier}
 			<div class="text-xs">
 				kind:{kind}
 				{#if kinds[kind]} ({kinds[kind]}) {/if}

@@ -110,7 +110,10 @@
   },
   "toast": {
     "failed_publish": "failed to publish",
-    "invalidtag": "invalid tag"
+    "invalidtag": "invalid tag",
+    "invalidJson": "File format not allowed, please select JSON file.",
+    "selectJson": "please select JSON file.",
+    "checkJson": "Invalid JSON file."
   },
   "icon_description": "Icon description"
 }

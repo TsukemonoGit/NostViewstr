@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { LightSwitch } from '@skeletonlabs/skeleton';
+	import { FileButton, LightSwitch } from '@skeletonlabs/skeleton';
 
 	import Settings from '$lib/components/Settings.svelte';
 
@@ -10,6 +10,7 @@
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
 	import { _ } from 'svelte-i18n';
 	import { kinds } from '$lib/kind';
+	import { toastStore } from '$lib/stores/store';
 	let kind: number = Number(Object.keys(kinds)[0]); // Use Object.keys to get the first key
 
 	let name: string;
@@ -66,6 +67,34 @@
 		kind = Number(event.currentTarget.value);
 		console.log(kind);
 	}
+
+	// let files: FileList | undefined;
+	// let fileData: File | undefined;
+	// const allowedExtensions = ['.json'];
+	// const handleFileChange = () => {
+	// 	const selectedFile = files?.[0];
+
+	// 	if (selectedFile) {
+	// 		const fileExtension = selectedFile.name.split('.').pop()?.toLowerCase();
+
+	// 		if (!allowedExtensions.includes(`.${fileExtension}`)) {
+	// 			const t = {
+	// 				message: $_('toast.invalidJson'),
+	// 				timeout: 3000,
+	// 				background: 'bg-orange-500 text-white width-filled '
+	// 			};
+
+	// 			toastStore.trigger(t);
+
+	// 			// ファイル選択をクリア
+	// 			files = undefined;
+	// 			return;
+	// 		}
+	// 		fileData = selectedFile;
+	// 		console.log(fileData);
+	// 	}
+	// };
+	// $: console.log(fileData);
 </script>
 
 <!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
@@ -112,6 +141,34 @@
 					{/each}
 				</select>
 			</div>
+			<div class="mt-10 flex gap-2">
+				<h5 class="h5 self-center">{`view from json →`}</h5>
+				<button
+					class="btn variant-filled-primary"
+					on:click={() => {
+						goto(`/Json`);
+					}}
+				>
+					Click
+				</button>
+			</div>
+			<!-- <div class="flex gap-4 mt-1">
+					<div>
+						<FileButton bind:files on:change={handleFileChange} name="files" />
+					</div>
+					<div>
+						<button
+							class="btn variant-filled-primary"
+							on:click={() => {
+								fileData = undefined;
+							}}>Reset</button
+						>
+					</div>
+				</div>
+			</div>
+			{#if fileData}
+				{fileData.name}
+			{/if} -->
 		</div>
 		<!-- <label class="label space-t-5 ">
 			<span> {$_('main.input_public_key')}</span>
