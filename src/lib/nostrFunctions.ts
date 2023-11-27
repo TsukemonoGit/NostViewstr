@@ -534,7 +534,9 @@ export async function StoreFetchFilteredEvents(
 	let eventsData = get(bookmarkEvents);
 	try {
 		const check = eventsData[pubkey][kind]; // すでにデータがあるか確認
-
+		if (check.length === 0) {
+			throw new Error();
+		}
 		// データがある場合は何もせず終了
 		nowProgress.set(false);
 		return;
