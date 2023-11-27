@@ -291,10 +291,13 @@
 			toastStore.trigger(t);
 
 			const tmp = get(bookmarkEvents);
-
+			const tmpId = get(identifierList);
 			if (tmp !== undefined) {
 				tmp[pubkey][kind].splice(tagIndex, 1); //削除
 				bookmarkEvents.set(tmp);
+				//IDリストも更新
+				tmpId[pubkey][kind].splice(tagIndex, 1); //削除
+				identifierList.set(tmpId);
 			} else {
 				//ないことはないと思う
 				console.log('えらー');

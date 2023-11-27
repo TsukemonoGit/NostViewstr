@@ -167,7 +167,7 @@
 				>
 				<svelte:fragment slot="content">
 					<div class="card p-4">
-						{#if $identifierList[pubkey][kind].length > 0}
+						{#if $identifierList[pubkey] && $identifierList[pubkey][kind].length > 0}
 							<select
 								class="select mb-4"
 								size="1"

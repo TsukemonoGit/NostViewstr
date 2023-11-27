@@ -24,9 +24,24 @@
 		share?: boolean;
 		update?: boolean;
 	} = {
-		title: $identifierList[pubkey][kind][$listNum].title ?? '',
-		image: $identifierList[pubkey][kind][$listNum].image ?? '',
-		description: $identifierList[pubkey][kind][$listNum].description ?? ''
+		title:
+			$identifierList[pubkey] &&
+			$identifierList[pubkey][kind] &&
+			$identifierList[pubkey][kind][$listNum].title
+				? $identifierList[pubkey][kind][$listNum].title
+				: '',
+		image:
+			$identifierList[pubkey] &&
+			$identifierList[pubkey][kind] &&
+			$identifierList[pubkey][kind][$listNum].image
+				? $identifierList[pubkey][kind][$listNum].image
+				: '',
+		description:
+			$identifierList[pubkey] &&
+			$identifierList[pubkey][kind] &&
+			$identifierList[pubkey][kind][$listNum].description
+				? $identifierList[pubkey][kind][$listNum].description
+				: ''
 	};
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';

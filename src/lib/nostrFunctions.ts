@@ -550,6 +550,14 @@ export async function StoreFetchFilteredEvents(
 				data.relays,
 				data.filters
 			);
+
+			//so-tosite
+			newEvent.sort((a, b) => {
+				const tagID_A = a.tags[0][1];
+				const tagID_B = b.tags[0][1];
+				return tagID_A.localeCompare(tagID_B);
+			});
+
 			eventsData = {
 				...eventsData,
 				[pubkey]: { ...eventsData[pubkey], [kind]: newEvent }
