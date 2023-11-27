@@ -901,6 +901,9 @@ export async function checkInputNpub(r: string): Promise<{
 		const decoded = nip19.decode(r);
 		if (decoded.type == 'npub') {
 			return { tag: ['p', decoded.data], error: false };
+		}
+		if (decoded.type == 'nprofile') {
+			return { tag: ['p', decoded.data.pubkey], error: false };
 		} else {
 			throw new Error();
 		}
@@ -960,6 +963,11 @@ export async function checkInputNote(r: string): Promise<{
 		if (decoded.type == 'note') {
 			return {
 				tag: ['e', decoded.data],
+				error: false
+			};
+		} else if (decoded.type == 'nevent') {
+			return {
+				tag: ['e', decoded.data.id],
 				error: false
 			};
 		} else {
