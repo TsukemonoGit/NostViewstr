@@ -20,6 +20,7 @@
 	export let listEvent: NostrEvent;
 	export let bkm = 'pub'; //'pub'|'prv'
 	export let isOwner: boolean;
+	export let noEdit: boolean = false;
 	//let viewList: string[][];
 	//一つのタグに一種類のイベントしかないことにして日付だけ見る
 	const uniqueEvent = (eventList: NostrEvent[]): NostrEvent => {
@@ -86,12 +87,16 @@
 		($pageNum + 1) * Math.min($amount, $listSize)
 	);
 
-	$: menuSearch = $isMulti
+	$: menuSearch = noEdit
+		? MenuMode.Viewer
+		: $isMulti
 		? MenuMode.Multi
 		: isOwner
 		? MenuMode.other
 		: MenuMode.none;
-	$: menuEvent = $isMulti
+	$: menuEvent = noEdit
+		? MenuMode.Viewer
+		: $isMulti
 		? MenuMode.Multi
 		: isOwner
 		? MenuMode.Owner

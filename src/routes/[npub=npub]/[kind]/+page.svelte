@@ -7,13 +7,14 @@
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
+	import { URLPreview } from '$lib/stores/settings';
 
 	export let data: PageData;
 
 	console.log('PageData', data.pubkey);
-	let settings: boolean = false;
-	async function settingFunc() {
-		settings = true;
+	//let settings: boolean = false;
+	function settingFunc() {
+		//	settings = true;
 	}
 	// $: console.log($URLPreview);
 	// $: console.log($iconView);
@@ -34,7 +35,7 @@
 	<p>kind:?</p>
 </div> -->
 
-{#if !settings}
+{#if $URLPreview === undefined}
 	<div class="container h-full mx-auto flex justify-center items-center">
 		<div class="mt-5">
 			<h1 class="h1 mb-5">{$_('main.title')}</h1>
