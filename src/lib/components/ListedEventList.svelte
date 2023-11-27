@@ -528,7 +528,12 @@
 		try {
 			const bkmk = $bookmarkEvents?.[pubkey]?.[kind]?.[listNumber];
 
-			const tagsToAdd = btn === 'pub' ? (idTagList ? idTagList : []) : [];
+			const tagsToAdd =
+				btn === 'pub'
+					? bkmk !== undefined
+						? [...bkmk.tags, ...idTagList]
+						: idTagList
+					: bkmk.tags;
 
 			const contentToAdd =
 				btn === 'pub'
