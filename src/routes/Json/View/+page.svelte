@@ -160,7 +160,8 @@
 						{MoveNote}
 						{CheckNote}
 						bind:bkm
-						isOwner={false}
+						{isOwner}
+						noEdit={true}
 					/>
 				</NostrApp>
 			{:else}

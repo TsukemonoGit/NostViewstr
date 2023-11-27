@@ -535,12 +535,21 @@
 						: idTagList
 					: bkmk.tags;
 
-			const contentToAdd =
-				btn === 'pub'
-					? bkmk.content
-					: btn === 'prv'
-					? await addPrivates(bkmk?.content || '', pubkey || '', idTagList)
-					: '';
+			const contentToAdd = async (): Promise<string> => {
+				if (btn === 'pub') {
+					if (bkmk && bkmk.content) {
+						return bkmk.content;
+					} else {
+						return '';
+					}
+				} else {
+					if (bkmk && bkmk.content) {
+						return await addPrivates(bkmk.content, pubkey, idTagList);
+					} else {
+						return await addPrivates('', pubkey, idTagList);
+					}
+				}
+			};
 
 			const event: Nostr.Event = {
 				id: '',
@@ -548,7 +557,7 @@
 				created_at: Math.floor(Date.now() / 1000),
 				kind: kind,
 				tags: tagsToAdd,
-				content: contentToAdd,
+				content: await contentToAdd(),
 				sig: ''
 			};
 
