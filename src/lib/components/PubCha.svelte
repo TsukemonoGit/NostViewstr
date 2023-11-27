@@ -49,7 +49,8 @@
 				rel="external noreferrer"
 				target="_blank"
 				href={chatURL}
-				class="anchor text-sm openIcon flex">うにゅうハウス {@html OpenIcon}</a
+				class="anchor text-sm openIcon flex dark:fill-white"
+				>うにゅうハウス {@html OpenIcon}</a
 			>
 		</div>
 
