@@ -27,7 +27,7 @@
 </script>
 
 <article class="body">
-	{`nostr:note... or note...`}
+	{`nostr:note... or note... or nevent...`}
 </article>
 <!-- Enable for debugging: -->
 
