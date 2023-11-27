@@ -20,6 +20,7 @@
 		identifierList,
 		listNum
 	} from '$lib/stores/bookmarkEvents';
+	import PubCha from './PubCha.svelte';
 
 	export let isPageOwner: boolean;
 	export let note: Event;
@@ -263,6 +264,9 @@
 							/>
 						{/if}
 					{/await}
+				{:else if note.kind === 40}
+					<!---->
+					<PubCha text={note.content} id={note.id} {isPageOwner} {pubkey} />
 				{:else}<Content
 						text={note.content}
 						tag={note.tags}
