@@ -124,7 +124,7 @@
 				</div>
 				{#if $modalStore[0].meta.tagArray[0] === 'a' || $modalStore[0].meta.tagArray[0] === 'p'}
 					<button
-						class="btn-icon h-full"
+						class="btn-icon h-full dark:fill-white"
 						on:click={() => copyEncodedID($modalStore[0].meta.tagArray)}
 						>{@html copyIcon}</button
 					>
@@ -136,7 +136,7 @@
 			<div class="flex flex-wrap gap-2">
 				<button
 					type="button"
-					class="btn variant-filled-secondary p-1"
+					class="btn variant-filled-success p-1"
 					on:click={downloadJson}>Download Json</button
 				>
 				<button

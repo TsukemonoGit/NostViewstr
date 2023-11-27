@@ -114,7 +114,8 @@
     "invalidJson": "許可されていないファイル形式です。JSONファイルを選択してください",
     "selectJson": "JSONファイルを選択してください",
     "checkJson": "無効なJSONファイルです",
-    "failed_npub": "公開鍵を確認してください"
+    "failed_npub": "公開鍵を確認してください",
+    "invalidEmoji": "同じ名前の絵文字が存在します"
   },
   "icon_description": "アイコンについて"
 }
