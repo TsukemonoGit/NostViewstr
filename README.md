@@ -34,11 +34,12 @@ npm run build
 
 ##
 
-- [nostr logo] (https://github.com/mbarulli/nostr-logo)
+- [nostr_logo](https://github.com/mbarulli/nostr-logo)
 
-- [nostr-zap] (https://github.com/SamSamskies/nostr-zap)
+- [nostr-zap](https://github.com/SamSamskies/nostr-zap)
 
-- [nosey(ハッシュタグのリンク先に使用)] (https://github.com/akiomik/nosey]
+- [nosey](https://github.com/akiomik/nosey/) - ハッシュタグのリンク先に使用
 
-- [nostr band(プロフィール,ノートのリンク先に使用)] (https://nostr.band/
-  )
+- [nostr_band](https://nostr.band/) - プロフィール,ノートのリンク先に使用
+
+- [うにゅうハウス](https://unyu-house.vercel.app/) - チャンネルのリンク先
