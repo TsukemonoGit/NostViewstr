@@ -749,25 +749,6 @@
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
 {#if $bookmarkEvents[pubkey] && $bookmarkEvents[pubkey][kind] && $bookmarkEvents[pubkey][kind].length > 0}
-	<!-- <div
-		class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden top-0"
-		data-popup="popupPub"
-	>
-		<p>{$_('popup.pub')}</p>
-		<div
-			class="arrow variant-filled-secondary z-20 box-border overflow-hidden"
-		/>
-	</div>
-	<div
-		class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden top-0"
-		data-popup="popupPrv"
-	>
-		<p>{$_('popup.prv')}</p>
-		<div
-			class="arrow variant-filled-secondary z-20 box-border overflow-hidden"
-		/>
-	</div> -->
-
 	<!--header-->
 	<Header {kind} bind:bkm {pubkey} bind:viewEvent />
 

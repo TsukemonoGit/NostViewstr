@@ -20,12 +20,12 @@
 
 	export let metadata: Event;
 
-	export let menuMode: MenuMode;
-	export let myIndex: number | undefined;
+	//export let menuMode: MenuMode;
+	//export let myIndex: number | undefined;
 	export let tagArray: string[] | undefined;
-	export let DeleteNote: (e: CustomEvent<any>) => void;
-	export let MoveNote: (e: CustomEvent<any>) => void;
-	export let CheckNote: (e: CustomEvent<any>) => void;
+	//export let DeleteNote: (e: CustomEvent<any>) => void;
+	//export let MoveNote: (e: CustomEvent<any>) => void;
+	//export let CheckNote: (e: CustomEvent<any>) => void;
 
 	//const dispatch = createEventDispatcher();
 
@@ -65,9 +65,9 @@
 			response: (res) => {
 				if (res && res.openList) {
 					//storeのリセット
-					$bookmarkEvents = [];
+					// $bookmarkEvents = [];
 
-					$identifierList = [];
+					// $identifierList = [];
 					$listNum = 0;
 
 					goto(
@@ -112,104 +112,104 @@
 <!--{#if $searchRelays}-->
 <!-- <NostrApp relays={$searchRelays}> -->
 <!-- ノート | ボタン群-->
-<div
+<!-- <div
 	class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
->
-	{#await metadataContent(metadata.content) then content}
-		{#if content !== undefined}
-			<!-- icon | その他-->
-			<div class="pl-1 grid grid-cols-[auto_1fr] gap-1.5">
-				<!--icon-->
-				{#if $iconView && metadata}
+> -->
+{#await metadataContent(metadata.content) then content}
+	{#if content !== undefined}
+		<!-- icon | その他-->
+		<div class="pl-1 grid grid-cols-[auto_1fr] gap-1.5">
+			<!--icon-->
+			{#if $iconView && metadata}
+				<div
+					class="w-12 h-12 rounded-full flex justify-center overflow-hidden bg-surface-500/25 mt-1"
+				>
+					{#if content.picture}
+						<img
+							class="max-w-12 max-h-12 object-contain justify-center"
+							src={content.picture}
+							alt="avatar"
+						/>
+					{/if}
+				</div>
+			{:else}
+				<!--iconなし-->
+				<div />
+			{/if}
+
+			<!-- profile | note -->
+			<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
+				<!-- name | display_name | time -->
+				<div
+					class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix overflow-x-hidden"
+				>
+					<!--profile-->
+
+					<!--name-->
+					<div class="truncate wid justify-items-end">
+						<button
+							class="text-secondary-600 dark:text-blue-500"
+							on:click={() => {
+								OpenProfile(metadata);
+							}}
+							><u
+								>{#if content.name !== ''}{content.name}
+								{:else}
+									{nip19.npubEncode(metadata.pubkey).slice(0, 12)}:{nip19
+										.npubEncode(metadata.pubkey)
+										.slice(-4)}
+								{/if}
+							</u></button
+						>
+					</div>
+					<!--display_name-->
 					<div
-						class="w-12 h-12 rounded-full flex justify-center overflow-hidden bg-surface-500/25 mt-1"
+						class="text-left self-end text-sm h-fix wi truncate justify-items-end"
 					>
-						{#if content.picture}
-							<img
-								class="max-w-12 max-h-12 object-contain justify-center"
-								src={content.picture}
-								alt="avatar"
-							/>
+						{#if content.display_name}
+							{content.display_name}
 						{/if}
 					</div>
-				{:else}
-					<!--iconなし-->
-					<div />
-				{/if}
-
-				<!-- profile | note -->
-				<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
-					<!-- name | display_name | time -->
-					<div
-						class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix overflow-x-hidden"
-					>
-						<!--profile-->
-
-						<!--name-->
-						<div class="truncate wid justify-items-end">
-							<button
-								class="text-secondary-600 dark:text-blue-500"
-								on:click={() => {
-									OpenProfile(metadata);
-								}}
-								><u
-									>{#if content.name !== ''}{content.name}
-									{:else}
-										{nip19.npubEncode(metadata.pubkey).slice(0, 12)}:{nip19
-											.npubEncode(metadata.pubkey)
-											.slice(-4)}
-									{/if}
-								</u></button
-							>
-						</div>
-						<!--display_name-->
-						<div
-							class="text-left self-end text-sm h-fix wi truncate justify-items-end"
+					<!--time-->
+					<div class="min-w-max">
+						<button
+							class="text-sm underline decoration-secondary-500"
+							on:click={() => {
+								if (tagArray) {
+									OpenNoteJson(metadata, tagArray);
+								}
+							}}
+							>{new Date(metadata.created_at * 1000).toLocaleString([], {
+								year: 'numeric',
+								month: '2-digit',
+								day: '2-digit',
+								hour: '2-digit',
+								minute: '2-digit'
+							})}</button
 						>
-							{#if content.display_name}
-								{content.display_name}
-							{/if}
-						</div>
-						<!--time-->
-						<div class="min-w-max">
-							<button
-								class="text-sm underline decoration-secondary-500"
-								on:click={() => {
-									if (tagArray) {
-										OpenNoteJson(metadata, tagArray);
-									}
-								}}
-								>{new Date(metadata.created_at * 1000).toLocaleString([], {
-									year: 'numeric',
-									month: '2-digit',
-									day: '2-digit',
-									hour: '2-digit',
-									minute: '2-digit'
-								})}</button
-							>
-						</div>
 					</div>
+				</div>
 
-					<!--note-->
+				<!--note-->
 
-					<!--tag?-->
+				<!--tag?-->
 
-					<!--note-->
-					<div class="break-all box-border whitespace-break-spaces">
-						{content.about}
-						<!-- <Content
+				<!--note-->
+				<div class="break-all box-border whitespace-break-spaces">
+					{content.about}
+					<!-- <Content
 					text={note.content}
 					tag={note.tags}
 					id={note.id}
 					view={$allView}
 					{isPageOwner}
 				/> -->
-					</div>
 				</div>
 			</div>
+		</div>
 
-			<!--ボタン群-->
-			<MenuButtons
+		<!--ボタン群-->
+		<!-- <MenuButtons
 				{myIndex}
 				{tagArray}
 				note={metadata}
@@ -218,9 +218,9 @@
 				on:DeleteNote={DeleteNote}
 				on:MoveNote={MoveNote}
 				on:CheckNote={CheckNote}
-			/>
-		{/if}
-	{/await}
-</div>
+			/> -->
+	{/if}
+{/await}
+<!-- </div> -->
 <!-- </NostrApp> -->
 <!--{/if}-->

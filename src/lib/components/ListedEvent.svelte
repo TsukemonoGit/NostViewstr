@@ -12,6 +12,7 @@
 	import { isMulti } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
 	import ProfileCard from './ProfileCard.svelte';
+	import Emoji from './Emoji.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -84,9 +85,7 @@
 		Math.min($pageNum, Math.floor($listSize / $amount)) * $amount,
 		($pageNum + 1) * Math.min($amount, $listSize)
 	);
-	//$: console.log(viewPage);
-	//$: console.log(Math.min($pageNum, Math.floor($listSize / $amount)) * $amount);
-	//$: console.log(($pageNum + 1) * Math.min($amount, $listSize));
+
 	$: menuSearch = $isMulti
 		? MenuMode.Multi
 		: isOwner
@@ -100,24 +99,6 @@
 </script>
 
 {#if viewPage && viewPage.length > 0}
-	<!-- <div class="card p-1 variant-filled-secondary z-20 top-0" data-popup="popupShare">
-		<p>{$_('popup.Share')}</p>
-		<div class="arrow variant-filled-secondary z-20" />
-	</div>
-
-	<div class="card p-1 variant-filled-secondary z-20 top-0" data-popup="popupOpen">
-		<p>{$_('popup.open')}</p>
-		<div class="arrow variant-filled-secondary z-20 " />
-	</div>
-	<div class="card p-1 variant-filled-secondary z-20 top-0" data-popup="popupMove">
-		<p>{$_('popup.move')}</p>
-		<div class="arrow variant-filled-secondary z-20" />
-	</div>
-	<div class="card p-1 variant-filled-secondary z-20 top-0" data-popup="popupDelete">
-		<p>{$_('popup.delete')}</p>
-		<div class="arrow variant-filled-secondary z-20" />
-	</div> -->
-
 	{#each viewPage as tag, index}
 		{#await getIdByTag(tag)}
 			<!--loading a タグ　のなかみ-->
@@ -125,270 +106,366 @@
 				{tag}
 			</div>
 		{:then { id, filter, kind }}
-			{#if tag[0] === 'e'}
-				<!-- {#if $searchRelays && $searchRelays.length > 0}
-					<NostrApp relays={$searchRelays}> -->
-				<Text queryKey={[id]} {id} let:text>
-					<SearchCard
-						slot="loading"
-						{filter}
-						message={`loading [${tag}]`}
-						isPageOwner={isOwner}
-						menuMode={menuSearch}
-						tagArray={tag}
-						myIndex={index}
-						pubkey={listEvent.pubkey}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-					/>
-
-					<SearchCard
-						slot="error"
-						{filter}
-						message={`error [${tag}]`}
-						isPageOwner={isOwner}
-						menuMode={menuSearch}
-						tagArray={tag}
-						myIndex={index}
-						pubkey={listEvent.pubkey}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-					/>
-
-					<SearchCard
-						slot="nodata"
-						{filter}
-						message={`not found [${tag}]`}
-						isPageOwner={isOwner}
-						menuMode={menuSearch}
-						tagArray={tag}
-						myIndex={index}
-						pubkey={listEvent.pubkey}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-					/>
-
-					<Metadata
-						queryKey={['metadata', text.pubkey]}
-						pubkey={text.pubkey}
-						let:metadata
-					>
-						<EventCard
-							slot="loading"
-							isPageOwner={isOwner}
-							menuMode={menuEvent}
-							tagArray={tag}
-							note={text}
-							metadata={undefined}
-							myIndex={index}
-							pubkey={listEvent.pubkey}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-						<EventCard
-							slot="error"
-							isPageOwner={isOwner}
-							menuMode={menuEvent}
-							tagArray={tag}
-							note={text}
-							metadata={undefined}
-							myIndex={index}
-							pubkey={listEvent.pubkey}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-						<EventCard
-							slot="nodata"
-							isPageOwner={isOwner}
-							menuMode={menuEvent}
-							tagArray={tag}
-							note={text}
-							metadata={undefined}
-							myIndex={index}
-							pubkey={listEvent.pubkey}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-
-						<EventCard
-							isPageOwner={isOwner}
-							menuMode={menuEvent}
-							tagArray={tag}
-							note={text}
-							{metadata}
-							myIndex={index}
-							pubkey={listEvent.pubkey}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-					</Metadata>
-				</Text>
-				<!-- </NostrApp> -->
-				<!--ノートごとにNostrAppはあかんやろ
-					修正NostrAppはListedEventListへ-->
-				<!-- {:else}
-				
-					<SearchCard
-						{filter}
-						message={`not found [${tag}]`}
-						isPageOwner={isOwner}
-						menuMode={menuSearch}
-						tagArray={tag}
-						myIndex={index}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-					/> 
-				{/if}-->
-			{:else if tag[0] === 'a'}
-				<!-- {#if $searchRelays && $searchRelays.length > 0}
-					<NostrApp relays={$searchRelays}> -->
-				<UniqueEventList queryKey={tag} filters={[filter]} let:events>
-					<SearchCard
-						slot="loading"
-						{filter}
-						message={`loading [${tag}]`}
-						isPageOwner={isOwner}
-						menuMode={menuSearch}
-						tagArray={tag}
-						myIndex={index}
-						pubkey={listEvent.pubkey}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-					/>
-
-					<SearchCard
-						slot="error"
-						{filter}
-						message={`error [${tag}]`}
-						isPageOwner={isOwner}
-						menuMode={menuSearch}
-						tagArray={tag}
-						myIndex={index}
-						pubkey={listEvent.pubkey}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-					/>
-
-					<SearchCard
-						slot="nodata"
-						{filter}
-						message={`not found [${tag}]`}
-						isPageOwner={isOwner}
-						menuMode={menuSearch}
-						tagArray={tag}
-						myIndex={index}
-						pubkey={listEvent.pubkey}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-					/>
-
-					<Metadata
-						queryKey={['metadata', uniqueEvent(events).pubkey]}
-						pubkey={uniqueEvent(events).pubkey}
-						let:metadata
-					>
-						<EventCard
-							slot="loading"
-							isPageOwner={isOwner}
-							menuMode={menuEvent}
-							tagArray={tag}
-							note={uniqueEvent(events)}
-							metadata={undefined}
-							myIndex={index}
-							pubkey={listEvent.pubkey}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-						<EventCard
-							slot="error"
-							isPageOwner={isOwner}
-							menuMode={menuEvent}
-							tagArray={tag}
-							note={uniqueEvent(events)}
-							metadata={undefined}
-							myIndex={index}
-							pubkey={listEvent.pubkey}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-						<EventCard
-							slot="nodata"
-							isPageOwner={isOwner}
-							menuMode={menuEvent}
-							tagArray={tag}
-							note={uniqueEvent(events)}
-							metadata={undefined}
-							myIndex={index}
-							pubkey={listEvent.pubkey}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-
-						<EventCard
-							isPageOwner={isOwner}
-							menuMode={menuEvent}
-							tagArray={tag}
-							note={uniqueEvent(events)}
-							{metadata}
-							myIndex={index}
-							pubkey={listEvent.pubkey}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-						/>
-					</Metadata>
-				</UniqueEventList>
-				<!-- </NostrApp> -->
-				<!--リレー設定ないとき-->
-				<!-- {:else}
-				
-					<SearchCard
-						{filter}
-						message={`not found [${tag}]`}
-						isPageOwner={isOwner}
-						menuMode={menuSearch}
-						tagArray={tag}
-						myIndex={index}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-					/> 
-				{/if}-->
-			{:else if tag[0] === 'p'}
-				<Metadata queryKey={['metadata', tag[1]]} pubkey={tag[1]} let:metadata>
-					<div slot="loading">{JSON.stringify(tag)}</div>
-					<div slot="error">{JSON.stringify(tag)}</div>
-					<div slot="nodata">{JSON.stringify(tag)}</div>
-					<ProfileCard
-						menuMode={menuEvent}
-						tagArray={tag}
-						{metadata}
-						myIndex={index}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-					/>
-				</Metadata>
-			{:else if tag[0] === 'd' || tag[0] === 'title' || tag[0] === 'image' || tag[0] === 'description'}
+			{#if tag[0] === 'd' || tag[0] === 'title' || tag[0] === 'image' || tag[0] === 'description'}
 				<!--なんもしない-->
 			{:else}
-				<!--a,e,d以外あとでかく-->
-				<div class="z-0 card drop-shadow px-1 py-1 my-0.5 break-all">
-					<div class="grid grid-cols-[1fr_auto]">
+				<!-- ノート | ボタン群-->
+
+				{#if tag[0] === 'e'}
+					<!-- {#if $searchRelays && $searchRelays.length > 0}
+					<NostrApp relays={$searchRelays}> -->
+					<Text queryKey={[id]} {id} let:text>
+						<div
+							slot="loading"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							<SearchCard
+								{filter}
+								message={`loading [${tag}]`}
+								isPageOwner={isOwner}
+								myIndex={index}
+								pubkey={listEvent.pubkey}
+							/>
+							<MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={undefined}
+								menuMode={menuSearch}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
+						<div
+							slot="error"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							<SearchCard
+								{filter}
+								message={`error [${tag}]`}
+								isPageOwner={isOwner}
+								myIndex={index}
+								pubkey={listEvent.pubkey}
+							/>
+							<MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={undefined}
+								menuMode={menuSearch}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
+						<div
+							slot="nodata"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							<SearchCard
+								{filter}
+								message={`not found [${tag}]`}
+								isPageOwner={isOwner}
+								myIndex={index}
+								pubkey={listEvent.pubkey}
+							/><MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={undefined}
+								menuMode={menuSearch}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
+
+						<Metadata
+							queryKey={['metadata', text.pubkey]}
+							pubkey={text.pubkey}
+							let:metadata
+						>
+							<div
+								slot="loading"
+								class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							>
+								<EventCard
+									isPageOwner={isOwner}
+									tagArray={tag}
+									note={text}
+									metadata={undefined}
+									pubkey={listEvent.pubkey}
+								/><MenuButtons
+									myIndex={index}
+									tagArray={tag}
+									note={text}
+									menuMode={menuEvent}
+									on:DeleteNote={DeleteNote}
+									on:MoveNote={MoveNote}
+									on:CheckNote={CheckNote}
+								/>
+							</div>
+							<div
+								slot="error"
+								class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							>
+								<EventCard
+									isPageOwner={isOwner}
+									tagArray={tag}
+									note={text}
+									metadata={undefined}
+									pubkey={listEvent.pubkey}
+								/><MenuButtons
+									myIndex={index}
+									tagArray={tag}
+									note={text}
+									menuMode={menuEvent}
+									on:DeleteNote={DeleteNote}
+									on:MoveNote={MoveNote}
+									on:CheckNote={CheckNote}
+								/>
+							</div>
+							<div
+								slot="nodata"
+								class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							>
+								<EventCard
+									isPageOwner={isOwner}
+									tagArray={tag}
+									note={text}
+									metadata={undefined}
+									pubkey={listEvent.pubkey}
+								/><MenuButtons
+									myIndex={index}
+									tagArray={tag}
+									note={text}
+									menuMode={menuEvent}
+									on:DeleteNote={DeleteNote}
+									on:MoveNote={MoveNote}
+									on:CheckNote={CheckNote}
+								/>
+							</div>
+							<div
+								class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							>
+								<EventCard
+									isPageOwner={isOwner}
+									tagArray={tag}
+									note={text}
+									{metadata}
+									pubkey={listEvent.pubkey}
+								/>
+								<MenuButtons
+									myIndex={index}
+									tagArray={tag}
+									note={text}
+									menuMode={menuEvent}
+									on:DeleteNote={DeleteNote}
+									on:MoveNote={MoveNote}
+									on:CheckNote={CheckNote}
+								/>
+							</div>
+						</Metadata>
+					</Text>
+				{:else if tag[0] === 'a'}
+					<!-- {#if $searchRelays && $searchRelays.length > 0}
+					<NostrApp relays={$searchRelays}> -->
+					<UniqueEventList queryKey={tag} filters={[filter]} let:events>
+						<div
+							slot="loading"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							<SearchCard
+								{filter}
+								message={`loading [${tag}]`}
+								isPageOwner={isOwner}
+								myIndex={index}
+								pubkey={listEvent.pubkey}
+							/><MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={undefined}
+								menuMode={menuSearch}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
+						<div
+							slot="error"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							<SearchCard
+								{filter}
+								message={`error [${tag}]`}
+								isPageOwner={isOwner}
+								myIndex={index}
+								pubkey={listEvent.pubkey}
+							/><MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={undefined}
+								menuMode={menuSearch}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
+						<div
+							slot="nodata"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							<SearchCard
+								{filter}
+								message={`not found [${tag}]`}
+								isPageOwner={isOwner}
+								myIndex={index}
+								pubkey={listEvent.pubkey}
+							/>
+							<MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={undefined}
+								menuMode={menuSearch}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
+
+						<Metadata
+							queryKey={['metadata', uniqueEvent(events).pubkey]}
+							pubkey={uniqueEvent(events).pubkey}
+							let:metadata
+						>
+							<div
+								slot="loading"
+								class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							>
+								<EventCard
+									isPageOwner={isOwner}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									metadata={undefined}
+									pubkey={listEvent.pubkey}
+								/><MenuButtons
+									myIndex={index}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									menuMode={menuEvent}
+									on:DeleteNote={DeleteNote}
+									on:MoveNote={MoveNote}
+									on:CheckNote={CheckNote}
+								/>
+							</div>
+							<div
+								slot="error"
+								class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							>
+								<EventCard
+									isPageOwner={isOwner}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									metadata={undefined}
+									pubkey={listEvent.pubkey}
+								/><MenuButtons
+									myIndex={index}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									menuMode={menuEvent}
+									on:DeleteNote={DeleteNote}
+									on:MoveNote={MoveNote}
+									on:CheckNote={CheckNote}
+								/>
+							</div>
+							<div
+								slot="nodata"
+								class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							>
+								<EventCard
+									isPageOwner={isOwner}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									metadata={undefined}
+									pubkey={listEvent.pubkey}
+								/><MenuButtons
+									myIndex={index}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									menuMode={menuEvent}
+									on:DeleteNote={DeleteNote}
+									on:MoveNote={MoveNote}
+									on:CheckNote={CheckNote}
+								/>
+							</div>
+							<div
+								class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							>
+								<EventCard
+									isPageOwner={isOwner}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									{metadata}
+									pubkey={listEvent.pubkey}
+								/>
+								<MenuButtons
+									myIndex={index}
+									tagArray={tag}
+									note={uniqueEvent(events)}
+									menuMode={menuEvent}
+									on:DeleteNote={DeleteNote}
+									on:MoveNote={MoveNote}
+									on:CheckNote={CheckNote}
+								/>
+							</div>
+						</Metadata>
+					</UniqueEventList>
+				{:else if tag[0] === 'p'}
+					<Metadata
+						queryKey={['metadata', tag[1]]}
+						pubkey={tag[1]}
+						let:metadata
+					>
+						<div slot="loading">{JSON.stringify(tag)}</div>
+						<div slot="error">{JSON.stringify(tag)}</div>
+						<div slot="nodata">{JSON.stringify(tag)}</div>
+						<div
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							<ProfileCard {metadata} tagArray={tag} />
+							<MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={metadata}
+								menuMode={menuEvent}
+								share={false}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
+					</Metadata>
+				{:else if tag[0] === 'emoji'}
+					<!---->
+					<div
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+					>
+						<Emoji tagArray={tag} />
+
+						<MenuButtons
+							myIndex={index}
+							tagArray={tag}
+							note={undefined}
+							menuMode={isOwner ? MenuMode.Owner : MenuMode.none}
+							on:DeleteNote={DeleteNote}
+							on:MoveNote={MoveNote}
+							on:CheckNote={CheckNote}
+						/>
+					</div>
+				{:else}
+					<!--a,e,d以外あとでかく-->
+
+					<div
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+					>
 						{JSON.stringify(tag)}
 
 						<MenuButtons
@@ -401,7 +478,7 @@
 							on:CheckNote={CheckNote}
 						/>
 					</div>
-				</div>
+				{/if}
 			{/if}
 		{/await}
 	{/each}

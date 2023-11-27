@@ -33,9 +33,6 @@
 			const decode = nip19.decode(input);
 			if (decode.type === 'npub') {
 				localStorage.setItem('npub', decode.data);
-				if ($bookmarkEvents && $bookmarkEvents.length > 0) {
-					$bookmarkEvents = [];
-				}
 
 				goto(`./${input}/${kind}`);
 			} else if (decode.type === 'nsec') {

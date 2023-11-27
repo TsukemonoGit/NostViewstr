@@ -5,7 +5,7 @@
 
 	const clickDefault = () => {
 		//bookmarkEventsのしょきか
-		$bookmarkEvents = [];
+
 		iconView.set(true);
 		URLPreview.set(true);
 		settings.set(true);
@@ -13,7 +13,7 @@
 
 	const clickLight = () => {
 		//bookmarkEventsのしょきか
-		$bookmarkEvents = [];
+
 		iconView.set(false);
 		URLPreview.set(false);
 		settings.set(true);
