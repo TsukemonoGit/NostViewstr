@@ -106,6 +106,10 @@
 	};
 
 	export async function bkminit(pub: string) {
+		$listNum = 0;
+		$pageNum = 0;
+		$isMulti = false;
+		bkm = 'pub';
 		console.log('bkminit');
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
 			$pubkey_viewer = await getPub();
