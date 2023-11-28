@@ -123,6 +123,7 @@
 	};
 
 	export async function bkminit(pub: string) {
+		$listNum = 0;
 		console.log('bkminit');
 
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
