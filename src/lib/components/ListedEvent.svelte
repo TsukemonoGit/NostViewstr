@@ -459,7 +459,7 @@
 							myIndex={index}
 							tagArray={tag}
 							note={undefined}
-							menuMode={isOwner ? MenuMode.Owner : MenuMode.none}
+							menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
 							on:DeleteNote={DeleteNote}
 							on:MoveNote={MoveNote}
 							on:CheckNote={CheckNote}
