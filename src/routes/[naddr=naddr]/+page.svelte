@@ -51,6 +51,11 @@
 {#if !settings}
 	<Settings {settingFunc} />
 {:else}
-	<ListedEventList pubkey={data.pubkey} {kind} {identifier} isNaddr={true} />
-	<FooterMenu pubkey={data.pubkey} {kind} naddr={true} />
+	<ListedEventList
+		bind:pubkey={data.pubkey}
+		{kind}
+		{identifier}
+		isNaddr={true}
+	/>
+	<FooterMenu bind:pubkey={data.pubkey} {kind} naddr={true} />
 {/if}

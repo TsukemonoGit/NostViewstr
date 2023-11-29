@@ -47,6 +47,10 @@
 		</div>
 	</div>
 {:else}
-	<ListedEventList pubkey={data.pubkey} kind={data.kind} isNaddr={false} />
-	<FooterMenu pubkey={data.pubkey} kind={data.kind} />
+	<ListedEventList
+		bind:pubkey={data.pubkey}
+		bind:kind={data.kind}
+		isNaddr={false}
+	/>
+	<FooterMenu bind:pubkey={data.pubkey} bind:kind={data.kind} />
 {/if}

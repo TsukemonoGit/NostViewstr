@@ -196,6 +196,7 @@
 			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
 				<NostrApp relays={$relaySet[pubkey].searchRelays}>
 					<ListedEvent
+						{pubkey}
 						listEvent={viewEvent}
 						{DeleteNote}
 						{MoveNote}

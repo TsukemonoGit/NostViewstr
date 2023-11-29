@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { relaySet, type RelayConfig } from '$lib/stores/relays';
 	import { _ } from 'svelte-i18n';
-	import { modalStore, toastStore } from '$lib/stores/store';
-	import { LightSwitch, SlideToggle, clipboard } from '@skeletonlabs/skeleton';
+	import { modalStore } from '$lib/stores/store';
+	import { LightSwitch, SlideToggle } from '@skeletonlabs/skeleton';
 
 	import loginIcon from '@material-design-icons/svg/round/login.svg?raw';
 	import shareIcon from '@material-design-icons/svg/round/chat.svg?raw';
@@ -19,10 +19,10 @@
 		iconView,
 		pubkey_viewer
 	} from '$lib/stores/settings';
-	import githubIcon from '$lib/assets/github-mark.png';
+
 	import githubIconWhite from '$lib/assets/github-mark-white.png';
 	import { nostrIcon, prvIcon, pubIcon } from '$lib/components/icons';
-	import type { Nostr } from 'nosvelte';
+
 	export let parent: any;
 
 	let res: { share: boolean; openJson: boolean } = {
@@ -40,20 +40,6 @@
 	const cHeader = 'text-2xl font-bold';
 	//	let copyData: string = 'test';
 	let copied = false;
-	// const adata: nip19.AddressPointer = {
-	// 	identifier: $identifierList[$listNum]?.identifier ?? '',
-	// 	pubkey: $bookmarkEvents[$listNum].pubkey,
-	// 	kind: $bookmarkEvents[$listNum].kind,
-	// 	relays: $bookmarkRelays
-	// };
-	// copyData = nip19.naddrEncode(adata);
-	// function onClickHandler(): void {
-	// 	console.log(copyData);
-	// 	copied = true;
-	// 	setTimeout(() => {
-	// 		copied = false;
-	// 	}, 1000);
-	// }
 
 	async function onClickLogin() {
 		try {
@@ -75,12 +61,6 @@
 	}
 	let warningToggle: boolean = $allView;
 	$: $allView = warningToggle;
-
-	let relaySetInfo: RelayConfig;
-
-	$: if ($modalStore[0]?.value?.pubkey) {
-		relaySetInfo = $relaySet[$modalStore[0].value.pubkey];
-	}
 </script>
 
 {#if $modalStore[0]}
@@ -135,57 +115,58 @@
 			>
 		</div> -->
 		<!--リレーの情報たち-->
-		<div>
-			{$_('modal.info.relay.title')}
-			<div class="card p-3">
-				{#if relaySetInfo.relayEvent}
-					<div class="flex gap-3">
-						<button
-							class="underline decoration-secondary-400"
-							on:click={() => {
-								res.openJson = true;
-								onFormSubmit();
-							}}
-						>
-							kind: {relaySetInfo.relayEvent.kind}
-						</button>
+		{#if $modalStore[0].value?.relaySet}
+			<div>
+				{$_('modal.info.relay.title')}
+				<div class="card p-3">
+					{#if $modalStore[0].value.relaySet.relayEvent}
+						<div class="flex gap-3">
+							<button
+								class="underline decoration-secondary-400"
+								on:click={() => {
+									res.openJson = true;
+									onFormSubmit();
+								}}
+							>
+								kind: {$modalStore[0].value.relaySet.relayEvent.kind}
+							</button>
 
-						{new Date(relaySetInfo.relayEvent.created_at * 1000).toLocaleString(
-							[],
-							{
+							{new Date(
+								$modalStore[0].value.relaySet.relayEvent.created_at * 1000
+							).toLocaleString([], {
 								year: 'numeric',
 								month: '2-digit',
 								day: '2-digit',
 								hour: '2-digit',
 								minute: '2-digit'
-							}
-						)}
-					</div>
-				{/if}
-				<p class="pt-1">{$_('modal.info.relay.list')}</p>
-				<ol
-					class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
-				>
-					{#each relaySetInfo.bookmarkRelays as relays, index}
-						<li>
-							<span>{index + 1}.</span><span class="break-all">{relays}</span>
-						</li>
-					{/each}
-				</ol>
+							})}
+						</div>
+					{/if}
 
-				<p class="pt-1">{$_('modal.info.relay.search')}</p>
-				<ol
-					class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto px-2"
-				>
-					{#each relaySetInfo.searchRelays as relays, index}
-						<li>
-							<span>{index + 1}.</span><span class="break-all">{relays}</span>
-						</li>
-					{/each}
-				</ol>
+					<p class="pt-1">{$_('modal.info.relay.list')}</p>
+					<ol
+						class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
+					>
+						{#each $modalStore[0].value.relaySet.bookmarkRelays as relay, index}
+							<li>
+								<span>{index + 1}.</span><span class="break-all">{relay}</span>
+							</li>
+						{/each}
+					</ol>
+
+					<p class="pt-1">{$_('modal.info.relay.search')}</p>
+					<ol
+						class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto px-2"
+					>
+						{#each $modalStore[0].value.relaySet.searchRelays as relay, index}
+							<li>
+								<span>{index + 1}.</span><span class="break-all">{relay}</span>
+							</li>
+						{/each}
+					</ol>
+				</div>
 			</div>
-		</div>
-
+		{/if}
 		<hr />
 		<div class="p-0 m-0">{$_('icon_description')}</div>
 		<div class="flex flex-wrap">

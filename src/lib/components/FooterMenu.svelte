@@ -328,50 +328,51 @@
 		// Pass a reference to your custom component
 		ref: ModalInfo
 	};
-	const modal: ModalSettings = {
-		type: 'component',
-		component: infoComponent,
-		title: $_('modal.info.title'),
-		value: { pubkey: pubkey },
-		response: (res) => {
-			if (res) {
-				if (res.share) {
-					const url = window.location.href;
-					const tags = [['r', url]];
-					console.log(tags);
-					const modal: ModalSettings = {
-						type: 'component',
-						component: postNoteModalComponent,
-						title: $_('modal.postNote.title'),
-						body: ``,
-						value: {
-							content: `\r\n${url}\r\n`,
-							tags: tags
-						},
-						response: async (res) => {
-							console.log(res);
-							//postNoteまでmodalでやるらしい
-						}
-					};
-					modalStore.trigger(modal);
-				} else if (res.openJson) {
-					const modal = {
-						type: 'component' as const,
-						title: 'Event Json',
-						backdropClasses: '!bg-surface-400/80',
-						meta: {
-							note: $relaySet[pubkey].relayEvent
-						},
-
-						component: jsonModalComponent
-					};
-					modalStore.trigger(modal);
-				}
-			}
-		}
-	};
 
 	function onClickInfo() {
+		const modal: ModalSettings = {
+			type: 'component',
+			component: infoComponent,
+			title: $_('modal.info.title'),
+			value: { pubkey: pubkey, relaySet: $relaySet[pubkey] },
+			response: (res) => {
+				if (res) {
+					if (res.share) {
+						const url = window.location.href;
+						const tags = [['r', url]];
+						console.log(tags);
+						const modal: ModalSettings = {
+							type: 'component',
+							component: postNoteModalComponent,
+							title: $_('modal.postNote.title'),
+							body: ``,
+							value: {
+								content: `\r\n${url}\r\n`,
+								tags: tags
+							},
+							response: async (res) => {
+								console.log(res);
+								//postNoteまでmodalでやるらしい
+							}
+						};
+						modalStore.trigger(modal);
+					} else if (res.openJson) {
+						const modal = {
+							type: 'component' as const,
+							title: 'Event Json',
+							backdropClasses: '!bg-surface-400/80',
+							meta: {
+								note: $relaySet[pubkey].relayEvent
+							},
+
+							component: jsonModalComponent
+						};
+						modalStore.trigger(modal);
+					}
+				}
+			}
+		};
+
 		modalStore.trigger(modal);
 	}
 
