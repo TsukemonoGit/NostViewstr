@@ -7,8 +7,8 @@
 	import { kinds } from '$lib/kind';
 
 	export let parent: any;
-	let selectValue: number;
-	let kind: number;
+	let selectValue: string = Object.keys(kinds)[0];
+	//let kind: number;
 
 	let profileContent: {
 		[x: string]: string | null | undefined;
@@ -69,10 +69,10 @@
 		parent.onClose();
 	}
 
-	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
-		kind = Number(event.currentTarget.value);
-		console.log(kind);
-	}
+	// function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
+	// 	kind = Number(event.currentTarget.value);
+	// 	console.log(kind);
+	// }
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -125,11 +125,7 @@
 		<div class="grid grid-cols-[auto_auto] gap-2">
 			<div class="grid grid-row-[auto_auto] gap-2">
 				<div class="flex">
-					<select
-						class="input p-1"
-						bind:value={selectValue}
-						on:change={handleKindChange}
-					>
+					<select class="input p-1" bind:value={selectValue}>
 						{#each Object.keys(kinds) as value (value)}
 							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
 						{/each}
@@ -139,7 +135,7 @@
 						class="btn variant-filled-secondary p-1"
 						on:click={() => {
 							res.openList = true;
-							res.kind = kind;
+							res.kind = Number(selectValue);
 							onFormSubmit();
 						}}>open Lists</button
 					>
