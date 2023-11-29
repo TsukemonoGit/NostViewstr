@@ -251,7 +251,7 @@
 
 			{#if $identifierList && $identifierList[pubkey] && $identifierList[pubkey][kind] && $identifierList[pubkey][kind][$listNum] && $identifierList[pubkey][kind][$listNum].identifier}
 				<div class="text-xs">
-					{#if kind === 30003}
+					{#if kind === 30003 && !JSON}
 						{#if !$identifierList[pubkey][kind][$listNum].title || $identifierList[pubkey][kind][$listNum].title === ''}
 							<button
 								class=" flex items-center pt-1 overflow-hidden min-w-[7em] text-left"
@@ -311,13 +311,13 @@
 				</div>
 			{:else}
 				<!---->
-				<div class="h4 self-center w-fit">
-					{#if JSON}【JSON MODE】 {/if}kind:{kind}
+				<div class="h5 self-center w-fit break-all">
+					{#if JSON}<div class="h6">【JSON MODE】</div> {/if}kind:{kind}
 					{#if kinds[kind]} ({kinds[kind]}) {/if}
 				</div>
 			{/if}
 		</div>
-		<div class="grid grid-cols-[auto_auto] p-1">
+		<div class="grid grid-cols-[auto_auto] p-1 h-[4em]">
 			<button
 				class={bkm === 'pub' ? borderClassActive : borderClass}
 				disabled={bkm === 'pub'}
@@ -345,7 +345,7 @@
 			{/if}
 		</div>
 		{#if viewEvent !== undefined}
-			<div class=" grid grid-rows-[auto_auto] box-border">
+			<div class=" grid grid-rows-[auto_auto] box-border h-[4em]">
 				<div class=" place-self-end h6 truncate overflow-hidden">
 					{$_('created_at')}
 				</div>
@@ -371,7 +371,7 @@
 			</div>
 		{/if}
 		<button
-			class={'btn p-0 pr-2  arrow  '}
+			class={'btn p-0 pr-2  arrow  h-[4em]'}
 			on:click={async () => {
 				$nowProgress = true;
 				await updateBkmTag(pubkey, kind, $listNum);
