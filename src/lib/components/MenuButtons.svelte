@@ -126,19 +126,19 @@
 	<div class="grid grid-rows-[auto_1fr] w-14 pt-1">
 		<div>
 			<button
-				class="btn m-0 p-0 bg-surface-500"
+				class="btn m-0 p-0 bg-surface-500 w-fit"
 				on:click={shareNote}
 				disabled={!share}><Share /></button
 			>
 			<button
-				class="btn m-0 p-0 bg-surface-500"
+				class="btn m-0 p-0 bg-surface-500 w-fit"
 				on:click={() => handleClick(State.Move)}><Move /></button
 			>
 		</div>
 
 		<div>
 			<button
-				class="btn m-0 p-0 bg-surface-500"
+				class="btn m-0 p-0 bg-surface-500 w-fit"
 				disabled={note === undefined}
 				on:click={() => {
 					if (tagArray && note) {
@@ -148,7 +148,7 @@
 			>
 
 			<button
-				class="btn m-0 p-0 bg-surface-500"
+				class="btn m-0 p-0 bg-surface-500 w-fit"
 				on:click={() => {
 					handleClick(State.Delete);
 				}}><DeleteBtn /></button
@@ -157,15 +157,15 @@
 	</div>
 {:else if menuMode === MenuMode.Viewer}
 	<!--修正ボタンなし-->
-	<div class="flex flex-col">
+	<div class="flex flex-col w-7">
 		<button
-			class="btn m-0 p-0 mb-1 bg-surface-500"
+			class="btn m-0 p-0 mb-1 bg-surface-500 w-fit"
 			on:click={shareNote}
 			disabled={!share}><Share /></button
 		>
 		{#if note}
 			<button
-				class="btn m-0 p-0 bg-surface-500"
+				class="btn m-0 p-0 bg-surface-500 w-fit"
 				on:click={() => {
 					if (tagArray && note) {
 						windowOpen(note.id);
@@ -177,7 +177,7 @@
 {:else if menuMode === MenuMode.Multi}
 	<!--複数選択モード-->
 	<input
-		class="m-2 checkbox scale-125"
+		class="m-2 checkbox scale-125 w-fit"
 		type="checkbox"
 		checked={$checkedIndexList
 			.map((item) => item.index)
@@ -191,14 +191,14 @@
 	/>
 {:else if menuMode === MenuMode.other}<!--修正だけ（シェアなし）-->
 
-	<div class="flex flex-col">
+	<div class="flex flex-col w-fit">
 		<button
-			class="btn m-0 p-0 mb-1 bg-surface-500"
+			class="btn m-0 p-0 mb-1 bg-surface-500 w-fit"
 			on:click={() => handleClick(State.Move)}><Move /></button
 		>
 
 		<button
-			class="btn m-0 p-0 bg-surface-500"
+			class="btn m-0 p-0 bg-surface-500 w-fit"
 			on:click={() => {
 				handleClick(State.Delete);
 			}}><DeleteBtn /></button

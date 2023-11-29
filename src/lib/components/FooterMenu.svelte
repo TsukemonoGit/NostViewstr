@@ -4,8 +4,7 @@
 		allView,
 		isMulti,
 		nowProgress,
-		pubkey_viewer,
-		settings
+		pubkey_viewer
 	} from '$lib/stores/settings';
 	import type { Event as NostrEvent } from 'nostr-tools';
 	import Setting from '@material-design-icons/svg/round/settings.svg?raw';
@@ -26,7 +25,8 @@
 		bookmarkEvents,
 		checkedIndexList,
 		identifierList,
-		listNum
+		listNum,
+		type Identifiers
 	} from '$lib/stores/bookmarkEvents';
 	import {
 		ProgressRadial,
@@ -41,10 +41,11 @@
 	export let pubkey: string;
 	export let kind: number;
 	export let naddr: boolean = false;
+
 	//$: console.log(
 	//	`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
 	//);
-	$: last = Math.floor(($listSize - 1) / $amount);
+	$: last = $listSize === 0 ? 0 : Math.floor(($listSize - 1) / $amount);
 	function next() {
 		if ($pageNum < Math.floor(($listSize - 1) / $amount)) {
 			$pageNum++;
@@ -85,7 +86,7 @@
 				title: $_('modal.tagList.title'),
 				body: ``,
 				value: {
-					tagList: $identifierList,
+					tagList: $identifierList[pubkey][kind],
 					pubkey: pubkey
 				},
 				response: (res) => {
@@ -96,7 +97,8 @@
 						} else if (
 							res.index !== -1 &&
 							$bookmarkEvents !== undefined &&
-							$bookmarkEvents.length > 1
+							$bookmarkEvents[pubkey] &&
+							$bookmarkEvents[pubkey][kind].length > 1
 						) {
 							$listNum = res.index;
 						}
@@ -134,7 +136,7 @@
 			// Provide arbitrary metadata to your modal instance:
 			title: $_('modal.editTags.title'),
 
-			value: { selectedValue: 0, kind: kind },
+			value: { selectedValue: 0, kind: kind, pubkey: pubkey },
 			// Returns the updated response value
 			response: (res) => {
 				console.log(res);
@@ -152,7 +154,7 @@
 								title: $_('modal.deleteTag.title'),
 								body: `${$_('modal.deleteTag.body')}`,
 								value: {
-									tag: $identifierList[res.tagIndex].identifier
+									tag: $identifierList[pubkey][kind][res.tagIndex].identifier
 								},
 								response: async (res2) => {
 									//console.log(res);
@@ -216,12 +218,36 @@
 
 			const tmp = get(bookmarkEvents);
 			if (res.event !== undefined) {
-				if (tmp !== undefined) {
-					tmp.push(res.event);
+				if (tmp && tmp[pubkey][kind]) {
+					tmp[pubkey][kind].push(res.event);
 					bookmarkEvents.set(tmp);
 				} else {
-					bookmarkEvents.set([res.event]);
+					bookmarkEvents.set({ [pubkey]: { [kind]: [res.event] } });
 				}
+
+				//IdentifierListも更新する
+				const identifierListData = get(identifierList);
+
+				const tag = res.event.tags.find((tag) => tag[0] === 'd');
+				const title = res.event.tags.find((tag) => tag[0] === 'title');
+				const image = res.event.tags.find((tag) => tag[0] === 'image');
+				const description = res.event.tags.find(
+					(tag) => tag[0] === 'description'
+				);
+				const newIdentifierList: Identifiers = {
+					identifier: tag ? tag[1] : undefined,
+					title: title ? title[1] : undefined,
+					image: image ? image[1] : undefined,
+					description: description ? description[1] : undefined
+				};
+				if (identifierListData !== undefined) {
+					identifierListData[pubkey][kind].push(newIdentifierList);
+					identifierList.set(identifierListData);
+				} else {
+					identifierList.set({ [pubkey]: { [kind]: [newIdentifierList] } });
+				}
+				// identifierListData[pubkey][kind][num] = newIdentifierList;
+				// identifierList.set(identifierListData);
 			}
 		} else {
 			const t = {
@@ -239,7 +265,7 @@
 	async function deleteTag(tagIndex: any) {
 		console.log(tagIndex);
 		$nowProgress = true;
-		const bkm = get(bookmarkEvents) as Event[];
+		const bkm = get(bookmarkEvents)[pubkey][kind] as Event[];
 
 		const event: NostrEvent = {
 			id: '',
@@ -265,10 +291,13 @@
 			toastStore.trigger(t);
 
 			const tmp = get(bookmarkEvents);
-
+			const tmpId = get(identifierList);
 			if (tmp !== undefined) {
-				tmp.splice(tagIndex, 1); //削除
+				tmp[pubkey][kind].splice(tagIndex, 1); //削除
 				bookmarkEvents.set(tmp);
+				//IDリストも更新
+				tmpId[pubkey][kind].splice(tagIndex, 1); //削除
+				identifierList.set(tmpId);
 			} else {
 				//ないことはないと思う
 				console.log('えらー');
@@ -299,50 +328,51 @@
 		// Pass a reference to your custom component
 		ref: ModalInfo
 	};
-	const modal: ModalSettings = {
-		type: 'component',
-		component: infoComponent,
-		title: $_('modal.info.title'),
-		value: { pubkey: pubkey },
-		response: (res) => {
-			if (res) {
-				if (res.share) {
-					const url = window.location.href;
-					const tags = [['r', url]];
-					console.log(tags);
-					const modal: ModalSettings = {
-						type: 'component',
-						component: postNoteModalComponent,
-						title: $_('modal.postNote.title'),
-						body: ``,
-						value: {
-							content: `\r\n${url}\r\n`,
-							tags: tags
-						},
-						response: async (res) => {
-							console.log(res);
-							//postNoteまでmodalでやるらしい
-						}
-					};
-					modalStore.trigger(modal);
-				} else if (res.openJson) {
-					const modal = {
-						type: 'component' as const,
-						title: 'Event Json',
-						backdropClasses: '!bg-surface-400/80',
-						meta: {
-							note: $relaySet[pubkey].relayEvent
-						},
-
-						component: jsonModalComponent
-					};
-					modalStore.trigger(modal);
-				}
-			}
-		}
-	};
 
 	function onClickInfo() {
+		const modal: ModalSettings = {
+			type: 'component',
+			component: infoComponent,
+			title: $_('modal.info.title'),
+			value: { pubkey: pubkey, relaySet: $relaySet[pubkey] },
+			response: (res) => {
+				if (res) {
+					if (res.share) {
+						const url = window.location.href;
+						const tags = [['r', url]];
+						console.log(tags);
+						const modal: ModalSettings = {
+							type: 'component',
+							component: postNoteModalComponent,
+							title: $_('modal.postNote.title'),
+							body: ``,
+							value: {
+								content: `\r\n${url}\r\n`,
+								tags: tags
+							},
+							response: async (res) => {
+								console.log(res);
+								//postNoteまでmodalでやるらしい
+							}
+						};
+						modalStore.trigger(modal);
+					} else if (res.openJson) {
+						const modal = {
+							type: 'component' as const,
+							title: 'Event Json',
+							backdropClasses: '!bg-surface-400/80',
+							meta: {
+								note: $relaySet[pubkey].relayEvent
+							},
+
+							component: jsonModalComponent
+						};
+						modalStore.trigger(modal);
+					}
+				}
+			}
+		};
+
 		modalStore.trigger(modal);
 	}
 
@@ -354,57 +384,58 @@
 		multiButtonClass = $isMulti ? 'variant-ghost-secondary rounded-full ' : '';
 		$checkedIndexList = [];
 	}
+	export let disabled: boolean = false;
 </script>
 
-{#if $settings}
+<div
+	class=" fixed bottom-0 z-10 w-full inline-flex flex-row space-x-0 overflow-x-hidden h-10"
+>
 	<div
-		class=" fixed bottom-0 z-10 w-full inline-flex flex-row space-x-0 overflow-x-hidden h-10"
+		class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token; variant-filled-primary justify-center rounded-none sm:gap-5 gap-0"
 	>
-		<div
-			class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token; variant-filled-primary justify-center rounded-none sm:gap-5 gap-0"
-		>
-			{#if $nowProgress}
-				<!----><ProgressRadial
-					class="btn btn-sm "
-					meter="stroke-primary-300"
-					track="stroke-primary-300/30"
-					width={'w-14'}
-					stroke={60}
-				/>
-			{:else}
-				{#if !naddr}
-					<button
-						class={buttonClass}
-						on:click={openLists}
-						disabled={!(kind >= 30000 && kind < 40000)}>{@html menuIcon}</button
-					>
-				{/if}
+		{#if $nowProgress}
+			<!----><ProgressRadial
+				class="btn btn-sm "
+				meter="stroke-primary-300"
+				track="stroke-primary-300/30"
+				width={'w-14'}
+				stroke={60}
+			/>
+		{:else}
+			{#if !naddr}
+				<button
+					class={buttonClass}
+					on:click={openLists}
+					disabled={!(kind >= 30000 && kind < 40000) || disabled}
+					>{@html menuIcon}</button
+				>
+			{/if}
 
-				<!-- <div class="grid grid-rows-[auto_auto] gap-0"> -->
-				<div class="flex">
-					<button
-						class={buttonClass}
-						on:click={firstPage}
-						disabled={$pageNum === 0 ? true : false}>{@html firstIcon}</button
-					>
-					<button
-						class={buttonClass}
-						on:click={back}
-						disabled={$pageNum === 0 ? true : false}>{@html backIcon}</button
-					>
+			<!-- <div class="grid grid-rows-[auto_auto] gap-0"> -->
+			<div class="flex">
+				<button
+					class={buttonClass}
+					on:click={firstPage}
+					disabled={$pageNum === 0 ? true : false}>{@html firstIcon}</button
+				>
+				<button
+					class={buttonClass}
+					on:click={back}
+					disabled={$pageNum === 0 ? true : false}>{@html backIcon}</button
+				>
 
-					<button
-						class={buttonClass}
-						on:click={next}
-						disabled={$pageNum === last ? true : false}>{@html nextIcon}</button
-					>
-					<button
-						class={buttonClass}
-						on:click={lastPage}
-						disabled={$pageNum === last ? true : false}>{@html lastIcon}</button
-					>
-				</div>
-				<!-- <div class="flex justify-center items-center m-0 p-0 text-xs">
+				<button
+					class={buttonClass}
+					on:click={next}
+					disabled={$pageNum === last ? true : false}>{@html nextIcon}</button
+				>
+				<button
+					class={buttonClass}
+					on:click={lastPage}
+					disabled={$pageNum === last ? true : false}>{@html lastIcon}</button
+				>
+			</div>
+			<!-- <div class="flex justify-center items-center m-0 p-0 text-xs">
 						{`${$amount * $pageNum} - ${Math.min(
 							($pageNum + 1) * $amount,
 							$listSize
@@ -412,21 +443,19 @@
 					</div>
 				</div> -->
 
-				<button
-					class="btn btn-icon pageIcon {multiButtonClass}"
-					disabled={pubkey !== $pubkey_viewer}
-					on:click={onClickMulti}>{@html multiIcon}</button
-				>
+			<button
+				class="btn btn-icon pageIcon {multiButtonClass}"
+				disabled={pubkey !== $pubkey_viewer}
+				on:click={onClickMulti}>{@html multiIcon}</button
+			>
 
-				<!-- <button class={buttonClass}>{@html updateIcon}</button> -->
+			<!-- <button class={buttonClass}>{@html updateIcon}</button> -->
 
-				<button class={buttonClass} on:click={onClickInfo}
-					>{@html Setting}</button
-				>
-			{/if}
-		</div>
+			<button class={buttonClass} on:click={onClickInfo}>{@html Setting}</button
+			>
+		{/if}
 	</div>
-{/if}
+</div>
 
 <style>
 	:global(.pageIcon svg) {

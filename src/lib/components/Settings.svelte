@@ -1,22 +1,25 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { iconView, URLPreview, settings } from '$lib/stores/settings';
+	import { iconView, URLPreview } from '$lib/stores/settings';
 	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
+	export let settingFunc: () => void;
 
 	const clickDefault = () => {
 		//bookmarkEventsのしょきか
-		$bookmarkEvents = [];
+
 		iconView.set(true);
 		URLPreview.set(true);
-		settings.set(true);
+		//settings.set(true);
+		settingFunc();
 	};
 
 	const clickLight = () => {
 		//bookmarkEventsのしょきか
-		$bookmarkEvents = [];
+
 		iconView.set(false);
 		URLPreview.set(false);
-		settings.set(true);
+		//settings.set(true);
+		settingFunc();
 	};
 </script>
 

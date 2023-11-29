@@ -17,7 +17,7 @@ export const load: PageLoad<{
 	relays?: string[];
 }> = ({ params }) => {
 	console.log(params.naddr);
-	bookmarkEvents.set([]);
+	//bookmarkEvents.set([]);
 
 	try {
 		const { type, data } = nip19.decode(params.naddr);

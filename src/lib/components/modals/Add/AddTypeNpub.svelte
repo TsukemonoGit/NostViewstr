@@ -27,7 +27,7 @@
 </script>
 
 <article class="body">
-	{`nostr:npub1... or npub1...`}
+	{`nostr:npub1... or npub1... or nprofile...`}
 </article>
 <!-- Enable for debugging: -->
 

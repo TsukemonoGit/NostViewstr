@@ -23,17 +23,26 @@
 	import { nip19 } from 'nostr-tools';
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import { kinds } from '$lib/kind';
+	import { goto } from '$app/navigation';
+	import type { U } from 'vitest/dist/reporters-5f784f42';
 
 	export let bkm: string;
 	export let kind: number;
 	export let pubkey: string;
-	export let viewEvent: Nostr.Event<number>;
+	export let viewEvent: Nostr.Event<number> | undefined;
+	export let JSON: boolean = false;
 
 	$: listNaddr = viewEvent
 		? [
 				'a',
 				`${viewEvent.kind}:${viewEvent.pubkey}:${
-					$identifierList[$listNum].identifier ?? ''
+					$identifierList &&
+					$identifierList[pubkey] &&
+					$identifierList[pubkey][kind] &&
+					$identifierList[pubkey][kind][$listNum] &&
+					$identifierList[pubkey][kind][$listNum].identifier
+						? $identifierList[pubkey][kind][$listNum].identifier
+						: ''
 				}`
 		  ]
 		: [];
@@ -87,7 +96,7 @@
 	}) {
 		console.log(res);
 		const listNumber = $listNum;
-		const eventTag = $bookmarkEvents[listNumber].tags;
+		const eventTag = $bookmarkEvents[pubkey][kind][listNumber].tags;
 
 		let titleIndex = eventTag.findIndex((item) => item[0] === 'title');
 		if (titleIndex !== -1) {
@@ -122,9 +131,9 @@
 		console.log(eventTag);
 		const event: Nostr.Event = {
 			id: '',
-			kind: $bookmarkEvents[listNumber].kind,
+			kind: $bookmarkEvents[pubkey][kind][listNumber].kind,
 			pubkey: pubkey,
-			content: $bookmarkEvents[listNumber].content,
+			content: $bookmarkEvents[pubkey][kind][listNumber].content,
 			tags: eventTag,
 			created_at: Math.floor(Date.now() / 1000),
 			sig: ''
@@ -135,8 +144,8 @@
 		);
 		console.log(result);
 		if (result.isSuccess && $bookmarkEvents && result.event) {
-			$bookmarkEvents[listNumber] = result.event;
-			viewEvent = $bookmarkEvents[listNumber];
+			$bookmarkEvents[pubkey][kind][listNumber] = result.event;
+			viewEvent = $bookmarkEvents[pubkey][kind][listNumber];
 			const t = {
 				message: 'Add note<br>' + result.msg,
 				timeout: 3000
@@ -158,7 +167,7 @@
 		const listNumber = $listNum;
 		//const test = window.location;		console.log(test);
 		const address: nip19.AddressPointer = {
-			identifier: $identifierList[listNumber].identifier ?? '',
+			identifier: $identifierList[pubkey][kind][listNumber].identifier ?? '',
 			pubkey: pubkey,
 			kind: kind,
 			relays: $relaySet[pubkey].bookmarkRelays
@@ -166,7 +175,10 @@
 
 		const url = window.location.origin + '/' + nip19.naddrEncode(address);
 		const tags = [
-			['a', `${kind}:${pubkey}:${$identifierList[listNumber].identifier}`],
+			[
+				'a',
+				`${kind}:${pubkey}:${$identifierList[pubkey][kind][listNumber].identifier}`
+			],
 			['r', url]
 		];
 		console.log(tags);
@@ -206,80 +218,105 @@
 		};
 		modalStore.trigger(modal);
 	};
+
+	$: selectValue = kind.toString();
+	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
+		console.log(Number(event.currentTarget.value));
+		console.log(window.location);
+
+		goto(`/${nip19.npubEncode(pubkey)}/${selectValue}`);
+	}
 </script>
 
 <div
 	class="z-10 fixed h-[4em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden box-border"
 >
 	<div
-		class="h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-x-hidden rounded-b"
+		class="h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-hidden rounded-b"
 	>
-		{#if $identifierList[$listNum] && $identifierList[$listNum].identifier}
-			<div class="text-xs">
-				kind:{kind}
+		<div>
+			{#if JSON}【JSON MODE】 kind:{kind}
 				{#if kinds[kind]} ({kinds[kind]}) {/if}
-				{#if kind === 30003}
-					{#if !$identifierList[$listNum].title || $identifierList[$listNum].title === ''}
-						<button
-							class=" flex items-center pt-1 overflow-hidden min-w-[7em] text-left"
-							disabled={!(kind >= 30000 && kind < 40000)}
-							on:click={listInfoModalOpen}
-						>
-							<div class=" btn-icon btn-icon-sm fill-white place-self-center">
-								{@html infoIcon}
-							</div>
-							<div class="h4">{$identifierList[$listNum].identifier}</div>
-						</button>
-					{:else}
-						<button
-							class="grid grid-cols-[auto_1fr] items-center min-w-[7em] pr-0.5 overflow-hidden truncate"
-							on:click={listInfoModalOpen}
-						>
-							{#if $iconView && $identifierList[$listNum].image}
-								<div class="p-0 btn-icon btn-icon-sm m-0 mr-1">
-									<img
-										width={36}
-										class="min-w-[36px]"
-										alt=""
-										src={$identifierList[$listNum].image}
-									/>
-								</div>
-							{:else}
+			{:else}
+				<select
+					class="input w-fit"
+					bind:value={selectValue}
+					on:change={handleKindChange}
+				>
+					{#each Object.keys(kinds) as value (value)}
+						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
+					{/each}
+				</select>
+			{/if}
+
+			{#if $identifierList && $identifierList[pubkey] && $identifierList[pubkey][kind] && $identifierList[pubkey][kind][$listNum] && $identifierList[pubkey][kind][$listNum].identifier}
+				<div class="text-xs">
+					{#if kind === 30003}
+						{#if !$identifierList[pubkey][kind][$listNum].title || $identifierList[pubkey][kind][$listNum].title === ''}
+							<button
+								class=" flex items-center pt-1 overflow-hidden min-w-[7em] text-left"
+								disabled={!(kind >= 30000 && kind < 40000)}
+								on:click={listInfoModalOpen}
+							>
 								<div class=" btn-icon btn-icon-sm fill-white place-self-center">
 									{@html infoIcon}
 								</div>
-							{/if}
-
-							<div class="grid grid-rows-[auto_1fr] truncate overflow-hidden">
-								<div class="place-self-start text-xs p-0">
-									{$identifierList[$listNum].identifier}
+								<div class="h4">
+									{$identifierList[pubkey][kind][$listNum].identifier}
 								</div>
+							</button>
+						{:else}
+							<button
+								class="grid grid-cols-[auto_1fr] items-center min-w-[7em] pr-0.5 overflow-hidden truncate"
+								on:click={listInfoModalOpen}
+							>
+								{#if $iconView && $identifierList[pubkey][kind][$listNum].image}
+									<div class="p-0 btn-icon btn-icon-sm m-0 mr-1 self-start">
+										<img
+											width={36}
+											class="min-w-[36px]"
+											alt=""
+											src={$identifierList[pubkey][kind][$listNum].image}
+										/>
+									</div>
+								{:else}
+									<div
+										class=" btn-icon btn-icon-sm fill-white place-self-center"
+									>
+										{@html infoIcon}
+									</div>
+								{/if}
 
-								<div class="h5 truncate place-self-start">
-									{$identifierList[$listNum].title}
+								<div class="grid grid-rows-[auto_1fr] truncate overflow-hidden">
+									<div class="place-self-start text-xs p-0">
+										{$identifierList[pubkey][kind][$listNum].identifier}
+									</div>
+
+									<div class="h5 truncate place-self-start">
+										{$identifierList[pubkey][kind][$listNum].title}
+									</div>
 								</div>
-							</div>
-						</button>
+							</button>
 
-						<!-- {#if $identifierList[$listNum].description}
+							<!-- {#if $identifierList[$listNum].description}
 					{$identifierList[$listNum].description}
 				{/if} -->
+						{/if}
+					{:else}
+						<!---->
+						<div class=" h4 p-1">
+							{$identifierList[pubkey][kind][$listNum].identifier}
+						</div>
 					{/if}
-				{:else}
-					<!---->
-					<div class=" h4 p-1">
-						{$identifierList[$listNum].identifier}
-					</div>
-				{/if}
-			</div>
-		{:else}
-			<!---->
-			<div class="h4 self-center w-fit">
-				kind:{kind}
-				{#if kinds[kind]} ({kinds[kind]}) {/if}
-			</div>
-		{/if}
-
+				</div>
+			{:else}
+				<!---->
+				<div class="h4 self-center w-fit">
+					{#if JSON}【JSON MODE】 {/if}kind:{kind}
+					{#if kinds[kind]} ({kinds[kind]}) {/if}
+				</div>
+			{/if}
+		</div>
 		<div class="grid grid-cols-[auto_auto] p-1">
 			<button
 				class={bkm === 'pub' ? borderClassActive : borderClass}
@@ -291,7 +328,7 @@
 				}}
 				><PubBkm />
 			</button>
-			{#if viewEvent?.content !== ''}
+			{#if viewEvent && viewEvent.content !== ''}
 				<button
 					class={bkm === 'prv' ? borderClassActive : borderClass}
 					disabled={bkm === 'prv'}
@@ -307,34 +344,37 @@
 				<div />
 			{/if}
 		</div>
+		{#if viewEvent !== undefined}
+			<div class=" grid grid-rows-[auto_auto] box-border">
+				<div class=" place-self-end h6 truncate overflow-hidden">
+					{$_('created_at')}
+				</div>
 
-		<div class=" grid grid-rows-[auto_auto] box-border">
-			<div class=" place-self-end h6 truncate overflow-hidden">
-				{$_('created_at')}
+				<button
+					class="flex text-right text-sm underline decoration-secondary-200 overflow-hidden"
+					on:click={() => {
+						if (viewEvent !== undefined) {
+							OpenNoteJson(viewEvent, listNaddr);
+						}
+					}}
+				>
+					<div class="truncate h6">
+						{new Date(viewEvent.created_at * 1000).toLocaleDateString([], {
+							year: 'numeric',
+							month: '2-digit',
+							day: '2-digit',
+							hour: '2-digit',
+							minute: '2-digit'
+						})}
+					</div></button
+				>
 			</div>
-			<button
-				class="flex text-right text-sm underline decoration-secondary-200 overflow-hidden"
-				on:click={() => {
-					OpenNoteJson(viewEvent, listNaddr);
-				}}
-			>
-				<div class="truncate h6">
-					{new Date(viewEvent?.created_at * 1000).toLocaleDateString([], {
-						year: 'numeric',
-						month: '2-digit',
-						day: '2-digit',
-						hour: '2-digit',
-						minute: '2-digit'
-					})}
-				</div></button
-			>
-		</div>
-
+		{/if}
 		<button
 			class={'btn p-0 pr-2  arrow  '}
 			on:click={async () => {
 				$nowProgress = true;
-				await updateBkmTag($listNum);
+				await updateBkmTag(pubkey, kind, $listNum);
 				$nowProgress = false;
 			}}>{@html updateIcon}</button
 		>

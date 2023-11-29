@@ -4,16 +4,18 @@
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
 
-	import { settings } from '$lib/stores/settings';
-
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
+	import { URLPreview } from '$lib/stores/settings';
 
 	export let data: PageData;
 
 	console.log('PageData', data.pubkey);
-
+	//let settings: boolean = false;
+	function settingFunc() {
+		//	settings = true;
+	}
 	// $: console.log($URLPreview);
 	// $: console.log($iconView);
 	// onMount(async () => {
@@ -33,18 +35,22 @@
 	<p>kind:?</p>
 </div> -->
 
-{#if !$settings}
+{#if $URLPreview === undefined}
 	<div class="container h-full mx-auto flex justify-center items-center">
 		<div class="mt-5">
 			<h1 class="h1 mb-5">{$_('main.title')}</h1>
 
 			<div class="space-t-5">
 				kind:{data.kind}
-				<Settings />
+				<Settings {settingFunc} />
 			</div>
 		</div>
 	</div>
 {:else}
-	<ListedEventList pubkey={data.pubkey} kind={data.kind} isNaddr={false} />
+	<ListedEventList
+		bind:pubkey={data.pubkey}
+		bind:kind={data.kind}
+		isNaddr={false}
+	/>
+	<FooterMenu bind:pubkey={data.pubkey} bind:kind={data.kind} />
 {/if}
-<FooterMenu pubkey={data.pubkey} kind={data.kind} />

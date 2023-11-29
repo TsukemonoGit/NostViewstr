@@ -10,6 +10,9 @@
 	export let parent: any;
 	export let selectedValue: number;
 
+	$: pubkey = $modalStore[0]?.value?.pubkey;
+	$: kind = $modalStore[0]?.value?.kind;
+
 	// Form Data
 	let res: {
 		btn: string;
@@ -64,7 +67,9 @@
 
 			toastStore.trigger(t);
 		} else if (
-			$identifierList.some((item) => item.identifier === res.value.id)
+			$identifierList[pubkey][kind].some(
+				(item) => item.identifier === res.value.id
+			)
 		) {
 			const t = {
 				message: 'already exists',
@@ -79,27 +84,6 @@
 			onFormSubmit();
 		}
 	}
-
-	// function clickDeleteButton() {
-	//   //ほんとに消すのか出す
-	//   const t: ToastSettings = {
-	//     message: `Are you sure you delete  tag [${
-	//       $bookmarkEvents[res.tagIndex].tags[0][1]
-	//     }]?`,
-	//     timeout: 10000,
-	//     background: 'variant-filled-warning',
-	//     action: {
-	//       label: 'Delete',
-
-	//       response: async () => {
-	//         res.btn = 'delete';
-	//         onFormSubmit();
-	//       },
-	//     },
-	//   };
-
-	//   toastStore.trigger(t);
-	// }
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -183,14 +167,14 @@
 				>
 				<svelte:fragment slot="content">
 					<div class="card p-4">
-						{#if $identifierList.length > 0}
+						{#if $identifierList[pubkey] && $identifierList[pubkey][kind].length > 0}
 							<select
 								class="select mb-4"
 								size="1"
 								bind:value={selectedValue}
 								on:change={handleChange}
 							>
-								{#each $identifierList as tag, index}
+								{#each $identifierList[pubkey][kind] as tag, index}
 									<option value={index}>{tag.identifier}</option>
 								{/each}
 							</select>

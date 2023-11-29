@@ -1,9 +1,9 @@
 import { writable } from 'svelte/store';
 
 export const pubkey_viewer = writable<string>('');
-export const settings = writable<boolean>(false);
-export const URLPreview = writable<boolean>(false);
-export const iconView = writable<boolean>(false);
+//export const settings = writable<boolean>(false);
+export const URLPreview = writable<boolean>(undefined);
+export const iconView = writable<boolean>(undefined);
 
 export const allView = writable<boolean>(false);
 export const nowProgress = writable<boolean>(false);

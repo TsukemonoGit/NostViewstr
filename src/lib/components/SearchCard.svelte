@@ -12,17 +12,17 @@
 	import type { MenuMode } from '$lib/otherFunctions.js';
 
 	import MenuButtons from './MenuButtons.svelte';
-	export let DeleteNote: (e: CustomEvent<any>) => void;
-	export let MoveNote: (e: CustomEvent<any>) => void;
-	export let CheckNote: (e: CustomEvent<any>) => void;
+	//export let DeleteNote: (e: CustomEvent<any>) => void;
+	//export let MoveNote: (e: CustomEvent<any>) => void;
+	//export let CheckNote: (e: CustomEvent<any>) => void;
 	export let isPageOwner: boolean;
 	export let filter: {};
 	export let message: string;
 	export let pubkey: string;
 
-	export let menuMode: MenuMode;
+	//export let menuMode: MenuMode;
 	export let myIndex: number | undefined;
-	export let tagArray: string[] | undefined;
+	//export let tagArray: string[] | undefined;
 	const dispatch = createEventDispatcher();
 
 	const modalStore = getModalStore();
@@ -110,27 +110,27 @@
 <!--{#if $searchRelays}-->
 <!-- <NostrApp relays={$searchRelays}> -->
 <!-- ノート | ボタン群-->
-<div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
-	<!-- icon | その他-->
-	<div class="grid grid-cols-[auto_1fr] gap-1.5">
-		<!--icon-->
+<!-- <div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"> -->
+<!-- icon | その他-->
+<div class="pl-1 grid grid-cols-[auto_1fr] gap-1.5">
+	<!--icon-->
 
-		<div class="flex justify-center items-center h-auto">
-			<button
-				class="btn m-0 p-1 variant-filled-secondary rounded-full"
-				on:click={() => {
-					onClickSearch(filter);
-				}}>{@html searchIcon}</button
-			>
-		</div>
-		<!--note-->
-		<div class="break-all whitespace-pre-wrap overflow-x-hidden">
-			{message}
-		</div>
+	<div class="flex justify-center items-center h-auto">
+		<button
+			class="btn m-0 p-1 variant-filled-secondary rounded-full"
+			on:click={() => {
+				onClickSearch(filter);
+			}}>{@html searchIcon}</button
+		>
 	</div>
+	<!--note-->
+	<div class="break-all whitespace-pre-wrap overflow-x-hidden">
+		{message}
+	</div>
+</div>
 
-	<!--ボタン群-->
-	<MenuButtons
+<!--ボタン群-->
+<!-- <MenuButtons
 		{myIndex}
 		{tagArray}
 		note={undefined}
@@ -138,5 +138,5 @@
 		on:DeleteNote={DeleteNote}
 		on:MoveNote={MoveNote}
 		on:CheckNote={CheckNote}
-	/>
-</div>
+	/> -->
+<!-- </div> -->

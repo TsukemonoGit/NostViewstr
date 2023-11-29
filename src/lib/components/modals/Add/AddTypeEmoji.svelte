@@ -14,13 +14,19 @@
 	async function onClickCheck() {
 		// event.tags 配列内で条件を満たすインデックスを検索
 		if (emojiName === '' || emojiUrl === '') {
-			//からだったら無効
 			return;
 		}
 
 		const index = event.tags.findIndex((tag) => tag[1] === emojiName);
 		if (index !== -1) {
 			//同じリストに同じ名前の絵文字があったら無効
+			const t = {
+				message: $_('toast.invalidEmoji'),
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
 			return;
 		}
 		res.tag = ['emoji', emojiName, emojiUrl];

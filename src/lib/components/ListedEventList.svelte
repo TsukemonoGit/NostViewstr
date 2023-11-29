@@ -8,9 +8,11 @@
 		bookmarkEvents,
 		checkedIndexList,
 		identifierList,
-		listNum
+		listNum,
+		type Identifiers
 	} from '$lib/stores/bookmarkEvents';
 	import {
+		StoreFetchFilteredEvents,
 		addPrivates,
 		deletePrivates,
 		deletePubs,
@@ -47,7 +49,8 @@
 		ListBox,
 		ListBoxItem,
 		type ModalComponent,
-		type ModalSettings
+		type ModalSettings,
+		type ToastSettings
 	} from '@skeletonlabs/skeleton';
 	import ModalAddNote from '$lib/components/modals/ModalAddNote.svelte';
 	import ModalDelete from '$lib/components/modals/ModalDelete.svelte';
@@ -60,7 +63,7 @@
 	import { kindsValidTag } from '$lib/kind';
 
 	let bkm: string = 'pub';
-	let viewEvent: Nostr.Event<number>;
+	let viewEvent: Nostr.Event<number> | undefined;
 	export let pubkey: string;
 	export let kind: number;
 	export let identifier: string | undefined = undefined;
@@ -70,6 +73,15 @@
 	$: isOwner = $pubkey_viewer === pubkey;
 	let isOnMount = false;
 
+	$: if (
+		$bookmarkEvents[pubkey] &&
+		$bookmarkEvents[pubkey][kind] &&
+		$bookmarkEvents[pubkey][kind][$listNum]
+	) {
+		viewEvent = $bookmarkEvents[pubkey][kind][$listNum];
+	} else {
+		viewEvent = undefined;
+	}
 	onMount(async () => {
 		if (!isOnMount) {
 			console.log('onMount');
@@ -114,6 +126,7 @@
 	};
 
 	export async function bkminit(pub: string) {
+		$listNum = 0;
 		console.log('bkminit');
 
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
@@ -126,13 +139,19 @@
 		//if ($bookmarkRelays.length === 0) {
 
 		//パブキーに対するリレーセットが設定されてなかったら取得する（戻るボタンとかで同じユーザーになった場合に省略されるはず）
-		bookmarkEvents.set([]);
+		//bookmarkEvents.set([]);
 		if (!$relaySet || !$relaySet[pub]) {
 			$relaySet[pub] = initRelaySet;
 			// bookmarkRelays.set([]);
 			// postRelays.set([]);
 			// searchRelays.set([]);
+			const t: ToastSettings = {
+				message: `${$_('toast.relaySearching')}`
+			};
+			const getRelaysToast = toastStore.trigger(t);
+
 			await getRelays(pub);
+			toastStore.close(getRelaysToast);
 			//$relayPubkey = pubkey;
 		}
 		if (!$relaySet[$pubkey_viewer]) {
@@ -160,32 +179,34 @@
 						}
 				  ];
 		//$nowProgress = true;
-		const res = await fetchFilteredEvents(
-			$relaySet[pubkey].bookmarkRelays,
-			filter
-		);
+		const t: ToastSettings = {
+			message: `${$_('toast.eventSearching')}`
+		};
+		const searchingEventsToast = toastStore.trigger(t);
+		const res = await StoreFetchFilteredEvents(pubkey, kind, {
+			relays: $relaySet[pubkey].bookmarkRelays,
+			filters: filter
+		});
+		toastStore.close(searchingEventsToast);
 		//console.log(res);
 		//const res = bookmarks;
-		if (res.length === 0) {
-			console.log('bookmark not found');
-			return;
-		}
-		res.sort((a, b) => {
-			const tagID_A = a.tags[0][1];
-			const tagID_B = b.tags[0][1];
-			return tagID_A.localeCompare(tagID_B);
-		});
-		$bookmarkEvents = res;
-		//viewEvent = $bookmarkEvents[0];
-		//	$nowProgress = false;
-		console.log(res);
+		// if (res.length === 0) {
+		// 	console.log('bookmark not found');
+		// 	return;
+		// }
+		// res.sort((a, b) => {
+		// 	const tagID_A = a.tags[0][1];
+		// 	const tagID_B = b.tags[0][1];
+		// 	return tagID_A.localeCompare(tagID_B);
+		// });
+		// $bookmarkEvents = res;
+		// //viewEvent = $bookmarkEvents[0];
+		// //	$nowProgress = false;
+		// console.log(res);
 	}
 
-	$: if ($bookmarkEvents) {
-		viewEvent = $bookmarkEvents[$listNum];
-	}
 	//リストが変わったら1ページ目に戻す
-	$: if ($listNum !== -1) {
+	$: if ($listNum !== -1 && typeof window !== 'undefined') {
 		$isMulti = false;
 		$pageNum = 0;
 		$checkedIndexList = [];
@@ -193,7 +214,7 @@
 		window.scrollTo({ top: 0 });
 	}
 	//ページが変わったらチェックリスト空にする
-	$: if ($pageNum !== -1 || bkm) {
+	$: if (($pageNum !== -1 || bkm) && typeof window !== 'undefined') {
 		$checkedIndexList = [];
 		window.scrollTo({ top: 0 });
 	}
@@ -247,12 +268,13 @@
 	}
 
 	async function deleteNotesfromLists(listNumber: number, numList: number[]) {
+		console.log(numList);
 		if ($bookmarkEvents) {
 			//$nowProgress = true;
 
-			await updateBkmTag(listNumber); //最新の状態に更新
+			await updateBkmTag(pubkey, kind, listNumber); //最新の状態に更新
 			try {
-				const bkmk = $bookmarkEvents[listNumber];
+				const bkmk = $bookmarkEvents[pubkey][kind][listNumber];
 
 				const event: Nostr.Event = {
 					id: '',
@@ -272,8 +294,8 @@
 				);
 				//   console.log(result);
 				if (result.isSuccess && $bookmarkEvents && result.event) {
-					$bookmarkEvents[listNumber] = result.event;
-					viewEvent = $bookmarkEvents[listNumber];
+					$bookmarkEvents[pubkey][kind][listNumber] = result.event;
+					viewEvent = $bookmarkEvents[pubkey][kind][listNumber];
 					const t = {
 						message: 'Delete note<br>' + result.msg,
 						timeout: 3000
@@ -322,13 +344,15 @@
 			component: moveModalComponent,
 			title: $_('modal.moveNote.title'),
 			body: `${$_('modal.moveNote.body_from')} ${
-				$identifierList[listNumber].identifier
+				$identifierList[pubkey][kind][listNumber].identifier
 			}[${_bkm === 'pub' ? $_('public') : $_('private')}] ${$_(
 				'modal.moveNote.body_to'
 			)}`,
 			value: {
 				bkm: _bkm,
-				tag: listNumber
+				tag: listNumber,
+				kind: kind,
+				pubkey: pubkey
 			},
 			response: async (res) => {
 				//console.log(res);
@@ -373,8 +397,11 @@
 			component: addModalComponent,
 			// Provide arbitrary metadata to your modal instance:
 			title:
-				$identifierList[$listNum].identifier ??
-				`kind:${$bookmarkEvents[$listNum].kind}`,
+				$identifierList[pubkey][kind] &&
+				$identifierList[pubkey][kind][$listNum] &&
+				$identifierList[pubkey][kind][$listNum].identifier
+					? $identifierList[pubkey][kind][$listNum].identifier
+					: `kind:${kind}`,
 
 			body: '',
 			value: { kind: kind, pubkey: pubkey, event: $bookmarkEvents[$listNum] },
@@ -493,9 +520,13 @@
 			// 	//$nowProgress = false;
 			// 	return;
 			// } else if (check.tag && check.tag.length > 0 && $bookmarkEvents) {
-			await updateBkmTag(listNumber); //最新の状態に更新
-			await addNotesToLists(listNumber, res.btn, [res.tag]);
-			//		$nowProgress = false;
+			console.log($bookmarkEvents[pubkey][kind][listNumber]);
+			if ($bookmarkEvents[pubkey][kind][listNumber] !== undefined) {
+				// 	console.log($bookmarkEvents[pubkey][kind][listNumber]);
+				await updateBkmTag(pubkey, kind, listNumber); //最新の状態に更新
+			}
+			await addNotesToLists(listNumber, res.btn, [res.tag], pubkey, kind);
+			$nowProgress = false;
 		}
 		//}
 	}
@@ -503,54 +534,103 @@
 	async function addNotesToLists(
 		listNumber: number,
 		btn: string,
-		idTagList: string[][]
+		idTagList: string[][],
+		pubkey: string,
+		kind: number
 	): Promise<boolean> {
 		let isSuccess = false;
-		if ($bookmarkEvents !== undefined) {
-			try {
-				const bkmk = $bookmarkEvents[listNumber];
-				//bkm.tags.push(check.tag);
-				const event: Nostr.Event = {
-					id: '',
-					pubkey: bkmk.pubkey,
-					created_at: Math.floor(Date.now() / 1000),
-					kind: bkmk.kind,
-					tags:
-						btn === 'pub' && idTagList
-							? [...bkmk.tags, ...idTagList]
-							: bkmk.tags,
-					content:
-						btn === 'pub'
-							? bkmk.content
-							: await addPrivates(bkmk.content, bkmk.pubkey, idTagList), //ここでエラーの可能性ある
-					sig: ''
-				};
-				const result = await publishEventWithTimeout(
-					event,
-					$relaySet[pubkey].bookmarkRelays
-				);
-				//   console.log(result);
-				if (result.isSuccess && $bookmarkEvents && result.event) {
-					$bookmarkEvents[listNumber] = result.event;
-					viewEvent = $bookmarkEvents[listNumber]; //今は失敗判定になってるから更新確認できないよ
 
-					const t = {
-						message: 'Add note<br>' + result.msg,
-						timeout: 3000
-					};
+		try {
+			const bkmk = $bookmarkEvents?.[pubkey]?.[kind]?.[listNumber];
 
-					toastStore.trigger(t);
-					isSuccess = true;
+			const tagsToAdd =
+				btn === 'pub'
+					? bkmk !== undefined
+						? [...bkmk.tags, ...idTagList]
+						: idTagList
+					: bkmk.tags;
+
+			const contentToAdd = async (): Promise<string> => {
+				if (btn === 'pub') {
+					if (bkmk && bkmk.content) {
+						return bkmk.content;
+					} else {
+						return '';
+					}
 				} else {
-					const t = {
-						message: $_('toast.failed_publish'),
-						timeout: 3000,
-						background: 'bg-orange-500 text-white width-filled '
-					};
-
-					toastStore.trigger(t);
+					if (bkmk && bkmk.content) {
+						return await addPrivates(bkmk.content, pubkey, idTagList);
+					} else {
+						return await addPrivates('', pubkey, idTagList);
+					}
 				}
-			} catch (error) {
+			};
+
+			const event: Nostr.Event = {
+				id: '',
+				pubkey: pubkey,
+				created_at: Math.floor(Date.now() / 1000),
+				kind: kind,
+				tags: tagsToAdd,
+				content: await contentToAdd(),
+				sig: ''
+			};
+
+			console.log(event);
+
+			const result = await publishEventWithTimeout(
+				event,
+				$relaySet[pubkey]?.bookmarkRelays || []
+			);
+
+			if (result.isSuccess) {
+				const updatedEvent = result.event as Nostr.Event;
+
+				if ($bookmarkEvents) {
+					$bookmarkEvents[pubkey] = $bookmarkEvents[pubkey] || {};
+					$bookmarkEvents[pubkey][kind] = $bookmarkEvents[pubkey][kind] || [];
+					$bookmarkEvents[pubkey][kind][listNumber] = updatedEvent;
+					viewEvent = updatedEvent;
+				} else {
+					$bookmarkEvents = { [pubkey]: { [kind]: [updatedEvent] } };
+				}
+				//identifierEventも更新する
+				const tag = updatedEvent.tags.find((tag) => tag[0] === 'd');
+				const title = updatedEvent.tags.find((tag) => tag[0] === 'title');
+				const image = updatedEvent.tags.find((tag) => tag[0] === 'image');
+				const description = updatedEvent.tags.find(
+					(tag) => tag[0] === 'description'
+				);
+				const newIdentifierList: Identifiers = {
+					identifier: tag ? tag[1] : undefined,
+					title: title ? title[1] : undefined,
+					image: image ? image[1] : undefined,
+					description: description ? description[1] : undefined
+				};
+
+				if ($identifierList) {
+					$identifierList[pubkey] = $identifierList[pubkey] || {};
+					$identifierList[pubkey][kind] = $identifierList[pubkey][kind] || [];
+					$identifierList[pubkey][kind][listNumber] = newIdentifierList;
+				} else {
+					$identifierList = { [pubkey]: { [kind]: [newIdentifierList] } };
+				}
+
+				const toastMessage = result.isSuccess
+					? 'Add note<br>' + result.msg
+					: $_('toast.failed_publish');
+
+				const t = {
+					message: toastMessage,
+					timeout: 3000,
+					background: result.isSuccess
+						? 'variant-filled-secondary width-filled'
+						: 'bg-orange-500 text-white width-filled '
+				};
+
+				toastStore.trigger(t);
+				isSuccess = true;
+			} else {
 				const t = {
 					message: $_('toast.failed_publish'),
 					timeout: 3000,
@@ -559,6 +639,16 @@
 
 				toastStore.trigger(t);
 			}
+		} catch (error) {
+			console.error(error);
+
+			const t = {
+				message: $_('toast.failed_publish'),
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
 		}
 
 		return isSuccess;
@@ -601,7 +691,9 @@
 			}] ${$_('modal.moveNote.body_to')}`,
 			value: {
 				bkm: _bkm,
-				tag: listNumber
+				tag: listNumber,
+				pubkey: pubkey,
+				kind: kind
 			},
 			response: async (res) => {
 				//console.log(res);
@@ -663,12 +755,12 @@
 		console.log(
 			`list:${from.tag} bkm:${from.bkm} の${indexes}番目のノートをlist:${to.tag}のbkm:${to.bkm}に移動させる`
 		);
-		if ($bookmarkEvents.length > 0) {
+		if ($bookmarkEvents[pubkey][kind].length > 0) {
 			//toの方にaddNoteする。
 
-			await updateBkmTag(from.tag); //最新の状態に更新
+			await updateBkmTag(pubkey, kind, from.tag); //最新の状態に更新
 
-			const addRes = await addNotesToLists(to.tag, to.bkm, tags);
+			const addRes = await addNotesToLists(to.tag, to.bkm, tags, pubkey, kind);
 			if (!addRes) {
 				//		$nowProgress = false;
 				return;
@@ -679,131 +771,125 @@
 	}
 </script>
 
+<!--header-->
+<Header {kind} bind:bkm {pubkey} bind:viewEvent />
 <!-- {#await bkminit(pubkey) then bkminti} -->
-{#if $bookmarkEvents && $bookmarkEvents.length > 0}
-	<!-- <div
-		class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden top-0"
-		data-popup="popupPub"
-	>
-		<p>{$_('popup.pub')}</p>
-		<div
-			class="arrow variant-filled-secondary z-20 box-border overflow-hidden"
-		/>
-	</div>
-	<div
-		class="card p-1 variant-filled-secondary z-20 box-border overflow-hidden top-0"
-		data-popup="popupPrv"
-	>
-		<p>{$_('popup.prv')}</p>
-		<div
-			class="arrow variant-filled-secondary z-20 box-border overflow-hidden"
-		/>
-	</div> -->
 
-	<!--header-->
-	<Header {kind} bind:bkm {pubkey} bind:viewEvent />
-
-	<!--サイドバーとメイン-->
-	<div
-		class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
-	>
-		<div class="flex overflow-x-hidden">
-			<!-- Left Sidebar (Hidden on small screens) -->
-			{#if !isNaddr}
-				<div
-					class="hidden md:flex h-full w-[12em] pb-[6em] bg-surface-200-700-token overflow-y-auto fixed"
-				>
-					<!-- Your sidebar content goes here -->
-					<!-- For example, you can add links or other elements -->
-					<!--さいどばー-->
-					{#if $identifierList.length > 0}
-						<ListBox
-							class=" overflow-y-auto w-full"
-							active="variant-ghost-primary box-border"
-						>
-							{#each $identifierList as list, index}
-								<ListBoxItem
-									bind:group={$listNum}
-									name={list.identifier ?? ''}
-									value={index}
-									class="truncate "
-									padding="px-2 py-2"
-									labelledby="truncate"
-									on:change={() => {
-										$listNum = index;
-									}}
-									><svelte:fragment slot="lead"
-										><div
-											class="rounded-full w-[1.5em] h-[1.5em] variant-soft-primary h6 text-center"
-										>
-											{(index + 1).toString().padStart(2, '0')}
-										</div></svelte:fragment
-									>
-									{#if list.title}
-										<div class="text-xs">{list.identifier}</div>
-										<div>{list.title}</div>
-									{:else}
-										{list.identifier}
-									{/if}
-								</ListBoxItem>
-								<hr />
-							{/each}
-						</ListBox>
-					{:else}
-						{$_('modal.tagList.noList')}
-					{/if}
-				</div>
-			{/if}
-			<!--めいん-->
-			<main
-				class="flex-1 {isNaddr
-					? ''
-					: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
+<!--サイドバーとメイン-->
+<div
+	class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
+>
+	<div class="flex overflow-x-hidden">
+		<!-- Left Sidebar (Hidden on small screens) -->
+		{#if !isNaddr}
+			<div
+				class="hidden md:flex h-full w-[12em] pb-[6em] bg-surface-200-700-token overflow-y-auto fixed"
 			>
-				<!-- Add ml-64 to push main to the right -->
-				{#if $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-					<NostrApp relays={$relaySet[pubkey].searchRelays}>
-						<ListedEvent
-							listEvent={viewEvent}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-							bind:bkm
-							bind:isOwner
-						/>
-					</NostrApp>
-				{:else}
-					{`relay has not been set`}
-				{/if}
-			</main>
-		</div>
-	</div>
-	<!-------------------------------あど----->
-	{#if !$nowProgress && $pubkey_viewer === pubkey}
-		<div
-			class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
-				? 'multi'
-				: 'add'}"
-		>
-			<div class="fill-white overflow-x-hidden h-fit overflow-y-auto">
-				{#if !$isMulti}
-					<button
-						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
-						on:click={onClickAdd}>{@html addIcon}</button
+				<!-- Your sidebar content goes here -->
+				<!-- For example, you can add links or other elements -->
+				<!--さいどばー-->
+				{#if $identifierList && $identifierList[pubkey] && $identifierList[pubkey][kind]?.length > 0}
+					<ListBox
+						class=" overflow-y-auto w-full"
+						active="variant-ghost-primary box-border"
 					>
-				{:else}
-					<button
-						class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
-						on:click={onClickMultiMove}>{@html MoveIcon}</button
-					>
-					<button
-						class="overflow-x-hidden addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
-						on:click={onClickMultiDelete}>{@html DeleteIcon}</button
-					>
+						{#each $identifierList[pubkey][kind] as list, index}
+							<ListBoxItem
+								bind:group={$listNum}
+								name={list.identifier ?? ''}
+								value={index}
+								class="truncate "
+								padding="px-2 py-2"
+								labelledby="truncate"
+								on:change={() => {
+									$listNum = index;
+								}}
+								><svelte:fragment slot="lead"
+									><div
+										class="rounded-full w-[1.5em] h-[1.5em] variant-soft-primary h6 text-center"
+									>
+										{(index + 1).toString().padStart(2, '0')}
+									</div></svelte:fragment
+								>
+								{#if list.title}
+									<div class="text-xs">{list.identifier}</div>
+									<div>{list.title}</div>
+								{:else}
+									{list.identifier}
+								{/if}
+							</ListBoxItem>
+							<hr />
+						{/each}
+					</ListBox>
+					<!-- {:else if !$nowProgress}
+					{$_('modal.tagList.noList')} -->
 				{/if}
 			</div>
+		{/if}
+		<!--めいん-->
+		<main
+			class="flex-1 {isNaddr
+				? ''
+				: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
+		>
+			<!-- Add ml-64 to push main to the right -->
+			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+				<NostrApp relays={$relaySet[pubkey].searchRelays}>
+					<ListedEvent
+						listEvent={viewEvent}
+						{pubkey}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+						bind:bkm
+						bind:isOwner
+					/>
+				</NostrApp>
+				<!-- {:else}
+				{`now getting relay list ...`} -->
+			{/if}
+		</main>
+	</div>
+</div>
+
+{#if $bookmarkEvents && $bookmarkEvents[pubkey] && $bookmarkEvents[pubkey][kind] && $bookmarkEvents[pubkey][kind].length > 0}
+	<!---->
+{:else}
+	<div class="flex w-full h-full justify-center items-center text-center">
+		<!-- Left Sidebar (Hidden on small screens) -->
+
+		{#if $nowProgress}
+			{`now loading...`}
+		{:else}
+			{`no data`}
+		{/if}
+	</div>
+{/if}
+<!-------------------------------あど----->
+{#if !$nowProgress && $pubkey_viewer === pubkey}
+	<div
+		class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
+			? 'multi'
+			: 'add'}"
+	>
+		<div class="fill-white overflow-x-hidden h-fit overflow-y-auto">
+			{#if !$isMulti}
+				<button
+					class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
+					on:click={onClickAdd}>{@html addIcon}</button
+				>
+			{:else}
+				<button
+					class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
+					on:click={onClickMultiMove}>{@html MoveIcon}</button
+				>
+				<button
+					class="overflow-x-hidden addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
+					on:click={onClickMultiDelete}>{@html DeleteIcon}</button
+				>
+			{/if}
 		</div>
-	{/if}
+	</div>
 {/if}
 
 <!-- {/await} -->

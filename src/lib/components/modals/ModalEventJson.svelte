@@ -5,6 +5,7 @@
 	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
 	import { _ } from 'svelte-i18n';
 	import { parseNaddr } from '$lib/nostrFunctions';
+	import type { Nostr } from 'nosvelte';
 
 	export let parent: any;
 
@@ -81,6 +82,24 @@
 			console.log('failed to copy');
 		}
 	}
+
+	const downloadJson = () => {
+		const event = $modalStore[0].meta.note as Nostr.Event;
+		const jsonStr = JSON.stringify(event, null, 2);
+		const blob = new Blob([jsonStr], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		const dtag = event.tags.find((item) => item[0] === 'd');
+		const fileName = dtag
+			? `bkmstr_kind${event.kind}_${dtag[1]}_${event.created_at}`
+			: `bkmstr_kind${event.kind}_${event.created_at}.json`;
+		a.download = fileName;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	};
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -105,7 +124,7 @@
 				</div>
 				{#if $modalStore[0].meta.tagArray[0] === 'a' || $modalStore[0].meta.tagArray[0] === 'p'}
 					<button
-						class="btn-icon h-full"
+						class="btn-icon h-full dark:fill-white"
 						on:click={() => copyEncodedID($modalStore[0].meta.tagArray)}
 						>{@html copyIcon}</button
 					>
@@ -115,6 +134,11 @@
 		<footer class="modal-footer {parent.regionFooter} mt-2">
 			<!--button-->
 			<div class="flex flex-wrap gap-2">
+				<button
+					type="button"
+					class="btn variant-filled-success p-1"
+					on:click={downloadJson}>Download Json</button
+				>
 				<button
 					type="button"
 					class="btn variant-filled-secondary p-1"
