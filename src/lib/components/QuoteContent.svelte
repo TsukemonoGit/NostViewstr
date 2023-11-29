@@ -161,7 +161,7 @@
 		}
 	};
 	const nip19DecodeData = (decodeData: string) => {
-		const data = nip19DecodeData as unknown as nip19.DecodeResult;
+		const data = decodeData as unknown as nip19.DecodeResult;
 		if (data.type === 'naddr') {
 			return data.data as nip19.AddressPointer;
 		} else if (data.type === 'note') {
@@ -179,18 +179,17 @@
 		}
 	};
 	const nip19Npub = (decodeData: string) => {
-		const data = nip19DecodeData as unknown as nip19.DecodeResult;
+		const data = nip19.decode(decodeData);
 		return data.data as string;
 	};
 	const nip19Nprofile = (decodeData: string) => {
-		const data = nip19DecodeData as unknown as nip19.DecodeResult;
+		const data = nip19.decode(decodeData);
 
 		return data.data as nip19.ProfilePointer;
 	};
 	const nip19Naddr = (decodeData: string) => {
-		const data = nip19DecodeData as unknown as nip19.DecodeResult;
-
-		return data.data as nip19.AddressPointer;
+		const tmp = nip19.decode(decodeData);
+		return tmp.data as nip19.AddressPointer;
 	};
 </script>
 
