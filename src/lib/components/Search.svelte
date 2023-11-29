@@ -258,7 +258,7 @@
 
 		{#if $modalStore[0].value.isPageOwner && event.sig !== ''}
 			<button class="btn {parent.buttonNeutral}" on:click={onClickDup}
-				>duplicate</button
+				>Bloadcast</button
 			>
 		{/if}
 		{#if event.sig !== ''}

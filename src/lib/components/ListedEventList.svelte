@@ -141,7 +141,6 @@
 		//パブキーに対するリレーセットが設定されてなかったら取得する（戻るボタンとかで同じユーザーになった場合に省略されるはず）
 		//bookmarkEvents.set([]);
 		if (!$relaySet || !$relaySet[pub]) {
-			$relaySet[pub] = initRelaySet;
 			// bookmarkRelays.set([]);
 			// postRelays.set([]);
 			// searchRelays.set([]);
@@ -149,12 +148,12 @@
 				message: `${$_('toast.relaySearching')}`
 			};
 			const getRelaysToast = toastStore.trigger(t);
-
+			$relaySet[pub] = initRelaySet;
 			await getRelays(pub);
 			toastStore.close(getRelaysToast);
 			//$relayPubkey = pubkey;
 		}
-		if (!$relaySet[$pubkey_viewer]) {
+		if (pub !== $pubkey_viewer && !$relaySet[$pubkey_viewer]) {
 			$relaySet[$pubkey_viewer] = initRelaySet;
 			// bookmarkRelays.set([]);
 			// postRelays.set([]);

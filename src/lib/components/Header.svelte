@@ -235,9 +235,9 @@
 		class="h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-hidden rounded-b"
 	>
 		<div>
-			{#if JSON}【JSON MODE】 kind:{kind}
-				{#if kinds[kind]} ({kinds[kind]}) {/if}
-			{:else}
+			<!-- {#if JSON}【JSON MODE】 kind:{kind}
+				{#if kinds[kind]} ({kinds[kind]}) {/if} -->
+			{#if !JSON}
 				<select
 					class="input w-fit"
 					bind:value={selectValue}

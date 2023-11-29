@@ -50,9 +50,13 @@
 	import PublishIcon from '@material-design-icons/svg/round/publish.svg?raw';
 	import { kindsValidTag } from '$lib/kind';
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
-	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
+	import type {
+		ModalComponent,
+		ModalSettings,
+		ToastSettings
+	} from '@skeletonlabs/skeleton';
 	import ModalPublishJson from './ModalPublishJson.svelte';
-	import { modalStore } from '$lib/stores/store';
+	import { modalStore, toastStore } from '$lib/stores/store';
 
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> = $JsonEventData;
@@ -122,10 +126,16 @@
 			// bookmarkRelays.set([]);
 			// postRelays.set([]);
 			// searchRelays.set([]);
+			const t: ToastSettings = {
+				message: `${$_('toast.relaySearching')}`
+			};
+			const getRelaysToast = toastStore.trigger(t);
+			$relaySet[pub] = initRelaySet;
 			await getRelays(pub);
+			toastStore.close(getRelaysToast);
 			//$relayPubkey = pubkey;
 		}
-		if (!$relaySet[$pubkey_viewer]) {
+		if (pub !== $pubkey_viewer && !$relaySet[$pubkey_viewer]) {
 			$relaySet[$pubkey_viewer] = initRelaySet;
 			// bookmarkRelays.set([]);
 			// postRelays.set([]);
@@ -206,8 +216,8 @@
 						noEdit={true}
 					/>
 				</NostrApp>
-			{:else}
-				{`relay has not been set`}
+				<!-- {:else}
+				{`relay has not been set`} -->
 			{/if}
 		</main>
 	</div>
