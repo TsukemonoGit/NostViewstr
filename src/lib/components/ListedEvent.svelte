@@ -13,14 +13,16 @@
 	import MenuButtons from './MenuButtons.svelte';
 	import ProfileCard from './ProfileCard.svelte';
 	import Emoji from './Emoji.svelte';
+	import { list } from 'postcss';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
 
-	export let listEvent: NostrEvent;
+	export let listEvent: NostrEvent | undefined;
 	export let bkm = 'pub'; //'pub'|'prv'
 	export let isOwner: boolean;
 	export let noEdit: boolean = false;
+	export let pubkey: string;
 	//let viewList: string[][];
 	//一つのタグに一種類のイベントしかないことにして日付だけ見る
 	const uniqueEvent = (eventList: NostrEvent[]): NostrEvent => {
@@ -53,13 +55,14 @@
 		viewList = [];
 		$listSize = 0;
 	}
+	$: console.log($listSize);
 	let message: string;
 	async function viewUpdate() {
 		message = '';
 		if (listEvent) {
 			if (bkm === 'pub') {
-				$listSize = listEvent?.tags.length;
-				viewList = listEvent?.tags;
+				$listSize = listEvent ? listEvent.tags.length : 0;
+				viewList = listEvent ? listEvent.tags : [];
 			} else if (isOwner) {
 				try {
 					const res = await privateList(listEvent);
@@ -129,7 +132,7 @@
 								message={`loading [${tag}]`}
 								isPageOwner={isOwner}
 								myIndex={index}
-								pubkey={listEvent.pubkey}
+								{pubkey}
 							/>
 							<MenuButtons
 								myIndex={index}
@@ -150,7 +153,7 @@
 								message={`error [${tag}]`}
 								isPageOwner={isOwner}
 								myIndex={index}
-								pubkey={listEvent.pubkey}
+								{pubkey}
 							/>
 							<MenuButtons
 								myIndex={index}
@@ -171,7 +174,7 @@
 								message={`not found [${tag}]`}
 								isPageOwner={isOwner}
 								myIndex={index}
-								pubkey={listEvent.pubkey}
+								{pubkey}
 							/><MenuButtons
 								myIndex={index}
 								tagArray={tag}
@@ -197,7 +200,7 @@
 									tagArray={tag}
 									note={text}
 									metadata={undefined}
-									pubkey={listEvent.pubkey}
+									{pubkey}
 								/><MenuButtons
 									myIndex={index}
 									tagArray={tag}
@@ -217,7 +220,7 @@
 									tagArray={tag}
 									note={text}
 									metadata={undefined}
-									pubkey={listEvent.pubkey}
+									{pubkey}
 								/><MenuButtons
 									myIndex={index}
 									tagArray={tag}
@@ -237,7 +240,7 @@
 									tagArray={tag}
 									note={text}
 									metadata={undefined}
-									pubkey={listEvent.pubkey}
+									{pubkey}
 								/><MenuButtons
 									myIndex={index}
 									tagArray={tag}
@@ -256,7 +259,7 @@
 									tagArray={tag}
 									note={text}
 									{metadata}
-									pubkey={listEvent.pubkey}
+									{pubkey}
 								/>
 								<MenuButtons
 									myIndex={index}
@@ -283,7 +286,7 @@
 								message={`loading [${tag}]`}
 								isPageOwner={isOwner}
 								myIndex={index}
-								pubkey={listEvent.pubkey}
+								{pubkey}
 							/><MenuButtons
 								myIndex={index}
 								tagArray={tag}
@@ -303,7 +306,7 @@
 								message={`error [${tag}]`}
 								isPageOwner={isOwner}
 								myIndex={index}
-								pubkey={listEvent.pubkey}
+								{pubkey}
 							/><MenuButtons
 								myIndex={index}
 								tagArray={tag}
@@ -323,7 +326,7 @@
 								message={`not found [${tag}]`}
 								isPageOwner={isOwner}
 								myIndex={index}
-								pubkey={listEvent.pubkey}
+								{pubkey}
 							/>
 							<MenuButtons
 								myIndex={index}
@@ -350,7 +353,7 @@
 									tagArray={tag}
 									note={uniqueEvent(events)}
 									metadata={undefined}
-									pubkey={listEvent.pubkey}
+									{pubkey}
 								/><MenuButtons
 									myIndex={index}
 									tagArray={tag}
@@ -370,7 +373,7 @@
 									tagArray={tag}
 									note={uniqueEvent(events)}
 									metadata={undefined}
-									pubkey={listEvent.pubkey}
+									{pubkey}
 								/><MenuButtons
 									myIndex={index}
 									tagArray={tag}
@@ -390,7 +393,7 @@
 									tagArray={tag}
 									note={uniqueEvent(events)}
 									metadata={undefined}
-									pubkey={listEvent.pubkey}
+									{pubkey}
 								/><MenuButtons
 									myIndex={index}
 									tagArray={tag}
@@ -409,7 +412,7 @@
 									tagArray={tag}
 									note={uniqueEvent(events)}
 									{metadata}
-									pubkey={listEvent.pubkey}
+									{pubkey}
 								/>
 								<MenuButtons
 									myIndex={index}

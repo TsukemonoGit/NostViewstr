@@ -115,7 +115,9 @@
     "selectJson": "JSONファイルを選択してください",
     "checkJson": "無効なJSONファイルです",
     "failed_npub": "公開鍵を確認してください",
-    "invalidEmoji": "同じ名前の絵文字が存在します"
+    "invalidEmoji": "同じ名前の絵文字が存在します",
+    "relaySearching": "リレー取得中",
+    "eventSearching": "イベント取得中"
   },
   "icon_description": "アイコンについて"
 }

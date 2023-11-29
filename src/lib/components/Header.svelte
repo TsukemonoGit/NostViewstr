@@ -24,11 +24,12 @@
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import { kinds } from '$lib/kind';
 	import { goto } from '$app/navigation';
+	import type { U } from 'vitest/dist/reporters-5f784f42';
 
 	export let bkm: string;
 	export let kind: number;
 	export let pubkey: string;
-	export let viewEvent: Nostr.Event<number>;
+	export let viewEvent: Nostr.Event<number> | undefined;
 	export let JSON: boolean = false;
 
 	$: listNaddr = viewEvent
@@ -327,7 +328,7 @@
 				}}
 				><PubBkm />
 			</button>
-			{#if $bookmarkEvents && $bookmarkEvents[pubkey] && $bookmarkEvents[pubkey][kind] && $bookmarkEvents[pubkey][kind].length > 0 && viewEvent.content !== ''}
+			{#if viewEvent && viewEvent.content !== ''}
 				<button
 					class={bkm === 'prv' ? borderClassActive : borderClass}
 					disabled={bkm === 'prv'}
@@ -343,7 +344,7 @@
 				<div />
 			{/if}
 		</div>
-		{#if $bookmarkEvents && $bookmarkEvents[pubkey] && $bookmarkEvents[pubkey][kind] && $bookmarkEvents[pubkey][kind].length > 0}
+		{#if viewEvent !== undefined}
 			<div class=" grid grid-rows-[auto_auto] box-border">
 				<div class=" place-self-end h6 truncate overflow-hidden">
 					{$_('created_at')}
@@ -352,7 +353,9 @@
 				<button
 					class="flex text-right text-sm underline decoration-secondary-200 overflow-hidden"
 					on:click={() => {
-						OpenNoteJson(viewEvent, listNaddr);
+						if (viewEvent !== undefined) {
+							OpenNoteJson(viewEvent, listNaddr);
+						}
 					}}
 				>
 					<div class="truncate h6">

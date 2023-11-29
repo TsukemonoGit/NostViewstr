@@ -115,7 +115,9 @@
     "selectJson": "please select JSON file.",
     "checkJson": "Invalid JSON file.",
     "failed_npub": "check public key",
-    "invalidEmoji": "same name exists"
+    "invalidEmoji": "same name exists",
+    "relaySearching": "Relay Searching ...",
+    "eventSearching": "Searching events ..."
   },
   "icon_description": "Icon description"
 }

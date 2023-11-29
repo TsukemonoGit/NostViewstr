@@ -49,7 +49,8 @@
 		ListBox,
 		ListBoxItem,
 		type ModalComponent,
-		type ModalSettings
+		type ModalSettings,
+		type ToastSettings
 	} from '@skeletonlabs/skeleton';
 	import ModalAddNote from '$lib/components/modals/ModalAddNote.svelte';
 	import ModalDelete from '$lib/components/modals/ModalDelete.svelte';
@@ -62,7 +63,7 @@
 	import { kindsValidTag } from '$lib/kind';
 
 	let bkm: string = 'pub';
-	let viewEvent: Nostr.Event<number>;
+	let viewEvent: Nostr.Event<number> | undefined;
 	export let pubkey: string;
 	export let kind: number;
 	export let identifier: string | undefined = undefined;
@@ -78,6 +79,8 @@
 		$bookmarkEvents[pubkey][kind][$listNum]
 	) {
 		viewEvent = $bookmarkEvents[pubkey][kind][$listNum];
+	} else {
+		viewEvent = undefined;
 	}
 	onMount(async () => {
 		if (!isOnMount) {
@@ -142,7 +145,13 @@
 			// bookmarkRelays.set([]);
 			// postRelays.set([]);
 			// searchRelays.set([]);
+			const t: ToastSettings = {
+				message: `${$_('toast.relaySearching')}`
+			};
+			const getRelaysToast = toastStore.trigger(t);
+
 			await getRelays(pub);
+			toastStore.close(getRelaysToast);
 			//$relayPubkey = pubkey;
 		}
 		if (!$relaySet[$pubkey_viewer]) {
@@ -170,10 +179,15 @@
 						}
 				  ];
 		//$nowProgress = true;
+		const t: ToastSettings = {
+			message: `${$_('toast.eventSearching')}`
+		};
+		const searchingEventsToast = toastStore.trigger(t);
 		const res = await StoreFetchFilteredEvents(pubkey, kind, {
 			relays: $relaySet[pubkey].bookmarkRelays,
 			filters: filter
 		});
+		toastStore.close(searchingEventsToast);
 		//console.log(res);
 		//const res = bookmarks;
 		// if (res.length === 0) {
@@ -760,86 +774,90 @@
 <!--header-->
 <Header {kind} bind:bkm {pubkey} bind:viewEvent />
 <!-- {#await bkminit(pubkey) then bkminti} -->
-{#if $bookmarkEvents && $bookmarkEvents[pubkey] && $bookmarkEvents[pubkey][kind] && $bookmarkEvents[pubkey][kind].length > 0}
-	<!--サイドバーとメイン-->
-	<div
-		class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
-	>
-		<div class="flex overflow-x-hidden">
-			<!-- Left Sidebar (Hidden on small screens) -->
-			{#if !isNaddr}
-				<div
-					class="hidden md:flex h-full w-[12em] pb-[6em] bg-surface-200-700-token overflow-y-auto fixed"
-				>
-					<!-- Your sidebar content goes here -->
-					<!-- For example, you can add links or other elements -->
-					<!--さいどばー-->
-					{#if $identifierList && $identifierList[pubkey] && $identifierList[pubkey][kind].length > 0}
-						<ListBox
-							class=" overflow-y-auto w-full"
-							active="variant-ghost-primary box-border"
-						>
-							{#each $identifierList[pubkey][kind] as list, index}
-								<ListBoxItem
-									bind:group={$listNum}
-									name={list.identifier ?? ''}
-									value={index}
-									class="truncate "
-									padding="px-2 py-2"
-									labelledby="truncate"
-									on:change={() => {
-										$listNum = index;
-									}}
-									><svelte:fragment slot="lead"
-										><div
-											class="rounded-full w-[1.5em] h-[1.5em] variant-soft-primary h6 text-center"
-										>
-											{(index + 1).toString().padStart(2, '0')}
-										</div></svelte:fragment
-									>
-									{#if list.title}
-										<div class="text-xs">{list.identifier}</div>
-										<div>{list.title}</div>
-									{:else}
-										{list.identifier}
-									{/if}
-								</ListBoxItem>
-								<hr />
-							{/each}
-						</ListBox>
-					{:else}
-						{$_('modal.tagList.noList')}
-					{/if}
-				</div>
-			{/if}
-			<!--めいん-->
-			<main
-				class="flex-1 {isNaddr
-					? ''
-					: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
+
+<!--サイドバーとメイン-->
+<div
+	class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
+>
+	<div class="flex overflow-x-hidden">
+		<!-- Left Sidebar (Hidden on small screens) -->
+		{#if !isNaddr}
+			<div
+				class="hidden md:flex h-full w-[12em] pb-[6em] bg-surface-200-700-token overflow-y-auto fixed"
 			>
-				<!-- Add ml-64 to push main to the right -->
-				{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-					<NostrApp relays={$relaySet[pubkey].searchRelays}>
-						<ListedEvent
-							listEvent={viewEvent}
-							{DeleteNote}
-							{MoveNote}
-							{CheckNote}
-							bind:bkm
-							bind:isOwner
-						/>
-					</NostrApp>
-				{:else}
-					{`relay has not been set`}
+				<!-- Your sidebar content goes here -->
+				<!-- For example, you can add links or other elements -->
+				<!--さいどばー-->
+				{#if $identifierList && $identifierList[pubkey] && $identifierList[pubkey][kind]?.length > 0}
+					<ListBox
+						class=" overflow-y-auto w-full"
+						active="variant-ghost-primary box-border"
+					>
+						{#each $identifierList[pubkey][kind] as list, index}
+							<ListBoxItem
+								bind:group={$listNum}
+								name={list.identifier ?? ''}
+								value={index}
+								class="truncate "
+								padding="px-2 py-2"
+								labelledby="truncate"
+								on:change={() => {
+									$listNum = index;
+								}}
+								><svelte:fragment slot="lead"
+									><div
+										class="rounded-full w-[1.5em] h-[1.5em] variant-soft-primary h6 text-center"
+									>
+										{(index + 1).toString().padStart(2, '0')}
+									</div></svelte:fragment
+								>
+								{#if list.title}
+									<div class="text-xs">{list.identifier}</div>
+									<div>{list.title}</div>
+								{:else}
+									{list.identifier}
+								{/if}
+							</ListBoxItem>
+							<hr />
+						{/each}
+					</ListBox>
+					<!-- {:else if !$nowProgress}
+					{$_('modal.tagList.noList')} -->
 				{/if}
-			</main>
-		</div>
+			</div>
+		{/if}
+		<!--めいん-->
+		<main
+			class="flex-1 {isNaddr
+				? ''
+				: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
+		>
+			<!-- Add ml-64 to push main to the right -->
+			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+				<NostrApp relays={$relaySet[pubkey].searchRelays}>
+					<ListedEvent
+						listEvent={viewEvent}
+						{pubkey}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+						bind:bkm
+						bind:isOwner
+					/>
+				</NostrApp>
+				<!-- {:else}
+				{`now getting relay list ...`} -->
+			{/if}
+		</main>
 	</div>
+</div>
+
+{#if $bookmarkEvents && $bookmarkEvents[pubkey] && $bookmarkEvents[pubkey][kind] && $bookmarkEvents[pubkey][kind].length > 0}
+	<!---->
 {:else}
-	<div
-		class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
-	>
+	<div class="flex w-full h-full justify-center items-center text-center">
+		<!-- Left Sidebar (Hidden on small screens) -->
+
 		{#if $nowProgress}
 			{`now loading...`}
 		{:else}
