@@ -1079,6 +1079,7 @@ export async function updateBkmTag(pubkey: string, kind: number, num: number) {
 		bkm[pubkey][kind].length > num &&
 		relays.length > 0
 	) {
+		//すでにイベントが有る場合（更新の場合）
 		const dtag = bkm[pubkey][kind][num].tags.find((tag) => tag[0] === 'd');
 		const filter: Nostr.Filter =
 			dtag !== undefined
@@ -1126,28 +1127,14 @@ export async function updateBkmTag(pubkey: string, kind: number, num: number) {
 			console.log(
 				`updateBkmTag[${get(identifierList)[pubkey][kind][num]}] updated`
 			);
-			// //newIdentifierListも更新してーーー
-			// const newIdentifierList =
-			// 	bkm.map((item) => {
-			// 		const tag = item.tags.find((tag) => tag[0] === 'd');
-			// 		const title = item.tags.find((tag) => tag[0] === 'title');
-			// 		const image = item.tags.find((tag) => tag[0] === 'image');
-			// 		const summary = item.tags.find((tag) => tag[0] === 'summary');
-			// 		return {
-			// 			identifier: tag ? tag[1] : undefined,
-			// 			title: title ? title[1] : undefined,
-			// 			image: image ? image[1] : undefined,
-			// 			summary: summary ? summary[1] : undefined
-			// 		};
-			// 	}) ?? [];
-			// identifierList.set(newIdentifierList);
 		}
+	} else {
+		//no dataのばあい最初に開いたときの処理と同じをする
+		await StoreFetchFilteredEvents(pubkey, kind, {
+			relays: relays,
+			filters: [{ kinds: [kind], authors: [pubkey] }]
+		});
 	}
-	console.log(
-		`updateBkmTag[${
-			get(identifierList)[pubkey][kind][num].identifier
-		}] completed`
-	);
 }
 
 //タグごと追加の項目で入力された値が一次元配列かどうかを確認

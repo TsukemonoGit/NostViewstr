@@ -757,11 +757,10 @@
 	}
 </script>
 
+<!--header-->
+<Header {kind} bind:bkm {pubkey} bind:viewEvent />
 <!-- {#await bkminit(pubkey) then bkminti} -->
 {#if $bookmarkEvents && $bookmarkEvents[pubkey] && $bookmarkEvents[pubkey][kind] && $bookmarkEvents[pubkey][kind].length > 0}
-	<!--header-->
-	<Header {kind} bind:bkm {pubkey} bind:viewEvent />
-
 	<!--サイドバーとメイン-->
 	<div
 		class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"

@@ -47,9 +47,12 @@
 	import { NostrApp, type Nostr } from 'nosvelte';
 
 	import { afterNavigate } from '$app/navigation';
-
+	import PublishIcon from '@material-design-icons/svg/round/publish.svg?raw';
 	import { kindsValidTag } from '$lib/kind';
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
+	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
+	import ModalPublishJson from './ModalPublishJson.svelte';
+	import { modalStore } from '$lib/stores/store';
 
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> = $JsonEventData;
@@ -141,12 +144,46 @@
 	function onClickPage(arg0: number): any {
 		$listNum += arg0;
 	}
+
+	//--------------------------------------Add note
+	const publishJsonModalComponent: ModalComponent = {
+		ref: ModalPublishJson
+	};
+	function onClickAddfromJson(
+		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
+	) {
+		const modal: ModalSettings = {
+			type: 'component',
+			component: publishJsonModalComponent,
+			title: $_('modal.Json.title'),
+			body: `${$_('modal.Json.body')}`,
+			value: {
+				event: $JsonEventData
+			},
+			response: async (res) => {
+				//console.log(res);
+				if (res) {
+					$nowProgress = true;
+					console.log(res.bkm);
+					//updateするやつ
+					$nowProgress = false;
+				}
+			}
+		};
+		modalStore.trigger(modal);
+	}
 </script>
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
 
 <!--header-->
-<Header kind={$JsonEventData.kind} bind:bkm {pubkey} bind:viewEvent />
+<Header
+	kind={$JsonEventData.kind}
+	bind:bkm
+	{pubkey}
+	bind:viewEvent
+	JSON={true}
+/>
 
 <!--サイドバーとメイン-->
 <div
@@ -181,6 +218,17 @@
 />
 
 <!-------------------------------あど----->
+<!-------------------------------あど----->
+{#if !$nowProgress && $pubkey_viewer === pubkey}
+	<div class="fixed bottom-14 z-10 box-border overflow-x-hidden add">
+		<div class="fill-white overflow-x-hidden h-fit overflow-y-auto">
+			<button
+				class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
+				on:click={onClickAddfromJson}>{@html PublishIcon}</button
+			>
+		</div>
+	</div>
+{/if}
 
 <!-- {/await} -->
 
@@ -204,5 +252,10 @@
 	:global(.bkm svg) {
 		width: 24px;
 		height: 24px;
+	}
+	.add {
+		/* コンテナのMAXサイズが1024pxなので半分の512より手前らへんに */
+		left: min(calc(50% + 440px), calc(100% - 60px));
+		overflow-x: hidden;
 	}
 </style>
