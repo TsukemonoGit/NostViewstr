@@ -81,7 +81,7 @@
 		<!--profile-->
 
 		<div class="grid grid-row-[auto_auto_auto] gap-1 max-w-md">
-			<div class="grid grid-cols-[auto_1fr] gap-2 max-w-md">
+			<div class="grid grid-cols-[auto_1fr] gap-2 max-w-md max-h-40">
 				<div
 					class="w-16 h-16 rounded-lg flex justify-center overflow-hidden bg-surface-500/25"
 				>
@@ -99,7 +99,9 @@
 					{/if}
 				</div>
 			</div>
-			<div class="rounded-sm border-4 border-dotted border-surface-300 p-1">
+			<div
+				class="rounded-sm border-4 border-dotted border-surface-300 p-1 bg-surface-100/80 dark:bg-surface-800/80"
+			>
 				<div class="font-bold">about</div>
 				{#if profileContent && profileContent.about}
 					<div
@@ -109,7 +111,9 @@
 					</div>
 				{/if}
 			</div>
-			<div class="rounded-sm border-4 border-dotted border-surface-300 p-1">
+			<div
+				class="rounded-sm border-4 border-dotted border-surface-300 p-1 bg-surface-100/80 dark:bg-surface-800/80"
+			>
 				<div class="font-bold">profileJSON</div>
 				{#if profileContent}
 					<div
