@@ -69,7 +69,7 @@
       "title": "Search"
     },
     "publishjson": {
-      "title": "Writes the data being displayed to the relay",
+      "title": "Write data to relay",
       "body": "If there are any corrections you want to make, modify them and click Publish (the generated field will be updated automatically)."
     }
   },

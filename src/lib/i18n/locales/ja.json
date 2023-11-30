@@ -70,7 +70,7 @@
     },
     "publishjson": {
       "body": "修正したい所があれば修正してPublishをクリック（generated欄は自動で更新されます）",
-      "title": "表示中のデータをリレーに書き込む"
+      "title": "データをリレーに書き込む"
     }
   },
   "created_at": "最終更新日時",
