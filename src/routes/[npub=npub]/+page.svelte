@@ -8,11 +8,13 @@
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
 	import { kinds } from '$lib/kind';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 	let settings: boolean = false;
 	function settingFunc() {
 		settings = true;
+		goto(`${window.location.pathname}/${kind}`);
 	}
 	//console.log('PageData', data.pubkey);
 
@@ -30,21 +32,14 @@
 	// onMount(async () => {
 	// 	console.log(await getRelays(data.pubkey));
 	// }); //await setRelays(testRelay);}}
-	let kind: number;
-	let selectValue: any;
+	let kind: number = Number(Object.keys(kinds)[0]);
+	let selectValue = Object.keys(kinds)[0];
 	console.log(selectValue);
 	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
 		kind = Number(event.currentTarget.value);
 		console.log(kind);
 	}
 </script>
-
-<!-- <div class="break-all">
-	<p>npub:{$page.params.npub}</p>
-	<p>read:{$searchRelays}</p>
-	<p>write:{$postRelays}</p>
-	<p>kind:?</p>
-</div> -->
 
 {#if !settings}
 	<div class="container h-full mx-auto flex justify-center items-center">
@@ -70,7 +65,4 @@
 			</div>
 		</div>
 	</div>
-{:else}
-	<ListedEventList pubkey={data.pubkey} {kind} isNaddr={false} />
-	<FooterMenu pubkey={data.pubkey} {kind} />
 {/if}

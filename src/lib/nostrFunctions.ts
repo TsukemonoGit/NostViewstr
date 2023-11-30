@@ -29,7 +29,9 @@ import {
 	type MonoTypeOperatorFunction,
 	pipe,
 	scan,
-	Observable
+	Observable,
+	timer,
+	takeUntil
 } from 'rxjs';
 
 import {
@@ -519,6 +521,7 @@ export function idlatestEach(): MonoTypeOperatorFunction<EventPacket> {
 
 				source.subscribe({
 					next(packet) {
+						console.log(packet);
 						const id = packet.event.tags.find((item) => item[0] === 'd'); //一応一個目にdがない場合も考慮
 						//console.log(id);
 						if (id) {
@@ -641,8 +644,8 @@ export async function fetchFilteredEvents(
 	//console.log(relays);
 
 	rxNostr.setRelays(relays);
-	console.log('[rx-nostr getRelays]');
-	console.log(rxNostr.getRelays());
+
+	console.log('[rx-nostr getRelays]', rxNostr.getRelays());
 	const rxReq = createRxOneshotReq({ filters });
 	//	console.log(filters[0].kinds);
 	// データの購読
@@ -651,12 +654,12 @@ export async function fetchFilteredEvents(
 		filters[0].kinds[0] >= 30000 &&
 		filters[0].kinds[0] < 40000
 			? rxNostr.use(rxReq).pipe(
+					completeOnTimeout(3000),
 					uniq(),
 					verify(),
 
-					idlatestEach(),
+					idlatestEach()
 					//	(packet) => packet.event.tags[0][1] //.find((item) => item[0] === 'd')
-					completeOnTimeout(3000)
 			  )
 			: rxNostr
 					.use(rxReq)
@@ -666,8 +669,8 @@ export async function fetchFilteredEvents(
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
 		next: (packet: { event: Nostr.Event<number> }) => {
-			console.log('[rx-nostr packet]');
-			console.log(packet);
+			console.log('[rx-nostr packet]', packet);
+
 			eventList.push(packet.event);
 			// if (filters[0].kinds) {
 			// 	if (
@@ -705,9 +708,9 @@ export async function fetchFilteredEvents(
 	const subscription = observable.subscribe(observer);
 
 	// 5秒後に購読を停止
-	setTimeout(() => {
-		subscription.unsubscribe();
-	}, 5 * 1000);
+	// setTimeout(() => {
+	// 	subscription.unsubscribe();
+	// }, 5 * 1000);
 
 	//Observable の完了を待つ
 	await new Promise<void>((resolve) => {
@@ -1102,6 +1105,7 @@ export async function updateBkmTag(pubkey: string, kind: number, num: number) {
 
 	const relays = get(relaySet)[pubkey].bookmarkRelays;
 	if (
+		bkm[pubkey][kind] &&
 		bkm[pubkey][kind] !== undefined &&
 		bkm[pubkey][kind].length > num &&
 		relays.length > 0
