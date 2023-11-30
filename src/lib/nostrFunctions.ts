@@ -225,32 +225,59 @@ export async function publishEventWithTimeout(
 		return { isSuccess: false, msg: 'login error' };
 	}
 	try {
-		const event = await signEv(obj);
+		//const event = await signEv(obj);
+		const event = obj;
 		event.id = getEventHash(event);
 		console.log(event);
-		console.log(validateEvent(event));
-		console.log(verifySignature(event));
+		//console.log(validateEvent(event));
+		//console.log(verifySignature(event));
 		const rxNostr = createRxNostr();
 
 		await rxNostr.setRelays(relays);
-
+		const sec = get(nsec); //nsecでの書き込みはできません（たぶんrx-nostrのバージョン）
 		// Promiseを作成してObservableを待機
-		const result = await new Promise<{
-			isSuccess: boolean;
-			msg: string;
-			event?: Nostr.Event;
-		}>((resolve) => {
-			rxNostr.send(event).subscribe({
-				next: (packet) => {
-					console.log(packet);
-					msgObj[packet.from] = true;
-					isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
-				},
-				complete: () => {
-					resolve({ isSuccess, event: event, msg: formatResults(msgObj) }); // complete時に結果を解決してresolve
-				}
-			});
-		});
+		const result =
+			sec && sec !== ''
+				? await new Promise<{
+						isSuccess: boolean;
+						msg: string;
+						event?: Nostr.Event;
+				  }>((resolve) => {
+						rxNostr.send(event, sec).subscribe({
+							next: (packet) => {
+								console.log(packet);
+								msgObj[packet.from] = true;
+								isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
+							},
+							complete: () => {
+								resolve({
+									isSuccess,
+									event: event,
+									msg: formatResults(msgObj)
+								}); // complete時に結果を解決してresolve
+							}
+						});
+				  })
+				: await new Promise<{
+						isSuccess: boolean;
+						msg: string;
+						event?: Nostr.Event;
+				  }>((resolve) => {
+						rxNostr.send(event).subscribe({
+							next: (packet) => {
+								console.log(packet);
+								msgObj[packet.from] = true;
+								isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
+							},
+							complete: () => {
+								resolve({
+									isSuccess,
+									event: event,
+									msg: formatResults(msgObj)
+								}); // complete時に結果を解決してresolve
+							}
+						});
+				  });
 
 		return result;
 	} catch (error) {
