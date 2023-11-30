@@ -232,14 +232,14 @@
 	class="z-10 fixed h-[4em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden box-border"
 >
 	<div
-		class="h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-hidden rounded-b"
+		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-hidden rounded-b"
 	>
 		<div>
 			<!-- {#if JSON}【JSON MODE】 kind:{kind}
 				{#if kinds[kind]} ({kinds[kind]}) {/if} -->
 			{#if !JSON}
 				<select
-					class="input w-fit"
+					class="border rounded border-primary-400 bg-primary-700 px-1 bg-primary-500 w-fit"
 					bind:value={selectValue}
 					on:change={handleKindChange}
 					disabled={$nowProgress}
@@ -272,7 +272,7 @@
 								on:click={listInfoModalOpen}
 							>
 								{#if $iconView && $identifierList[pubkey][kind][$listNum].image}
-									<div class="p-0 btn-icon btn-icon-sm m-0 mr-1 self-start">
+									<div class=" p-0 btn-icon btn-icon-sm m-0 mr-1 self-start">
 										<img
 											width={36}
 											class="min-w-[36px]"
