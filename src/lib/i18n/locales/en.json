@@ -117,7 +117,8 @@
     "failed_npub": "check public key",
     "invalidEmoji": "same name exists",
     "relaySearching": "Relay Searching ...",
-    "eventSearching": "Searching events ..."
+    "eventSearching": "Searching events ...",
+    "invalidEvent": "invalid event"
   },
   "icon_description": "Icon description"
 }

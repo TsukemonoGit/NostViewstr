@@ -162,20 +162,45 @@
 	function onClickAddfromJson(
 		event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
 	) {
+		let newEvent = Object.assign({}, $JsonEventData); //参照の問題を回避
+		newEvent.created_at = '<generated>' as any; // 一時的にanyとしてキャストするか、正しい型に変更する
+		newEvent.sig = '<generated>' as any;
+		newEvent.pubkey = '<generated>' as any;
+		newEvent.id = '<generated>' as any;
+
 		const modal: ModalSettings = {
 			type: 'component',
 			component: publishJsonModalComponent,
-			title: $_('modal.Json.title'),
-			body: `${$_('modal.Json.body')}`,
+			title: $_('modal.publishjson.title'),
+			body: `${$_('modal.publishjson.body')}`,
 			value: {
-				event: $JsonEventData
+				event: newEvent
 			},
 			response: async (res) => {
 				//console.log(res);
 				if (res) {
 					$nowProgress = true;
-					console.log(res.bkm);
+					console.log(res);
 					//updateするやつ
+					const result = await publishEventWithTimeout(
+						res,
+						$relaySet[$pubkey_viewer]?.bookmarkRelays || []
+					);
+
+					const toastMessage = result.isSuccess
+						? 'Add note<br>' + result.msg
+						: $_('toast.failed_publish');
+
+					const t = {
+						message: toastMessage,
+						timeout: 3000,
+						background: result.isSuccess
+							? 'variant-filled-secondary width-filled'
+							: 'bg-orange-500 text-white width-filled '
+					};
+
+					toastStore.trigger(t);
+
 					$nowProgress = false;
 				}
 			}

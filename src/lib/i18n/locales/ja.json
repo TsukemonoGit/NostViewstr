@@ -67,6 +67,10 @@
     },
     "search": {
       "title": "検索"
+    },
+    "publishjson": {
+      "body": "修正したい所があれば修正してPublishをクリック（generated欄は自動で更新されます）",
+      "title": "表示中のデータをリレーに書き込む"
     }
   },
   "created_at": "最終更新日時",
@@ -117,7 +121,8 @@
     "failed_npub": "公開鍵を確認してください",
     "invalidEmoji": "同じ名前の絵文字が存在します",
     "relaySearching": "リレー取得中",
-    "eventSearching": "イベント取得中"
+    "eventSearching": "イベント取得中",
+    "invalidEvent": "無効なイベントです"
   },
   "icon_description": "アイコンについて"
 }

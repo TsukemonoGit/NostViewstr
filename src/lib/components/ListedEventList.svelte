@@ -614,30 +614,21 @@
 				} else {
 					$identifierList = { [pubkey]: { [kind]: [newIdentifierList] } };
 				}
-
-				const toastMessage = result.isSuccess
-					? 'Add note<br>' + result.msg
-					: $_('toast.failed_publish');
-
-				const t = {
-					message: toastMessage,
-					timeout: 3000,
-					background: result.isSuccess
-						? 'variant-filled-secondary width-filled'
-						: 'bg-orange-500 text-white width-filled '
-				};
-
-				toastStore.trigger(t);
-				isSuccess = true;
-			} else {
-				const t = {
-					message: $_('toast.failed_publish'),
-					timeout: 3000,
-					background: 'bg-orange-500 text-white width-filled '
-				};
-
-				toastStore.trigger(t);
 			}
+			const toastMessage = result.isSuccess
+				? 'Add note<br>' + result.msg
+				: $_('toast.failed_publish');
+
+			const t = {
+				message: toastMessage,
+				timeout: 3000,
+				background: result.isSuccess
+					? 'variant-filled-secondary width-filled'
+					: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
+			isSuccess = result.isSuccess;
 		} catch (error) {
 			console.error(error);
 

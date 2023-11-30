@@ -209,7 +209,7 @@
 											)}...{:else}{item.content}{/if}</a
 									></span
 								>{:then ogp}
-								{#if $ogpStore[item.content].title !== ''}
+								{#if $ogpStore[item.content] && $ogpStore[item.content].title && $ogpStore[item.content].title !== ''}
 									<OGP ogp={$ogpStore[item.content]} url={item.content} />
 								{:else}<a class="anchor" href={item.content} target="_blank"
 										>{#if item.content.length > 80}{item.content.slice(
