@@ -3,12 +3,14 @@
 	import { iconView } from '$lib/stores/settings';
 	import { nip19 } from 'nostr-tools';
 	import OpenIcon from '@material-design-icons/svg/round/open_in_new.svg?raw';
+	import type { Nostr } from 'nosvelte';
 	export let text: string;
 
 	export let id: string;
 
 	export let isPageOwner: boolean;
 	export let pubkey: string;
+	export let event: Nostr.Event;
 	let name: string;
 	let picture: string;
 	let about: string;
@@ -29,16 +31,31 @@
 	$: if (id) {
 		data = nip19.neventEncode({ id: id });
 	}
-	$: chatURL = `https://unyu-house.vercel.app/channels/${data}`;
+
+	//eventがkind41のばあい、40のイベントID（tagsのなかのeタグ）を探してそこのneventにリンクさせる
+	let chatURL: string;
+	$: if (event.kind === 40) {
+		chatURL = `https://unyu-house.vercel.app/channels/${data}`;
+	} else {
+		const tmp = event.tags.find((item) => item[0] === 'e');
+		if (tmp) {
+			try {
+				const nevent = nip19.neventEncode({ id: tmp[1] });
+				chatURL = `https://unyu-house.vercel.app/channels/${nevent}`;
+			} catch (error) {
+				chatURL = `https://unyu-house.vercel.app/`;
+			}
+		}
+	}
 </script>
 
 <div class="grid grid-cols-[auto_1fr] gap-1">
-	<div>
+	<div class="w-fit">
 		{#if $iconView && picture}
 			<img
 				class="m-2 max-w-16 max-h-16 object-contain justify-center"
 				src={picture}
-				alt={picture}
+				alt=""
 			/>
 		{/if}
 	</div>

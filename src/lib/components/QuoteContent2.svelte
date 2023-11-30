@@ -13,6 +13,7 @@
 	import { nip19 } from 'nostr-tools';
 	import Ogp from './OGP.svelte';
 	import EventTag from './EventTag.svelte';
+	import PubCha from './PubCha.svelte';
 
 	export let id: string;
 	export let isPageOwner: boolean;
@@ -211,6 +212,14 @@
 								}}
 								url={JSON.parse(text.content).website}
 							/>
+						{:else if text.kind === 40 || text.kind === 41}
+							<PubCha
+								event={text}
+								text={text.content}
+								id={text.id}
+								{isPageOwner}
+								{pubkey}
+							/>
 						{:else}
 							<Content
 								text={text.content}
@@ -246,6 +255,14 @@
 								}}
 								url={JSON.parse(text.content).website}
 							/>
+						{:else if text.kind === 40 || text.kind === 41}
+							<PubCha
+								event={text}
+								text={text.content}
+								id={text.id}
+								{isPageOwner}
+								{pubkey}
+							/>
 						{:else}
 							<Content
 								text={text.content}
@@ -274,6 +291,14 @@
 									favicon: JSON.parse(text.content).picture
 								}}
 								url={JSON.parse(text.content).website}
+							/>
+						{:else if text.kind === 40 || text.kind === 41}
+							<PubCha
+								event={text}
+								text={text.content}
+								id={text.id}
+								{isPageOwner}
+								{pubkey}
 							/>
 						{:else}
 							<Content
@@ -353,6 +378,14 @@
 								favicon: JSON.parse(text.content).picture
 							}}
 							url={JSON.parse(text.content).website}
+						/>
+					{:else if text.kind === 40 || text.kind === 41}
+						<PubCha
+							event={text}
+							text={text.content}
+							id={text.id}
+							{isPageOwner}
+							{pubkey}
 						/>
 					{:else}
 						<Content

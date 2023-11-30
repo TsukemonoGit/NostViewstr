@@ -242,6 +242,7 @@
 					class="input w-fit"
 					bind:value={selectValue}
 					on:change={handleKindChange}
+					disabled={$nowProgress}
 				>
 					{#each Object.keys(kinds) as value (value)}
 						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
@@ -372,6 +373,7 @@
 		{/if}
 		<button
 			class={'btn p-0 pr-2  arrow  h-[4em]'}
+			disabled={$nowProgress}
 			on:click={async () => {
 				$nowProgress = true;
 				await updateBkmTag(pubkey, kind, $listNum);
