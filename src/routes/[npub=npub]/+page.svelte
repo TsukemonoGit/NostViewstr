@@ -1,37 +1,18 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 
-	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
 
-	import type { PageData } from './$types';
-
-	import FooterMenu from '$lib/components/FooterMenu.svelte';
 	import { kinds } from '$lib/kind';
 	import { goto } from '$app/navigation';
 
-	export let data: PageData;
+	//export let data: PageData;
 	let settings: boolean = false;
 	function settingFunc() {
 		settings = true;
 		goto(`${window.location.pathname}/${kind}`);
 	}
-	//console.log('PageData', data.pubkey);
 
-	// onMount(() => {
-	// 	console.log('test');
-	// 	onmount = true;
-	// });
-	// $: console.log($URLPreview);
-	// $: console.log($iconView);
-	// onMount(async () => {
-	// 	if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
-	// 		$pubkey_viewer = await getPub();
-	// 	}
-	// });
-	// onMount(async () => {
-	// 	console.log(await getRelays(data.pubkey));
-	// }); //await setRelays(testRelay);}}
 	let kind: number = Number(Object.keys(kinds)[0]);
 	let selectValue = Object.keys(kinds)[0];
 	console.log(selectValue);
