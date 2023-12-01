@@ -68,11 +68,11 @@
 
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase} ">
-		<div class="grid grid-cols-[1fr_auto]">
-			<header class={cHeader}>
-				{$modalStore[0].title ?? '(title missing)'}
-			</header>
-			<div class="history">
+		<!-- <div class="grid grid-cols-[1fr_auto]"> -->
+		<header class={cHeader}>
+			{$modalStore[0].title ?? '(title missing)'}
+		</header>
+		<!-- <div class="history">
 				<button
 					class="btn-icon variant-filled-surface"
 					disabled={!(history.length > 1)}
@@ -90,7 +90,7 @@
 					}}>{@html HomeIcon}</button
 				>
 			</div>
-		</div>
+		</div> -->
 
 		<!-- Enable for debugging: -->
 		<div class="flex gap-2">{$_('modal.info.light_switch')}<LightSwitch /></div>
