@@ -432,9 +432,52 @@
 						pubkey={tag[1]}
 						let:metadata
 					>
-						<div slot="loading">{JSON.stringify(tag)}</div>
-						<div slot="error">{JSON.stringify(tag)}</div>
-						<div slot="nodata">{JSON.stringify(tag)}</div>
+						<div
+							slot="loading"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							loading ... {JSON.stringify(tag)}
+							<MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={undefined}
+								menuMode={menuEvent}
+								share={false}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
+						<div
+							slot="error"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							not found {JSON.stringify(tag)}<MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={undefined}
+								menuMode={menuEvent}
+								share={false}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
+						<div
+							slot="nodata"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						>
+							not found {JSON.stringify(tag)}<MenuButtons
+								myIndex={index}
+								tagArray={tag}
+								note={undefined}
+								menuMode={menuEvent}
+								share={false}
+								on:DeleteNote={DeleteNote}
+								on:MoveNote={MoveNote}
+								on:CheckNote={CheckNote}
+							/>
+						</div>
 						<div
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
 						>

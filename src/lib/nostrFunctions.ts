@@ -670,8 +670,20 @@ export async function fetchFilteredEvents(
 	const observer: Observer<any> = {
 		next: (packet: { event: Nostr.Event<number> }) => {
 			console.log('[rx-nostr packet]', packet);
-
-			eventList.push(packet.event);
+			//たぶんIDありのほうは終わりまで待ってから返してる多分からとりあえず
+			//それ以外の方をCreated_at新しいのだけにする。
+			if (
+				filters[0].kinds &&
+				(filters[0].kinds[0] < 30000 || filters[0].kinds[0] >= 40000)
+			) {
+				if (eventList.length === 0) {
+					eventList.push(packet.event);
+				} else if (packet.event.created_at > eventList[0].created_at) {
+					eventList[0] = packet.event;
+				}
+			} else {
+				eventList.push(packet.event);
+			}
 			// if (filters[0].kinds) {
 			// 	if (
 			// 		filters[0].kinds[0] >= 30000 &&
