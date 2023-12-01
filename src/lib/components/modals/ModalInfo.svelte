@@ -205,6 +205,20 @@
 				</div>
 				{#if viewRelays}
 					<div class="card p-3">
+						<p class="pt-1">{$_('modal.info.relay.white')}</p>
+						{#if $relaySet[$pubkey_viewer].postRelays}
+							<ol
+								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
+							>
+								{#each $relaySet[$pubkey_viewer].postRelays as relay, index}
+									<li>
+										<span>{index + 1}.</span><span class="break-all"
+											>{relay}</span
+										>
+									</li>
+								{/each}
+							</ol>
+						{/if}
 						<p class="pt-1">{$_('modal.info.relay.list')}</p>
 						<ol
 							class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"

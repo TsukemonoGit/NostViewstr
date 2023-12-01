@@ -36,9 +36,10 @@
       "contentwarning": "Show all content warnings",
       "light_switch": "View mode",
       "relay": {
-        "list": "Acquisition and update relays",
+        "list": "Acquisition relays",
         "search": "Relay for searching notes",
-        "title": "Relay in setting"
+        "title": "Relay in setting",
+        "white": "write relays"
       },
       "share": "Share myLists (URLs you are browsing) with nostr",
       "urlandIcon": "Show/hide icons and URL previews",
