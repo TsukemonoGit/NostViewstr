@@ -99,7 +99,8 @@
 	<div class="modal-example-form {cBase}">
 		<div class="grid grid-cols-[1fr_auto]">
 			<header class={cHeader}>
-				{@html postIcon}{$modalStore[0].title ?? '(title missing)'}
+				<span class="dark:fill-white">{@html postIcon}</span>{$modalStore[0]
+					.title ?? '(title missing)'}
 			</header>
 
 			<button class="btn-icon variant-filled-surface" on:click={onClickCopy}

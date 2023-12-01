@@ -14,6 +14,8 @@
 	import nextIcon from '@material-design-icons/svg/round/chevron_right.svg?raw';
 	import multiIcon from '@material-design-icons/svg/round/checklist_rtl.svg?raw';
 	import menuIcon from '@material-design-icons/svg/round/menu.svg?raw';
+	import LeftIcon from '@material-design-icons/svg/round/west.svg?raw';
+	import HomeIcon from '@material-design-icons/svg/round/home.svg?raw';
 	import ModalTagList from '$lib/components/modals/ModalTagList.svelte';
 	import ModalInfo from '$lib/components/modals/ModalInfo.svelte';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
@@ -31,13 +33,15 @@
 	import {
 		ProgressRadial,
 		type ModalComponent,
-		type ModalSettings
+		type ModalSettings,
+		type ToastSettings
 	} from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
 	import { relaySet } from '$lib/stores/relays';
 	import { get } from 'svelte/store';
 	import type { Event } from 'nostr-tools';
+	import { goto } from '$app/navigation';
 	export let pubkey: string;
 	export let kind: number;
 	export let naddr: boolean = false;
@@ -385,6 +389,37 @@
 		$checkedIndexList = [];
 	}
 	export let disabled: boolean = false;
+	//let timer: NodeJS.Timeout;
+
+	//let isBackEnabled: boolean = true;
+
+	// function handleBackLongPressStart() {
+	// 	timer = setTimeout(() => {
+	// 		isBackEnabled = false;
+	// 		// 一定時間経過後にトーストを表示
+	// 		const t: ToastSettings = {
+	// 			message: 'Back to Home?',
+	// 			action: {
+	// 				label: HomeIcon,
+	// 				response: () => {
+	// 					clearTimeout(timer);
+	// 					goto('/');
+	// 					modalStore.close();
+	// 				}
+	// 			}
+	// 		};
+	// 		toastStore.trigger(t);
+	// 	}, 1000); // 1000ミリ秒（1秒）を長押しの閾値として設定
+	// 	isBackEnabled = true;
+	// }
+
+	function handleBackClick() {
+		// ここでも history.back() を防ぐ条件を確認
+		//if (isBackEnabled) {
+		history.back();
+		modalStore.close();
+		//	}
+	}
 </script>
 
 <div
@@ -402,6 +437,28 @@
 				stroke={60}
 			/>
 		{:else}
+			<button
+				class="btn-icon variant-filled-surface fill-white"
+				disabled={!(history.length > 1)}
+				on:click={handleBackClick}>{@html LeftIcon}</button
+			>
+			<!-- <button
+				class="btn-icon variant-filled-surface fill-white"
+				disabled={!(history.length > 1)}
+				on:mousedown={handleBackLongPressStart}
+				on:mouseup={() => {
+					clearTimeout(timer);
+				}}
+				on:mouseleave={() => {
+					clearTimeout(timer);
+				}}
+				on:touchstart={handleBackLongPressStart}
+				on:touchend={() => {
+					clearTimeout(timer);
+				}}
+				on:click={handleBackClick}>{@html LeftIcon}</button
+			> -->
+
 			{#if !naddr}
 				<button
 					class={buttonClass}
@@ -453,6 +510,13 @@
 
 			<button class={buttonClass} on:click={onClickInfo}>{@html Setting}</button
 			>
+			<!-- <button
+				class="btn-icon variant-filled-surface pageIcon"
+				on:click={() => {
+					goto('/');
+					modalStore.close();
+				}}>{@html HomeIcon}</button
+			> -->
 		{/if}
 	</div>
 </div>
