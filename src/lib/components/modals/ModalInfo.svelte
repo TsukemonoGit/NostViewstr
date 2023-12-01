@@ -30,12 +30,14 @@
 	import { goto } from '$app/navigation';
 	import { kinds } from '$lib/kind';
 	import { nip19 } from 'nostr-tools';
+	import type { Nostr } from 'nosvelte';
 
 	export let parent: any;
 
-	let res: { share: boolean; openJson: boolean } = {
+	let res: { share: boolean; openJson: boolean; openMyJson: boolean } = {
 		share: false,
-		openJson: false
+		openJson: false,
+		openMyJson: false
 	};
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(res);
@@ -79,6 +81,7 @@
 
 		modalStore.close();
 	}
+	$: eventTime = $relaySet[$pubkey_viewer]?.relayEvent as Nostr.Event;
 </script>
 
 {#if $modalStore[0]}
@@ -182,30 +185,26 @@
 					</button>
 
 					{$_('modal.info.relay.title')}
-					{#if $modalStore[0].value.relaySet.relayEvent}
-						kind:{$modalStore[0].value.relaySet.relayEvent.kind}
-
-						<button
-							class="underline decoration-secondary-400"
-							on:click={() => {
-								res.openJson = true;
-								onFormSubmit();
-							}}
-							>{new Date(
-								$modalStore[0].value.relaySet.relayEvent.created_at * 1000
-							).toLocaleString([], {
-								year: 'numeric',
-								month: '2-digit',
-								day: '2-digit',
-								hour: '2-digit',
-								minute: '2-digit'
-							})}
-						</button>
-					{/if}
 				</div>
 				{#if viewRelays}
 					<div class="card p-3">
-						<p class="pt-1">{$_('modal.info.relay.white')}</p>
+						<p class="pt-1">
+							My{$_('modal.info.relay.white')} kind:{eventTime.kind}
+							<button
+								class="underline decoration-secondary-400"
+								on:click={() => {
+									res.openMyJson = true;
+									onFormSubmit();
+								}}
+								>{new Date(eventTime.created_at * 1000).toLocaleString([], {
+									year: 'numeric',
+									month: '2-digit',
+									day: '2-digit',
+									hour: '2-digit',
+									minute: '2-digit'
+								})}
+							</button>
+						</p>
 						{#if $relaySet[$pubkey_viewer].postRelays}
 							<ol
 								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
@@ -219,29 +218,56 @@
 								{/each}
 							</ol>
 						{/if}
-						<p class="pt-1">{$_('modal.info.relay.list')}</p>
-						<ol
-							class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
-						>
-							{#each $modalStore[0].value.relaySet.bookmarkRelays as relay, index}
-								<li>
-									<span>{index + 1}.</span><span class="break-all">{relay}</span
-									>
-								</li>
-							{/each}
-						</ol>
+						<div class="card p-3 mt-4">
+							<p>
+								{$_('modal.info.relay.list')}
+								{#if $modalStore[0].value.relaySet.relayEvent}
+									kind:{$modalStore[0].value.relaySet.relayEvent.kind}
 
-						<p class="pt-1">{$_('modal.info.relay.search')}</p>
-						<ol
-							class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto px-2"
-						>
-							{#each $modalStore[0].value.relaySet.searchRelays as relay, index}
-								<li>
-									<span>{index + 1}.</span><span class="break-all">{relay}</span
-									>
-								</li>
-							{/each}
-						</ol>
+									<button
+										class="underline decoration-secondary-400"
+										on:click={() => {
+											res.openJson = true;
+											onFormSubmit();
+										}}
+										>{new Date(
+											$modalStore[0].value.relaySet.relayEvent.created_at * 1000
+										).toLocaleString([], {
+											year: 'numeric',
+											month: '2-digit',
+											day: '2-digit',
+											hour: '2-digit',
+											minute: '2-digit'
+										})}
+									</button>
+								{/if}
+							</p>
+							<p class="pt-1">List</p>
+							<ol
+								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
+							>
+								{#each $modalStore[0].value.relaySet.bookmarkRelays as relay, index}
+									<li>
+										<span>{index + 1}.</span><span class="break-all"
+											>{relay}</span
+										>
+									</li>
+								{/each}
+							</ol>
+
+							<p class="pt-1">Note</p>
+							<ol
+								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto px-2"
+							>
+								{#each $modalStore[0].value.relaySet.searchRelays as relay, index}
+									<li>
+										<span>{index + 1}.</span><span class="break-all"
+											>{relay}</span
+										>
+									</li>
+								{/each}
+							</ol>
+						</div>
 					</div>
 				{/if}
 			</div>

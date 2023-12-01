@@ -36,8 +36,8 @@
       "contentwarning": "Show all content warnings",
       "light_switch": "View mode",
       "relay": {
-        "list": "Acquisition relays",
-        "search": "Relay for searching notes",
+        "list": "for list acquisition",
+        "search": "for searching notes",
         "title": "Relay in setting",
         "white": "write relays"
       },

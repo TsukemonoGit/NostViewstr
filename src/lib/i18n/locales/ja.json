@@ -35,10 +35,10 @@
     "info": {
       "title": "設定",
       "relay": {
-        "list": "リストの取得リレー",
-        "search": "リスト内のノートの検索用リレー",
+        "list": "リスト取得用",
+        "search": "ノートの検索用",
         "title": "設定中のリレー",
-        "white": "書き込みリレー"
+        "white": "書込用リレー"
       },
       "light_switch": "表示モード",
       "share": "myListたち(閲覧中のURL)をnostrで共有",
