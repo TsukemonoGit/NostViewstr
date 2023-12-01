@@ -372,6 +372,18 @@
 							component: jsonModalComponent
 						};
 						modalStore.trigger(modal);
+					} else if (res.openMyJson) {
+						const modal = {
+							type: 'component' as const,
+							title: 'Event Json',
+							backdropClasses: '!bg-surface-400/80',
+							meta: {
+								note: $relaySet[$pubkey_viewer].relayEvent
+							},
+
+							component: jsonModalComponent
+						};
+						modalStore.trigger(modal);
 					}
 				}
 			}

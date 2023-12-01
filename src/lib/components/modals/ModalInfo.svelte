@@ -14,6 +14,9 @@
 	import LeftIcon from '@material-design-icons/svg/round/west.svg?raw';
 	import RightIcon from '@material-design-icons/svg/round/east.svg?raw';
 	import HomeIcon from '@material-design-icons/svg/round/home.svg?raw';
+	import LocationHomeIcon from '@material-design-icons/svg/round/person.svg?raw';
+	import ViewIcon from '@material-design-icons/svg/round/expand_less.svg?raw';
+	import HideIcon from '@material-design-icons/svg/round/expand_more.svg?raw';
 	import { getPub } from '$lib/nostrFunctions';
 	import {
 		URLPreview,
@@ -25,12 +28,16 @@
 	import githubIconWhite from '$lib/assets/github-mark-white.png';
 	import { nostrIcon, prvIcon, pubIcon } from '$lib/components/icons';
 	import { goto } from '$app/navigation';
+	import { kinds } from '$lib/kind';
+	import { nip19 } from 'nostr-tools';
+	import type { Nostr } from 'nosvelte';
 
 	export let parent: any;
 
-	let res: { share: boolean; openJson: boolean } = {
+	let res: { share: boolean; openJson: boolean; openMyJson: boolean } = {
 		share: false,
-		openJson: false
+		openJson: false,
+		openMyJson: false
 	};
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(res);
@@ -64,15 +71,26 @@
 	}
 	let warningToggle: boolean = $allView;
 	$: $allView = warningToggle;
+
+	let viewRelays: boolean = false;
+	let selectValue: string = Object.keys(kinds)[0];
+
+	function gotoMyList() {
+		console.log(`/${nip19.npubEncode($pubkey_viewer)}/${selectValue}`);
+		goto(`/${nip19.npubEncode($pubkey_viewer)}/${selectValue}`);
+
+		modalStore.close();
+	}
+	$: eventTime = $relaySet[$pubkey_viewer]?.relayEvent as Nostr.Event;
 </script>
 
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase} ">
-		<div class="grid grid-cols-[1fr_auto]">
-			<header class={cHeader}>
-				{$modalStore[0].title ?? '(title missing)'}
-			</header>
-			<!-- <div class="history">
+		<!-- <div class="grid grid-cols-[1fr_auto]"> -->
+		<header class={cHeader}>
+			{$modalStore[0].title ?? '(title missing)'}
+		</header>
+		<!-- <div class="history">
 				<button
 					class="btn-icon variant-filled-surface"
 					disabled={!(history.length > 1)}
@@ -82,14 +100,27 @@
 					}}>{@html LeftIcon}</button
 				>
 -->
+		<div class="flex gap-4">
 			<button
-				class="btn-icon variant-filled-surface history"
+				class=" btn-icon variant-filled-surface history"
 				on:click={() => {
 					goto('/');
 					modalStore.close();
 				}}>{@html HomeIcon}</button
 			>
+			<div class="flex">
+				<select class="select" bind:value={selectValue}>
+					{#each Object.keys(kinds) as value (value)}
+						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
+					{/each}
+				</select><button
+					type="button"
+					class="btn-icon variant-filled-secondary history"
+					on:click={gotoMyList}>{@html LocationHomeIcon}</button
+				>
+			</div>
 		</div>
+		<!-- </div> -->
 		<!-- </div>  -->
 
 		<!-- Enable for debugging: -->
@@ -142,54 +173,103 @@
 		<!--リレーの情報たち-->
 		{#if $modalStore[0].value?.relaySet}
 			<div>
-				{$_('modal.info.relay.title')}
-				<div class="card p-3">
-					{#if $modalStore[0].value.relaySet.relayEvent}
-						<div class="flex gap-3">
+				<div class="flex-1 gap-3">
+					<button
+						class="m-auto btn variant-filled-primary p-0 rounded-full fill-white"
+						on:click={() => (viewRelays = !viewRelays)}
+					>
+						{#if viewRelays}
+							{@html ViewIcon}
+						{:else}
+							{@html HideIcon}{/if}
+					</button>
+
+					{$_('modal.info.relay.title')}
+				</div>
+				{#if viewRelays}
+					<div class="card p-3">
+						<p class="pt-1">
+							My{$_('modal.info.relay.white')} kind:{eventTime.kind}
 							<button
 								class="underline decoration-secondary-400"
 								on:click={() => {
-									res.openJson = true;
+									res.openMyJson = true;
 									onFormSubmit();
 								}}
-							>
-								kind: {$modalStore[0].value.relaySet.relayEvent.kind}
+								>{new Date(eventTime.created_at * 1000).toLocaleString([], {
+									year: 'numeric',
+									month: '2-digit',
+									day: '2-digit',
+									hour: '2-digit',
+									minute: '2-digit'
+								})}
 							</button>
+						</p>
+						{#if $relaySet[$pubkey_viewer].postRelays}
+							<ol
+								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
+							>
+								{#each $relaySet[$pubkey_viewer].postRelays as relay, index}
+									<li>
+										<span>{index + 1}.</span><span class="break-all"
+											>{relay}</span
+										>
+									</li>
+								{/each}
+							</ol>
+						{/if}
+						<div class="card p-3 mt-4">
+							<p>
+								{$_('modal.info.relay.list')}
+								{#if $modalStore[0].value.relaySet.relayEvent}
+									kind:{$modalStore[0].value.relaySet.relayEvent.kind}
 
-							{new Date(
-								$modalStore[0].value.relaySet.relayEvent.created_at * 1000
-							).toLocaleString([], {
-								year: 'numeric',
-								month: '2-digit',
-								day: '2-digit',
-								hour: '2-digit',
-								minute: '2-digit'
-							})}
+									<button
+										class="underline decoration-secondary-400"
+										on:click={() => {
+											res.openJson = true;
+											onFormSubmit();
+										}}
+										>{new Date(
+											$modalStore[0].value.relaySet.relayEvent.created_at * 1000
+										).toLocaleString([], {
+											year: 'numeric',
+											month: '2-digit',
+											day: '2-digit',
+											hour: '2-digit',
+											minute: '2-digit'
+										})}
+									</button>
+								{/if}
+							</p>
+							<p class="pt-1">List</p>
+							<ol
+								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
+							>
+								{#each $modalStore[0].value.relaySet.bookmarkRelays as relay, index}
+									<li>
+										<span>{index + 1}.</span><span class="break-all"
+											>{relay}</span
+										>
+									</li>
+								{/each}
+							</ol>
+
+							<p class="pt-1">Note</p>
+							<ol
+								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto px-2"
+							>
+								{#each $modalStore[0].value.relaySet.searchRelays as relay, index}
+									<li>
+										<span>{index + 1}.</span><span class="break-all"
+											>{relay}</span
+										>
+									</li>
+								{/each}
+							</ol>
 						</div>
-					{/if}
-
-					<p class="pt-1">{$_('modal.info.relay.list')}</p>
-					<ol
-						class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
-					>
-						{#each $modalStore[0].value.relaySet.bookmarkRelays as relay, index}
-							<li>
-								<span>{index + 1}.</span><span class="break-all">{relay}</span>
-							</li>
-						{/each}
-					</ol>
-
-					<p class="pt-1">{$_('modal.info.relay.search')}</p>
-					<ol
-						class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto px-2"
-					>
-						{#each $modalStore[0].value.relaySet.searchRelays as relay, index}
-							<li>
-								<span>{index + 1}.</span><span class="break-all">{relay}</span>
-							</li>
-						{/each}
-					</ol>
-				</div>
+					</div>
+				{/if}
 			</div>
 		{/if}
 		<hr />

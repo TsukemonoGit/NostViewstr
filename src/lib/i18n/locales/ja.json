@@ -35,9 +35,10 @@
     "info": {
       "title": "設定",
       "relay": {
-        "list": "リストの取得更新リレー",
-        "search": "リスト内のノートの検索用リレー",
-        "title": "設定中のリレー"
+        "list": "リスト取得用",
+        "search": "ノートの検索用",
+        "title": "設定中のリレー",
+        "white": "書込用リレー"
       },
       "light_switch": "表示モード",
       "share": "myListたち(閲覧中のURL)をnostrで共有",
@@ -93,7 +94,7 @@
     "create_body": "ポストする内容を入力してください（kind:1ノートのcontent）"
   },
   "main": {
-    "title": "ぶくまびうあ改二（開発中）",
+    "title": "りすとびうあ（開発中）",
     "input_public_key": "🔑公開鍵(public key)"
   },
   "mode": {

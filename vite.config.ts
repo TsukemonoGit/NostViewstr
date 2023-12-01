@@ -10,8 +10,8 @@ export default defineConfig({
 			strategies: 'generateSW',
 			useCredentials: true,
 			manifest: {
-				name: `areyakoreya`,
-				short_name: 'あれこれびうあ',
+				name: `listviewstr`,
+				short_name: 'りすとびうあ',
 				theme_color: '#d1c0e2',
 				icons: [
 					{

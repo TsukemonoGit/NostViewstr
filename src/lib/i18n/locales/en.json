@@ -36,9 +36,10 @@
       "contentwarning": "Show all content warnings",
       "light_switch": "View mode",
       "relay": {
-        "list": "Acquisition and update relays",
-        "search": "Relay for searching notes",
-        "title": "Relay in setting"
+        "list": "for list acquisition",
+        "search": "for searching notes",
+        "title": "Relay in setting",
+        "white": "write relays"
       },
       "share": "Share myLists (URLs you are browsing) with nostr",
       "urlandIcon": "Show/hide icons and URL previews",
@@ -77,7 +78,7 @@
   "public": "public",
   "private": "private",
   "main": {
-    "title": "bkmstr（under development）",
+    "title": "listvviewstr（under development）",
     "input_public_key": "🔑 public key"
   },
   "mode": {
