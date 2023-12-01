@@ -389,36 +389,36 @@
 		$checkedIndexList = [];
 	}
 	export let disabled: boolean = false;
-	let timer: NodeJS.Timeout;
+	//let timer: NodeJS.Timeout;
 
-	let isBackEnabled: boolean = true;
+	//let isBackEnabled: boolean = true;
 
-	function handleBackLongPressStart() {
-		timer = setTimeout(() => {
-			isBackEnabled = false;
-			// 一定時間経過後にトーストを表示
-			const t: ToastSettings = {
-				message: 'Back to Home?',
-				action: {
-					label: HomeIcon,
-					response: () => {
-						clearTimeout(timer);
-						goto('/');
-						modalStore.close();
-					}
-				}
-			};
-			toastStore.trigger(t);
-		}, 1000); // 1000ミリ秒（1秒）を長押しの閾値として設定
-		isBackEnabled = true;
-	}
+	// function handleBackLongPressStart() {
+	// 	timer = setTimeout(() => {
+	// 		isBackEnabled = false;
+	// 		// 一定時間経過後にトーストを表示
+	// 		const t: ToastSettings = {
+	// 			message: 'Back to Home?',
+	// 			action: {
+	// 				label: HomeIcon,
+	// 				response: () => {
+	// 					clearTimeout(timer);
+	// 					goto('/');
+	// 					modalStore.close();
+	// 				}
+	// 			}
+	// 		};
+	// 		toastStore.trigger(t);
+	// 	}, 1000); // 1000ミリ秒（1秒）を長押しの閾値として設定
+	// 	isBackEnabled = true;
+	// }
 
 	function handleBackClick() {
 		// ここでも history.back() を防ぐ条件を確認
-		if (isBackEnabled) {
-			history.back();
-			modalStore.close();
-		}
+		//if (isBackEnabled) {
+		history.back();
+		modalStore.close();
+		//	}
 	}
 </script>
 
@@ -440,6 +440,11 @@
 			<button
 				class="btn-icon variant-filled-surface fill-white"
 				disabled={!(history.length > 1)}
+				on:click={handleBackClick}>{@html LeftIcon}</button
+			>
+			<!-- <button
+				class="btn-icon variant-filled-surface fill-white"
+				disabled={!(history.length > 1)}
 				on:mousedown={handleBackLongPressStart}
 				on:mouseup={() => {
 					clearTimeout(timer);
@@ -452,7 +457,7 @@
 					clearTimeout(timer);
 				}}
 				on:click={handleBackClick}>{@html LeftIcon}</button
-			>
+			> -->
 
 			{#if !naddr}
 				<button
