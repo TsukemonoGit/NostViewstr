@@ -11,7 +11,9 @@
 	import ArrowCircleRight from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 	import Delete from '@material-design-icons/svg/round/delete.svg?raw';
 	import OpenInBrowser from '@material-design-icons/svg/round/open_in_browser.svg?raw';
-
+	import LeftIcon from '@material-design-icons/svg/round/west.svg?raw';
+	import RightIcon from '@material-design-icons/svg/round/east.svg?raw';
+	import HomeIcon from '@material-design-icons/svg/round/home.svg?raw';
 	import { getPub } from '$lib/nostrFunctions';
 	import {
 		URLPreview,
@@ -22,6 +24,7 @@
 
 	import githubIconWhite from '$lib/assets/github-mark-white.png';
 	import { nostrIcon, prvIcon, pubIcon } from '$lib/components/icons';
+	import { goto } from '$app/navigation';
 
 	export let parent: any;
 
@@ -36,7 +39,7 @@
 	}
 
 	// Base Classes
-	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
+	const cBase = 'card p-4 w-modal shadow-xl space-y-4 my-2';
 	const cHeader = 'text-2xl font-bold';
 	//	let copyData: string = 'test';
 	let copied = false;
@@ -64,8 +67,30 @@
 </script>
 
 {#if $modalStore[0]}
-	<div class="modal-example-form {cBase}">
-		<header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
+	<div class="modal-example-form {cBase} ">
+		<div class="grid grid-cols-[1fr_auto]">
+			<header class={cHeader}>
+				{$modalStore[0].title ?? '(title missing)'}
+			</header>
+			<div class="history">
+				<button
+					class="btn-icon variant-filled-surface"
+					disabled={!(history.length > 1)}
+					on:click={() => {
+						history.back();
+						modalStore.close();
+					}}>{@html LeftIcon}</button
+				>
+
+				<button
+					class="btn-icon variant-filled-surface"
+					on:click={() => {
+						goto('/');
+						modalStore.close();
+					}}>{@html HomeIcon}</button
+				>
+			</div>
+		</div>
 
 		<!-- Enable for debugging: -->
 		<div class="flex gap-2">{$_('modal.info.light_switch')}<LightSwitch /></div>
@@ -256,5 +281,11 @@
 		width: 24px;
 		height: 24px;
 		fill: yellow;
+	}
+
+	:global(.history svg) {
+		width: 1.5em;
+		height: 1.5em;
+		fill: white;
 	}
 </style>
