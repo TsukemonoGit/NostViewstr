@@ -46,6 +46,7 @@
 		class="input p-2 my-2 w-full"
 		type="text"
 		bind:value={emojiName}
+		on:input={() => (emojiName = emojiName.replace(/[^a-zA-Z0-9-_]/g, ''))}
 		placeholder="name"
 	/>
 	<div class="input-group-shim">image url</div>
