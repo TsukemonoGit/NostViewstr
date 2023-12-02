@@ -76,7 +76,7 @@
 		placeholder="wss://..."
 	/>
 	<div class="input-group-shim">type</div>
-	<select class="input p-1" bind:value={selectValue}
+	<select class="select" bind:value={selectValue}
 		><option value="both">read/white</option>
 		<option value="write">write</option>
 		<option value="read">read</option>
