@@ -266,13 +266,7 @@
 					{/await}
 				{:else if note.kind === 40 || note.kind === 41}
 					<!---->
-					<PubCha
-						event={note}
-						text={note.content}
-						id={note.id}
-						{isPageOwner}
-						{pubkey}
-					/>
+					<PubCha event={note} text={note.content} id={note.id} />
 				{:else}<Content
 						text={note.content}
 						tag={note.tags}
