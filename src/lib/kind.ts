@@ -15,8 +15,9 @@ export const kinds: { [name: number]: string } = {
 	10001: 'pin',
 	30008: 'profile badges',
 	10005: 'public chats',
-	10002: 'relay sets',
-	10007: 'search relays'
+	10002: 'relays',
+	10007: 'search relays',
+	30002: 'relay sets'
 };
 
 export let kindsValidTag: { [key: number]: string[] } = {
@@ -37,5 +38,6 @@ export let kindsValidTag: { [key: number]: string[] } = {
 	30008: ['a', 'e'],
 	10005: ['e'],
 	10002: ['r'],
-	10007: ['relay']
+	10007: ['relay'],
+	30002: ['relay']
 };

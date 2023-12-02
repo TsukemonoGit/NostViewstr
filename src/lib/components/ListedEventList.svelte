@@ -404,7 +404,11 @@
 					: `kind:${kind}`,
 
 			body: '',
-			value: { kind: kind, pubkey: pubkey, event: $bookmarkEvents[$listNum] },
+			value: {
+				kind: kind,
+				pubkey: pubkey,
+				event: $bookmarkEvents[pubkey][kind][$listNum]
+			},
 			response: async (res: { btn: string; tag: string[] }) => {
 				console.log(res); //有効だったらタグになって帰ってきてほしい
 				$nowProgress = true;
