@@ -22,7 +22,9 @@
 	import AddTypeRelay from './Add/AddTypeRelay.svelte';
 	import AddType10002 from './Add/AddType10002.svelte';
 
-	let input: string;
+	let input: string = $modalStore[0]?.value?.tag
+		? JSON.stringify($modalStore[0]?.value?.tag)
+		: '';
 	let content: string;
 	// Form Data
 	const res: { btn: string; tag: string[] } = {
@@ -55,22 +57,26 @@
 	//const cForm =
 	//  'border border-surface-500 p-4 space-y-4 rounded-container-token';
 
+	//たぐからのチェックが
+	//リレーの場合同じリレーURLがあるかのチェックとかしてないからだめかも
+	//要検討
 	function onTagkara() {
 		try {
-			const tagArray = JSON.parse(input);
+			const tagArray: string[] = JSON.parse(input);
 			if (!isOneDimensionalArray(tagArray)) {
 				throw new Error();
 			}
 
 			//validtagかちぇっく
 			if (
-				$modalStore[0].value.kind ||
 				!tagArray ||
 				!kindsValidTag[$modalStore[0].value.kind].includes(tagArray[0])
 			) {
 				throw new Error();
 			}
+			res.tag = tagArray;
 			//タグが大丈夫そうだったら
+
 			onFormSubmit();
 		} catch (error) {
 			const t = {
@@ -134,14 +140,22 @@
 		<Accordion autocollapse>
 			<AccordionItem open>
 				<svelte:fragment slot="lead">🗒</svelte:fragment>
-				<svelte:fragment slot="summary"
-					>{$_('ModalAddNote.add_note')}</svelte:fragment
-				>
+				<svelte:fragment slot="summary">
+					{#if $modalStore[0].value.type === 'add'}{$_('ModalAddNote.add_note')}
+					{:else}
+						<!---->
+						{$_('modal.addNote.edit')}
+					{/if}
+				</svelte:fragment>
 				<svelte:fragment slot="content">
 					<div class="card p-4">
 						<header class={cHeader}>
-							🗒 {$_('ModalAddNote.add_note_to1')}{$modalStore[0].title ??
-								'(title missing)'}{$_('ModalAddNote.add_note_to2')}
+							{#if $modalStore[0].value.type === 'add'}
+								🗒 {$_('ModalAddNote.add_note_to1')}{$modalStore[0].title ??
+									'(title missing)'}{$_('ModalAddNote.add_note_to2')}
+							{:else}
+								<!---->
+							{/if}
 						</header>
 						{#if $modalStore[0].value.kind === 10002}
 							<AddType10002
@@ -149,6 +163,8 @@
 								{parent}
 								{onFormSubmit}
 								event={$modalStore[0].value.event}
+								tag={$modalStore[0].value.tag}
+								number={$modalStore[0].value.number}
 							/>
 						{/if}
 						{#if includesA && includesE}
@@ -166,6 +182,7 @@
 								{parent}
 								{onFormSubmit}
 								event={$modalStore[0].value.event}
+								tag={$modalStore[0].value.tag}
 							/>
 						{/if}
 						{#if includesRelay}
@@ -174,42 +191,10 @@
 								{parent}
 								{onFormSubmit}
 								event={$modalStore[0].value.event}
+								tag={$modalStore[0].value.tag}
+								number={$modalStore[0].value.number}
 							/>
 						{/if}
-						<!-- <AddTypeNote/>
-						<AddTypeNpub/>
-						<AddTypeNaddr /> -->
-
-						<!-- <article class="body">
-							{$_('modal.addNote_body')}
-						</article>
-						
-
-						<input
-							class="input p-2 m-2"
-							type="text"
-							bind:value={res.value}
-							placeholder="note..."
-						/>
-
-						<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-							<button
-								class="btn variant-filled-warning {parent.buttonPositive}"
-								on:click={() => {
-									res.type = AddTyle.Id;
-									res.btn = 'prv';
-									onFormSubmit();
-								}}>Private</button
-							>
-							<button
-								class="btn {parent.buttonPositive}"
-								on:click={() => {
-									res.type = AddTyle.Id;
-									res.btn = 'pub';
-									onFormSubmit();
-								}}>Public</button
-							>
-						</footer> -->
 					</div>
 				</svelte:fragment>
 			</AccordionItem>
@@ -217,16 +202,27 @@
 			<AccordionItem>
 				<svelte:fragment slot="lead">🗒</svelte:fragment>
 				<svelte:fragment slot="summary">
-					{$modalStore[0].value.type}
-					{$_('ModalAddNote.add_note')}
-					{$_('ModalAddNote.add_note_tag')}</svelte:fragment
-				>
+					{#if $modalStore[0].value.type === 'add'}
+						{$_('ModalAddNote.add_note')}
+						{$_('ModalAddNote.add_note_tag')}
+					{:else}
+						<!---->
+						{$_('modal.addNote.edit')}
+						{$_('ModalAddNote.add_note_tag')}
+					{/if}
+				</svelte:fragment>
 				<svelte:fragment slot="content">
 					<div class="card p-4">
 						<header class={cHeader}>
-							🗒 {$_('ModalAddNote.add_note_to1')}{$modalStore[0].title ??
-								'(title missing)'}{$_('ModalAddNote.add_note_to2')}
-							{$_('ModalAddNote.add_note_tag')}
+							{#if $modalStore[0].value.type === 'add'}🗒 {$_(
+									'ModalAddNote.add_note_to1'
+								)}{$modalStore[0].title ?? '(title missing)'}{$_(
+									'ModalAddNote.add_note_to2'
+								)}
+								{$_('ModalAddNote.add_note_tag')}
+							{:else}
+								<!---->
+							{/if}
 						</header>
 						<article class="body break-all">
 							valid tag:

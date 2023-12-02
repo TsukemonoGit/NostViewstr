@@ -508,10 +508,15 @@
 				{:else if tag[0] === 'emoji'}
 					<!---->
 					<div
-						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1"
 					>
 						<Emoji tagArray={tag} />
-
+						<button
+							class="btn fill-surface-600 dark:fill-surface-300"
+							on:click={() => {
+								handleClick(index, tag);
+							}}>{@html EditIcon}</button
+						>
 						<MenuButtons
 							myIndex={index}
 							tagArray={tag}
@@ -526,15 +531,15 @@
 					<!--a,e,d以外あとでかく-->
 
 					<div
-						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1"
 					>
 						{JSON.stringify(tag)}
-						<!-- <button
+						<button
 							class="btn fill-surface-600 dark:fill-surface-300"
 							on:click={() => {
 								handleClick(index, tag);
 							}}>{@html EditIcon}</button
-						> -->
+						>
 						<MenuButtons
 							myIndex={index}
 							tagArray={tag}

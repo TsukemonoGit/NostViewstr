@@ -1293,3 +1293,21 @@ export function deletePubs(tags: string[][], numList: number[]): string[][] {
 	}
 	return tags;
 }
+
+export async function editPrivates(
+	content: string,
+	pubkey: string,
+	number: number,
+	tag: string[]
+): Promise<string> {
+	console.log(content, pubkey, tag);
+
+	try {
+		const privateContent = await nip04De(pubkey, content);
+		const parsedContent = JSON.parse(privateContent);
+		parsedContent[number] = tag;
+		return await nip04En(pubkey, JSON.stringify(parsedContent));
+	} catch (error) {
+		throw new Error('Decode error');
+	}
+}

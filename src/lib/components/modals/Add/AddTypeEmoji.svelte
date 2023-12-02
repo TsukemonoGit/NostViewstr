@@ -8,8 +8,9 @@
 	export let parent: any;
 	export let onFormSubmit: any;
 	export let event: Nostr.Event;
-	let emojiUrl: string = '';
-	let emojiName: string = '';
+	export let tag: string[];
+	let emojiUrl: string = tag ? tag[2] : '';
+	let emojiName: string = tag ? tag[1] : '';
 
 	async function onClickCheck() {
 		// event.tags 配列内で条件を満たすインデックスを検索

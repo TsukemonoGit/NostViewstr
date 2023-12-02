@@ -16,6 +16,7 @@
 		addPrivates,
 		deletePrivates,
 		deletePubs,
+		editPrivates,
 		fetchFilteredEvents,
 		getPub,
 		getRelays,
@@ -405,6 +406,7 @@
 
 			body: '',
 			value: {
+				type: 'add',
 				kind: kind,
 				pubkey: pubkey,
 				event: $bookmarkEvents[pubkey][kind][$listNum]
@@ -767,8 +769,122 @@
 
 	function EditTag(e: CustomEvent<any>): void {
 		console.log(e.detail);
+		const listNumber = $listNum; //ここにきたじてんのNumberでこてい
 		const number: number = e.detail.number + $pageNum * $amount;
 		const tagArray: string[] = e.detail.tagArray;
+		const modal: ModalSettings = {
+			type: 'component',
+			// // Pass the component directly:
+			component: addModalComponent,
+			// Provide arbitrary metadata to your modal instance:
+			title:
+				$identifierList[pubkey][kind] &&
+				$identifierList[pubkey][kind][listNumber] &&
+				$identifierList[pubkey][kind][listNumber].identifier
+					? $identifierList[pubkey][kind][listNumber].identifier
+					: `kind:${kind}`,
+
+			body: '',
+			value: {
+				type: 'edit',
+				kind: kind,
+				pubkey: pubkey,
+				event: $bookmarkEvents[pubkey][kind][$listNum],
+				tag: tagArray,
+				number: number
+			},
+			response: async (res: { btn: string; tag: string[] }) => {
+				console.log(res); //有効だったらタグになって帰ってきてほしい
+				if (res) {
+					$nowProgress = true;
+					await EditTagEvent(listNumber, res, number);
+					$nowProgress = false;
+				}
+			}
+		};
+		modalStore.trigger(modal);
+	}
+
+	async function EditTagEvent(
+		listNumber: number,
+		res: { btn: string; tag: string[] },
+		number: number
+	) {
+		const eventList = $bookmarkEvents[pubkey][kind][listNumber];
+		const tag: string[][] = eventList.tags;
+		if (res.btn === 'pub') {
+			tag[number] = res.tag;
+		}
+		const contentToAdd = async (): Promise<string> => {
+			if (res.btn === 'pub') {
+				return eventList.content;
+			} else {
+				return await editPrivates(eventList.content, pubkey, number, res.tag);
+			}
+		};
+
+		const event: Nostr.Event = {
+			id: '',
+			pubkey: pubkey,
+			created_at: Math.floor(Date.now() / 1000),
+			kind: eventList.kind,
+			tags: tag,
+			content: await contentToAdd(),
+			sig: ''
+		};
+		console.log(event);
+
+		const result = await publishEventWithTimeout(
+			event,
+			$relaySet[$pubkey_viewer]?.bookmarkRelays
+		);
+
+		if (result.isSuccess) {
+			const updatedEvent = result.event as Nostr.Event;
+
+			if ($bookmarkEvents) {
+				$bookmarkEvents[pubkey] = $bookmarkEvents[pubkey] || {};
+				$bookmarkEvents[pubkey][kind] = $bookmarkEvents[pubkey][kind] || [];
+				$bookmarkEvents[pubkey][kind][listNumber] = updatedEvent;
+				viewEvent = updatedEvent;
+			} //else {
+			//	$bookmarkEvents = { [pubkey]: { [kind]: [updatedEvent] } };
+			//}
+			//identifierEventも更新する
+			const tag = updatedEvent.tags.find((tag) => tag[0] === 'd');
+			const title = updatedEvent.tags.find((tag) => tag[0] === 'title');
+			const image = updatedEvent.tags.find((tag) => tag[0] === 'image');
+			const description = updatedEvent.tags.find(
+				(tag) => tag[0] === 'description'
+			);
+			const newIdentifierList: Identifiers = {
+				identifier: tag ? tag[1] : undefined,
+				title: title ? title[1] : undefined,
+				image: image ? image[1] : undefined,
+				description: description ? description[1] : undefined
+			};
+
+			if ($identifierList) {
+				$identifierList[pubkey] = $identifierList[pubkey] || {};
+				$identifierList[pubkey][kind] = $identifierList[pubkey][kind] || [];
+				$identifierList[pubkey][kind][listNumber] = newIdentifierList;
+			} else {
+				$identifierList = { [pubkey]: { [kind]: [newIdentifierList] } };
+			}
+		}
+		const toastMessage = result.isSuccess
+			? 'Add note<br>' + result.msg
+			: $_('toast.failed_publish');
+
+		const t = {
+			message: toastMessage,
+			timeout: 3000,
+			background: result.isSuccess
+				? 'variant-filled-secondary width-filled'
+				: 'bg-orange-500 text-white width-filled '
+		};
+
+		toastStore.trigger(t);
 	}
 </script>
 

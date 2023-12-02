@@ -8,10 +8,39 @@
 	export let parent: any;
 	export let onFormSubmit: any;
 	export let event: Nostr.Event;
+	export let tag: string[]; //編集の場合はここに初期値が
+	export let number: number;
+	console.log(tag);
 
-	let input: string = '';
+	let input: string = tag ? tag[1] : '';
 
-	let selectValue: string;
+	let selectValue: string = getSelectValue(tag);
+	function getSelectValue(tag: string[]): string {
+		// タグが存在しない場合はデフォルトで 'both' を返す
+		if (!tag) {
+			return 'both';
+		}
+
+		// タグが2文字の場合は 'both' を返す
+		if (tag.length === 2) {
+			return 'both';
+		}
+
+		// タグが3文字の場合
+		if (tag.length === 3) {
+			// かつ3番目の文字が 'read' の場合は 'read' を返す
+			if (tag[2] === 'read') {
+				return 'read';
+			}
+			// かつ3番目の文字が 'write' の場合は 'write' を返す
+			else if (tag[2] === 'write') {
+				return 'write';
+			}
+		}
+
+		// 上記の条件に該当しない場合はデフォルトで 'both' を返す
+		return 'both';
+	}
 
 	async function onClickCheck() {
 		//
@@ -27,8 +56,10 @@
 			const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
 			return modifiedTag === input;
 		});
-		if (index !== -1) {
-			//同じリストに同じ名前のあったら無効
+		console.log(index, number);
+		// myIndex と index が一致する場合は処理をスキップ
+		if (index !== -1 && number !== index) {
+			// 同じリストに同じ名前のあったら無効
 			const t = {
 				message: $_('toast.invalidEmoji'),
 				timeout: 3000,

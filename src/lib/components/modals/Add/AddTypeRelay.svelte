@@ -8,8 +8,10 @@
 	export let parent: any;
 	export let onFormSubmit: any;
 	export let event: Nostr.Event;
+	export let tag: string[];
+	export let number: number;
 
-	let input: string = '';
+	let input: string = tag ? tag[1] : '';
 	async function onClickCheck() {
 		//
 		input = input.trim();
@@ -20,12 +22,15 @@
 		if (!input.endsWith('/')) {
 			input += '/';
 		}
+
 		const index = event.tags.findIndex((tag) => {
 			const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
 			return modifiedTag === input;
 		});
-		if (index !== -1) {
-			//同じリストに同じ名前のあったら無効
+
+		// myIndex と index が一致する場合は処理をスキップ
+		if (index !== -1 && number !== index) {
+			// 同じリストに同じ名前のあったら無効
 			const t = {
 				message: $_('toast.invalidEmoji'),
 				timeout: 3000,

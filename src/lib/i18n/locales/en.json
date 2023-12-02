@@ -103,7 +103,7 @@
   },
   "ModalAddNote": {
     "add_note": "Add to list",
-    "add_note_tag": "（Add by Tag）",
+    "add_note_tag": "（by Tag）",
     "add_note_to1": "Add to [",
     "add_note_to2": "]",
     "create": "Create & AddNote",
