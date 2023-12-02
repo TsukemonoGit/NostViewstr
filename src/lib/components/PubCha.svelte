@@ -8,8 +8,6 @@
 
 	export let id: string;
 
-	export let isPageOwner: boolean;
-	export let pubkey: string;
 	export let event: Nostr.Event;
 	let name: string;
 	let picture: string;

@@ -330,7 +330,7 @@
 	const jsonModalComponent: ModalComponent = {
 		ref: ModalEventJson
 	};
-	//-------------------------------------------------------infomation
+	//-------------------------------------------------------information
 	const infoComponent: ModalComponent = {
 		// Pass a reference to your custom component
 		ref: ModalInfo

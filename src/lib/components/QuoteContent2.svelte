@@ -213,13 +213,7 @@
 								url={JSON.parse(text.content).website}
 							/>
 						{:else if text.kind === 40 || text.kind === 41}
-							<PubCha
-								event={text}
-								text={text.content}
-								id={text.id}
-								{isPageOwner}
-								{pubkey}
-							/>
+							<PubCha event={text} text={text.content} id={text.id} />
 						{:else}
 							<Content
 								text={text.content}
@@ -256,13 +250,7 @@
 								url={JSON.parse(text.content).website}
 							/>
 						{:else if text.kind === 40 || text.kind === 41}
-							<PubCha
-								event={text}
-								text={text.content}
-								id={text.id}
-								{isPageOwner}
-								{pubkey}
-							/>
+							<PubCha event={text} text={text.content} id={text.id} />
 						{:else}
 							<Content
 								text={text.content}
@@ -293,13 +281,7 @@
 								url={JSON.parse(text.content).website}
 							/>
 						{:else if text.kind === 40 || text.kind === 41}
-							<PubCha
-								event={text}
-								text={text.content}
-								id={text.id}
-								{isPageOwner}
-								{pubkey}
-							/>
+							<PubCha event={text} text={text.content} id={text.id} />
 						{:else}
 							<Content
 								text={text.content}
@@ -380,13 +362,7 @@
 							url={JSON.parse(text.content).website}
 						/>
 					{:else if text.kind === 40 || text.kind === 41}
-						<PubCha
-							event={text}
-							text={text.content}
-							id={text.id}
-							{isPageOwner}
-							{pubkey}
-						/>
+						<PubCha event={text} text={text.content} id={text.id} />
 					{:else}
 						<Content
 							text={text.content}
