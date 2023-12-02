@@ -54,7 +54,7 @@
 			res.tag =
 				selectValue === 'both'
 					? ['r', input]
-					: ['r', input, selectValue === 'read' ? 'read' : 'white'];
+					: ['r', input, selectValue === 'read' ? 'read' : 'write'];
 			console.log(res.tag);
 			onFormSubmit();
 		}
@@ -77,7 +77,7 @@
 	/>
 	<div class="input-group-shim">type</div>
 	<select class="select" bind:value={selectValue}
-		><option value="both">read/white</option>
+		><option value="both">read/write</option>
 		<option value="write">write</option>
 		<option value="read">read</option>
 	</select>
