@@ -165,6 +165,7 @@
 								event={$modalStore[0].value.event}
 								tag={$modalStore[0].value.tag}
 								number={$modalStore[0].value.number}
+								viewList={$modalStore[0].value.viewList}
 							/>
 						{/if}
 						{#if includesA && includesE}
@@ -193,6 +194,7 @@
 								event={$modalStore[0].value.event}
 								tag={$modalStore[0].value.tag}
 								number={$modalStore[0].value.number}
+								viewList={$modalStore[0].value.viewList}
 							/>
 						{/if}
 					</div>

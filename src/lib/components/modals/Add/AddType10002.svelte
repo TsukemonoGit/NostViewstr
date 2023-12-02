@@ -10,6 +10,7 @@
 	export let event: Nostr.Event;
 	export let tag: string[]; //編集の場合はここに初期値が
 	export let number: number;
+	export let viewList: string[][];
 	console.log(tag);
 
 	let input: string = tag ? tag[1] : '';
@@ -52,7 +53,8 @@
 		if (!input.endsWith('/')) {
 			input += '/';
 		}
-		const index = event.tags.findIndex((tag) => {
+
+		const index = viewList.findIndex((tag) => {
 			const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
 			return modifiedTag === input;
 		});

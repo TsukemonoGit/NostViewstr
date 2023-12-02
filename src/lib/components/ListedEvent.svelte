@@ -51,7 +51,7 @@
 	//export let size: number = 0;
 	//export let pageNum = 0;
 	//export let amount = 50;
-	let viewList: string[][] = [];
+	export let viewList: string[][] = [];
 	$: if (listEvent || bkm) {
 		viewUpdate();
 	} else {

@@ -670,7 +670,7 @@
 	function onClickPage(arg0: number): any {
 		$listNum += arg0;
 	}
-
+	let viewList: string[][];
 	function onClickMultiMove() {
 		const listNumber = $listNum;
 		const _bkm = bkm;
@@ -791,11 +791,13 @@
 				pubkey: pubkey,
 				event: $bookmarkEvents[pubkey][kind][$listNum],
 				tag: tagArray,
-				number: number
+				number: number,
+				viewList: viewList //同じタグがあるかどうかチェック（pub,prvたんいで）
 			},
 			response: async (res: { btn: string; tag: string[] }) => {
 				console.log(res); //有効だったらタグになって帰ってきてほしい
 				if (res) {
+					res.btn = bkm; //編集だから元のボタンといっしょだから
 					$nowProgress = true;
 					await EditTagEvent(listNumber, res, number);
 					$nowProgress = false;
@@ -961,6 +963,7 @@
 						bind:bkm
 						bind:isOwner
 						on:EditTag={EditTag}
+						bind:viewList
 					/>
 				</NostrApp>
 				<!-- {:else}
