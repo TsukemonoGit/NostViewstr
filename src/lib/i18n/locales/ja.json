@@ -120,10 +120,11 @@
     "selectJson": "JSONファイルを選択してください",
     "checkJson": "無効なJSONファイルです",
     "failed_npub": "公開鍵を確認してください",
-    "invalidEmoji": "同じ名前の絵文字が存在します",
+    "invalidEmoji": "すでに同じ名前のものが存在します",
     "relaySearching": "リレー取得中",
     "eventSearching": "イベント取得中",
-    "invalidEvent": "無効なイベントです"
+    "invalidEvent": "無効なイベントです",
+    "checkRelay": "リレーアドレスを確認してください"
   },
   "icon_description": "アイコンについて"
 }

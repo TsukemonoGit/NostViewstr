@@ -19,6 +19,8 @@
 	import AddTypeNote from './Add/AddTypeNote.svelte';
 	import AddTypeNaddr from './Add/AddTypeNaddr.svelte';
 	import AddTypeEmoji from './Add/AddTypeEmoji.svelte';
+	import AddTypeRelay from './Add/AddTypeRelay.svelte';
+	import AddType10002 from './Add/AddType10002.svelte';
 
 	let input: string;
 	let content: string;
@@ -36,6 +38,8 @@
 	const includesA = kindsValidTag[$modalStore[0].value.kind].includes('a');
 	const includesE = kindsValidTag[$modalStore[0].value.kind].includes('e');
 	const includesP = kindsValidTag[$modalStore[0].value.kind].includes('p');
+	const includesRelay =
+		kindsValidTag[$modalStore[0].value.kind].includes('relay');
 	const includesEmoji =
 		kindsValidTag[$modalStore[0].value.kind].includes('emoji');
 	// We've created a custom submit function to pass the response and close the modal.
@@ -139,6 +143,14 @@
 							🗒 {$_('ModalAddNote.add_note_to1')}{$modalStore[0].title ??
 								'(title missing)'}{$_('ModalAddNote.add_note_to2')}
 						</header>
+						{#if $modalStore[0].value.kind === 10002}
+							<AddType10002
+								{res}
+								{parent}
+								{onFormSubmit}
+								event={$modalStore[0].value.event}
+							/>
+						{/if}
 						{#if includesA && includesE}
 							<AddTypeNoteAndNaddr {res} {parent} {onFormSubmit} />
 						{:else if includesE}
@@ -150,6 +162,14 @@
 							<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
 						{#if includesEmoji}
 							<AddTypeEmoji
+								{res}
+								{parent}
+								{onFormSubmit}
+								event={$modalStore[0].value.event}
+							/>
+						{/if}
+						{#if includesRelay}
+							<AddTypeRelay
 								{res}
 								{parent}
 								{onFormSubmit}

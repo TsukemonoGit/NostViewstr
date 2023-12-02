@@ -880,7 +880,7 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 }
 
 // そのURLのリレーが存在するか確認 NIP11
-async function checkRelayExist(relay: string, timeout: number = 1000) {
+export async function checkRelayExist(relay: string, timeout: number = 1000) {
 	let urlstr, url; //protocol,
 	if (relay.startsWith('ws://')) {
 		// inputValueがws://から始まる場合

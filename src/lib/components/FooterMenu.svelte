@@ -314,6 +314,9 @@
 			};
 			toastStore.trigger(t);
 		}
+		if ($listNum >= $bookmarkEvents[pubkey][kind].length) {
+			$listNum = $bookmarkEvents[pubkey][kind].length - 1;
+		}
 		$nowProgress = false;
 		console.log(res);
 		//	throw new Error('Function not implemented.');
