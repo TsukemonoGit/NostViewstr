@@ -13,7 +13,7 @@
 	import { toastStore } from '$lib/stores/store';
 	let kind: number = Number(Object.keys(kinds)[0]); // Use Object.keys to get the first key
 
-	let name: string;
+	//let name: string;
 	let inputValue: string;
 	//console.log(sortedKinds);
 	//$settings = false;

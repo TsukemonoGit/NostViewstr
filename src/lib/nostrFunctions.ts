@@ -212,6 +212,7 @@ export async function publishEventWithTimeout(
 		autohide: false
 	};
 	const publishingToast = toastStore.trigger(t);
+
 	if (relays.length === 0) {
 		console.error('relay設定されてない');
 		return { isSuccess: false, msg: 'relayが設定されていません' };

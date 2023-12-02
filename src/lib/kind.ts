@@ -1,4 +1,5 @@
 export const kinds: { [name: number]: string } = {
+	3: 'contact list',
 	10003: 'bookmark',
 	30003: 'bookmark sets',
 	10006: 'blocked relays',
@@ -19,6 +20,7 @@ export const kinds: { [name: number]: string } = {
 };
 
 export let kindsValidTag: { [key: number]: string[] } = {
+	3: ['p'],
 	10003: ['e', 'a', 't', 'r'],
 	30003: ['e', 'a', 't', 'r'],
 	10006: ['relay'],
