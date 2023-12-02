@@ -63,6 +63,8 @@ import {
 	relaySet
 	//searchRelays
 } from './stores/relays';
+import type { ToastSettings } from '@skeletonlabs/skeleton';
+import { toastStore } from './stores/store';
 
 interface Kind3Relay {
 	[key: string]: {
@@ -205,6 +207,11 @@ export async function publishEventWithTimeout(
 	event?: Nostr.Event;
 	msg: string;
 }> {
+	const t: ToastSettings = {
+		message: `publishing ...`,
+		autohide: false
+	};
+	const publishingToast = toastStore.trigger(t);
 	if (relays.length === 0) {
 		console.error('relay設定されてない');
 		return { isSuccess: false, msg: 'relayが設定されていません' };
@@ -224,6 +231,7 @@ export async function publishEventWithTimeout(
 	} else if (obj.pubkey !== pubkey) {
 		console.log('ログイン中のpubとsignEvのpubが違う');
 		//const message = `$_('msg.nanka')`;
+		toastStore.close(publishingToast);
 		return { isSuccess: false, msg: 'login error' };
 	}
 	try {
@@ -280,9 +288,10 @@ export async function publishEventWithTimeout(
 							}
 						});
 				  });
-
+		toastStore.close(publishingToast);
 		return result;
 	} catch (error) {
+		toastStore.close(publishingToast);
 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
 	}
 }
@@ -1112,7 +1121,11 @@ async function validateNoteId(str: string): Promise<{
 
 export async function updateBkmTag(pubkey: string, kind: number, num: number) {
 	console.log(`updateBkmTag[${get(identifierList)[num]}] updating...`);
-
+	const t: ToastSettings = {
+		message: `list updating ...`,
+		autohide: false
+	};
+	const updatingToast = toastStore.trigger(t);
 	const bkm = get(bookmarkEvents);
 
 	const relays = get(relaySet)[pubkey].bookmarkRelays;
@@ -1171,6 +1184,7 @@ export async function updateBkmTag(pubkey: string, kind: number, num: number) {
 				`updateBkmTag[${get(identifierList)[pubkey][kind][num]}] updated`
 			);
 		}
+		//もともとあるでーたのcreated_atが新しい場合何もしない
 	} else {
 		//no dataのばあい最初に開いたときの処理と同じをする
 		await StoreFetchFilteredEvents(pubkey, kind, {
@@ -1178,6 +1192,7 @@ export async function updateBkmTag(pubkey: string, kind: number, num: number) {
 			filters: [{ kinds: [kind], authors: [pubkey] }]
 		});
 	}
+	toastStore.close(updatingToast);
 }
 
 //タグごと追加の項目で入力された値が一次元配列かどうかを確認

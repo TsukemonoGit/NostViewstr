@@ -208,7 +208,7 @@
 		};
 		const res = await publishEventWithTimeout(
 			event,
-			$relaySet[pubkey].bookmarkRelays
+			$relaySet[$pubkey_viewer].bookmarkRelays
 		); // = { isSuccess: false, msg: '' }; //
 		console.log(res.msg);
 
@@ -282,7 +282,7 @@
 		};
 		const res = await publishEventWithTimeout(
 			event,
-			$relaySet[pubkey].bookmarkRelays
+			$relaySet[$pubkey_viewer].bookmarkRelays
 		);
 		console.log(res.msg);
 

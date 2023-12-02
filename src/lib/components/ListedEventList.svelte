@@ -66,7 +66,7 @@
 	let viewEvent: Nostr.Event<number> | undefined;
 	export let pubkey: string;
 	export let kind: number;
-	export let identifier: string | undefined = undefined;
+	export let identifier: string | undefined = undefined; //naddrのとき
 	export let isNaddr: boolean;
 	let isOwner: boolean;
 	$: console.log($relaySet);
@@ -290,7 +290,7 @@
 				};
 				const result = await publishEventWithTimeout(
 					event,
-					$relaySet[pubkey].bookmarkRelays
+					$relaySet[$pubkey_viewer].bookmarkRelays
 				);
 				//   console.log(result);
 				if (result.isSuccess && $bookmarkEvents && result.event) {
@@ -580,7 +580,7 @@
 
 			const result = await publishEventWithTimeout(
 				event,
-				$relaySet[pubkey]?.bookmarkRelays || []
+				$relaySet[$pubkey_viewer]?.bookmarkRelays
 			);
 
 			if (result.isSuccess) {
