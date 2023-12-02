@@ -1,13 +1,14 @@
 <script lang="ts">
+	//これつかわれてるとこある？？？これなに
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
 	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import ModalPostNote from '$lib/components/modals/ModalPostNote.svelte';
-	import DeleteBtn from '$lib/components/Button/DeleteBtn.svelte';
-	import Move from '$lib/components/Button/Move.svelte';
-	import Share from '$lib/components/Button/Share.svelte';
-	import Open from '$lib/components/Button/Open.svelte';
+	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
+	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
+	import OpenIcon from '@material-design-icons/svg/round/open_in_browser.svg?raw';
+	import ShareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import { createEventDispatcher } from 'svelte';
 	import { nip19, type Event } from 'nostr-tools';
 	import { parseNaddr, windowOpen } from '$lib/nostrFunctions';
@@ -314,45 +315,47 @@
 	{#if menuMode === MenuMode.Owner}
 		<div class="grid grid-rows-[auto_1fr] w-14">
 			<div>
-				<button class="btn m-0 p-0 bg-surface-500" on:click={shareNote}
-					><Share /></button
+				<button
+					class="btn m-0 p-0 bg-surface-500 fill-white"
+					on:click={shareNote}>{@html ShareIcon}</button
 				>
 				<button
-					class="btn m-0 p-0 bg-surface-500"
-					on:click={() => handleClick(State.Move)}><Move /></button
+					class="btn m-0 p-0 bg-surface-500 fill-white"
+					on:click={() => handleClick(State.Move)}>{@html MoveIcon}</button
 				>
 			</div>
 			<div>
 				<button
-					class="btn m-0 p-0 bg-surface-500"
+					class="btn m-0 p-0 bg-surface-500 fill-white"
 					on:click={() => {
 						if (tagArray) {
 							windowOpen(note.id);
 						}
-					}}><Open /></button
+					}}>{@html OpenIcon}</button
 				>
 				<button
-					class="btn m-0 p-0 bg-surface-500"
+					class="btn m-0 p-0 bg-surface-500 fill-warning-400"
 					on:click={() => {
 						handleClick(State.Delete);
-					}}><DeleteBtn /></button
+					}}>{@html DeleteIcon}</button
 				>
 			</div>
 		</div>
 	{:else if menuMode === MenuMode.Viewer}
 		<!--修正ボタンなし-->
 		<div class="flex flex-col">
-			<button class="btn m-0 p-0 mb-1 bg-surface-500" on:click={shareNote}
-				><Share /></button
+			<button
+				class="btn m-0 p-0 mb-1 bg-surface-500 fill-white"
+				on:click={shareNote}>{@html ShareIcon}</button
 			>
 
 			<button
-				class="btn m-0 p-0 bg-surface-500"
+				class="btn m-0 p-0 bg-surface-500 fill-white"
 				on:click={() => {
 					if (tagArray) {
 						windowOpen(note.id);
 					}
-				}}><Open /></button
+				}}>{@html OpenIcon}</button
 			>
 		</div>
 	{:else if menuMode === MenuMode.Multi}
@@ -371,36 +374,18 @@
 
 		<div class="flex flex-col">
 			<button
-				class="btn m-0 p-0 mb-1 bg-surface-500"
-				on:click={() => handleClick(State.Move)}><Move /></button
+				class="btn m-0 p-0 mb-1 bg-surface-500 fill-white"
+				on:click={() => handleClick(State.Move)}>{@html MoveIcon}</button
 			>
 
 			<button
-				class="btn m-0 p-0 bg-surface-500"
+				class="btn m-0 p-0 bg-surface-500 fill-warning-400"
 				on:click={() => {
 					handleClick(State.Delete);
-				}}><DeleteBtn /></button
+				}}>{@html DeleteIcon}</button
 			>
 		</div>
 	{/if}
 </div>
 <!-- </NostrApp> -->
 <!--{/if}-->
-
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupShare">
-	<p>{$_('popup.Share')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
-
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupOpen">
-	<p>{$_('popup.open')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupMove">
-	<p>{$_('popup.move')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>
-<div class="card p-1 variant-ghost-secondary z-20" data-popup="popupDelete">
-	<p>{$_('popup.delete')}</p>
-	<div class="arrow variant-filled-secondary z-20" />
-</div>

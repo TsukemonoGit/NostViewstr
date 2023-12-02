@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
+	// @ts-ignore
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { _ } from 'svelte-i18n';
 	import {

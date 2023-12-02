@@ -216,8 +216,9 @@
 
 			<AccordionItem>
 				<svelte:fragment slot="lead">🗒</svelte:fragment>
-				<svelte:fragment slot="summary"
-					>{$_('ModalAddNote.add_note')}
+				<svelte:fragment slot="summary">
+					{$modalStore[0].value.type}
+					{$_('ModalAddNote.add_note')}
 					{$_('ModalAddNote.add_note_tag')}</svelte:fragment
 				>
 				<svelte:fragment slot="content">

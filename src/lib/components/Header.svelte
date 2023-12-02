@@ -7,8 +7,10 @@
 	} from '$lib/stores/bookmarkEvents';
 	import { pageNum } from '$lib/stores/pagination';
 	import { iconView, nowProgress } from '$lib/stores/settings';
-	import PrvBkm from './Button/PrvBkm.svelte';
-	import PubBkm from './Button/PubBkm.svelte';
+	// import PrvBkm from './Button/PrvBkm.svelte';
+	// import PubBkm from './Button/PubBkm.svelte';
+	import { prvIcon } from '$lib/components/icons';
+	import { pubIcon } from '$lib/components/icons';
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 	import updateIcon from '@material-design-icons/svg/round/update.svg?raw';
@@ -327,7 +329,7 @@
 					console.log(bkm);
 					$pageNum = 0;
 				}}
-				><PubBkm />
+				>{@html pubIcon}
 			</button>
 			{#if viewEvent && viewEvent.content !== ''}
 				<button
@@ -339,7 +341,7 @@
 						$pageNum = 0;
 					}}
 				>
-					<PrvBkm />
+					{@html prvIcon}
 				</button>
 			{:else}
 				<div />

@@ -72,6 +72,10 @@
     "publishjson": {
       "body": "修正したい所があれば修正してPublishをクリック（generated欄は自動で更新されます）",
       "title": "データをリレーに書き込む"
+    },
+    "addNote": {
+      "edit": "編集",
+      "add": "追加"
     }
   },
   "created_at": "最終更新日時",

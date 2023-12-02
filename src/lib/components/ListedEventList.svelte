@@ -764,6 +764,12 @@
 			//		$nowProgress = false;
 		}
 	}
+
+	function EditTag(e: CustomEvent<any>): void {
+		console.log(e.detail);
+		const number: number = e.detail.number + $pageNum * $amount;
+		const tagArray: string[] = e.detail.tagArray;
+	}
 </script>
 
 <!--header-->
@@ -838,6 +844,7 @@
 						{CheckNote}
 						bind:bkm
 						bind:isOwner
+						on:EditTag={EditTag}
 					/>
 				</NostrApp>
 				<!-- {:else}

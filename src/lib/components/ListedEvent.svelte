@@ -11,9 +11,12 @@
 	import { amount, pageNum, listSize } from '$lib/stores/pagination';
 	import { isMulti } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
+	//import MenuButtons2 from './MenuButtons2.svelte';
+	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
 	import ProfileCard from './ProfileCard.svelte';
 	import Emoji from './Emoji.svelte';
-	import { list } from 'postcss';
+
+	import { createEventDispatcher } from 'svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -104,6 +107,14 @@
 		: isOwner
 		? MenuMode.Owner
 		: MenuMode.Viewer;
+
+	const dispatch = createEventDispatcher();
+	function handleClick(myIndex: number, tagArray: string[]) {
+		dispatch('EditTag', {
+			number: myIndex,
+			tagArray: tagArray
+		});
+	}
 </script>
 
 {#if viewPage && viewPage.length > 0}
@@ -518,7 +529,12 @@
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
 					>
 						{JSON.stringify(tag)}
-
+						<!-- <button
+							class="btn fill-surface-600 dark:fill-surface-300"
+							on:click={() => {
+								handleClick(index, tag);
+							}}>{@html EditIcon}</button
+						> -->
 						<MenuButtons
 							myIndex={index}
 							tagArray={tag}

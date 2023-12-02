@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { MenuMode } from '$lib/otherFunctions.js';
-	import DeleteBtn from './Button/DeleteBtn.svelte';
-	import Share from './Button/Share.svelte';
-	import Move from './Button/Move.svelte';
-	import Open from './Button/Open.svelte';
+	// import DeleteBtn from './Button/DeleteBtn.svelte';
+	// import Share from './Button/Share.svelte';
+	// import Move from './Button/Move.svelte';
+	// import Open from './Button/Open.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { nip19, type Event } from 'nostr-tools';
 
@@ -14,11 +14,18 @@
 	import { _ } from 'svelte-i18n';
 	import ModalPostNote from '$lib/components/modals/ModalPostNote.svelte';
 	import type { Nostr } from 'nosvelte';
+
+	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
+	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
+	import OpenIcon from '@material-design-icons/svg/round/open_in_browser.svg?raw';
+	import ShareIcon from '@material-design-icons/svg/round/chat.svg?raw';
+	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
+
 	export let menuMode: MenuMode;
 	export let tagArray: string[] | undefined;
-	export let note: Event | undefined;
+	export let note: Event | undefined; //noteないときはwindow openとかできないらしい
 	export let myIndex: number | undefined;
-	export let share = true;
+	export let share = true; //pたぐのときはシェア不可にしてるらしい
 	enum State {
 		Default,
 		Delete,
@@ -126,32 +133,32 @@
 	<div class="grid grid-rows-[auto_1fr] w-14 pt-1">
 		<div>
 			<button
-				class="btn m-0 p-0 bg-surface-500 w-fit"
-				on:click={shareNote}
-				disabled={!share}><Share /></button
+				class="btn m-0 p-0 bg-surface-500 w-fit fill-white"
+				disabled={!share}
+				on:click={shareNote}>{@html ShareIcon}</button
 			>
 			<button
-				class="btn m-0 p-0 bg-surface-500 w-fit"
-				on:click={() => handleClick(State.Move)}><Move /></button
+				class="btn m-0 p-0 bg-surface-500 w-fit fill-white"
+				on:click={() => handleClick(State.Move)}>{@html MoveIcon}</button
 			>
 		</div>
 
 		<div>
 			<button
-				class="btn m-0 p-0 bg-surface-500 w-fit"
+				class="btn m-0 p-0 bg-surface-500 w-fit fill-white"
 				disabled={note === undefined}
 				on:click={() => {
 					if (tagArray && note) {
 						windowOpen(note.id);
 					}
-				}}><Open /></button
+				}}>{@html OpenIcon}</button
 			>
 
 			<button
-				class="btn m-0 p-0 bg-surface-500 w-fit"
+				class="btn m-0 p-0 bg-surface-500 w-fit fill-warning-400"
 				on:click={() => {
 					handleClick(State.Delete);
-				}}><DeleteBtn /></button
+				}}>{@html DeleteIcon}</button
 			>
 		</div>
 	</div>
@@ -159,18 +166,19 @@
 	<!--修正ボタンなし-->
 	<div class="flex flex-col w-7">
 		<button
-			class="btn m-0 p-0 mb-1 bg-surface-500 w-fit"
-			on:click={shareNote}
-			disabled={!share}><Share /></button
+			class="btn m-0 p-0 mb-1 bg-surface-500 w-fit fill-white"
+			disabled={!share}
+			on:click={shareNote}>{@html ShareIcon}</button
 		>
+
 		{#if note}
 			<button
-				class="btn m-0 p-0 bg-surface-500 w-fit"
+				class="btn m-0 p-0 bg-surface-500 w-fit fill-white"
 				on:click={() => {
 					if (tagArray && note) {
 						windowOpen(note.id);
 					}
-				}}><Open /></button
+				}}>{@html OpenIcon}</button
 			>
 		{/if}
 	</div>
@@ -193,15 +201,15 @@
 
 	<div class="flex flex-col w-fit">
 		<button
-			class="btn m-0 p-0 mb-1 bg-surface-500 w-fit"
-			on:click={() => handleClick(State.Move)}><Move /></button
+			class="btn m-0 p-0 mb-1 bg-surface-500 w-fit fill-white"
+			on:click={() => handleClick(State.Move)}>{@html MoveIcon}</button
 		>
 
 		<button
-			class="btn m-0 p-0 bg-surface-500 w-fit"
+			class="btn m-0 p-0 bg-surface-500 w-fit fill-warning-400"
 			on:click={() => {
 				handleClick(State.Delete);
-			}}><DeleteBtn /></button
+			}}>{@html DeleteIcon}</button
 		>
 	</div>
 {:else}
