@@ -16,14 +16,17 @@
 	async function onClickCheck() {
 		//
 		input = input.trim();
-		if (input === '' || input === '') {
+		if (input === '') {
 			return;
 		}
 
 		if (!input.endsWith('/')) {
 			input += '/';
 		}
-		const index = event.tags.findIndex((tag) => tag[1] === input);
+		const index = event.tags.findIndex((tag) => {
+			const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
+			return modifiedTag === input;
+		});
 		if (index !== -1) {
 			//同じリストに同じ名前のあったら無効
 			const t = {
