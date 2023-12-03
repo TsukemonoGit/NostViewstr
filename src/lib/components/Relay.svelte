@@ -76,11 +76,11 @@
 				<!--description-->
 				<div class="">
 					<div>{relayInfo.description}</div>
-					<div>
+					<div class="w-full">
 						NIPs:
 						{#each relayInfo.supported_nips as nip}
 							<a
-								class="px-1"
+								class="px-1 whitespace-nowrap"
 								rel="external noreferrer"
 								target="_blank"
 								href={'https://github.com/nostr-protocol/nips/blob/master/' +
