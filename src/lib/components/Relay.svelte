@@ -32,51 +32,49 @@
 	{#if !relayInfo}
 		{JSON.stringify(tagArray)}
 	{:else}
-		<!--relays情報 設定-->
-		<div class="pl-1 grid grid-cols-[1fr_auto] gap-1">
+		<!--ICON そのた-->
+		<div class="pl-1 grid grid-cols-[auto_1fr] gap-1.5">
+			<div
+				class="w-12 h-12 rounded-full variant-filled-surface text-center flex items-center justify-center text-lg"
+			>
+				{#if relayInfo.icon}
+					<img src={relayInfo.icon} class="w-12 h-12 rounded-full" alt="" />
+				{:else}
+					{relayInfo.name[0]}
+				{/if}
+			</div>
 			<!-- title-description -->
 			<div class="grid grid-rows-[auto_auto] gap-1">
-				<!-- icon-title -->
-				<div class="grid grid-cols-[auto_1fr] gap-1">
-					<div
-						class="w-12 h-12 rounded-full variant-filled-surface text-center flex items-center justify-center font-bold text-lg"
-					>
-						{#if relayInfo.icon}
-							<img src={relayInfo.icon} class="w-12 h-12 rounded-full" alt="" />
-						{:else}
-							{relayInfo.name[0]}
+				<div>
+					<div class="flex items-center gap-1">
+						<!--titleとR/W-->
+						<div class=" h5">{relayInfo.name}</div>
+
+						{#if tagArray[0] === 'r'}
+							<div
+								class="h-fit border border-primary-400 break-keep text-xs font-bold w-8 text-center"
+							>
+								{#if tagArray.length <= 2}
+									R/W
+								{:else if tagArray[2] === 'read'}
+									R
+								{:else}
+									W
+								{/if}
+							</div>
 						{/if}
 					</div>
-					<div class="grid grid-rows-[auto_1fr] gap-1">
-						<div class="flex items-center gap-1">
-							<div class=" h5">{relayInfo.name}</div>
-
-							{#if tagArray[0] === 'r'}
-								<div
-									class="h-fit border border-primary-400 break-keep text-xs font-bold w-8 text-center"
-								>
-									{#if tagArray.length <= 2}
-										R/W
-									{:else if tagArray[2] === 'read'}
-										R
-									{:else}
-										W
-									{/if}
-								</div>
-							{/if}
-						</div>
-						<div class="flex w-fit">
-							<a
-								class="anchor"
-								href={httpsUrl}
-								rel="external noreferrer"
-								target="_blank">{tagArray[1]}</a
-							>
-						</div>
+					<div class="flex w-fit">
+						<a
+							class="anchor"
+							href={httpsUrl}
+							rel="external noreferrer"
+							target="_blank">{tagArray[1]}</a
+						>
 					</div>
 				</div>
-
-				<div class="px-1">
+				<!--description-->
+				<div class="">
 					<div>{relayInfo.description}</div>
 					<div>
 						NIPs:
