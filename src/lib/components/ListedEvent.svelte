@@ -507,7 +507,7 @@
 						</div>
 					</Metadata>
 				{:else if tag[0] === 'emoji'}
-					<!---->
+					<!--えもじ-->
 					<div
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1"
 					>
@@ -531,7 +531,7 @@
 						/>
 					</div>
 				{:else if (tag[0] === 'r' && tag[1].startsWith('ws')) || tag[0] === 'relay'}
-					<!---->
+					<!--りれー-->
 					<div
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 					>
@@ -547,6 +547,7 @@
 						<MenuButtons
 							myIndex={index}
 							tagArray={tag}
+							share={false}
 							note={undefined}
 							menuMode={isOwner ? MenuMode.Owner : MenuMode.none}
 							on:DeleteNote={DeleteNote}
