@@ -453,7 +453,7 @@
 			/>
 		{:else}
 			<button
-				class="btn-icon variant-filled-surface fill-white"
+				class="btn-icon variant-filled-primary fill-white"
 				disabled={!(history.length > 1)}
 				on:click={handleBackClick}>{@html LeftIcon}</button
 			>

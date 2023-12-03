@@ -54,7 +54,7 @@
 			input += '/';
 		}
 
-		const index = viewList.findIndex((tag) => {
+		const index = viewList?.findIndex((tag) => {
 			const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
 			return modifiedTag === input;
 		});
