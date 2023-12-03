@@ -89,6 +89,24 @@
 							>
 						{/each}
 					</div>
+					{#if relayInfo.limitation?.max_content_length}
+						<div>
+							Max content length: <span class="break-keep"
+								>{new Intl.NumberFormat().format(
+									relayInfo.limitation.max_content_length
+								)}</span
+							>
+						</div>
+					{/if}
+					{#if relayInfo.limitation?.max_event_tags}
+						<div>
+							Max event tags: <span class="break-keep"
+								>{new Intl.NumberFormat().format(
+									relayInfo.limitation.max_event_tags
+								)}</span
+							>
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>

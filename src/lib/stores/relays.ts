@@ -52,7 +52,19 @@ export interface RelayInfo {
 	version: string;
 	relay_countries?: string[];
 	icon?: string;
-	limitation?: object;
+	limitation?: {
+		max_message_length?: number;
+		max_subscriptions?: number;
+		max_filters?: number;
+		max_limit?: number;
+		max_subid_length?: number;
+		min_prefix?: number;
+		max_event_tags?: number;
+		max_content_length?: number;
+		min_pow_difficulty?: number;
+		auth_required?: boolean;
+		payment_required?: boolean;
+	};
 	payments_url?: string;
 	fees?: object;
 }
