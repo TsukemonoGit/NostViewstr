@@ -512,12 +512,14 @@
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1"
 					>
 						<Emoji tagArray={tag} />
-						<button
-							class="btn p-2 fill-surface-600 dark:fill-surface-300"
-							on:click={() => {
-								handleClick(index, tag);
-							}}>{@html EditIcon}</button
-						>
+						{#if isOwner}
+							<button
+								class="btn p-2 fill-surface-600 dark:fill-surface-300"
+								on:click={() => {
+									handleClick(index, tag);
+								}}>{@html EditIcon}</button
+							>
+						{/if}
 						<MenuButtons
 							myIndex={index}
 							tagArray={tag}
@@ -534,12 +536,14 @@
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 					>
 						<Relay tagArray={tag} />
-						<button
-							class="btn p-2 fill-surface-600 dark:fill-surface-300"
-							on:click={() => {
-								handleClick(index, tag);
-							}}>{@html EditIcon}</button
-						>
+						{#if isOwner}
+							<button
+								class="btn p-2 fill-surface-600 dark:fill-surface-300"
+								on:click={() => {
+									handleClick(index, tag);
+								}}>{@html EditIcon}</button
+							>
+						{/if}
 						<MenuButtons
 							myIndex={index}
 							tagArray={tag}
@@ -557,12 +561,14 @@
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 					>
 						{JSON.stringify(tag)}
-						<button
-							class="btn p-2 fill-surface-600 dark:fill-surface-300"
-							on:click={() => {
-								handleClick(index, tag);
-							}}>{@html EditIcon}</button
-						>
+						{#if isOwner}
+							<button
+								class="btn p-2 fill-surface-600 dark:fill-surface-300"
+								on:click={() => {
+									handleClick(index, tag);
+								}}>{@html EditIcon}</button
+							>
+						{/if}
 						<MenuButtons
 							myIndex={index}
 							tagArray={tag}
