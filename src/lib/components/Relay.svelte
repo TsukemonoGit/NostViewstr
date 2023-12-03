@@ -76,7 +76,19 @@
 
 				<div class="">
 					<div>{relayInfo.description}</div>
-					<div>NIPS: {relayInfo.supported_nips}</div>
+					<div>
+						NIPs:
+						{#each relayInfo.supported_nips as nip}
+							<a
+								class="px-1"
+								rel="external noreferrer"
+								target="_blank"
+								href={'https://github.com/nostr-protocol/nips/blob/master/' +
+									nip.toString().padStart(2, '0') +
+									'.md'}>{nip}</a
+							>
+						{/each}
+					</div>
 				</div>
 			</div>
 		</div>
