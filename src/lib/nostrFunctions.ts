@@ -60,7 +60,8 @@ import {
 	//	postRelays,
 	//relayEvent,
 	relaySearchRelays,
-	relaySet
+	relaySet,
+	relayStore
 	//searchRelays
 } from './stores/relays';
 import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -816,16 +817,18 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 
 	if (kind10002 && kind10002.tags.length > 0) {
 		for (const item of kind10002.tags) {
+			const relayURL = item[1].endsWith('/') ? item[1] : item[1] + '/';
+
 			if (item[0] === 'r') {
-				const existRelay = await checkRelayExist(item[1]);
+				const existRelay = await checkRelayExist(relayURL);
 				if (existRelay) {
 					if (item.length < 3) {
-						read.push(item[1]);
-						write.push(item[1]);
+						read.push(relayURL);
+						write.push(relayURL);
 					} else if (item[2] === 'read') {
-						read.push(item[1]);
+						read.push(relayURL);
 					} else if (item[2] === 'write') {
-						write.push(item[1]);
+						write.push(relayURL);
 					}
 				}
 			}
@@ -836,13 +839,15 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 		try {
 			const relays = JSON.parse(kind3.content);
 			for (const item of Object.keys(relays)) {
-				const existRelay = await checkRelayExist(item);
+				const relayURL = item.endsWith('/') ? item : item + '/';
+
+				const existRelay = await checkRelayExist(relayURL);
 				if (existRelay) {
 					if (relays[item].read) {
-						read.push(item);
+						read.push(relayURL);
 					}
 					if (relays[item].write) {
-						write.push(item);
+						write.push(relayURL);
 					}
 				}
 			}
@@ -881,6 +886,11 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 
 // そのURLのリレーが存在するか確認 NIP11
 export async function checkRelayExist(relay: string, timeout: number = 1000) {
+	const relayStr = get(relayStore);
+	if (relayStr.has(relay)) {
+		console.log('すでにあるよ', relayStr.get(relay));
+		return true;
+	}
 	let urlstr, url; //protocol,
 	if (relay.startsWith('ws://')) {
 		// inputValueがws://から始まる場合
@@ -911,10 +921,12 @@ export async function checkRelayExist(relay: string, timeout: number = 1000) {
 			signal: controller.signal
 		});
 		console.log(response);
+
 		//console.log(response.ok);
 
 		// タイムアウトが発生した場合、response.okもfalseになります
 		if (response.ok) {
+			console.log('せっとするよ', relayStr.set(relay, await response.json()));
 			return true;
 		} else {
 			return false;

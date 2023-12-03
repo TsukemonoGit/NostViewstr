@@ -17,6 +17,7 @@
 	import Emoji from './Emoji.svelte';
 
 	import { createEventDispatcher } from 'svelte';
+	import Relay from './Relay.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -512,7 +513,7 @@
 					>
 						<Emoji tagArray={tag} />
 						<button
-							class="btn fill-surface-600 dark:fill-surface-300"
+							class="btn p-2 fill-surface-600 dark:fill-surface-300"
 							on:click={() => {
 								handleClick(index, tag);
 							}}>{@html EditIcon}</button
@@ -527,6 +528,28 @@
 							on:CheckNote={CheckNote}
 						/>
 					</div>
+				{:else if (tag[0] === 'r' && tag[1].startsWith('ws')) || tag[0] === 'relay'}
+					<!---->
+					<div
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
+					>
+						<Relay tagArray={tag} />
+						<button
+							class="btn p-2 fill-surface-600 dark:fill-surface-300"
+							on:click={() => {
+								handleClick(index, tag);
+							}}>{@html EditIcon}</button
+						>
+						<MenuButtons
+							myIndex={index}
+							tagArray={tag}
+							note={undefined}
+							menuMode={isOwner ? MenuMode.Owner : MenuMode.none}
+							on:DeleteNote={DeleteNote}
+							on:MoveNote={MoveNote}
+							on:CheckNote={CheckNote}
+						/>
+					</div>
 				{:else}
 					<!--a,e,d以外あとでかく-->
 
@@ -535,7 +558,7 @@
 					>
 						{JSON.stringify(tag)}
 						<button
-							class="btn fill-surface-600 dark:fill-surface-300"
+							class="btn p-2 fill-surface-600 dark:fill-surface-300"
 							on:click={() => {
 								handleClick(index, tag);
 							}}>{@html EditIcon}</button

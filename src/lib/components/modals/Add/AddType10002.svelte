@@ -7,7 +7,7 @@
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
 	export let onFormSubmit: any;
-	export let event: Nostr.Event;
+	//export let event: Nostr.Event;
 	export let tag: string[]; //編集の場合はここに初期値が
 	export let number: number;
 	export let viewList: string[][];
