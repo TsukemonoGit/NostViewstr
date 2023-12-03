@@ -114,6 +114,10 @@
 		>
 			{JSON.stringify($modalStore[0].meta.note, undefined, 4)}
 		</div>
+		<div class="text-right text-sm">
+			Content Length: {$modalStore[0].meta.note.content.length}, Tags Count: {$modalStore[0]
+				.meta.note.tags.length}
+		</div>
 		{#if $modalStore[0].meta.tagArray && $modalStore[0].meta.tagArray.length > 0}
 			<div class="mt-2"><b>list tag</b></div>
 			<div class="grid grid-cols-[1fr_auto]">
