@@ -3,7 +3,7 @@
 	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
 	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
-	import { nip19, type Event } from 'nostr-tools';
+	import { nip19, type Event, nip05 } from 'nostr-tools';
 
 	import { _ } from 'svelte-i18n';
 	import type { MenuMode } from '$lib/otherFunctions.js';
@@ -46,6 +46,8 @@
 		display_name: string;
 		picture: string;
 		about: string;
+		website?: string;
+		nip05?: string;
 	};
 
 	//-------------------------------プロフィール表示
@@ -120,25 +122,25 @@
 		<!-- icon | その他-->
 		<div class="pl-1 grid grid-cols-[auto_1fr] gap-1.5">
 			<!--icon-->
-			{#if $iconView && metadata}
-				<div
-					class="w-12 h-12 rounded-full flex justify-center overflow-hidden bg-surface-500/25 mt-1"
-				>
-					{#if content.picture}
-						<img
-							class="max-w-12 max-h-12 object-contain justify-center"
-							src={content.picture}
-							alt="avatar"
-						/>
-					{/if}
-				</div>
-			{:else}
-				<!--iconなし-->
-				<div />
-			{/if}
+
+			<div
+				class="w-12 h-12 rounded-full flex justify-center overflow-hidden variant-filled-surface mt-1 items-center truncate"
+			>
+				{#if $iconView && content.picture}
+					<img
+						class="max-w-12 max-h-12 object-contain justify-center"
+						src={content.picture}
+						alt="avatar"
+					/>
+				{:else}
+					<!--iconなし-->
+
+					{content.name}
+				{/if}
+			</div>
 
 			<!-- profile | note -->
-			<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
+			<div class="grid grid-rows-[auto_1fr] w-full">
 				<!-- name | display_name | time -->
 				<div
 					class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix overflow-x-hidden"
@@ -148,19 +150,17 @@
 					<!--name-->
 					<div class="truncate wid justify-items-end">
 						<button
-							class="text-secondary-600 dark:text-blue-500"
+							class="text-secondary-600 dark:text-secondary-400 font-semibold"
 							on:click={() => {
 								OpenProfile(metadata);
 							}}
-							><u
-								>{#if content.name !== ''}{content.name}
-								{:else}
-									{nip19.npubEncode(metadata.pubkey).slice(0, 12)}:{nip19
-										.npubEncode(metadata.pubkey)
-										.slice(-4)}
-								{/if}
-							</u></button
-						>
+							>{#if content.name !== ''}{content.name}
+							{:else}
+								{nip19.npubEncode(metadata.pubkey).slice(0, 12)}:{nip19
+									.npubEncode(metadata.pubkey)
+									.slice(-4)}
+							{/if}
+						</button>
 					</div>
 					<!--display_name-->
 					<div
@@ -194,8 +194,18 @@
 
 				<!--tag?-->
 
+				{#if content.nip05}
+					<div class="text-sm">
+						{#await nip05.queryProfile(content.nip05) then pointer}
+							{#if pointer !== null}
+								{content.nip05}
+							{/if}
+						{/await}
+					</div>
+				{/if}
+
 				<!--note-->
-				<div class="break-all box-border whitespace-break-spaces">
+				<div class="py-2 break-all box-border whitespace-break-spaces">
 					{content.about}
 					<!-- <Content
 					text={note.content}
@@ -205,6 +215,15 @@
 					{isPageOwner}
 				/> -->
 				</div>
+
+				{#if content.website}
+					<a
+						class="anchor mb-0.5"
+						href={content.website}
+						rel="external noreferrer"
+						target="_blank">{content.website}</a
+					>
+				{/if}
 			</div>
 		</div>
 

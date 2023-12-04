@@ -121,22 +121,22 @@
 <!-- icon | その他-->
 <div class="pl-1 grid grid-cols-[auto_1fr] gap-1.5">
 	<!--icon-->
-	{#if $iconView && metadata}
-		<div
-			class="w-12 h-12 rounded-full flex justify-center overflow-hidden bg-surface-500/25 mt-1"
-		>
-			{#if JSON.parse(metadata.content).picture}
-				<img
-					class="max-w-12 max-h-12 object-contain justify-center"
-					src={JSON.parse(metadata.content).picture}
-					alt="avatar"
-				/>
-			{/if}
-		</div>
-	{:else}
-		<!--iconなし-->
-		<div />
-	{/if}
+
+	<div
+		class="w-12 h-12 rounded-full flex justify-center overflow-hidden variant-filled-surface mt-1 items-center truncate"
+	>
+		{#if metadataContent && $iconView && metadataContent.picture}
+			<img
+				class="max-w-12 max-h-12 object-contain justify-center"
+				src={metadataContent.picture}
+				alt="avatar"
+			/>
+		{:else if metadataContent && metadataContent.name}
+			{metadataContent.name}
+		{:else}
+			{nip19.npubEncode(note.pubkey).slice(5, 10)}
+		{/if}
+	</div>
 
 	<!-- profile | note -->
 	<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
@@ -145,11 +145,11 @@
 			class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix overflow-x-hidden"
 		>
 			<!--profile-->
-			{#if metadata && JsonCheck(metadata.content) !== ''}
+			{#if metadataContent}
 				<!--name-->
 				<div class="truncate wid justify-items-end">
 					<button
-						class="text-secondary-600 dark:text-blue-500"
+						class="text-secondary-600 dark:text-secondary-400 font-semibold"
 						on:click={() => {
 							if (metadata !== undefined) {
 								OpenProfile(metadata);
@@ -157,24 +157,20 @@
 								OpenProfile({ pubkey: note.pubkey });
 							}
 						}}
-						><u
-							>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
-									metadata.content
-								).name}
-							{:else}
-								{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19
-									.npubEncode(note.pubkey)
-									.slice(-4)}
-							{/if}
-						</u></button
-					>
+						>{#if metadataContent.name !== ''}{metadataContent.name}
+						{:else}
+							{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19
+								.npubEncode(note.pubkey)
+								.slice(-4)}
+						{/if}
+					</button>
 				</div>
 				<!--display_name-->
 				<div
 					class="text-left self-end text-sm h-fix wi truncate justify-items-end"
 				>
-					{#if JSON.parse(metadata.content).display_name}
-						{JSON.parse(metadata.content).display_name}
+					{#if metadataContent.display_name}
+						{metadataContent.display_name}
 					{/if}
 				</div>
 				<!--time-->

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { checkRelayExist } from '$lib/nostrFunctions';
 	import { relayStore } from '$lib/stores/relays';
+	import { iconView } from '$lib/stores/settings';
 
 	export let tagArray: string[];
 	const relayURL = tagArray[1].endsWith('/') ? tagArray[1] : tagArray[1] + '/';
@@ -26,6 +27,7 @@
 			}
 		}
 	};
+	let imageLoaded = true;
 </script>
 
 {#await relayInfoFun() then tmp}
@@ -37,8 +39,19 @@
 			<div
 				class="w-12 h-12 rounded-full variant-filled-surface text-center flex items-center justify-center text-lg"
 			>
-				{#if relayInfo.icon}
-					<img src={relayInfo.icon} class="w-12 h-12 rounded-full" alt="" />
+				{#if $iconView && relayInfo.icon}
+					<img
+						src={relayInfo.icon}
+						class="w-12 h-12 rounded-full"
+						alt="relay Icon"
+					/>
+				{:else if $iconView && imageLoaded}
+					<img
+						src={httpsUrl + '/favicon.ico'}
+						on:error={() => (imageLoaded = false)}
+						class="w-12 h-12 rounded-full"
+						alt="relay favicon"
+					/>
 				{:else}
 					{relayInfo.name[0]}
 				{/if}
