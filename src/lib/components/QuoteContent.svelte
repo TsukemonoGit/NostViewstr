@@ -595,11 +595,11 @@
 			</div>
 
 			<button
-				class="inline-flex text-gray-800/80 dark:text-gray-200/80 break-all whitespace-pre-wrap"
+				class="inline-flex text-surface-600 dark:text-surface-300 break-all whitespace-pre-wrap"
 				on:click={() => {
 					handleClickPubkey(metadata);
 				}}
-				><u>{JSON.parse(metadata.content).name}</u>
+				><u>@{JSON.parse(metadata.content).name}</u>
 			</button>
 		</Metadata>
 

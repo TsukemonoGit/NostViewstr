@@ -275,8 +275,8 @@
 									const test = item.number === undefined ? 0 : item.number;
 									handleClickPubkey(metadata);
 								}}
-								>@<u
-									>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
+								><u
+									>@{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
 											metadata.content
 										).name}
 									{:else if item.number !== undefined}
