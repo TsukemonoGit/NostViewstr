@@ -163,12 +163,14 @@
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 					<img
-						class="align-bottom inline-flex max-h-[1.5em] object-contain -m-[2.5px]"
+						class="align-bottom inline-flex h-[1.5em] object-contain w-fit -mx-[2.2px]"
 						src={item.url}
 						alt=""
 						on:click={() => handleClickImage(item.url)}
 					/>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
-							<div class="max-h-[24rem] max-w-[36rem] overflow-auto break-all">
+							<div
+								class="max-w-full max-h-[24rem] w-[28rem] overflow-auto break-all"
+							>
 								<blockquote class="twitter-tweet">
 									<p lang="ja" dir="ltr">
 										<a class="anchor break-all" href={item.content}
@@ -185,7 +187,7 @@
 							</div>
 						{:else if new URL(item.content).hostname === 'www.youtube.com' || new URL(item.content).hostname === 'm.youtube.com' || new URL(item.content).hostname === 'youtu.be'}
 							<iframe
-								class="rounded"
+								class="rounded max-w-full"
 								width="320"
 								height="180"
 								src={`https://www.youtube.com/embed/${pathname(item.content)}`}
@@ -195,7 +197,7 @@
 								allowfullscreen
 							/>
 						{:else if item.content?.endsWith('.mp4') || item.content?.endsWith('.mov')}
-							<video controls class="max-h-[20em]">
+							<video controls class="max-h-[20em] max-w-full">
 								<source src={item.content} type="video/mp4" />
 								<track kind="captions" src="" label="English" default />
 								Your browser does not support the video tag.

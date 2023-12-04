@@ -245,7 +245,7 @@
 				</div>
 			{/if}
 			<!--note-->
-			<div class="break-all box-border">
+			<div class="break-all box-border overflow-x-auto">
 				{#if note.kind === 31990}
 					{#await JsonCheck(note.content) then data}
 						{#if data !== ''}
