@@ -446,7 +446,7 @@
 					>
 						<div
 							slot="loading"
-							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1 break-all"
 						>
 							loading ... {JSON.stringify(tag)}
 							<MenuButtons
@@ -462,7 +462,7 @@
 						</div>
 						<div
 							slot="error"
-							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1 break-all"
 						>
 							not found {JSON.stringify(tag)}<MenuButtons
 								myIndex={index}
@@ -477,7 +477,7 @@
 						</div>
 						<div
 							slot="nodata"
-							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1 break-all"
 						>
 							not found {JSON.stringify(tag)}<MenuButtons
 								myIndex={index}
