@@ -47,7 +47,7 @@
 					/>
 				{:else if $iconView && imageLoaded}
 					<img
-						src={httpsUrl + '/favicon.ico'}
+						src={httpsUrl + 'favicon.ico'}
 						on:error={() => (imageLoaded = false)}
 						class="w-12 h-12 rounded-full"
 						alt="relay favicon"
