@@ -4,6 +4,7 @@
 	import { nip19 } from 'nostr-tools';
 	import OpenIcon from '@material-design-icons/svg/round/open_in_new.svg?raw';
 	import type { Nostr } from 'nosvelte';
+	import Ogp from './OGP.svelte';
 	export let text: string;
 
 	export let id: string;
@@ -47,7 +48,17 @@
 	}
 </script>
 
-<div class="grid grid-cols-[auto_1fr] gap-1">
+<Ogp
+	ogp={{
+		title: name,
+		image: picture,
+		description: about,
+		favicon: `https://unyu-house.vercel.app/favicon.ico`
+	}}
+	url={chatURL}
+/>
+
+<!-- <div class="grid grid-cols-[auto_1fr] gap-1">
 	<div class="w-fit">
 		{#if $iconView && picture}
 			<img
@@ -59,7 +70,7 @@
 	</div>
 	<div class="grid grid-rows-[auto_auto_1fr]">
 		<div class="flex gap-2">
-			<div class=" h6">{name}</div>
+			<div class=" h5">{name}</div>
 			<a
 				rel="external noreferrer"
 				target="_blank"
@@ -79,3 +90,4 @@
 		height: 1em;
 	}
 </style>
+ -->

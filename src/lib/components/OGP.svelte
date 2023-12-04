@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { iconView } from '$lib/stores/settings';
+
 	export let ogp: {
 		title: string;
 		image: string;
@@ -9,13 +11,13 @@
 </script>
 
 <div
-	class="drop-shadow-md rounded-2xl m-0 p-1 border-2 border-primary-500 hover:drop-shadow-xl z-20 break-all bg-primary-200 dark:bg-primary-700 dark:hover:border-primary-400"
+	class="drop-shadow-md rounded-xl m-0 p-1 border border-primary-400 hover:drop-shadow-xl z-20 break-all bg-primary-200 dark:bg-primary-600 dark:hover:border-primary-400 dark:border-primary-500"
 >
 	<a class="" href={url} target="_blank">
 		<div class="grid grid-rows-[auto_1fr]">
 			<div class="grid grid-cols-[auto_1fr] gap-0.5">
 				<div class="overflow-hidden relative rounded-xl max-h-[6rem]">
-					{#if ogp.image}
+					{#if $iconView && ogp.image}
 						<img
 							class="object-contain object-contain max-h-[6rem]"
 							src={ogp.image}
@@ -25,7 +27,7 @@
 				</div>
 				<div class="p-0.5 grid grid-rows-[auto_1fr] z-10 min-w-[12em]">
 					<div
-						class="line-clamp-2 text-sm font-bold text-primary-800 underline decoration-primary-600 dark:text-primary-300"
+						class="line-clamp-2 text-sm font-bold text-primary-800 underline decoration-primary-600 dark:decoration-primary-300 dark:text-primary-300"
 					>
 						{ogp.title}
 					</div>
