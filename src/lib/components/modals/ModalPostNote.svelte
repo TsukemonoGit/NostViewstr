@@ -99,8 +99,8 @@
 	async function repostNote() {
 		if ($modalStore[0].value?.tagArray && $modalStore[0].value?.pubkey) {
 			const tags = [
-				$modalStore[0].value?.tagArray?.slice(0, 2),
-				['p', $modalStore[0].value?.pubkey]
+				$modalStore[0].value.tagArray,
+				['p', $modalStore[0].value.pubkey]
 			];
 			console.log(tags);
 
