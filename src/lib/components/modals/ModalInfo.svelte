@@ -76,6 +76,7 @@
 	let selectValue: string = Object.keys(kinds)[0];
 
 	function gotoMyList() {
+		console.log($pubkey_viewer);
 		console.log(`/${nip19.npubEncode($pubkey_viewer)}/${selectValue}`);
 		goto(`/${nip19.npubEncode($pubkey_viewer)}/${selectValue}`);
 
@@ -100,6 +101,7 @@
 					}}>{@html LeftIcon}</button
 				>
 -->
+
 		<div class="flex gap-4">
 			<button
 				class=" btn-icon variant-filled-surface history"
@@ -108,17 +110,27 @@
 					modalStore.close();
 				}}>{@html HomeIcon}</button
 			>
-			<div class="flex">
-				<select class="select" bind:value={selectValue}>
-					{#each Object.keys(kinds) as value (value)}
-						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-					{/each}
-				</select><button
-					type="button"
-					class="btn-icon variant-filled-secondary history"
-					on:click={gotoMyList}>{@html LocationHomeIcon}</button
-				>
-			</div>
+			{#if !$pubkey_viewer || $pubkey_viewer === ''}
+				<div class="flex items-center justify-start">
+					<button
+						class="mx-1 h-full btn variant-filled-surface fill-white"
+						on:click={onClickLogin}
+					>
+						Login{@html loginIcon}
+					</button>(use nip07 extension)
+				</div>
+			{:else}<div class="flex">
+					<select class="select" bind:value={selectValue}>
+						{#each Object.keys(kinds) as value (value)}
+							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
+						{/each}
+					</select><button
+						type="button"
+						class="mx-1 px-2 btn variant-filled-secondary history"
+						on:click={gotoMyList}>{@html LocationHomeIcon}My Page</button
+					>
+				</div>
+			{/if}
 		</div>
 		<!-- </div> -->
 		<!-- </div>  -->
@@ -127,13 +139,6 @@
 		<div class="flex gap-2">{$_('modal.info.light_switch')}<LightSwitch /></div>
 
 		<!--ログインの許可のやつ全スキップした人のためとか-->
-
-		{#if !$pubkey_viewer || $pubkey_viewer === ''}
-			<button
-				class="btn variant-filled-primary fill-white"
-				on:click={onClickLogin}>{@html loginIcon}</button
-			>
-		{/if}
 
 		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-2">
