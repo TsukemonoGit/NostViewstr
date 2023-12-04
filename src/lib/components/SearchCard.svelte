@@ -117,7 +117,7 @@
 
 	<div class="flex justify-center items-center h-auto">
 		<button
-			class="btn m-0 p-1 variant-filled-secondary rounded-full"
+			class="fill-white btn m-0 p-1 variant-filled-secondary rounded-full"
 			on:click={() => {
 				onClickSearch(filter);
 			}}>{@html searchIcon}</button

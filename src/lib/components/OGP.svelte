@@ -11,7 +11,7 @@
 </script>
 
 <div
-	class="drop-shadow-md rounded-xl m-0 p-1 border border-primary-400 hover:drop-shadow-xl z-20 break-all bg-primary-200 dark:bg-primary-600 dark:hover:border-primary-400 dark:border-primary-500"
+	class="drop-shadow-md rounded-xl m-1 p-1 border border-primary-400 hover:drop-shadow-xl z-20 break-all bg-primary-200 dark:bg-primary-700 dark:hover:border-primary-400 dark:border-primary-500"
 >
 	<a class="" href={url} target="_blank">
 		<div class="grid grid-rows-[auto_1fr]">
@@ -27,12 +27,12 @@
 				</div>
 				<div class="p-0.5 grid grid-rows-[auto_1fr] z-10 min-w-[12em]">
 					<div
-						class="line-clamp-2 text-sm font-bold text-primary-800 underline decoration-primary-600 dark:decoration-primary-300 dark:text-primary-300"
+						class="line-clamp-2 text-sm font-bold text-primary-700 dark:text-primary-100"
 					>
 						{ogp.title}
 					</div>
 					<div
-						class="line-clamp-4 text-xs text-primary-500 dark:text-primary-400"
+						class="line-clamp-4 text-xs text-primary-500 dark:text-primary-300"
 					>
 						{ogp.description}
 					</div>
@@ -47,7 +47,7 @@
 						alt=""
 					/>
 				{/if}
-				<div class="text-xs text-purple-900/50 dark:text-purple-50/50">
+				<div class="text-xs text-primary-500 dark:text-primary-300">
 					{new URL(url).hostname}
 				</div>
 			</div>
