@@ -26,6 +26,7 @@
 	export let note: Event | undefined; //noteないときはwindow openとかできないらしい
 	export let myIndex: number | undefined;
 	export let share = true; //pたぐのときはシェア不可にしてるらしい
+
 	enum State {
 		Default,
 		Delete,
@@ -87,6 +88,7 @@
 						: ''
 				}`,
 				tags: tags,
+				tagArray: tagArray,
 				pubkey: note?.pubkey
 			}
 			// response: async (res) => {

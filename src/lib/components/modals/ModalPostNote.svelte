@@ -7,8 +7,12 @@
 	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
 	import { pubkey_viewer } from '$lib/stores/settings';
 	import postIcon from '@material-design-icons/svg/round/post_add.svg?raw';
+
 	export let parent: any;
 	let checked: boolean;
+	let isRepostable =
+		$modalStore[0].value?.tagArray?.[0] === 'e' && $modalStore[0].value?.pubkey;
+
 	let contents = {
 		//id:'',
 		pubkey: $modalStore[0].value.pubkey ? $modalStore[0].value.pubkey : '',
@@ -91,6 +95,42 @@
 			}
 		);
 	}
+
+	async function repostNote() {
+		if ($modalStore[0].value?.tagArray && $modalStore[0].value?.pubkey) {
+			const tags = [
+				$modalStore[0].value?.tagArray?.slice(0, 2),
+				['p', $modalStore[0].value?.pubkey]
+			];
+			console.log(tags);
+
+			const event: Event = {
+				id: '',
+				pubkey: $pubkey_viewer,
+				created_at: Math.floor(Date.now() / 1000),
+				kind: 6,
+				tags: tags,
+				content: '',
+				sig: ''
+			};
+			const response = await publishEventWithTimeout(
+				event,
+				$relaySet[$pubkey_viewer].postRelays
+			);
+			const toastSettings: ToastSettings = response.isSuccess
+				? {
+						message: `publish result<br>${response.msg}`,
+						timeout: 5000
+				  }
+				: {
+						message: `failed to publish`,
+						background: 'bg-orange-500 text-white width-filled ',
+						timeout: 5000
+				  };
+			toastStore.trigger(toastSettings);
+			modalStore.close();
+		}
+	}
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -112,49 +152,57 @@
 		</article>
 		<!-- Enable for debugging: -->
 
-		<label class="label break-all whitespace-pre-wrap">
-			<textarea
-				class="textarea"
-				rows="5"
-				placeholder=""
-				bind:value={res.content}
-			/>
-			{#if contents.pubkey !== ''}
-				<label class="flex items-center space-x-2">
-					<input class="checkbox" type="checkbox" bind:checked />
-					<p>{$_('PostNote.p_tag')}</p>
-				</label>
-			{/if}
+		{#if isRepostable}
+			<p>Repost:</p>
+			<button
+				class="btn variant-filled-secondary"
+				type="button"
+				on:click={repostNote}>Repost</button
+			>
+			<p>Quote:</p>
+		{/if}
 
-			<div class="break-all text-sm">
-				<p>
-					<b>kind:</b>
-					{contents.kind}
-				</p>
-				<p>
-					<b>content:</b><br />
-					<span class="whitespace-pre-wrap"> {contents.content}</span>
-				</p>
-				<p>
-					<b>tags:</b><br />
-					<span class="text-xs"
-						>[{#if contents.tags}
-							{#each checked ? tags_p : contents.tags as tags}
-								<div class="ml-2">{JSON.stringify(tags, null, 0)},</div>
-							{/each}
-						{/if}]</span
-					>
-				</p>
-			</div>
+		<textarea
+			class="textarea"
+			rows="5"
+			placeholder=""
+			bind:value={res.content}
+		/>
+		{#if contents.pubkey !== ''}
+			<label class="flex items-center space-x-2">
+				<input class="checkbox" type="checkbox" bind:checked />
+				<p>{$_('PostNote.p_tag')}</p>
+			</label>
+		{/if}
 
-			<footer class="modal-footer {parent.regionFooter}">
-				<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
-					>{parent.buttonTextCancel}</button
+		<div class="break-all text-sm">
+			<p>
+				<b>kind:</b>
+				{contents.kind}
+			</p>
+			<p>
+				<b>content:</b><br />
+				<span class="whitespace-pre-wrap"> {contents.content}</span>
+			</p>
+			<p>
+				<b>tags:</b><br />
+				<span class="text-xs"
+					>[{#if contents.tags}
+						{#each checked ? tags_p : contents.tags as tags}
+							<div class="ml-2">{JSON.stringify(tags, null, 0)},</div>
+						{/each}
+					{/if}]</span
 				>
-				<button class="btn {parent.buttonPositive}" on:click={onFormSubmit}
-					>Post Note</button
-				>
-			</footer>
-		</label>
+			</p>
+		</div>
+
+		<footer class="modal-footer {parent.regionFooter}">
+			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
+				>{parent.buttonTextCancel}</button
+			>
+			<button class="btn {parent.buttonPositive}" on:click={onFormSubmit}
+				>Post Note</button
+			>
+		</footer>
 	</div>
 {/if}
