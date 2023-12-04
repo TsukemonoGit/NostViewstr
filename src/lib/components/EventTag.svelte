@@ -15,37 +15,39 @@
 	<Metadata queryKey={['metadata', tag[1]]} pubkey={tag[1]} let:metadata>
 		<div slot="loading">
 			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
-				{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p] {tag[1]}
+				<!-- {tag[tag.length - 1] === 'mention' ? 'mention' : 'to'} -->
+				[p] {tag[1]}
 			</div>
 		</div>
 		<div slot="error">
 			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
-				{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p] {tag[1]}
+				<!-- {tag[tag.length - 1] === 'mention' ? 'mention' : 'to'} -->
+				[p] {tag[1]}
 			</div>
 		</div>
 
 		<div slot="nodata">
 			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
-				{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p] {tag[1]}
+				<!-- {tag[tag.length - 1] === 'mention' ? 'mention' : 'to'} -->
+				[p] {tag[1]}
 			</div>
 		</div>
 		<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
-			{tag[tag.length - 1] === 'mention' ? 'mention' : 'to'}[p]
+			<!-- {tag[tag.length - 1] === 'mention' ? 'mention' : 'to'} -->
+			[p]
 			<button
-				class="text-tertiary-800 dark:text-tertiary-400 overflow-x-hidden text-ellipsis"
+				class=" w-full truncate text-start"
 				on:click={() => {
 					handleClickPubkey(metadata, tag[1]);
 				}}
-				><u
-					>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
-							metadata.content
-						).name}
-					{:else}
-						{nip19.npubEncode(metadata.pubkey).slice(0, 12)}:{nip19
-							.npubEncode(metadata.pubkey)
-							.slice(-4)}
-					{/if}</u
-				></button
+				>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
+						metadata.content
+					).name}
+				{:else}
+					{nip19.npubEncode(metadata.pubkey).slice(0, 12)}:{nip19
+						.npubEncode(metadata.pubkey)
+						.slice(-4)}
+				{/if}</button
 			>
 		</div>
 	</Metadata>

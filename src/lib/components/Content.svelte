@@ -270,12 +270,12 @@
 							</div>
 
 							<button
-								class="flex inline-flex text-gray-800/80 dark:text-gray-200/80"
+								class="flex inline-flex text-surface-600 dark:text-surface-300"
 								on:click={() => {
 									const test = item.number === undefined ? 0 : item.number;
 									handleClickPubkey(metadata);
 								}}
-								><u
+								>@<u
 									>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
 											metadata.content
 										).name}

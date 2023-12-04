@@ -233,7 +233,7 @@
 		{#await uniqueTags(note.tags) then tags}
 			{#if tags.length > 0}
 				<div
-					class="max-h-[4em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50 box-border"
+					class="max-h-[4em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50 box-border h-fit"
 				>
 					{#each tags as tag}
 						<EventTag

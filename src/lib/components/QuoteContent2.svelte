@@ -309,20 +309,18 @@
 
 					<div class="truncate wid justify-items-end">
 						<button
-							class="text-secondary-500 text-sm"
+							class="text-secondary-500 text-sm font-semibold"
 							on:click={() => {
 								handleClickPubkey(metadata);
 							}}
-							><u
-								>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
-										metadata.content
-									).name}
-								{:else}
-									{nip19.npubEncode(text.pubkey).slice(0, 12)}:{nip19
-										.npubEncode(text.pubkey)
-										.slice(-4)}
-								{/if}</u
-							></button
+							>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
+									metadata.content
+								).name}
+							{:else}
+								{nip19.npubEncode(text.pubkey).slice(0, 12)}:{nip19
+									.npubEncode(text.pubkey)
+									.slice(-4)}
+							{/if}</button
 						>
 					</div>
 					<div class="text-left self-end text-sm wi truncate justify-items-end">

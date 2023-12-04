@@ -422,10 +422,10 @@
 
 						<div class="truncate wid justify-items-end">
 							<button
-								class="text-secondary-500 text-sm"
+								class="text-secondary-500 text-sm font-semibold"
 								on:click={() => {
 									handleClickPubkey(metadata);
-								}}><u>{JSON.parse(metadata.content).name}</u></button
+								}}>{JSON.parse(metadata.content).name}</button
 							>
 						</div>
 						<div
@@ -521,11 +521,11 @@
 		</div>
 
 		<button
-			class="inline-flex text-gray-800/80 dark:text-gray-200/80"
+			class="inline-flex text-surface-600 dark:text-surface-300"
 			on:click={() => {
 				handleClickPubkey(metadata);
 			}}
-			><u>{JSON.parse(metadata.content).name}</u>
+			><u>@{JSON.parse(metadata.content).name}</u>
 		</button>
 	</Metadata>
 {:else if nip19.decode(encodedId).type === 'nprofile'}
@@ -557,11 +557,11 @@
 			</div>
 		</div>
 		<button
-			class="inline-flex text-gray-800/80 dark:text-gray-200/80 break-all whitespace-pre-wrap"
+			class="inline-flex text-surface-600 dark:text-surface-300 break-all whitespace-pre-wrap"
 			on:click={() => {
 				handleClickPubkey(metadata);
 			}}
-			><u>{JSON.parse(metadata.content).name}</u>
+			><u>@{JSON.parse(metadata.content).name}</u>
 		</button>
 	</Metadata>
 {:else if nip19.decode(encodedId).type === 'naddr'}

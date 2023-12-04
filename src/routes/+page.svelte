@@ -142,7 +142,7 @@
 				<h5 class="h5">{`kind`}</h5>
 
 				<select
-					class="input p-1"
+					class="select"
 					bind:value={selectValue}
 					on:change={handleKindChange}
 				>
