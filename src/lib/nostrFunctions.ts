@@ -230,8 +230,7 @@ export async function publishEventWithTimeout(
 	}
 
 	const t: ToastSettings = {
-		message: `publishing ...`,
-		autohide: false
+		message: `publishing ...`
 	};
 
 	try {
@@ -286,7 +285,7 @@ export async function publishEventWithTimeout(
 				}, timeout);
 			})
 		]);
-		toastStore.close(publishingToast);
+		//toastStore.close(publishingToast);
 		return result;
 	} catch (error) {
 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
