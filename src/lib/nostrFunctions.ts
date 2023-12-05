@@ -230,10 +230,10 @@ export async function publishEventWithTimeout(
 	}
 
 	try {
-		const t: ToastSettings = {
-			message: `publishing ...`
-		};
-		const publishingToast = toastStore.trigger(t);
+		// const t: ToastSettings = {
+		// 	message: `publishing ...`
+		// };
+		// const publishingToast = toastStore.trigger(t);
 		const event = obj;
 		event.id = getEventHash(event);
 		console.log(event);
@@ -284,7 +284,7 @@ export async function publishEventWithTimeout(
 				}, timeout);
 			})
 		]);
-		toastStore.close(publishingToast);
+		//	toastStore.close(publishingToast);
 		return result;
 	} catch (error) {
 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
