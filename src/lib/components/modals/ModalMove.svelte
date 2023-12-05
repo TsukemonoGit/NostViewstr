@@ -53,9 +53,18 @@
 						bind:group={selectTag}
 						name={list.identifier ?? ''}
 						value={index}
+						class="truncate"
+						on:change={() => onChange(list.identifier ?? '')}
+						>{list.identifier}
+						{list.title ? `【${list.title}】` : ''}</ListBoxItem
+					>
+					<!-- <ListBoxItem
+						bind:group={selectTag}
+						name={list.identifier ?? ''}
+						value={index}
 						on:change={() => onChange(list.identifier ?? '')}
 						>{list.identifier}</ListBoxItem
-					>
+					> -->
 				{/each}
 			{/if}
 		</ListBox>
