@@ -229,11 +229,11 @@ export async function publishEventWithTimeout(
 		return { isSuccess: false, msg: 'login error' };
 	}
 
-	const t: ToastSettings = {
-		message: `publishing ...`
-	};
-	const publishingToast = toastStore.trigger(t);
 	try {
+		const t: ToastSettings = {
+			message: `publishing ...`
+		};
+		const publishingToast = toastStore.trigger(t);
 		const event = obj;
 		event.id = getEventHash(event);
 		console.log(event);
