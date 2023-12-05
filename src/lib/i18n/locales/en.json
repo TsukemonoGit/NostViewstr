@@ -39,7 +39,7 @@
 				"list": "for list acquisition",
 				"search": "for searching notes",
 				"title": "Relay in setting",
-				"white": "write relays"
+				"white": " write relays"
 			},
 			"share": "Share myLists (URLs you are browsing) with nostr",
 			"urlandIcon": "Show/hide icons and URL previews",

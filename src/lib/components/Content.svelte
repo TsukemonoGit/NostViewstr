@@ -163,8 +163,9 @@
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 					<img
-						class="align-bottom inline-flex h-[1.5em] object-contain w-fit -mx-[2.2px]"
+						class="align-bottom inline-flex h-[1.5em] max-w-full -mx-[2.2px] object-contain"
 						src={item.url}
+						height="6"
 						alt=""
 						on:click={() => handleClickImage(item.url)}
 					/>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
