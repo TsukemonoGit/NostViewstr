@@ -234,9 +234,8 @@ export async function publishEventWithTimeout(
 		autohide: false
 	};
 
-	const publishingToast = toastStore.trigger(t);
-
 	try {
+		const publishingToast = toastStore.trigger(t);
 		const event = obj;
 		event.id = getEventHash(event);
 		console.log(event);
@@ -255,14 +254,14 @@ export async function publishEventWithTimeout(
 						console.log(packet);
 						msgObj[packet.from] = true;
 						isSuccess = true;
+					},
+					complete: () => {
+						resolve({
+							isSuccess,
+							event: event,
+							msg: formatResults(msgObj)
+						});
 					}
-					// complete: () => {
-					// 	resolve({
-					// 		isSuccess,
-					// 		event: event,
-					// 		msg: formatResults(msgObj)
-					// 	});
-					// }
 				});
 			}),
 			new Promise<{
@@ -287,11 +286,9 @@ export async function publishEventWithTimeout(
 				}, timeout);
 			})
 		]);
-
 		toastStore.close(publishingToast);
 		return result;
 	} catch (error) {
-		toastStore.close(publishingToast);
 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
 	}
 }
