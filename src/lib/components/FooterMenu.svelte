@@ -25,11 +25,13 @@
 	import ModalPostNote from './modals/ModalPostNote.svelte';
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import {
-		bookmarkEvents,
+		eventListsMap,
 		checkedIndexList,
-		identifierList,
 		listNum,
-		type Identifiers
+		type Identifiers,
+		keysArray,
+		identifierKeysArray,
+		identifierListsMap
 	} from '$lib/stores/bookmarkEvents';
 	import {
 		ProgressRadial,
@@ -84,15 +86,16 @@
 	};
 
 	function openLists() {
-		if ($bookmarkEvents) {
+		if ($eventListsMap) {
 			const modal: ModalSettings = {
 				type: 'component',
 				component: tagListModalComponent,
 				title: $_('modal.tagList.title'),
 				body: ``,
 				value: {
-					tagList: $identifierList[pubkey][kind],
-					pubkey: pubkey
+					tagList: $identifierKeysArray,
+					pubkey: pubkey,
+					kind: kind
 				},
 				response: (res) => {
 					console.log(res);
@@ -101,9 +104,9 @@
 							editTagModalOpen();
 						} else if (
 							res.index !== -1 &&
-							$bookmarkEvents !== undefined &&
-							$bookmarkEvents[pubkey] &&
-							$bookmarkEvents[pubkey][kind].length > 1
+							$eventListsMap !== undefined &&
+							$eventListsMap[pubkey] &&
+							$eventListsMap[pubkey][kind].size > 1
 						) {
 							$listNum = res.index;
 						}
@@ -159,7 +162,9 @@
 								title: $_('modal.deleteTag.title'),
 								body: `${$_('modal.deleteTag.body')}`,
 								value: {
-									tag: $identifierList[pubkey][kind][res.tagIndex].identifier
+									tag: $identifierListsMap[pubkey][kind].get(
+										$identifierKeysArray[res.tagIndex]
+									)?.identifier
 								},
 								response: async (res2) => {
 									//console.log(res);
@@ -221,36 +226,38 @@
 
 			toastStore.trigger(t);
 
-			const tmp = get(bookmarkEvents);
+			const tmp = get(eventListsMap);
 			if (res.event !== undefined) {
-				if (tmp && tmp[pubkey][kind]) {
-					tmp[pubkey][kind].push(res.event);
-					bookmarkEvents.set(tmp);
+				if (tmp && tmp[pubkey] && tmp[pubkey][kind]) {
+					tmp[pubkey][kind].set(value.id, res.event);
+					eventListsMap.set(tmp);
 				} else {
-					bookmarkEvents.set({ [pubkey]: { [kind]: [res.event] } });
+					eventListsMap.set({
+						[pubkey]: { [kind]: new Map([[value.id, res.event]]) }
+					});
 				}
 
-				//IdentifierListも更新する
-				const identifierListData = get(identifierList);
+				// //IdentifierListも更新する
+				// const identifierListData = get(identifierList);
 
-				const tag = res.event.tags.find((tag) => tag[0] === 'd');
-				const title = res.event.tags.find((tag) => tag[0] === 'title');
-				const image = res.event.tags.find((tag) => tag[0] === 'image');
-				const description = res.event.tags.find(
-					(tag) => tag[0] === 'description'
-				);
-				const newIdentifierList: Identifiers = {
-					identifier: tag ? tag[1] : undefined,
-					title: title ? title[1] : undefined,
-					image: image ? image[1] : undefined,
-					description: description ? description[1] : undefined
-				};
-				if (identifierListData !== undefined) {
-					identifierListData[pubkey][kind].push(newIdentifierList);
-					identifierList.set(identifierListData);
-				} else {
-					identifierList.set({ [pubkey]: { [kind]: [newIdentifierList] } });
-				}
+				// const tag = res.event.tags.find((tag) => tag[0] === 'd');
+				// const title = res.event.tags.find((tag) => tag[0] === 'title');
+				// const image = res.event.tags.find((tag) => tag[0] === 'image');
+				// const description = res.event.tags.find(
+				// 	(tag) => tag[0] === 'description'
+				// );
+				// const newIdentifierList: Identifiers = {
+				// 	identifier: tag ? tag[1] : undefined,
+				// 	title: title ? title[1] : undefined,
+				// 	image: image ? image[1] : undefined,
+				// 	description: description ? description[1] : undefined
+				// };
+				// if (identifierListData !== undefined) {
+				// 	identifierListData[pubkey][kind].push(newIdentifierList);
+				// 	identifierList.set(identifierListData);
+				// } else {
+				// 	identifierList.set({ [pubkey]: { [kind]: [newIdentifierList] } });
+				// }
 				// identifierListData[pubkey][kind][num] = newIdentifierList;
 				// identifierList.set(identifierListData);
 			}
@@ -270,14 +277,14 @@
 	async function deleteTag(tagIndex: any) {
 		console.log(tagIndex);
 		$nowProgress = true;
-		const bkm = get(bookmarkEvents)[pubkey][kind] as Event[];
+		const bkm = get(eventListsMap)[pubkey][kind];
 
 		const event: NostrEvent = {
 			id: '',
 			pubkey: pubkey,
 			sig: '',
 			content: '',
-			tags: [['e', bkm[tagIndex].id]],
+			tags: [['e', bkm.get($keysArray[tagIndex])!.id]],
 			created_at: Math.floor(Date.now() / 1000),
 			kind: 5
 		};
@@ -295,18 +302,13 @@
 
 			toastStore.trigger(t);
 
-			const tmp = get(bookmarkEvents);
-			const tmpId = get(identifierList);
-			if (tmp !== undefined) {
-				tmp[pubkey][kind].splice(tagIndex, 1); //削除
-				bookmarkEvents.set(tmp);
-				//IDリストも更新
-				tmpId[pubkey][kind].splice(tagIndex, 1); //削除
-				identifierList.set(tmpId);
-			} else {
-				//ないことはないと思う
-				console.log('えらー');
-			}
+			//const tmpId = get(identifierListsMap);
+
+			$eventListsMap[pubkey][kind].delete($keysArray[tagIndex]); //削除
+
+			//IDリストも更新
+			//tmpId[pubkey][kind].splice(tagIndex, 1); //削除
+			//	identifierList.set(tmpId);
 		} else {
 			const t = {
 				message: res.msg,
@@ -315,8 +317,8 @@
 			};
 			toastStore.trigger(t);
 		}
-		if ($listNum >= $bookmarkEvents[pubkey][kind].length) {
-			$listNum = $bookmarkEvents[pubkey][kind].length - 1;
+		if ($listNum >= $eventListsMap[pubkey][kind].size) {
+			$listNum = $eventListsMap[pubkey][kind].size - 1;
 		}
 		$nowProgress = false;
 		console.log(res);

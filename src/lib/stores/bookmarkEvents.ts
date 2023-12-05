@@ -2,11 +2,15 @@ import { writable } from 'svelte/store';
 import type { Event } from 'nostr-tools';
 import type { Nostr } from 'nosvelte';
 import type { TextPart } from '$lib/content';
-import type { kinds } from '$lib/kind';
 
 interface IdentifierList {
 	[pubkey: string]: {
 		[kind: number]: Identifiers[];
+	};
+}
+export interface MapIdentifierList {
+	[pubkey: string]: {
+		[kind: number]: Map<string, Identifiers>;
 	};
 }
 export interface Identifiers {
@@ -20,8 +24,17 @@ interface EventLists {
 		[kind: number]: Nostr.Event[];
 	};
 }
-export const bookmarkEvents = writable<EventLists>({});
-export const identifierList = writable<IdentifierList>({});
+export interface MapEventLists {
+	[pubkey: string]: {
+		[kind: number]: Map<string, Nostr.Event>; // Nostr.Event[];
+	};
+}
+export const identifierListsMap = writable<MapIdentifierList>({});
+export const identifierKeysArray = writable<string[]>([]);
+export const eventListsMap = writable<MapEventLists>({});
+export const keysArray = writable<string[]>([]);
+//export const bookmarkEvents = writable<EventLists>({});
+//export const identifierList = writable<IdentifierList>({});
 
 //identifierListはぶくまの変更があったとこだけでやるからここでのこれはなし～～
 //dタグがあったらそれを、なかったら（なかったらそもそもリストになってないけど）nonameでだす

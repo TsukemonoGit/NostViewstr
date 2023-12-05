@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { publishEventWithTimeout, updateBkmTag } from '$lib/nostrFunctions';
+	import { publishEventWithTimeout } from '$lib/nostrFunctions';
 	import {
-		bookmarkEvents,
-		identifierList,
+		eventListsMap,
+		identifierKeysArray,
+		identifierListsMap,
+		keysArray,
 		listNum
 	} from '$lib/stores/bookmarkEvents';
 	import { pageNum } from '$lib/stores/pagination';
@@ -38,13 +40,9 @@
 		? [
 				'a',
 				`${viewEvent.kind}:${viewEvent.pubkey}:${
-					$identifierList &&
-					$identifierList[pubkey] &&
-					$identifierList[pubkey][kind] &&
-					$identifierList[pubkey][kind][$listNum] &&
-					$identifierList[pubkey][kind][$listNum].identifier
-						? $identifierList[pubkey][kind][$listNum].identifier
-						: ''
+					$identifierListsMap?.[pubkey]?.[kind]?.get(
+						$identifierKeysArray[$listNum]
+					)?.identifier || ''
 				}`
 		  ]
 		: [];
@@ -98,70 +96,75 @@
 	}) {
 		console.log(res);
 		const listNumber = $listNum;
-		const eventTag = $bookmarkEvents[pubkey][kind][listNumber].tags;
+		const eventTag = $eventListsMap[pubkey][kind].get(
+			$keysArray[listNumber]
+		)?.tags;
+		if (eventTag) {
+			let titleIndex = eventTag.findIndex((item) => item[0] === 'title');
+			if (titleIndex !== -1) {
+				// すでに "title" タグが存在する場合、値を更新
+				eventTag[titleIndex][1] = res.title;
+			} else {
+				// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
+				eventTag.splice(1, 0, ['title', res.title]);
+				titleIndex = 1;
+			}
 
-		let titleIndex = eventTag.findIndex((item) => item[0] === 'title');
-		if (titleIndex !== -1) {
-			// すでに "title" タグが存在する場合、値を更新
-			eventTag[titleIndex][1] = res.title;
-		} else {
-			// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
-			eventTag.splice(1, 0, ['title', res.title]);
-			titleIndex = 1;
-		}
+			let imageIndex = eventTag.findIndex((item) => item[0] === 'image');
+			if (imageIndex !== -1) {
+				// すでに "title" タグが存在する場合、値を更新
+				eventTag[imageIndex][1] = res.image;
+			} else {
+				// "image" タグが存在しない場合、titleのうしろに挿入
+				imageIndex = titleIndex + 1;
+				eventTag.splice(imageIndex, 0, ['image', res.image]);
+			}
 
-		let imageIndex = eventTag.findIndex((item) => item[0] === 'image');
-		if (imageIndex !== -1) {
-			// すでに "title" タグが存在する場合、値を更新
-			eventTag[imageIndex][1] = res.image;
-		} else {
-			// "image" タグが存在しない場合、titleのうしろに挿入
-			imageIndex = titleIndex + 1;
-			eventTag.splice(imageIndex, 0, ['image', res.image]);
-		}
-
-		const descriptionIndex = eventTag.findIndex(
-			(item) => item[0] === 'description'
-		);
-		if (descriptionIndex !== -1) {
-			// すでに "title" タグが存在する場合、値を更新
-			eventTag[descriptionIndex][1] = res.description;
-		} else {
-			// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
-			eventTag.splice(imageIndex + 1, 0, ['description', res.description]);
-		}
-		console.log(eventTag);
-		const event: Nostr.Event = {
-			id: '',
-			kind: $bookmarkEvents[pubkey][kind][listNumber].kind,
-			pubkey: pubkey,
-			content: $bookmarkEvents[pubkey][kind][listNumber].content,
-			tags: eventTag,
-			created_at: Math.floor(Date.now() / 1000),
-			sig: ''
-		};
-		const result = await publishEventWithTimeout(
-			event,
-			$relaySet[pubkey].bookmarkRelays
-		);
-		console.log(result);
-		if (result.isSuccess && $bookmarkEvents && result.event) {
-			$bookmarkEvents[pubkey][kind][listNumber] = result.event;
-			viewEvent = $bookmarkEvents[pubkey][kind][listNumber];
-			const t = {
-				message: 'Add note<br>' + result.msg,
-				timeout: 3000
+			const descriptionIndex = eventTag.findIndex(
+				(item) => item[0] === 'description'
+			);
+			if (descriptionIndex !== -1) {
+				// すでに "title" タグが存在する場合、値を更新
+				eventTag[descriptionIndex][1] = res.description;
+			} else {
+				// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
+				eventTag.splice(imageIndex + 1, 0, ['description', res.description]);
+			}
+			console.log(eventTag);
+			const event: Nostr.Event = {
+				id: '',
+				kind: kind,
+				pubkey: pubkey,
+				content:
+					$eventListsMap[pubkey][kind].get($keysArray[listNumber])?.content ??
+					'',
+				tags: eventTag,
+				created_at: Math.floor(Date.now() / 1000),
+				sig: ''
 			};
+			const result = await publishEventWithTimeout(
+				event,
+				$relaySet[pubkey].bookmarkRelays
+			);
+			console.log(result);
+			if (result.isSuccess && $eventListsMap && result.event) {
+				$eventListsMap[pubkey][kind].set($keysArray[listNumber], result.event);
+				viewEvent = result.event;
+				const t = {
+					message: 'Add note<br>' + result.msg,
+					timeout: 3000
+				};
 
-			toastStore.trigger(t);
-		} else {
-			const t = {
-				message: $_('toast.failed_publish'),
-				timeout: 3000,
-				background: 'bg-orange-500 text-white width-filled '
-			};
+				toastStore.trigger(t);
+			} else {
+				const t = {
+					message: $_('toast.failed_publish'),
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
 
-			toastStore.trigger(t);
+				toastStore.trigger(t);
+			}
 		}
 	}
 
@@ -169,20 +172,16 @@
 		const listNumber = $listNum;
 		//const test = window.location;		console.log(test);
 		const address: nip19.AddressPointer = {
-			identifier: $identifierList[pubkey][kind][listNumber].identifier ?? '',
+			identifier:
+				$identifierListsMap[pubkey][kind].get($identifierKeysArray[listNumber])
+					?.identifier ?? '',
 			pubkey: pubkey,
 			kind: kind,
 			relays: $relaySet[pubkey].bookmarkRelays
 		};
 
 		const url = window.location.origin + '/' + nip19.naddrEncode(address);
-		const tags = [
-			[
-				'a',
-				`${kind}:${pubkey}:${$identifierList[pubkey][kind][listNumber].identifier}`
-			],
-			['r', url]
-		];
+		const tags = [listNaddr, ['r', url]];
 		console.log(tags);
 		const modal: ModalSettings = {
 			type: 'component',
@@ -252,10 +251,10 @@
 				</select>
 			{/if}
 
-			{#if $identifierList && $identifierList[pubkey] && $identifierList[pubkey][kind] && $identifierList[pubkey][kind][$listNum] && $identifierList[pubkey][kind][$listNum].identifier}
+			{#if $identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])?.identifier}
 				<div class="text-xs">
 					{#if kind === 30003 && !JSON}
-						{#if !$identifierList[pubkey][kind][$listNum].title || $identifierList[pubkey][kind][$listNum].title === ''}
+						{#if !$identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title || $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title === ''}
 							<button
 								class=" flex items-center pt-1 overflow-hidden min-w-[7em] text-left"
 								disabled={!(kind >= 30000 && kind < 40000)}
@@ -265,7 +264,9 @@
 									{@html infoIcon}
 								</div>
 								<div class="h4">
-									{$identifierList[pubkey][kind][$listNum].identifier}
+									{$identifierListsMap[pubkey][kind].get(
+										$identifierKeysArray[$listNum]
+									)?.identifier}
 								</div>
 							</button>
 						{:else}
@@ -273,13 +274,15 @@
 								class="grid grid-cols-[auto_1fr] items-center min-w-[7em] pr-0.5 overflow-hidden truncate"
 								on:click={listInfoModalOpen}
 							>
-								{#if $iconView && $identifierList[pubkey][kind][$listNum].image}
+								{#if $iconView && $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.image}
 									<div class=" p-0 btn-icon btn-icon-sm m-0 mr-1 self-start">
 										<img
 											width={36}
 											class="min-w-[36px]"
 											alt=""
-											src={$identifierList[pubkey][kind][$listNum].image}
+											src={$identifierListsMap[pubkey][kind].get(
+												$identifierKeysArray[$listNum]
+											)?.image}
 										/>
 									</div>
 								{:else}
@@ -292,11 +295,15 @@
 
 								<div class="grid grid-rows-[auto_1fr] truncate overflow-hidden">
 									<div class="place-self-start text-xs p-0">
-										{$identifierList[pubkey][kind][$listNum].identifier}
+										{$identifierListsMap[pubkey][kind].get(
+											$identifierKeysArray[$listNum]
+										)?.identifier}
 									</div>
 
 									<div class="h5 truncate place-self-start">
-										{$identifierList[pubkey][kind][$listNum].title}
+										{$identifierListsMap[pubkey][kind].get(
+											$identifierKeysArray[$listNum]
+										)?.title}
 									</div>
 								</div>
 							</button>
@@ -308,7 +315,9 @@
 					{:else}
 						<!---->
 						<div class=" h4 p-1">
-							{$identifierList[pubkey][kind][$listNum].identifier}
+							{$identifierListsMap[pubkey][kind].get(
+								$identifierKeysArray[$listNum]
+							)?.identifier}
 						</div>
 					{/if}
 				</div>
@@ -373,7 +382,7 @@
 				>
 			</div>
 		{/if}
-		<button
+		<!-- <button
 			class={'btn p-0 pr-2  arrow  h-[4em]'}
 			disabled={$nowProgress}
 			on:click={async () => {
@@ -381,6 +390,6 @@
 				await updateBkmTag(pubkey, kind, $listNum);
 				$nowProgress = false;
 			}}>{@html updateIcon}</button
-		>
+		> -->
 	</div>
 </div>

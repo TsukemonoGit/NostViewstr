@@ -11,11 +11,7 @@
 	import { allView, iconView } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
 	import { goto } from '$app/navigation';
-	import {
-		bookmarkEvents,
-		identifierList,
-		listNum
-	} from '$lib/stores/bookmarkEvents';
+	import { listNum } from '$lib/stores/bookmarkEvents';
 	import { relaySet } from '$lib/stores/relays';
 
 	export let metadata: Event;

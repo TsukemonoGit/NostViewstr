@@ -4,15 +4,12 @@
 	import ListedEvent from '$lib/components/ListedEvent.svelte';
 	//import { listEvent } from '$lib/testData/list';
 	import {
-		bookmarkEvents,
 		checkedIndexList,
-		identifierList,
 		listNum,
 		type Identifiers,
 		JsonEventData
 	} from '$lib/stores/bookmarkEvents';
 	import {
-		StoreFetchFilteredEvents,
 		addPrivates,
 		deletePrivates,
 		deletePubs,
@@ -21,8 +18,7 @@
 		getRelays,
 		isOneDimensionalArray,
 		publishEventWithTimeout,
-		setRelays,
-		updateBkmTag
+		setRelays
 	} from '$lib/nostrFunctions';
 	import { afterUpdate, onMount } from 'svelte';
 	import Header from '$lib/components/Header.svelte';

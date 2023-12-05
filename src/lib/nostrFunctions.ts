@@ -47,8 +47,8 @@ import {
 } from 'rx-nostr';
 import { get } from 'svelte/store';
 import {
-	bookmarkEvents,
-	identifierList,
+	//bookmarkEvents,
+	//identifierList,
 	naddrStore,
 	type Identifiers,
 	type NaddrStore
@@ -617,81 +617,81 @@ export function idlatestEach(): MonoTypeOperatorFunction<EventPacket> {
 }
 
 //---------------------------------------------------------------
-export async function StoreFetchFilteredEvents(
-	pubkey: string,
-	kind: number,
-	data: {
-		relays: string[];
-		filters: Nostr.Filter[];
-	}
-): Promise<void> {
-	nowProgress.set(true);
-	let eventsData = get(bookmarkEvents);
-	try {
-		const check = eventsData[pubkey][kind]; // すでにデータがあるか確認
-		if (check.length === 0) {
-			throw new Error();
-		}
-		// データがある場合は何もせず終了
-		nowProgress.set(false);
-		return;
-	} catch (error) {
-		// データがない場合にデータを取得する
-		if (!eventsData[pubkey]) {
-			eventsData = { ...eventsData, [pubkey]: {} };
-		}
+// export async function StoreFetchFilteredEvents(
+// 	pubkey: string,
+// 	kind: number,
+// 	data: {
+// 		relays: string[];
+// 		filters: Nostr.Filter[];
+// 	}
+// ): Promise<void> {
+// 	nowProgress.set(true);
+// 	let eventsData = get(bookmarkEvents);
+// 	try {
+// 		const check = eventsData[pubkey][kind]; // すでにデータがあるか確認
+// 		if (check.length === 0) {
+// 			throw new Error();
+// 		}
+// 		// データがある場合は何もせず終了
+// 		nowProgress.set(false);
+// 		return;
+// 	} catch (error) {
+// 		// データがない場合にデータを取得する
+// 		if (!eventsData[pubkey]) {
+// 			eventsData = { ...eventsData, [pubkey]: {} };
+// 		}
 
-		try {
-			// 新しいイベントを作成してデータに追加
-			const newEvent: Nostr.Event[] = await fetchFilteredEvents(
-				data.relays,
-				data.filters
-			);
+// 		try {
+// 			// 新しいイベントを作成してデータに追加
+// 			const newEvent: Nostr.Event[] = await fetchFilteredEvents(
+// 				data.relays,
+// 				data.filters
+// 			);
 
-			//so-tosite
-			if (newEvent.length > 1) {
-				newEvent.sort((a, b) => {
-					const tagID_A = a.tags[0]?.[1];
-					const tagID_B = b.tags[0]?.[1];
-					return tagID_A.localeCompare(tagID_B);
-				});
-			}
-			eventsData = {
-				...eventsData,
-				[pubkey]: { ...eventsData[pubkey], [kind]: newEvent }
-			};
-			console.log(eventsData);
-			// 更新したデータをストアにセット
-			bookmarkEvents.set(eventsData);
+// 			//so-tosite
+// 			if (newEvent.length > 1) {
+// 				newEvent.sort((a, b) => {
+// 					const tagID_A = a.tags[0]?.[1];
+// 					const tagID_B = b.tags[0]?.[1];
+// 					return tagID_A.localeCompare(tagID_B);
+// 				});
+// 			}
+// 			eventsData = {
+// 				...eventsData,
+// 				[pubkey]: { ...eventsData[pubkey], [kind]: newEvent }
+// 			};
+// 			console.log(eventsData);
+// 			// 更新したデータをストアにセット
+// 			bookmarkEvents.set(eventsData);
 
-			//IdentifierListも更新する
-			const identifierListData = get(identifierList);
-			const newIdentifierList: Identifiers[] =
-				newEvent.map((item) => {
-					const tag = item.tags.find((tag) => tag[0] === 'd');
-					const title = item.tags.find((tag) => tag[0] === 'title');
-					const image = item.tags.find((tag) => tag[0] === 'image');
-					const description = item.tags.find((tag) => tag[0] === 'description');
-					return {
-						identifier: tag ? tag[1] : undefined,
-						title: title ? title[1] : undefined,
-						image: image ? image[1] : undefined,
-						description: description ? description[1] : undefined
-					};
-				}) ?? [];
+// 			//IdentifierListも更新する
+// 			const identifierListData = get(identifierList);
+// 			const newIdentifierList: Identifiers[] =
+// 				newEvent.map((item) => {
+// 					const tag = item.tags.find((tag) => tag[0] === 'd');
+// 					const title = item.tags.find((tag) => tag[0] === 'title');
+// 					const image = item.tags.find((tag) => tag[0] === 'image');
+// 					const description = item.tags.find((tag) => tag[0] === 'description');
+// 					return {
+// 						identifier: tag ? tag[1] : undefined,
+// 						title: title ? title[1] : undefined,
+// 						image: image ? image[1] : undefined,
+// 						description: description ? description[1] : undefined
+// 					};
+// 				}) ?? [];
 
-			identifierList.set({
-				...identifierListData,
-				[pubkey]: { ...identifierListData[pubkey], [kind]: newIdentifierList }
-			});
-		} catch (error) {
-			console.error('Failed to fetch filtered events:', error);
-			// エラー処理が必要な場合に追加
-		}
+// 			identifierList.set({
+// 				...identifierListData,
+// 				[pubkey]: { ...identifierListData[pubkey], [kind]: newIdentifierList }
+// 			});
+// 		} catch (error) {
+// 			console.error('Failed to fetch filtered events:', error);
+// 			// エラー処理が必要な場合に追加
+// 		}
 
-		nowProgress.set(false);
-	}
-}
+// 		nowProgress.set(false);
+// 	}
+// }
 
 //----------------------------------------------------------------
 export async function fetchFilteredEvents(
@@ -1186,81 +1186,81 @@ async function validateNoteId(str: string): Promise<{
 	return res;
 }
 
-export async function updateBkmTag(pubkey: string, kind: number, num: number) {
-	console.log(`updateBkmTag[${get(identifierList)[num]}] updating...`);
-	const t: ToastSettings = {
-		message: `list updating ...`,
-		autohide: false
-	};
-	const updatingToast = toastStore.trigger(t);
-	const bkm = get(bookmarkEvents);
+// export async function updateBkmTag(pubkey: string, kind: number, num: number) {
+// 	console.log(`updateBkmTag[${get(identifierList)[num]}] updating...`);
+// 	const t: ToastSettings = {
+// 		message: `list updating ...`,
+// 		autohide: false
+// 	};
+// 	const updatingToast = toastStore.trigger(t);
+// 	const bkm = get(bookmarkEvents);
 
-	const relays = get(relaySet)[pubkey].bookmarkRelays;
-	if (
-		bkm[pubkey][kind] &&
-		bkm[pubkey][kind] !== undefined &&
-		bkm[pubkey][kind].length > num &&
-		relays.length > 0
-	) {
-		//すでにイベントが有る場合（更新の場合）
-		const dtag = bkm[pubkey][kind][num].tags.find((tag) => tag[0] === 'd');
-		const filter: Nostr.Filter =
-			dtag !== undefined
-				? {
-						kinds: [bkm[pubkey][kind][num].kind],
-						authors: [bkm[pubkey][kind][num].pubkey],
-						'#d': [dtag[1]]
-				  }
-				: {
-						kinds: [bkm[pubkey][kind][num].kind],
-						authors: [bkm[pubkey][kind][num].pubkey]
-				  };
+// 	const relays = get(relaySet)[pubkey].bookmarkRelays;
+// 	if (
+// 		bkm[pubkey][kind] &&
+// 		bkm[pubkey][kind] !== undefined &&
+// 		bkm[pubkey][kind].length > num &&
+// 		relays.length > 0
+// 	) {
+// 		//すでにイベントが有る場合（更新の場合）
+// 		const dtag = bkm[pubkey][kind][num].tags.find((tag) => tag[0] === 'd');
+// 		const filter: Nostr.Filter =
+// 			dtag !== undefined
+// 				? {
+// 						kinds: [bkm[pubkey][kind][num].kind],
+// 						authors: [bkm[pubkey][kind][num].pubkey],
+// 						'#d': [dtag[1]]
+// 				  }
+// 				: {
+// 						kinds: [bkm[pubkey][kind][num].kind],
+// 						authors: [bkm[pubkey][kind][num].pubkey]
+// 				  };
 
-		const res = await fetchFilteredEvents(relays, [filter]);
-		if (
-			res.length > 0 &&
-			res[0].created_at >= bkm[pubkey][kind][num].created_at
-		) {
-			bkm[pubkey][kind][num] = res[0];
-			bookmarkEvents.set(bkm);
+// 		const res = await fetchFilteredEvents(relays, [filter]);
+// 		if (
+// 			res.length > 0 &&
+// 			res[0].created_at >= bkm[pubkey][kind][num].created_at
+// 		) {
+// 			bkm[pubkey][kind][num] = res[0];
+// 			bookmarkEvents.set(bkm);
 
-			//IdentifierListも更新する
-			const identifierListData = get(identifierList);
+// 			//IdentifierListも更新する
+// 			const identifierListData = get(identifierList);
 
-			const tag = bkm[pubkey][kind][num].tags.find((tag) => tag[0] === 'd');
-			const title = bkm[pubkey][kind][num].tags.find(
-				(tag) => tag[0] === 'title'
-			);
-			const image = bkm[pubkey][kind][num].tags.find(
-				(tag) => tag[0] === 'image'
-			);
-			const description = bkm[pubkey][kind][num].tags.find(
-				(tag) => tag[0] === 'description'
-			);
-			const newIdentifierList: Identifiers = {
-				identifier: tag ? tag[1] : undefined,
-				title: title ? title[1] : undefined,
-				image: image ? image[1] : undefined,
-				description: description ? description[1] : undefined
-			};
+// 			const tag = bkm[pubkey][kind][num].tags.find((tag) => tag[0] === 'd');
+// 			const title = bkm[pubkey][kind][num].tags.find(
+// 				(tag) => tag[0] === 'title'
+// 			);
+// 			const image = bkm[pubkey][kind][num].tags.find(
+// 				(tag) => tag[0] === 'image'
+// 			);
+// 			const description = bkm[pubkey][kind][num].tags.find(
+// 				(tag) => tag[0] === 'description'
+// 			);
+// 			const newIdentifierList: Identifiers = {
+// 				identifier: tag ? tag[1] : undefined,
+// 				title: title ? title[1] : undefined,
+// 				image: image ? image[1] : undefined,
+// 				description: description ? description[1] : undefined
+// 			};
 
-			identifierListData[pubkey][kind][num] = newIdentifierList;
-			identifierList.set(identifierListData);
+// 			identifierListData[pubkey][kind][num] = newIdentifierList;
+// 			identifierList.set(identifierListData);
 
-			console.log(
-				`updateBkmTag[${get(identifierList)[pubkey][kind][num]}] updated`
-			);
-		}
-		//もともとあるでーたのcreated_atが新しい場合何もしない
-	} else {
-		//no dataのばあい最初に開いたときの処理と同じをする
-		await StoreFetchFilteredEvents(pubkey, kind, {
-			relays: relays,
-			filters: [{ kinds: [kind], authors: [pubkey] }]
-		});
-	}
-	toastStore.close(updatingToast);
-}
+// 			console.log(
+// 				`updateBkmTag[${get(identifierList)[pubkey][kind][num]}] updated`
+// 			);
+// 		}
+// 		//もともとあるでーたのcreated_atが新しい場合何もしない
+// 	} else {
+// 		//no dataのばあい最初に開いたときの処理と同じをする
+// 		await StoreFetchFilteredEvents(pubkey, kind, {
+// 			relays: relays,
+// 			filters: [{ kinds: [kind], authors: [pubkey] }]
+// 		});
+// 	}
+// 	toastStore.close(updatingToast);
+// }
 
 //タグごと追加の項目で入力された値が一次元配列かどうかを確認
 export function isOneDimensionalArray(arr: string[]) {

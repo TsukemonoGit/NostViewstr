@@ -4,7 +4,7 @@ import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import { relaySet, defaultRelays, initRelaySet } from '$lib/stores/relays';
-import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
+
 import { get } from 'svelte/store';
 
 //https://kit.svelte.jp/docs/load

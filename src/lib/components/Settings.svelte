@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { iconView, URLPreview } from '$lib/stores/settings';
-	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
+
 	export let settingFunc: () => void;
 
 	const clickDefault = () => {

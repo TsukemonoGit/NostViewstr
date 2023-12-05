@@ -3,6 +3,10 @@
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { pubkey_viewer } from '$lib/stores/settings';
+	import {
+		identifierKeysArray,
+		identifierListsMap
+	} from '$lib/stores/bookmarkEvents';
 	// Props
 	/** Exposes parent props to this component. */
 	export let parent: any;
@@ -10,7 +14,8 @@
 	let res = { index: -1, edit: false };
 
 	let selectTag: number;
-
+	let pubkey = $modalStore[0]?.value?.pubkey ?? '';
+	let kind = $modalStore[0]?.value?.kind ?? -1;
 	//$: moveList = $tags.filter((item) => item !== $tags[$tabSet]);
 	// Handle Form Submission
 	function onFormSubmit(): void {
@@ -40,11 +45,11 @@
 		<ListBox
 			class="border border-surface-500 p-4 rounded-container-token max-h-80 overflow-y-auto"
 		>
-			{#if $modalStore[0].value.tagList?.length > 0}
-				{#each $modalStore[0].value.tagList as list, index}
+			{#if kind !== -1 && pubkey !== '' && $identifierListsMap[pubkey][kind].size > 0}
+				{#each $identifierKeysArray as list, index}
 					<ListBoxItem
 						bind:group={selectTag}
-						name={list.identifier}
+						name={$identifierListsMap[pubkey][kind].get(list)?.identifier ?? ''}
 						value={index}
 						class="truncate"
 						on:change={() => {
@@ -52,8 +57,10 @@
 							res.index = index;
 							onFormSubmit();
 						}}
-						>{list.identifier}
-						{list.title ? `【${list.title}】` : ''}</ListBoxItem
+						>{$identifierListsMap[pubkey][kind].get(list)?.identifier}
+						{$identifierListsMap[pubkey][kind].get(list)?.title
+							? `【${$identifierListsMap[pubkey][kind].get(list)?.title}】`
+							: ''}</ListBoxItem
 					>
 				{/each}
 			{:else}

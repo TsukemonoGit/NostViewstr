@@ -15,11 +15,7 @@
 	import { allView, iconView } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
 	import { goto } from '$app/navigation';
-	import {
-		bookmarkEvents,
-		identifierList,
-		listNum
-	} from '$lib/stores/bookmarkEvents';
+	import { listNum } from '$lib/stores/bookmarkEvents';
 	import PubCha from './PubCha.svelte';
 
 	export let isPageOwner: boolean;

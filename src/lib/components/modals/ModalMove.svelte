@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { identifierList } from '$lib/stores/bookmarkEvents';
+	import {
+		identifierKeysArray,
+		identifierListsMap
+	} from '$lib/stores/bookmarkEvents';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 
@@ -47,16 +50,21 @@
 
 		<ListBox
 			class="border border-surface-500 p-4 rounded-container-token max-h-56 overflow-auto"
-			>{#if $identifierList[pubkey][kind].length > 0}
-				{#each $identifierList[pubkey][kind] as list, index}
+			>{#if $identifierListsMap[pubkey][kind].size > 0}
+				{#each $identifierKeysArray as list, index}
 					<ListBoxItem
 						bind:group={selectTag}
-						name={list.identifier ?? ''}
+						name={$identifierListsMap[pubkey][kind].get(list)?.identifier ?? ''}
 						value={index}
 						class="truncate"
-						on:change={() => onChange(list.identifier ?? '')}
-						>{list.identifier}
-						{list.title ? `【${list.title}】` : ''}</ListBoxItem
+						on:change={() =>
+							onChange(
+								$identifierListsMap[pubkey][kind].get(list)?.identifier ?? ''
+							)}
+						>{$identifierListsMap[pubkey][kind].get(list)?.identifier}
+						{$identifierListsMap[pubkey][kind].get(list)?.title
+							? `【${$identifierListsMap[pubkey][kind].get(list)?.title}】`
+							: ''}</ListBoxItem
 					>
 					<!-- <ListBoxItem
 						bind:group={selectTag}
