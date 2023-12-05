@@ -27,6 +27,7 @@
 	export let isOwner: boolean;
 	export let noEdit: boolean = false;
 	export let pubkey: string;
+	console.log(bkm);
 	//let viewList: string[][];
 	//一つのタグに一種類のイベントしかないことにして日付だけ見る
 	const uniqueEvent = (eventList: NostrEvent[]): NostrEvent => {
@@ -53,7 +54,8 @@
 	//export let pageNum = 0;
 	//export let amount = 50;
 	export let viewList: string[][] = [];
-	$: if (listEvent || bkm) {
+
+	$: if (bkm || listEvent) {
 		viewUpdate();
 	} else {
 		viewList = [];
@@ -63,6 +65,7 @@
 	let message: string;
 	async function viewUpdate() {
 		message = '';
+		console.log(bkm);
 		if (listEvent) {
 			if (bkm === 'pub') {
 				$listSize = listEvent ? listEvent.tags.length : 0;

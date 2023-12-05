@@ -51,7 +51,6 @@
 		bind:pubkey={data.pubkey}
 		bind:kind={data.kind}
 		isNaddr={false}
-		bkm="pub"
 	/>
 	<FooterMenu bind:pubkey={data.pubkey} bind:kind={data.kind} />
 {/if}

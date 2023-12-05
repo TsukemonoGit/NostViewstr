@@ -63,7 +63,7 @@
 	import Header from './Header.svelte';
 	import { kindsValidTag } from '$lib/kind';
 
-	let bkm: string = 'pub';
+	export let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> | undefined;
 	export let pubkey: string;
 	export let kind: number;
@@ -128,7 +128,7 @@
 
 	export async function bkminit(pub: string) {
 		$listNum = 0;
-		bkm = 'pub';
+
 		console.log('bkminit');
 
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
