@@ -255,7 +255,7 @@
 
 <!-------------------------------あど----->
 <!-------------------------------あど----->
-{#if !$nowProgress && $pubkey_viewer === pubkey}
+{#if !$nowProgress}
 	<div class="fixed bottom-14 z-10 box-border overflow-x-hidden add">
 		<div class="fill-white overflow-x-hidden h-fit overflow-y-auto">
 			<button
