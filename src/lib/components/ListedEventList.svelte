@@ -239,6 +239,9 @@
 	};
 
 	async function DeleteNote(e: CustomEvent<any>) {
+		if ($nowProgress) {
+			return;
+		}
 		console.log('DeleteNote');
 		const number: number = e.detail.number + $pageNum * $amount;
 		const listNumber = $listNum;
@@ -333,6 +336,9 @@
 		ref: ModalMove
 	};
 	function MoveNote(e: CustomEvent<any>): void {
+		if ($nowProgress) {
+			return;
+		}
 		console.log('MoveNote');
 		const number: number = e.detail.number + $pageNum * $amount;
 		console.log(number);
