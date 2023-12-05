@@ -255,7 +255,6 @@ export async function publishEventWithTimeout(
 						console.log(packet);
 						msgObj[packet.from] = true;
 						isSuccess = true;
-						subscription.unsubscribe();
 					}
 					// complete: () => {
 					// 	resolve({
