@@ -73,11 +73,11 @@
 			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
 				>{parent.buttonTextCancel}</button
 			>
-			{#if selectTag !== $modalStore[0].value.tag || $modalStore[0].value.bkm !== 'pvt'}
+			{#if selectTag !== $modalStore[0].value.tag || $modalStore[0].value.bkm !== 'prv'}
 				<button
 					class="btn variant-filled-warning"
 					on:click={() => {
-						res.bkm = 'pvt';
+						res.bkm = 'prv';
 						onFormSubmit();
 					}}>Private</button
 				>

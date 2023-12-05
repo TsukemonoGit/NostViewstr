@@ -232,9 +232,8 @@ export async function publishEventWithTimeout(
 	const t: ToastSettings = {
 		message: `publishing ...`
 	};
-
+	const publishingToast = toastStore.trigger(t);
 	try {
-		const publishingToast = toastStore.trigger(t);
 		const event = obj;
 		event.id = getEventHash(event);
 		console.log(event);
