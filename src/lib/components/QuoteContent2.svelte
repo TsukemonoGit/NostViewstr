@@ -8,12 +8,12 @@
 
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import Content from './Content.svelte';
-	import searchIcon from '@material-design-icons/svg/round/search.svg?raw';
-	import Search from '$lib/components/Search.svelte';
+
 	import { nip19 } from 'nostr-tools';
 	import Ogp from './OGP.svelte';
 	import EventTag from './EventTag.svelte';
 	import PubCha from './PubCha.svelte';
+	import SearchCard from './SearchCard.svelte';
 
 	export let id: string;
 	export let isPageOwner: boolean;
@@ -72,116 +72,35 @@
 		};
 		modalStore.trigger(modal);
 	}
-
-	// async function getEvent(naddr: string) {
-	//   const addressPointer = nip19.decode(naddr).data as nip19.AddressPointer;
-	//   console.log($naddrStore);
-	//   // naddrStoreの内容を確認し、イベントが存在しない場合のみ取得と保存を行う
-	//   if (!(naddr in $naddrStore)) {
-	//     const relays =
-	//       addressPointer.relays && addressPointer.relays.length > 0
-	//         ? addressPointer.relays
-	//         : RelaysforSearch;
-	//     const filter = [
-	//       {
-	//         authors: [addressPointer.pubkey],
-	//         '#d': [addressPointer.identifier],
-	//         kinds: [addressPointer.kind],
-	//       },
-	//     ];
-	//     const res = await fetchFilteredEvents(relays, filter);
-
-	//     if (res.length > 0) {
-	//       res.sort((a, b) => b.created_at - a.created_at);
-	//       // 取得したイベントをnaddrStoreに保存
-	//       $naddrStore[naddr] = res[0];
-	//     }
-
-	//     return res[0];
-	//   }
-
-	//   // naddrStoreに保存されている場合は、そのままの値を返す
-	//   return $naddrStore[naddr];
-	// }
-	//-----------------------------------------------
-	const searchModalComponent: ModalComponent = {
-		// Pass a reference to your custom component
-		ref: Search,
-		// Add the component properties as key/value pairs
-		props: { background: 'bg-red-500' },
-		// Provide a template literal for the default component slot
-		slot: `<p>Skeleton</p>`
-	};
-	function onClickSearch(filter: {}) {
-		console.log('search');
-
-		const modal: ModalSettings = {
-			type: 'component',
-			component: searchModalComponent,
-			title: 'Search',
-			body: ``,
-			value: {
-				filter: filter,
-				isPageOwner: isPageOwner
-			},
-			response: async (res) => {
-				console.log(res);
-				if (res) {
-				}
-			}
-		};
-		modalStore.trigger(modal);
-	}
 </script>
 
 <div class="card border border-surface-400 px-3 py-2 mt-1">
 	<div class="w-full grid grid-rows-[auto_auto] gap-0 h-fix">
 		<Text queryKey={[id]} {id} let:text>
 			<div slot="loading">
-				<div class="grid grid-cols-[auto_1fr] gap-1 flex">
-					<div class="flex justify-center items-center h-auto">
-						<button
-							class="btn m-0 p-1 variant-filled-secondary rounded-full"
-							on:click={() => {
-								onClickSearch({ ids: [id] });
-							}}>{@html searchIcon}</button
-						>
-					</div>
-					<div class="text-sm break-all overflow-hidden">
-						Loading note... ({id})
-					</div>
-				</div>
+				<SearchCard
+					{isPageOwner}
+					filter={{ ids: [id] }}
+					message={`Loading note... (${id})`}
+					textSize="text-sm"
+				/>
 			</div>
 			<div slot="error">
-				<div class="grid grid-cols-[auto_1fr] gap-1 flex">
-					<div class="flex justify-center items-center h-auto">
-						<button
-							class="btn m-0 p-1 variant-filled-secondary rounded-full"
-							on:click={() => {
-								onClickSearch({ ids: [id] });
-							}}>{@html searchIcon}</button
-						>
-					</div>
-					<div class="text-sm break-all overflow-hidden">
-						Loading note... ({id})
-					</div>
-				</div>
+				<SearchCard
+					{isPageOwner}
+					filter={{ ids: [id] }}
+					message={`Not found (${id})`}
+					textSize="text-sm"
+				/>
 			</div>
 
 			<div slot="nodata">
-				<div class="grid grid-cols-[auto_1fr] gap-1 flex">
-					<div class="flex justify-center items-center h-auto">
-						<button
-							class="btn m-0 p-1 variant-filled-secondary rounded-full"
-							on:click={() => {
-								onClickSearch({ ids: [id] });
-							}}>{@html searchIcon}</button
-						>
-					</div>
-					<div class="text-sm break-all overflow-hidden">
-						Loading note... ({id})
-					</div>
-				</div>
+				<SearchCard
+					{isPageOwner}
+					filter={{ ids: [id] }}
+					message={`Not found (${id})`}
+					textSize="text-sm"
+				/>
 			</div>
 			<Metadata
 				queryKey={['metadata', text.pubkey]}

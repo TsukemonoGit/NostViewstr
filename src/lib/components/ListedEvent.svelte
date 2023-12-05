@@ -143,8 +143,6 @@
 								{filter}
 								message={`loading [${tag}]`}
 								isPageOwner={isOwner}
-								myIndex={index}
-								{pubkey}
 							/>
 							<MenuButtons
 								myIndex={index}
@@ -164,8 +162,6 @@
 								{filter}
 								message={`error [${tag}]`}
 								isPageOwner={isOwner}
-								myIndex={index}
-								{pubkey}
 							/>
 							<MenuButtons
 								myIndex={index}
@@ -185,8 +181,6 @@
 								{filter}
 								message={`not found [${tag}]`}
 								isPageOwner={isOwner}
-								myIndex={index}
-								{pubkey}
 							/><MenuButtons
 								myIndex={index}
 								tagArray={tag}
@@ -297,8 +291,6 @@
 								{filter}
 								message={`loading [${tag}]`}
 								isPageOwner={isOwner}
-								myIndex={index}
-								{pubkey}
 							/><MenuButtons
 								myIndex={index}
 								tagArray={tag}
@@ -317,8 +309,6 @@
 								{filter}
 								message={`error [${tag}]`}
 								isPageOwner={isOwner}
-								myIndex={index}
-								{pubkey}
 							/><MenuButtons
 								myIndex={index}
 								tagArray={tag}
@@ -337,8 +327,6 @@
 								{filter}
 								message={`not found [${tag}]`}
 								isPageOwner={isOwner}
-								myIndex={index}
-								{pubkey}
 							/>
 							<MenuButtons
 								myIndex={index}

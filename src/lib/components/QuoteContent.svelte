@@ -12,11 +12,11 @@
 	import { relaySet } from '$lib/stores/relays';
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import Content from './Content.svelte';
-	import searchIcon from '@material-design-icons/svg/round/search.svg?raw';
-	import Search from '$lib/components/Search.svelte';
+
 	import Ogp from './OGP.svelte';
 	import EventTag from './EventTag.svelte';
 	import PubCha from './PubCha.svelte';
+	import SearchCard from './SearchCard.svelte';
 
 	export let encodedId: string;
 
@@ -113,36 +113,6 @@
 		} else return '';
 	};
 
-	//-----------------------------------------------
-	const searchModalComponent: ModalComponent = {
-		// Pass a reference to your custom component
-		ref: Search,
-		// Add the component properties as key/value pairs
-		props: { background: 'bg-red-500' },
-		// Provide a template literal for the default component slot
-		slot: `<p>Skeleton</p>`
-	};
-	function onClickSearch(filter: {}) {
-		console.log('search');
-
-		const modal: ModalSettings = {
-			type: 'component',
-			component: searchModalComponent,
-			title: 'Search',
-			body: ``,
-			value: {
-				filter: filter,
-				isPageOwner: isPageOwner
-			},
-			response: async (res) => {
-				console.log(res);
-				if (res) {
-				}
-			}
-		};
-		modalStore.trigger(modal);
-	}
-
 	const toArray = (decodeData: nip19.DecodeResult) => {
 		if (decodeData.type === 'naddr') {
 			const data = decodeData.data as nip19.AddressPointer;
@@ -199,83 +169,29 @@
 		<div class="w-full grid grid-rows-[auto_auto] gap-0 h-fix">
 			<Text queryKey={[noteId(encodedId)]} id={noteId(encodedId)} let:text>
 				<div slot="loading">
-					<div class="grid grid-cols-[auto_1fr] gap-1 flex">
-						<div class="flex justify-center items-center h-auto">
-							<button
-								class="btn m-0 p-1 variant-filled-secondary rounded-full"
-								on:click={() => {
-									console.log('test');
-									//   if (isPageOwner) {
-									onClickSearch({ ids: [noteId(encodedId)] });
-									// } else {
-									//   window.open(
-									//     'https://koteitan.github.io/nostr-post-checker/?eid=' +
-									//       nip19.noteEncode(noteId(encodedId)),
-									//     '_blank',
-									//   );
-									// }
-								}}>{@html searchIcon}</button
-							>
-						</div>
-						<div
-							class="text-sm break-all overflow-hidden break-all whitespace-pre-wrap"
-						>
-							Loading note... ({noteId(encodedId)})
-						</div>
-					</div>
+					<SearchCard
+						{isPageOwner}
+						filter={{ ids: [noteId(encodedId)] }}
+						message={`Loading note... (${noteId(encodedId)})`}
+						textSize="text-sm"
+					/>
 				</div>
 				<div slot="error">
-					<div class="grid grid-cols-[auto_1fr] gap-1 flex">
-						<div class="flex justify-center items-center h-auto">
-							<button
-								class="btn m-0 p-1 variant-filled-secondary rounded-full"
-								on:click={() => {
-									console.log('test');
-									// if (isPageOwner) {
-									onClickSearch({ ids: [noteId(encodedId)] });
-									// } else {
-									//   window.open(
-									//     'https://koteitan.github.io/nostr-post-checker/?eid=' +
-									//       nip19.noteEncode(noteId(encodedId)),
-									//     '_blank',
-									//   );
-									// }
-								}}>{@html searchIcon}</button
-							>
-						</div>
-						<div
-							class="text-sm break-all overflow-hidden break-all whitespace-pre-wrap"
-						>
-							Failed to get note ({noteId(encodedId)})
-						</div>
-					</div>
+					<SearchCard
+						{isPageOwner}
+						filter={{ ids: [noteId(encodedId)] }}
+						message={`Not found (${noteId(encodedId)})`}
+						textSize="text-sm"
+					/>
 				</div>
 
 				<div slot="nodata">
-					<div class="grid grid-cols-[auto_1fr] gap-1 flex">
-						<div class="flex justify-center items-center h-auto">
-							<button
-								class="btn m-0 p-1 variant-filled-secondary rounded-full"
-								on:click={() => {
-									console.log('test');
-									// if (isPageOwner) {
-									onClickSearch({ ids: [noteId(encodedId)] });
-									// } else {
-									//   window.open(
-									//     'https://koteitan.github.io/nostr-post-checker/?eid=' +
-									//       nip19.noteEncode(noteId(encodedId)),
-									//     '_blank',
-									//   );
-									// }
-								}}>{@html searchIcon}</button
-							>
-						</div>
-						<div
-							class="text-sm break-all overflow-hidden break-all whitespace-pre-wrap"
-						>
-							Note not found ({noteId(encodedId)})
-						</div>
-					</div>
+					<SearchCard
+						{isPageOwner}
+						filter={{ ids: [noteId(encodedId)] }}
+						message={`Not found (${noteId(encodedId)})`}
+						textSize="text-sm"
+					/>
 				</div>
 				<Metadata
 					queryKey={['metadata', text.pubkey]}
