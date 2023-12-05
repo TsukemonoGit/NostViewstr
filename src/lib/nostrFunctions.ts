@@ -202,94 +202,93 @@ export function windowOpen(str: string): void {
 ///
 export async function publishEventWithTimeout(
 	obj: Event,
-	relays: string[]
+	relays: string[],
+	timeout: number = 5000
 ): Promise<{
 	isSuccess: boolean;
 	event?: Nostr.Event;
 	msg: string;
 }> {
-	const t: ToastSettings = {
-		message: `publishing ...`,
-		autohide: false
-	};
-	const publishingToast = toastStore.trigger(t);
-
 	if (relays.length === 0) {
 		console.error('relay設定されてない');
 		return { isSuccess: false, msg: 'relayが設定されていません' };
 	}
 	let isSuccess = false;
-	//const msg: string[] = [];
-	const msgObj: { [relay: string]: boolean } = {}; // リレーごとの結果を格納するオブジェクト
-	// すべてのリレーの結果を初期値として false に設定
+	const msgObj: { [relay: string]: boolean } = {};
 	relays.forEach((relay) => {
 		msgObj[relay] = false;
 	});
 	console.log(obj);
-	//console.log(relays);
+
 	const pubkey = await getPub();
 	if (obj.pubkey === '') {
 		obj.pubkey = pubkey;
 	} else if (obj.pubkey !== pubkey) {
 		console.log('ログイン中のpubとsignEvのpubが違う');
-		//const message = `$_('msg.nanka')`;
-		toastStore.close(publishingToast);
+
 		return { isSuccess: false, msg: 'login error' };
 	}
+
+	const t: ToastSettings = {
+		message: `publishing ...`,
+		autohide: false
+	};
+
+	const publishingToast = toastStore.trigger(t);
+
 	try {
-		//const event = await signEv(obj);
 		const event = obj;
 		event.id = getEventHash(event);
 		console.log(event);
-		//console.log(validateEvent(event));
-		//console.log(verifySignature(event));
 		const rxNostr = createRxNostr();
 
-		await rxNostr.setRelays(relays);
-		const sec = get(nsec); //nsecでの書き込みはできません（たぶんrx-nostrのバージョン）
-		// Promiseを作成してObservableを待機
-		const result =
-			sec && sec !== ''
-				? await new Promise<{
-						isSuccess: boolean;
-						msg: string;
-						event?: Nostr.Event;
-				  }>((resolve) => {
-						rxNostr.send(event, sec).subscribe({
-							next: (packet) => {
-								console.log(packet);
-								msgObj[packet.from] = true;
-								isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
-							},
-							complete: () => {
-								resolve({
-									isSuccess,
-									event: event,
-									msg: formatResults(msgObj)
-								}); // complete時に結果を解決してresolve
-							}
-						});
-				  })
-				: await new Promise<{
-						isSuccess: boolean;
-						msg: string;
-						event?: Nostr.Event;
-				  }>((resolve) => {
-						rxNostr.send(event).subscribe({
-							next: (packet) => {
-								console.log(packet);
-								msgObj[packet.from] = true;
-								isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
-							},
-							complete: () => {
-								resolve({
-									isSuccess,
-									event: event,
-									msg: formatResults(msgObj)
-								}); // complete時に結果を解決してresolve
-							}
-						});
-				  });
+		await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
+		const sec = get(nsec);
+		const result = await Promise.race([
+			new Promise<{
+				isSuccess: boolean;
+				msg: string;
+				event?: Nostr.Event;
+			}>((resolve) => {
+				const subscription = rxNostr.send(event, sec).subscribe({
+					next: (packet) => {
+						console.log(packet);
+						msgObj[packet.from] = true;
+						isSuccess = true;
+						subscription.unsubscribe();
+					}
+					// complete: () => {
+					// 	resolve({
+					// 		isSuccess,
+					// 		event: event,
+					// 		msg: formatResults(msgObj)
+					// 	});
+					// }
+				});
+			}),
+			new Promise<{
+				isSuccess: boolean;
+				msg: string;
+				event?: Nostr.Event;
+			}>((resolve) => {
+				setTimeout(() => {
+					const hasTrue = Object.values(msgObj).some((value) => value === true);
+					console.log(
+						'timeout',
+						event,
+						formatResults(msgObj),
+						hasTrue,
+						isSuccess
+					);
+					resolve({
+						isSuccess: hasTrue,
+						event: event,
+						msg: formatResults(msgObj)
+					});
+				}, timeout);
+			})
+		]);
+
 		toastStore.close(publishingToast);
 		return result;
 	} catch (error) {
@@ -297,6 +296,67 @@ export async function publishEventWithTimeout(
 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
 	}
 }
+// try {
+// 	//const event = await signEv(obj);
+// 	const event = obj;
+// 	event.id = getEventHash(event);
+// 	console.log(event);
+// 	//console.log(validateEvent(event));
+// 	//console.log(verifySignature(event));
+// 	const rxNostr = createRxNostr();
+
+// 	await rxNostr.setRelays(relays);
+// 	const sec = get(nsec); //nsecでの書き込みはできません（たぶんrx-nostrのバージョン）
+// 	// Promiseを作成してObservableを待機
+// 	const result =
+// 		sec && sec !== ''
+// 			? await new Promise<{
+// 					isSuccess: boolean;
+// 					msg: string;
+// 					event?: Nostr.Event;
+// 			  }>((resolve) => {
+// 					rxNostr.send(event, sec).subscribe({
+// 						next: (packet) => {
+// 							console.log(packet);
+// 							msgObj[packet.from] = true;
+// 							isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
+// 						},
+// 						complete: () => {
+// 							resolve({
+// 								isSuccess,
+// 								event: event,
+// 								msg: formatResults(msgObj)
+// 							}); // complete時に結果を解決してresolve
+// 						}
+// 					});
+// 			  })
+// 			: await new Promise<{
+// 					isSuccess: boolean;
+// 					msg: string;
+// 					event?: Nostr.Event;
+// 			  }>((resolve) => {
+// 					rxNostr.send(event).subscribe({
+// 						next: (packet) => {
+// 							console.log(packet);
+// 							msgObj[packet.from] = true;
+// 							isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
+// 						},
+// 						complete: () => {
+// 							resolve({
+// 								isSuccess,
+// 								event: event,
+// 								msg: formatResults(msgObj)
+// 							}); // complete時に結果を解決してresolve
+// 						}
+// 					});
+// 			  });
+// 	toastStore.close(publishingToast);
+// 	return result;
+// } catch (error) {
+// 	toastStore.close(publishingToast);
+// 	return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+// }
+//}
 
 // リレーの結果を指定の形式に整形
 function formatResults(msg: { [relay: string]: boolean }): string {
