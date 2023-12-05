@@ -149,11 +149,11 @@
 					on:click={() => onClickButton('note')}>copy noteID</button
 				>
 
-				<button
+				<!-- <button
 					type="button"
 					class="btn variant-filled-secondary p-1"
 					on:click={() => onClickButton('hex')}>copy hexID</button
-				>
+				> -->
 
 				<button
 					type="button"
