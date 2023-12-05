@@ -23,6 +23,7 @@
 	import { setToastStore } from '$lib/stores/store';
 	import RegisterSw from '$lib/components/RegisterSW.svelte';
 	import { onMount } from 'svelte';
+	import { backButton } from '$lib/stores/settings';
 
 	let mounted = false;
 	initializeStores();
@@ -32,6 +33,11 @@
 
 	onMount(() => {
 		mounted = true;
+		const backBtn = localStorage.getItem('back');
+		console.log('backButton', backBtn);
+		if (backBtn) {
+			backButton.set(backBtn === 'true' ?? false);
+		}
 	});
 </script>
 

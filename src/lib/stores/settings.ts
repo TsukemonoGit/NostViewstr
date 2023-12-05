@@ -10,3 +10,4 @@ export const nowProgress = writable<boolean>(false);
 export const nsec = writable<string>();
 export const isMulti = writable<boolean>(false);
 //export const kind = writable<number>(30001);
+export const backButton = writable<boolean>(false);

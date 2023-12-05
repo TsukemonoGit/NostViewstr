@@ -2,6 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import {
 		allView,
+		backButton,
 		isMulti,
 		nowProgress,
 		pubkey_viewer
@@ -341,7 +342,10 @@
 			type: 'component',
 			component: infoComponent,
 			title: $_('modal.info.title'),
-			value: { pubkey: pubkey, relaySet: $relaySet[pubkey] },
+			value: {
+				pubkey: pubkey,
+				relaySet: $relaySet[pubkey]
+			},
 			response: (res) => {
 				if (res) {
 					if (res.share) {
@@ -404,29 +408,6 @@
 		$checkedIndexList = [];
 	}
 	export let disabled: boolean = false;
-	//let timer: NodeJS.Timeout;
-
-	//let isBackEnabled: boolean = true;
-
-	// function handleBackLongPressStart() {
-	// 	timer = setTimeout(() => {
-	// 		isBackEnabled = false;
-	// 		// 一定時間経過後にトーストを表示
-	// 		const t: ToastSettings = {
-	// 			message: 'Back to Home?',
-	// 			action: {
-	// 				label: HomeIcon,
-	// 				response: () => {
-	// 					clearTimeout(timer);
-	// 					goto('/');
-	// 					modalStore.close();
-	// 				}
-	// 			}
-	// 		};
-	// 		toastStore.trigger(t);
-	// 	}, 1000); // 1000ミリ秒（1秒）を長押しの閾値として設定
-	// 	isBackEnabled = true;
-	// }
 
 	function handleBackClick() {
 		// ここでも history.back() を防ぐ条件を確認
@@ -452,11 +433,13 @@
 				stroke={60}
 			/>
 		{:else}
-			<button
-				class="btn-icon variant-filled-primary fill-white"
-				disabled={!(history.length > 1)}
-				on:click={handleBackClick}>{@html LeftIcon}</button
-			>
+			{#if $backButton}
+				<button
+					class="btn-icon variant-filled-primary fill-white"
+					disabled={!(history.length > 1)}
+					on:click={handleBackClick}>{@html LeftIcon}</button
+				>
+			{/if}
 			<!-- <button
 				class="btn-icon variant-filled-surface fill-white"
 				disabled={!(history.length > 1)}

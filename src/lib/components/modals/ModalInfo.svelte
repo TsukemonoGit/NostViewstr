@@ -21,6 +21,7 @@
 	import {
 		URLPreview,
 		allView,
+		backButton,
 		iconView,
 		pubkey_viewer
 	} from '$lib/stores/settings';
@@ -34,7 +35,11 @@
 
 	export let parent: any;
 
-	let res: { share: boolean; openJson: boolean; openMyJson: boolean } = {
+	let res: {
+		share: boolean;
+		openJson: boolean;
+		openMyJson: boolean;
+	} = {
 		share: false,
 		openJson: false,
 		openMyJson: false
@@ -83,6 +88,10 @@
 		modalStore.close();
 	}
 	$: eventTime = $relaySet[$pubkey_viewer]?.relayEvent as Nostr.Event;
+
+	function handleChangeBack() {
+		localStorage.setItem('back', $backButton.toString());
+	}
 </script>
 
 {#if $modalStore[0]}
@@ -151,6 +160,18 @@
 		<div class="flex gap-2">
 			{$_('modal.info.contentwarning')}
 			<SlideToggle size="sm" name="slide" bind:checked={warningToggle} />
+		</div>
+
+		<div class="space-y-2">
+			<label class="flex items-center space-x-2">
+				<input
+					class="checkbox"
+					type="checkbox"
+					bind:checked={$backButton}
+					on:change={handleChangeBack}
+				/>
+				<p>{$_('modal.info.backButton')}</p>
+			</label>
 		</div>
 
 		<!--まるっと共有-->
