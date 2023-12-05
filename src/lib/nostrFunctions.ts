@@ -1224,7 +1224,7 @@ export async function updateBkmTag(pubkey: string, kind: number, num: number) {
 		const res = await fetchFilteredEvents(relays, [filter]);
 		if (
 			res.length > 0 &&
-			res[0].created_at > bkm[pubkey][kind][num].created_at
+			res[0].created_at >= bkm[pubkey][kind][num].created_at
 		) {
 			bkm[pubkey][kind][num] = res[0];
 			bookmarkEvents.set(bkm);
