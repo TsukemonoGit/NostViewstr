@@ -55,7 +55,13 @@
 	//export let amount = 50;
 	export let viewList: string[][] = [];
 
-	$: if (bkm || listEvent) {
+	$: if (bkm !== 'prv' && listEvent) {
+		viewUpdate();
+	} else {
+		viewList = [];
+		$listSize = 0;
+	}
+	$: if (bkm) {
 		viewUpdate();
 	} else {
 		viewList = [];
@@ -515,7 +521,11 @@
 							myIndex={index}
 							tagArray={tag}
 							note={undefined}
-							menuMode={isOwner ? MenuMode.Owner : MenuMode.Viewer}
+							menuMode={isOwner
+								? $isMulti
+									? MenuMode.Multi
+									: MenuMode.Owner
+								: MenuMode.Viewer}
 							on:DeleteNote={DeleteNote}
 							on:MoveNote={MoveNote}
 							on:CheckNote={CheckNote}
@@ -540,7 +550,11 @@
 							tagArray={tag}
 							share={false}
 							note={undefined}
-							menuMode={isOwner ? MenuMode.Owner : MenuMode.none}
+							menuMode={isOwner
+								? $isMulti
+									? MenuMode.Multi
+									: MenuMode.Owner
+								: MenuMode.none}
 							on:DeleteNote={DeleteNote}
 							on:MoveNote={MoveNote}
 							on:CheckNote={CheckNote}
@@ -565,7 +579,11 @@
 							myIndex={index}
 							tagArray={tag}
 							note={undefined}
-							menuMode={isOwner ? MenuMode.Owner : MenuMode.none}
+							menuMode={isOwner
+								? $isMulti
+									? MenuMode.Multi
+									: MenuMode.Owner
+								: MenuMode.none}
 							on:DeleteNote={DeleteNote}
 							on:MoveNote={MoveNote}
 							on:CheckNote={CheckNote}

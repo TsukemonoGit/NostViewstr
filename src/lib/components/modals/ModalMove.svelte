@@ -53,9 +53,18 @@
 						bind:group={selectTag}
 						name={list.identifier ?? ''}
 						value={index}
+						class="truncate"
+						on:change={() => onChange(list.identifier ?? '')}
+						>{list.identifier}
+						{list.title ? `【${list.title}】` : ''}</ListBoxItem
+					>
+					<!-- <ListBoxItem
+						bind:group={selectTag}
+						name={list.identifier ?? ''}
+						value={index}
 						on:change={() => onChange(list.identifier ?? '')}
 						>{list.identifier}</ListBoxItem
-					>
+					> -->
 				{/each}
 			{/if}
 		</ListBox>
@@ -64,11 +73,11 @@
 			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
 				>{parent.buttonTextCancel}</button
 			>
-			{#if selectTag !== $modalStore[0].value.tag || $modalStore[0].value.bkm !== 'pvt'}
+			{#if selectTag !== $modalStore[0].value.tag || $modalStore[0].value.bkm !== 'prv'}
 				<button
 					class="btn variant-filled-warning"
 					on:click={() => {
-						res.bkm = 'pvt';
+						res.bkm = 'prv';
 						onFormSubmit();
 					}}>Private</button
 				>
