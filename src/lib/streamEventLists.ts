@@ -1,25 +1,17 @@
 import { _ } from 'svelte-i18n';
 
-import { pubkey_viewer, nsec, nowProgress } from './stores/settings';
 import type { Observer } from 'rxjs';
 
 import {
 	createRxNostr,
-	createRxOneshotReq,
 	Nostr,
 	uniq,
 	verify,
-	latest,
-	completeOnTimeout,
-	latestEach,
-	createRxForwardReq,
-	type EventPacket
+	createRxForwardReq
 } from 'rx-nostr';
 import { get } from 'svelte/store';
 import {
-	naddrStore,
 	type Identifiers,
-	type NaddrStore,
 	eventListsMap,
 	type MapEventLists,
 	identifierListsMap,
@@ -27,7 +19,6 @@ import {
 	relayState
 } from './stores/bookmarkEvents';
 
-import type { ConnectionState } from 'rx-nostr';
 let storedEventsData: MapEventLists;
 eventListsMap.subscribe((value) => {
 	storedEventsData = value;
@@ -38,10 +29,18 @@ identifierListsMap.subscribe((value) => {
 });
 
 const rxNostr = createRxNostr();
+rxNostr.createConnectionStateObservable().subscribe((packet) => {
+	get(relayState).set(packet.from, packet.state);
+	console.log(packet);
+	console.log(get(relayState));
+});
 
 export async function ReconnectRelay(relay: string) {
 	console.log('reconnecting');
 	rxNostr.reconnect(relay);
+}
+export async function GetRelayState(relay: string) {
+	return rxNostr.getRelayState(relay);
 }
 
 //export const eventListsMap = writable(new Map<string, Nostr.Event>());---------------------------------------------------------------
@@ -60,18 +59,9 @@ export async function StoreFetchFilteredEvents(
 			get(relayState).delete(relayKey);
 		}
 	}
-	//nowProgress.set(true);
+
 	let eventsData = get(eventListsMap);
-	// try {
-	// 	const check = eventsData[pubkey][kind]; // すでにデータがあるか確認
-	// 	if (check.size === 0) {
-	// 		throw new Error();
-	// 	}
-	// 	// データがある場合は何もせず終了
-	// 	nowProgress.set(false);
-	// 	return;
-	// } catch (error) {
-	// データがない場合にデータを取得する
+
 	if (!eventsData[pubkey]) {
 		eventsData = { ...eventsData, [pubkey]: {} };
 	}
@@ -99,27 +89,18 @@ export async function StoreFetchFilteredEvents(
 		storedIdentifiersData[pubkey][kind] = new Map<string, Identifiers>();
 	}
 
-	console.log('[getreyays]', rxNostr.getRelays());
-	console.log('[getreyays]', rxNostr.getAllRelayState());
+	console.log('[get relays]', rxNostr.getRelays());
+	console.log('[get states]', rxNostr.getAllRelayState());
 	//console.log(relays);
 
 	rxNostr.setRelays(data.relays);
 
-	console.log('[rx-nostr getRelays]', rxNostr.getRelays());
 	const rxReq = createRxForwardReq();
 	rxReq.emit(data.filters);
-	//	console.log(filters[0].kinds);
+
 	// データの購読
 	const observable = rxNostr.use(rxReq).pipe(uniq(), verify());
 
-	rxNostr.createConnectionStateObservable().subscribe((packet) => {
-		//rxNostr.reconnect(packet.from);
-		get(relayState).set(packet.from, packet.state);
-		console.log(packet);
-		console.log(get(relayState));
-	});
-
-	//let eventList: Nostr.Event<number>[] = [];
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
 		next: (packet: { event: Nostr.Event<number> }) => {
@@ -176,7 +157,6 @@ export async function StoreFetchFilteredEvents(
 						identifierListsMap.set(storedIdentifiersData);
 					}
 				}
-				//eventsData[pubkey][kind]
 			} else {
 				console.log(kind);
 				const check = storedEventsData[pubkey]?.[kind]?.get(
@@ -197,7 +177,7 @@ export async function StoreFetchFilteredEvents(
 			//console.log(storedEventsData, get(eventListsMap));
 		},
 		error: (error) => {
-			console.error('Error occurred:', error);
+			console.log('Error occurred:', error);
 		},
 		complete: () => {
 			console.log('Subscription completed');
@@ -206,5 +186,4 @@ export async function StoreFetchFilteredEvents(
 
 	// 購読開始
 	const subscription = observable.subscribe(observer);
-	// }
 }

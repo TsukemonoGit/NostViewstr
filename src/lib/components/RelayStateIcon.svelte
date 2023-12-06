@@ -2,9 +2,12 @@
 	import type { ConnectionState } from 'rx-nostr';
 	import { relayState } from '$lib/stores/bookmarkEvents';
 	import UpdateIcon from '@material-design-icons/svg/round/update.svg?raw';
-	import { ReconnectRelay } from '$lib/streamEventLists';
+	import { GetRelayState, ReconnectRelay } from '$lib/streamEventLists';
 	import { get, writable } from 'svelte/store';
-	$: stateArray = Array.from($relayState.keys()).sort();
+	import { relaySet } from '$lib/stores/relays';
+	//$: stateArray = Array.from($relayState.keys()).sort();
+
+	export let pubkey: string;
 	// ボタンの無効化を管理するストア
 	const disabledButtons = writable(new Set<string>());
 
@@ -20,6 +23,11 @@
 
 	let dotColor = (relay: string) => {
 		const relayStateValue = $relayState.get(relay);
+		try {
+			console.log(GetRelayState(relay));
+		} catch (error) {
+			console.log(error);
+		}
 
 		// 確認してからstateColorにアクセス
 		return relayStateValue !== undefined
@@ -48,7 +56,7 @@
 	}
 </script>
 
-{#each stateArray as relay, index}
+{#each $relaySet[pubkey].bookmarkRelays as relay, index}
 	{#if $relayState.has(relay)}
 		<div class="flex items-center gap-1 break-all">
 			<div class="h-4 w-4 rounded-full {dotColor(relay)}" />

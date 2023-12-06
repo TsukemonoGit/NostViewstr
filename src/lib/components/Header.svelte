@@ -46,7 +46,7 @@
 	export let JSON: boolean = false;
 
 	let ongoingCount: number;
-	let relayStateSize: number;
+
 	$: console.log($storePopup.popupFeatured);
 	$: console.log(popupFeatured.state);
 	let pupupOpen: boolean = false;
@@ -61,7 +61,6 @@
 						(state) => state === 'ongoing'
 				  ).length
 				: 0;
-		relayStateSize = $relayState.size;
 	});
 
 	$: listNaddr = viewEvent
@@ -429,7 +428,7 @@
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
 			{ongoingCount}/
-			{relayStateSize}
+			{$relaySet[pubkey]?.bookmarkRelays?.length}
 		</button>
 
 		<!-- <button
@@ -452,7 +451,7 @@
 			<div class="card p-4 w-72 shadow-xl z-[100]">
 				<div>
 					<p>relays state</p>
-					<RelayStateIcon />
+					<RelayStateIcon bind:pubkey />
 				</div>
 
 				<div class="arrow bg-surface-100-800-token" />
