@@ -10,7 +10,7 @@
 	//export let pubkey: string;
 	// ボタンの無効化を管理するストア
 	const disabledButtons = writable(new Set<string>());
-
+	export let readTrueArray: string[];
 	let stateColor = {
 		'not-started': 'bg-surface-500',
 		starting: 'bg-surface-500',
@@ -57,8 +57,8 @@
 	}
 </script>
 
-{#each $connectingRelays && Object.keys($connectingRelays) as relay, index}
-	{#if $relayState.hasOwnProperty(relay) && $connectingRelays[relay].read === true}
+{#each readTrueArray as relay, index}
+	{#if $relayState.hasOwnProperty(relay)}
 		<div class="flex items-center gap-1 break-all">
 			<div class="h-4 w-4 rounded-full {dotColor(relay)} " />
 			{relay.length > 30 ? `${relay.slice(0, 28)}...` : relay}
