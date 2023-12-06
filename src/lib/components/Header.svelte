@@ -443,7 +443,8 @@
 		> -->
 	</div>
 </div>
-<div data-popup="popupFeatured" class="z-[100]">
+
+<div data-popup="popupFeatured" class="z-[100] fixed left-1/2">
 	{#if pupupOpen}
 		<div class="card p-4 w-72 shadow-xl z-[100]">
 			<div>
