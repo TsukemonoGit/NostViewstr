@@ -53,15 +53,26 @@
 	let pupupOpen: boolean = false;
 
 	$: console.log(pupupOpen);
+	$: readTrueArray = $connectingRelays
+		? Object.keys($connectingRelays).filter(
+				(item) => $connectingRelays[item].read === true
+		  )
+		: [];
 
-	afterUpdate(() => {
-		console.log('[relay state]', $relayState);
-		ongoingCount =
-			$relayState && Object.keys($relayState).length > 0
-				? Object.values($relayState).filter((state) => state === 'ongoing')
-						.length
-				: 0;
-	});
+	$: ongoingCount =
+		$relayState && readTrueArray.length > 0
+			? readTrueArray.filter((relay) => $relayState[relay] === 'ongoing').length
+			: 0;
+
+	// afterUpdate(() => {
+
+	// 	console.log('[relay state]', $relayState);
+	// 	ongoingCount =
+	// 		$relayState && Object.keys($relayState).length > 0
+	// 			? Object.values($relayState).filter((state) => state === 'ongoing')
+	// 					.length
+	// 			: 0;
+	// });
 
 	$: listNaddr = viewEvent
 		? [
@@ -428,7 +439,7 @@
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
 			{ongoingCount}/
-			{$connectingRelays ? Object.keys($connectingRelays).length : 0}
+			{readTrueArray?.length}
 		</button>
 
 		<!-- <button
