@@ -54,14 +54,13 @@
 	$: console.log(pupupOpen);
 
 	afterUpdate(() => {
-		console.log('[relay state]', get(relayState));
+		console.log('[relay state]', $relayState);
 		ongoingCount =
-			get(relayState).size > 0
-				? Array.from(get(relayState).values()).filter(
+			$relayState.size > 0
+				? Array.from($relayState.values()).filter(
 						(state) => state === 'ongoing'
 				  ).length
 				: 0;
-
 		relayStateSize = $relayState.size;
 	});
 
