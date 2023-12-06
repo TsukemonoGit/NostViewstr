@@ -35,7 +35,11 @@ identifierListsMap.subscribe((value) => {
 
 const rxNostr = createRxNostr();
 rxNostr.createConnectionStateObservable().subscribe((packet) => {
-	get(relayState)[packet.from] = packet.state;
+	const tmp = get(relayState);
+
+	tmp[packet.from] = packet.state;
+	relayState.set(tmp);
+
 	console.log(packet);
 	console.log(get(relayState));
 });
