@@ -448,10 +448,10 @@
 >
 	<div data-popup="popupFeatured" class="z-[100] sticky">
 		{#if pupupOpen}
-			<div class="card p-4 w-72 shadow-xl z-[100]">
+			<div class="card p-4 w-80 shadow-xl z-[100]">
 				<div>
 					<p>relays state</p>
-					<RelayStateIcon bind:pubkey />
+					<RelayStateIcon />
 				</div>
 
 				<div class="arrow bg-surface-100-800-token" />

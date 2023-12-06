@@ -7,7 +7,7 @@
 	import { relaySet } from '$lib/stores/relays';
 	//$: stateArray = Array.from($relayState.keys()).sort();
 
-	export let pubkey: string;
+	//export let pubkey: string;
 	// ボタンの無効化を管理するストア
 	const disabledButtons = writable(new Set<string>());
 
@@ -60,17 +60,18 @@
 {#each $connectingRelays && Object.keys($connectingRelays) as relay, index}
 	{#if $relayState.hasOwnProperty(relay)}
 		<div class="flex items-center gap-1 break-all">
-			<div class="h-4 w-4 rounded-full {dotColor(relay)}" />
-			{relay.length > 30
-				? `${relay.slice(0, 28)}...`
-				: relay}{$connectingRelays[relay].read === true &&
-			$connectingRelays[relay].write === true
-				? '[r/w]'
-				: $connectingRelays[relay].read === true
-				? '[r]'
-				: $connectingRelays[relay].write === true
-				? '[w]'
-				: ''}
+			<div class="h-4 w-4 rounded-full {dotColor(relay)} " />
+			{relay.length > 30 ? `${relay.slice(0, 28)}...` : relay}
+			<span class="ml-1 text-xs"
+				>{$connectingRelays[relay].read === true &&
+				$connectingRelays[relay].write === true
+					? 'r/w'
+					: $connectingRelays[relay].read === true
+					? 'r'
+					: $connectingRelays[relay].write === true
+					? 'w'
+					: ''}</span
+			>
 			{#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started') && !get(disabledButtons).has(relay)}
 				<button
 					on:click={() => handleClickReconnect(relay)}
