@@ -11,10 +11,10 @@
 	let stateColor = {
 		ongoing: 'bg-success-600',
 		error: 'bg-warning-600',
-		rejected: 'bg-warning-600',
+		rejected: 'bg-black',
 		terminated: 'bg-surface-600',
-		'not-started': 'bg-surface-600',
-		starting: 'bg-surface-600',
+		'not-started': 'bg-surface-700',
+		starting: 'bg-surface-400',
 		reconnecting: 'bg-error-600'
 	};
 
