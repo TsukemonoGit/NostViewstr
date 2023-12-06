@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 import type { Event } from 'nostr-tools';
 import type { Nostr } from 'nosvelte';
 import type { TextPart } from '$lib/content';
-
+import type { ConnectionState } from 'rx-nostr';
 interface IdentifierList {
 	[pubkey: string]: {
 		[kind: number]: Identifiers[];
@@ -29,10 +29,12 @@ export interface MapEventLists {
 		[kind: number]: Map<string, Nostr.Event>; // Nostr.Event[];
 	};
 }
+
 export const identifierListsMap = writable<MapIdentifierList>({});
 export const identifierKeysArray = writable<string[]>([]);
 export const eventListsMap = writable<MapEventLists>({});
 export const keysArray = writable<string[]>([]);
+export const relayState = writable(new Map<string, ConnectionState>());
 //export const bookmarkEvents = writable<EventLists>({});
 //export const identifierList = writable<IdentifierList>({});
 

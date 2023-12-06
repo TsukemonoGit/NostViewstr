@@ -5,7 +5,8 @@
 		identifierKeysArray,
 		identifierListsMap,
 		keysArray,
-		listNum
+		listNum,
+		relayState
 	} from '$lib/stores/bookmarkEvents';
 	import { pageNum } from '$lib/stores/pagination';
 	import { iconView, nowProgress } from '$lib/stores/settings';
@@ -15,11 +16,17 @@
 	import { pubIcon } from '$lib/components/icons';
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
-	import updateIcon from '@material-design-icons/svg/round/update.svg?raw';
+	import RelayIcon from '@material-design-icons/svg/outlined/hub.svg?raw';
 	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
 	import { relaySet } from '$lib/stores/relays';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
+	import {
+		popup,
+		type ModalComponent,
+		type ModalSettings,
+		type PopupSettings,
+		storePopup
+	} from '@skeletonlabs/skeleton';
 	import type { Nostr } from 'nosvelte';
 	import { _ } from 'svelte-i18n';
 	import ModalListInfo from './modals/ModalListInfo.svelte';
@@ -28,13 +35,35 @@
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import { kinds } from '$lib/kind';
 	import { goto } from '$app/navigation';
-	import type { U } from 'vitest/dist/reporters-5f784f42';
+	import { get } from 'svelte/store';
+	import { afterUpdate } from 'svelte';
+	import RelayStateIcon from './RelayStateIcon.svelte';
 
 	export let bkm: string;
 	export let kind: number;
 	export let pubkey: string;
 	export let viewEvent: Nostr.Event<number> | undefined;
 	export let JSON: boolean = false;
+
+	let ongoingCount: number;
+	let relayStateSize: number;
+	$: console.log($storePopup.popupFeatured);
+	$: console.log(popupFeatured.state);
+	let pupupOpen: boolean = false;
+
+	$: console.log(pupupOpen);
+
+	afterUpdate(() => {
+		console.log('[relay state]', get(relayState));
+		ongoingCount =
+			get(relayState).size > 0
+				? Array.from(get(relayState).values()).filter(
+						(state) => state === 'ongoing'
+				  ).length
+				: 0;
+
+		relayStateSize = $relayState.size;
+	});
 
 	$: listNaddr = viewEvent
 		? [
@@ -227,6 +256,19 @@
 
 		goto(`/${nip19.npubEncode(pubkey)}/${selectValue}`);
 	}
+
+	const popupFeatured: PopupSettings = {
+		// Represents the type of event that opens/closed the popup
+		event: 'click',
+		// Matches the data-popup value on your popup element
+		target: 'popupFeatured',
+		// Defines which side of your trigger the popup will appear
+		placement: 'bottom',
+		state: (test) => {
+			console.log(test);
+			pupupOpen = test.state;
+		}
+	};
 </script>
 
 <div
@@ -382,6 +424,14 @@
 				>
 			</div>
 		{/if}
+		<button class="btn p-2 fill-white flex" use:popup={popupFeatured}>
+			{@html RelayIcon}
+			<div>
+				{ongoingCount}/
+				{relayStateSize}
+			</div></button
+		>
+
 		<!-- <button
 			class={'btn p-0 pr-2  arrow  h-[4em]'}
 			disabled={$nowProgress}
@@ -392,4 +442,16 @@
 			}}>{@html updateIcon}</button
 		> -->
 	</div>
+</div>
+<div data-popup="popupFeatured" class="z-[100]">
+	{#if pupupOpen}
+		<div class="card p-4 w-72 shadow-xl z-[100]">
+			<div>
+				<p>relays state</p>
+				<RelayStateIcon />
+			</div>
+
+			<div class="arrow bg-surface-100-800-token" />
+		</div>
+	{/if}
 </div>
