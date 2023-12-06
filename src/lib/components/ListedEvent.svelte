@@ -57,9 +57,6 @@
 
 	$: if (bkm !== 'prv' && listEvent) {
 		viewUpdate();
-	} else {
-		viewList = [];
-		$listSize = 0;
 	}
 	$: if (bkm) {
 		viewUpdate();
@@ -69,7 +66,8 @@
 	}
 	$: console.log($listSize);
 	let message: string;
-	async function viewUpdate() {
+
+	export async function viewUpdate() {
 		message = '';
 		console.log(bkm);
 		if (listEvent) {
@@ -84,8 +82,6 @@
 				} catch (error) {
 					viewList = [];
 					message = listEvent.content;
-					// bkm = 'pub';
-					// viewUpdate();
 				}
 			} else {
 				viewList = [];

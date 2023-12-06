@@ -8,10 +8,8 @@
 	// Stores
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import AddTypeNoteAndNaddr from './Add/AddTypeNoteAndNaddr.svelte';
-	import {
-		isOneDimensionalArray,
-		publishEventWithTimeout
-	} from '$lib/nostrFunctions';
+	import { isOneDimensionalArray } from '$lib/nostrFunctions';
+	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import { kindsValidTag } from '$lib/kind';
 	import type { Nostr } from 'nosvelte';
 	import { relaySet } from '$lib/stores/relays';

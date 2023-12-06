@@ -23,7 +23,6 @@
 		getPub,
 		getRelays,
 		isOneDimensionalArray,
-		publishEventWithTimeout,
 		setRelays
 	} from '$lib/nostrFunctions';
 	import { afterUpdate, onMount } from 'svelte';
@@ -62,8 +61,11 @@
 
 	import { afterNavigate } from '$app/navigation';
 	import Header from './Header.svelte';
-	import { kindsValidTag } from '$lib/kind';
-	import { StoreFetchFilteredEvents } from '$lib/streamEventLists';
+
+	import {
+		StoreFetchFilteredEvents,
+		publishEventWithTimeout
+	} from '$lib/streamEventLists';
 
 	export let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> | undefined;
@@ -71,6 +73,10 @@
 	export let kind: number;
 	export let identifier: string | undefined = undefined; //naddrのとき
 	export let isNaddr: boolean;
+
+	// ListedEventコンポーネントのリファレンスを取得
+	let listedEventRef: ListedEvent;
+
 	let isOwner: boolean;
 	$: console.log($relaySet);
 	$: isOwner = $pubkey_viewer === pubkey;
@@ -122,17 +128,6 @@
 	const init = async () => {
 		$nowProgress = true;
 		console.log('onMount executed');
-		// if ($pubkey_viewer === '') {
-		// 	try {
-		// 		const res = await getPub();
-		// 		if (res !== '') {
-		// 			$pubkey_viewer = res;
-		// 		}
-		// 	} catch (error) {
-		// 		//			$nowProgress = false;
-		// 		console.log('failed to login');
-		// 	}
-		// }
 
 		await bkminit(pubkey);
 		$nowProgress = false;
@@ -154,11 +149,8 @@
 		//if ($bookmarkRelays.length === 0) {
 
 		//パブキーに対するリレーセットが設定されてなかったら取得する（戻るボタンとかで同じユーザーになった場合に省略されるはず）
-		//bookmarkEvents.set([]);
+
 		if (!$relaySet || !$relaySet[pub]) {
-			// bookmarkRelays.set([]);
-			// postRelays.set([]);
-			// searchRelays.set([]);
 			const t: ToastSettings = {
 				message: `${$_('toast.relaySearching')}`
 			};
@@ -166,15 +158,11 @@
 			$relaySet[pub] = initRelaySet;
 			await getRelays(pub);
 			toastStore.close(getRelaysToast);
-			//$relayPubkey = pubkey;
 		}
 		if (pub !== $pubkey_viewer && !$relaySet[$pubkey_viewer]) {
 			$relaySet[$pubkey_viewer] = initRelaySet;
-			// bookmarkRelays.set([]);
-			// postRelays.set([]);
-			// searchRelays.set([]);
+
 			getRelays($pubkey_viewer);
-			//$relayPubkey = pubkey;
 		}
 		//	}
 		const filter =
@@ -192,7 +180,7 @@
 							'#d': [identifier]
 						}
 				  ];
-		//$nowProgress = true;
+
 		const t: ToastSettings = {
 			message: `${$_('toast.eventSearching')}`
 		};
@@ -201,26 +189,8 @@
 			relays: $relaySet[pubkey].bookmarkRelays,
 			filters: filter
 		});
-		//StoreFetchFilteredEvents(pubkey, kind, {
-		//	relays: $relaySet[pubkey].bookmarkRelays,
-		//		filters: filter
-		//	});
+
 		toastStore.close(searchingEventsToast);
-		//console.log(res);
-		//const res = bookmarks;
-		// if (res.length === 0) {
-		// 	console.log('bookmark not found');
-		// 	return;
-		// }
-		// res.sort((a, b) => {
-		// 	const tagID_A = a.tags[0][1];
-		// 	const tagID_B = b.tags[0][1];
-		// 	return tagID_A.localeCompare(tagID_B);
-		// });
-		// $bookmarkEvents = res;
-		// //viewEvent = $bookmarkEvents[0];
-		// //	$nowProgress = false;
-		// console.log(res);
 	}
 
 	//リストが変わったら1ページ目に戻す
@@ -236,14 +206,7 @@
 		$checkedIndexList = [];
 		window.scrollTo({ top: 0 });
 	}
-	// $: listNaddr = viewEvent
-	// 	? [
-	// 			'a',
-	// 			`${viewEvent.kind}:${viewEvent.pubkey}:${
-	// 				$identifierList[$listNum].identifier ?? ''
-	// 			}`
-	// 	  ]
-	// 	: [];
+
 	//---------------------------------------------delete?modal
 	const deleteModalComponent: ModalComponent = {
 		// Pass a reference to your custom component
@@ -315,6 +278,8 @@
 					);
 					//   console.log(result);
 					if (result.isSuccess && $eventListsMap && result.event) {
+						listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+
 						$eventListsMap[pubkey][kind].set(
 							$keysArray[listNumber],
 							result.event
@@ -458,112 +423,7 @@
 		console.log(res);
 		if (res) {
 			const listNumber = $listNum;
-			/* 	let check: { tag?: string[]; error: boolean; message?: string } = {
-				error: false
-			};
 
-			//$nowProgress = true;
-			let noteID = res.value;
-
-			//まず追加するタグを作る（checkにいれる）
-			//ポストkind1 ノート
-			if (res.create) {
-				const event: Nostr.Event<any> = {
-					id: '',
-					pubkey: pubkey,
-					created_at: Math.floor(Date.now() / 1000),
-					kind: 1,
-					tags: [],
-					content: res.value,
-					sig: ''
-				};
-				console.log($postRelays);
-				if ($postRelays.length > 0) {
-					const response = await publishEventWithTimeout(event, $postRelays);
-					if (response.isSuccess) {
-						const t = {
-							message: response.msg,
-							timeout: 3000
-						};
-
-						toastStore.trigger(t);
-
-						if (response.event) {
-							noteID = response.event.id; //追加するノートIDがこれ
-						} else {
-							const t = {
-								message: 'failed to publish',
-								timeout: 3000,
-								background: 'bg-orange-500 text-white width-filled '
-							};
-							toastStore.trigger(t);
-							//		$nowProgress = false;
-							return;
-						}
-					}
-				}
-			}
-			if (res.type === 'id') {
-				// check = await checkInput(noteID);
-				// if (check.error && check.message) {
-				// 	const t = {
-				// 		message: check.message,
-				// 		timeout: 3000,
-				// 		background: 'bg-orange-500 text-white width-filled '
-				// 	};
-
-				// 	toastStore.trigger(t);
-				// 	//		$nowProgress = false;
-				// 	return;
-				// }
-			} else if (res.type === 'tag') {
-				try {
-					const tagArray = JSON.parse(res.tagvalue);
-					if (!isOneDimensionalArray(tagArray)) {
-						throw new Error();
-					}
-					//タグが大丈夫そうだったらcheckに入れる
-					check = { error: false, tag: tagArray };
-				} catch (error) {
-					const t = {
-						message: $_('toast.failed_publish'),
-						timeout: 3000,
-						background: 'bg-orange-500 text-white width-filled '
-					};
-
-					toastStore.trigger(t);
-					//		$nowProgress = false;
-					return;
-				}
-			} */
-			// //validtagかちぇっく
-			// if (!check.tag || !kindsValidTag[kind].includes(check.tag[0])) {
-			// 	const t = {
-			// 		message: $_('toast.invalidtag'),
-			// 		timeout: 3000,
-			// 		background: 'bg-orange-500 text-white width-filled '
-			// 	};
-
-			// 	toastStore.trigger(t);
-			// 	return;
-			// }
-			//idのチェックが終わったのでcheck.tagを入れる
-			// if (check && check.error && check.message) {
-			// 	const t = {
-			// 		message: check.message,
-			// 		timeout: 3000,
-			// 		background: 'bg-orange-500 text-white width-filled '
-			// 	};
-
-			// 	toastStore.trigger(t);
-			// 	//$nowProgress = false;
-			// 	return;
-			// } else if (check.tag && check.tag.length > 0 && $bookmarkEvents) {
-			// console.log($eventListsMap[pubkey][kind][listNumber]);
-			// if ($eventListsMap[pubkey][kind][listNumber] !== undefined) {
-			// 	// 	console.log($bookmarkEvents[pubkey][kind][listNumber]);
-			// 	await updateBkmTag(pubkey, kind, listNumber); //最新の状態に更新
-			// }
 			await addNotesToLists(listNumber, res.btn, [res.tag], pubkey, kind);
 			$nowProgress = false;
 		}
@@ -625,59 +485,23 @@
 				);
 
 				if (result.isSuccess) {
-					//streamの方で受け取って更新されると思うからいらない
-					// const updatedEvent = result.event as Nostr.Event;
-					// if ($eventListsMap) {
-					// 	$eventListsMap[pubkey] = $eventListsMap[pubkey] || {};
-					// 	$eventListsMap[pubkey][kind] =
-					// 		$eventListsMap[pubkey][kind] || new Map<string, Nostr.Event>();
-					// 	$eventListsMap[pubkey][kind].set(
-					// 		$keysArray[listNumber],
-					// 		updatedEvent
-					// 	);
-					// 	viewEvent = updatedEvent;
-					// } else {
-					// 	$eventListsMap = {
-					// 		[pubkey]: {
-					// 			[kind]: new Map([[$keysArray[listNumber], updatedEvent]])
-					// 		}
-					// 	};
-					// }
-					// 	//identifierEventも更新する
-					// 	const tag = updatedEvent.tags.find((tag) => tag[0] === 'd');
-					// 	const title = updatedEvent.tags.find((tag) => tag[0] === 'title');
-					// 	const image = updatedEvent.tags.find((tag) => tag[0] === 'image');
-					// 	const description = updatedEvent.tags.find(
-					// 		(tag) => tag[0] === 'description'
-					// 	);
-					// 	const newIdentifierList: Identifiers = {
-					// 		identifier: tag ? tag[1] : undefined,
-					// 		title: title ? title[1] : undefined,
-					// 		image: image ? image[1] : undefined,
-					// 		description: description ? description[1] : undefined
-					// 	};
-					// 	if ($identifierList) {
-					// 		$identifierList[pubkey] = $identifierList[pubkey] || {};
-					// 		$identifierList[pubkey][kind] = $identifierList[pubkey][kind] || [];
-					// 		$identifierList[pubkey][kind][listNumber] = newIdentifierList;
-					// 	} else {
-					// 		$identifierList = { [pubkey]: { [kind]: [newIdentifierList] } };
-					// 	}
+					listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+
+					const toastMessage = result.isSuccess
+						? 'Add note<br>' + result.msg
+						: $_('toast.failed_publish');
+
+					const t = {
+						message: toastMessage,
+						timeout: 3000,
+						background: result.isSuccess
+							? 'variant-filled-secondary width-filled'
+							: 'bg-orange-500 text-white width-filled '
+					};
+
+					toastStore.trigger(t);
+					isSuccess = result.isSuccess;
 				}
-				const toastMessage = result.isSuccess
-					? 'Add note<br>' + result.msg
-					: $_('toast.failed_publish');
-
-				const t = {
-					message: toastMessage,
-					timeout: 3000,
-					background: result.isSuccess
-						? 'variant-filled-secondary width-filled'
-						: 'bg-orange-500 text-white width-filled '
-				};
-
-				toastStore.trigger(t);
-				isSuccess = result.isSuccess;
 			}
 		} catch (error) {
 			console.error(error);
@@ -693,22 +517,6 @@
 
 		return isSuccess;
 	}
-	// afterUpdate(() => {
-	// 	viewEvent = viewEvent;
-	// });
-
-	// let identifier: string;
-	// $: if ($bookmarkEvents) {
-	// 	const index = $bookmarkEvents[$listNum].tags.find(
-	// 		(item) => item[0] === 'd'
-	// 	);
-	// 	if (index) {
-	// 		identifier = index[1];
-	// 	} else {
-	// 		identifier = ''; // マッチする要素が見つからない場合のデフォルト値
-	// 	}
-	// 	console.log(identifier);
-	// }
 
 	function onClickPage(arg0: number): any {
 		$listNum += arg0;
@@ -893,51 +701,19 @@
 			);
 
 			if (result.isSuccess) {
-				// const updatedEvent = result.event as Nostr.Event;
-				// if ($eventListsMap) {
-				// 	$eventListsMap[pubkey] = $eventListsMap[pubkey] || {};
-				// 	$eventListsMap[pubkey][kind] =
-				// 		$eventListsMap[pubkey][kind] || new Map<string, Nostr.Event>();
-				// 	$eventListsMap[pubkey][kind].set(
-				// 		$keysArray[listNumber],
-				// 		updatedEvent
-				// 	);
-				// 	viewEvent = updatedEvent;
-				// }
-				// //identifierEventも更新する
-				// const tag = updatedEvent.tags.find((tag) => tag[0] === 'd');
-				// const title = updatedEvent.tags.find((tag) => tag[0] === 'title');
-				// const image = updatedEvent.tags.find((tag) => tag[0] === 'image');
-				// const description = updatedEvent.tags.find(
-				// 	(tag) => tag[0] === 'description'
-				// );
-				// const newIdentifierList: Identifiers = {
-				// 	identifier: tag ? tag[1] : undefined,
-				// 	title: title ? title[1] : undefined,
-				// 	image: image ? image[1] : undefined,
-				// 	description: description ? description[1] : undefined
-				// };
-				// if ($identifierList) {
-				// 	$identifierList[pubkey] = $identifierList[pubkey] || {};
-				// 	$identifierList[pubkey][kind] = $identifierList[pubkey][kind] || [];
-				// 	$identifierList[pubkey][kind][listNumber] = newIdentifierList;
-				// } else {
-				// 	$identifierList = { [pubkey]: { [kind]: [newIdentifierList] } };
-				// }
+				const toastMessage = result.isSuccess
+					? 'Add note<br>' + result.msg
+					: $_('toast.failed_publish');
+
+				const t = {
+					message: toastMessage,
+					timeout: 3000,
+					background: result.isSuccess
+						? 'variant-filled-secondary width-filled'
+						: 'bg-orange-500 text-white width-filled '
+				};
+				toastStore.trigger(t);
 			}
-			const toastMessage = result.isSuccess
-				? 'Add note<br>' + result.msg
-				: $_('toast.failed_publish');
-
-			const t = {
-				message: toastMessage,
-				timeout: 3000,
-				background: result.isSuccess
-					? 'variant-filled-secondary width-filled'
-					: 'bg-orange-500 text-white width-filled '
-			};
-
-			toastStore.trigger(t);
 		}
 	}
 </script>
@@ -1012,6 +788,7 @@
 			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
 				<NostrApp relays={$relaySet[pubkey].searchRelays}>
 					<ListedEvent
+						bind:this={listedEventRef}
 						listEvent={viewEvent}
 						{pubkey}
 						{DeleteNote}
