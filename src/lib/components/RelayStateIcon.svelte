@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ConnectionState } from 'rx-nostr';
-	import { relayState } from '$lib/stores/bookmarkEvents';
+	import { connectingRelays, relayState } from '$lib/stores/bookmarkEvents';
 	import UpdateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import { GetRelayState, ReconnectRelay } from '$lib/streamEventLists';
 	import { get, writable } from 'svelte/store';
@@ -23,7 +23,7 @@
 	};
 
 	let dotColor = (relay: string) => {
-		const relayStateValue = $relayState.get(relay);
+		const relayStateValue = $relayState[relay];
 		// try {
 		// 	console.log(GetRelayState(relay));
 		// } catch (error) {
@@ -57,12 +57,21 @@
 	}
 </script>
 
-{#each $relaySet[pubkey].bookmarkRelays as relay, index}
-	{#if $relayState.has(relay)}
+{#each $connectingRelays && Object.keys($connectingRelays) as relay, index}
+	{#if $relayState.hasOwnProperty(relay)}
 		<div class="flex items-center gap-1 break-all">
 			<div class="h-4 w-4 rounded-full {dotColor(relay)}" />
-			{relay.length > 30 ? `${relay.slice(0, 30)}...` : relay}
-			{#if ($relayState.get(relay) === 'error' || $relayState.get(relay) === 'not-started') && !get(disabledButtons).has(relay)}
+			{relay.length > 30
+				? `${relay.slice(0, 28)}...`
+				: relay}{$connectingRelays[relay].read === true &&
+			$connectingRelays[relay].write === true
+				? '[r/w]'
+				: $connectingRelays[relay].read === true
+				? '[r]'
+				: $connectingRelays[relay].write === true
+				? '[w]'
+				: ''}
+			{#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started') && !get(disabledButtons).has(relay)}
 				<button
 					on:click={() => handleClickReconnect(relay)}
 					class="btn p-1 fill-white ml-auto"

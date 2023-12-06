@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import {
+		connectingRelays,
 		eventListsMap,
 		identifierKeysArray,
 		identifierListsMap,
@@ -56,10 +57,9 @@
 	afterUpdate(() => {
 		console.log('[relay state]', $relayState);
 		ongoingCount =
-			$relayState.size > 0
-				? Array.from($relayState.values()).filter(
-						(state) => state === 'ongoing'
-				  ).length
+			$relayState && Object.keys($relayState).length > 0
+				? Object.values($relayState).filter((state) => state === 'ongoing')
+						.length
 				: 0;
 	});
 
@@ -428,7 +428,7 @@
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
 			{ongoingCount}/
-			{$relaySet[pubkey]?.bookmarkRelays?.length}
+			{$connectingRelays ? Object.keys($connectingRelays).length : 0}
 		</button>
 
 		<!-- <button
