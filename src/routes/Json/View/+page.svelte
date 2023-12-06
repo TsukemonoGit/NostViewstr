@@ -9,16 +9,7 @@
 		type Identifiers,
 		JsonEventData
 	} from '$lib/stores/bookmarkEvents';
-	import {
-		addPrivates,
-		deletePrivates,
-		deletePubs,
-		fetchFilteredEvents,
-		getPub,
-		getRelays,
-		isOneDimensionalArray,
-		setRelays
-	} from '$lib/nostrFunctions';
+	import { getPub, getRelays } from '$lib/nostrFunctions';
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import { afterUpdate, onMount } from 'svelte';
 	import Header from '$lib/components/Header.svelte';
