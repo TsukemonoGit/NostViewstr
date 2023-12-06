@@ -194,7 +194,7 @@ export async function StoreFetchFilteredEvents(
 					eventListsMap.set(storedEventsData);
 				}
 			}
-			console.log(storedEventsData, get(eventListsMap));
+			//console.log(storedEventsData, get(eventListsMap));
 		},
 		error: (error) => {
 			console.error('Error occurred:', error);

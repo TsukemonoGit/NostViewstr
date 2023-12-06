@@ -249,7 +249,7 @@ export async function publishEventWithTimeout(
 			}>((resolve) => {
 				const subscription = rxNostr.send(event, sec).subscribe({
 					next: (packet) => {
-						console.log(packet);
+						//	console.log(packet);
 						msgObj[packet.from] = true;
 						isSuccess = true;
 					},
