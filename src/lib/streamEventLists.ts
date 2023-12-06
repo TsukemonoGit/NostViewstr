@@ -42,6 +42,7 @@ const rxNostr = createRxNostr();
 export async function ReconnectRelay(relay: string) {
 	rxNostr.reconnect(relay);
 }
+
 //export const eventListsMap = writable(new Map<string, Nostr.Event>());---------------------------------------------------------------
 export async function StoreFetchFilteredEvents(
 	pubkey: string,
@@ -51,8 +52,13 @@ export async function StoreFetchFilteredEvents(
 		filters: Nostr.Filter[];
 	}
 ) {
-	relayState.set(new Map<string, ConnectionState>());
-
+	// relayStateのすべてのキーに対して処理
+	for (const relayKey of get(relayState).keys()) {
+		if (!data.relays.includes(relayKey)) {
+			// data.relaysに含まれないrelayのエントリを削除
+			get(relayState).delete(relayKey);
+		}
+	}
 	//nowProgress.set(true);
 	let eventsData = get(eventListsMap);
 	// try {
