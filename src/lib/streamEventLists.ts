@@ -315,5 +315,6 @@ function mergeRelays(
 		};
 	}
 	connectingRelays.set(result);
+	console.log(result);
 	return result;
 }
