@@ -13,21 +13,21 @@
 
 	let stateColor = {
 		ongoing: 'bg-success-600',
-		error: 'bg-warning-600',
+		error: 'bg-error-600',
 		rejected: 'bg-black',
 		terminated: 'bg-surface-600',
 		'not-started': 'bg-surface-700',
 		starting: 'bg-surface-400',
-		reconnecting: 'bg-error-600'
+		reconnecting: 'bg-warning-600'
 	};
 
 	let dotColor = (relay: string) => {
 		const relayStateValue = $relayState.get(relay);
-		try {
-			console.log(GetRelayState(relay));
-		} catch (error) {
-			console.log(error);
-		}
+		// try {
+		// 	console.log(GetRelayState(relay));
+		// } catch (error) {
+		// 	console.log(error);
+		// }
 
 		// 確認してからstateColorにアクセス
 		return relayStateValue !== undefined
