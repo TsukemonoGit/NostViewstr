@@ -53,7 +53,7 @@
 		<div class="flex items-center gap-1 break-all">
 			<div class="h-4 w-4 rounded-full {dotColor(relay)}" />
 			{relay.length > 30 ? `${relay.slice(0, 30)}...` : relay}
-			{#if $relayState.get(relay) === 'error' || $relayState.get(relay) === 'not-started'}
+			{#if ($relayState.get(relay) === 'error' || $relayState.get(relay) === 'not-started') && !get(disabledButtons).has(relay)}
 				<button
 					on:click={() => handleClickReconnect(relay)}
 					class="btn p-1 fill-white ml-auto"

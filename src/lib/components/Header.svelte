@@ -411,7 +411,7 @@
 						}
 					}}
 				>
-					<div class="truncate h6">
+					<div class="break-all truncate h6">
 						{new Date(viewEvent.created_at * 1000).toLocaleDateString([], {
 							year: 'numeric',
 							month: '2-digit',
@@ -423,13 +423,14 @@
 				>
 			</div>
 		{/if}
-		<button class="btn p-2 fill-white flex" use:popup={popupFeatured}>
-			{@html RelayIcon}
-			<div>
-				{ongoingCount}/
-				{relayStateSize}
-			</div></button
+		<button
+			class="btn p-1 fill-white grid grid-rows-[auto_auto]"
+			use:popup={popupFeatured}
 		>
+			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
+			{ongoingCount}/
+			{relayStateSize}
+		</button>
 
 		<!-- <button
 			class={'btn p-0 pr-2  arrow  h-[4em]'}
@@ -454,3 +455,10 @@
 		</div>
 	{/if}
 </div>
+
+<style>
+	:global(.relayIcon svg) {
+		width: 1.2em;
+		height: 1.2em;
+	}
+</style>

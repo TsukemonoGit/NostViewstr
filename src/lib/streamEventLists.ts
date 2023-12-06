@@ -40,6 +40,7 @@ identifierListsMap.subscribe((value) => {
 const rxNostr = createRxNostr();
 
 export async function ReconnectRelay(relay: string) {
+	console.log('reconnecting');
 	rxNostr.reconnect(relay);
 }
 
