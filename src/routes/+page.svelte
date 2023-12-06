@@ -7,7 +7,7 @@
 	import { getPublicKey, nip19 } from 'nostr-tools';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
-	import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
+
 	import { _ } from 'svelte-i18n';
 	import { kinds } from '$lib/kind';
 	import { toastStore } from '$lib/stores/store';

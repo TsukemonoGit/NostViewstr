@@ -3,7 +3,11 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
 	import shareIcon from '@material-design-icons/svg/round/chat.svg?raw'; //'@material-design-icons/svg/round/share.svg?raw';
-	import { identifierList, listNum } from '$lib/stores/bookmarkEvents';
+	import {
+		identifierKeysArray,
+		identifierListsMap,
+		listNum
+	} from '$lib/stores/bookmarkEvents';
 	import { pubkey_viewer } from '$lib/stores/settings';
 
 	export let parent: any;
@@ -25,23 +29,14 @@
 		update?: boolean;
 	} = {
 		title:
-			$identifierList[pubkey] &&
-			$identifierList[pubkey][kind] &&
-			$identifierList[pubkey][kind][$listNum].title
-				? $identifierList[pubkey][kind][$listNum].title
-				: '',
+			$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
+				?.title ?? '',
 		image:
-			$identifierList[pubkey] &&
-			$identifierList[pubkey][kind] &&
-			$identifierList[pubkey][kind][$listNum].image
-				? $identifierList[pubkey][kind][$listNum].image
-				: '',
+			$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
+				?.image ?? '',
 		description:
-			$identifierList[pubkey] &&
-			$identifierList[pubkey][kind] &&
-			$identifierList[pubkey][kind][$listNum].description
-				? $identifierList[pubkey][kind][$listNum].description
-				: ''
+			$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
+				?.description ?? ''
 	};
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';

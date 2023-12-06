@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { bookmarkEvents, identifierList } from '$lib/stores/bookmarkEvents';
+	import {
+		identifierKeysArray,
+		identifierListsMap
+	} from '$lib/stores/bookmarkEvents';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import editIcon from '@material-design-icons/svg/round/edit.svg?raw';
 	import deleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
@@ -66,11 +69,7 @@
 			};
 
 			toastStore.trigger(t);
-		} else if (
-			$identifierList[pubkey][kind].some(
-				(item) => item.identifier === res.value.id
-			)
-		) {
+		} else if ($identifierKeysArray.some((item) => item === res.value.id)) {
 			const t = {
 				message: 'already exists',
 				timeout: 3000,
@@ -167,15 +166,18 @@
 				>
 				<svelte:fragment slot="content">
 					<div class="card p-4">
-						{#if $identifierList[pubkey] && $identifierList[pubkey][kind].length > 0}
+						{#if $identifierListsMap[pubkey] && $identifierListsMap[pubkey][kind].size > 0}
 							<select
 								class="select mb-4"
 								size="1"
 								bind:value={selectedValue}
 								on:change={handleChange}
 							>
-								{#each $identifierList[pubkey][kind] as tag, index}
-									<option value={index}>{tag.identifier}</option>
+								{#each $identifierKeysArray[pubkey][kind] as tag, index}
+									<option value={index}
+										>{$identifierListsMap[pubkey][kind].get(tag)
+											?.identifier}</option
+									>
 								{/each}
 							</select>
 

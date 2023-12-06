@@ -2,7 +2,7 @@ import { nip19 } from 'nostr-tools';
 //import { pubkey } from '$lib/stores/settings';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import { JsonEventData, bookmarkEvents } from '$lib/stores/bookmarkEvents';
+import { JsonEventData } from '$lib/stores/bookmarkEvents';
 
 import { get } from 'svelte/store';
 //https://kit.svelte.jp/docs/load

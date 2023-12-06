@@ -3,7 +3,7 @@ import { nip19 } from 'nostr-tools';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import { relaySet, defaultRelays } from '$lib/stores/relays';
-import { bookmarkEvents } from '$lib/stores/bookmarkEvents';
+
 import { get } from 'svelte/store';
 //https://kit.svelte.jp/docs/load
 //ページを読み込む前に有効なparamかチェック
