@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { publishEventWithTimeout } from '$lib/nostrFunctions';
+	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import {
 		eventListsMap,
 		identifierKeysArray,

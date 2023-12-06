@@ -40,11 +40,10 @@
 		type ToastSettings
 	} from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
+	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import { relaySet } from '$lib/stores/relays';
 	import { get } from 'svelte/store';
-	import type { Event } from 'nostr-tools';
-	import { goto } from '$app/navigation';
+
 	export let pubkey: string;
 	export let kind: number;
 	export let naddr: boolean = false;

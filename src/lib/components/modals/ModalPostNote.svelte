@@ -4,7 +4,8 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { relaySet } from '$lib/stores/relays';
 	import type { Event } from 'nostr-tools';
-	import { publishEvent, publishEventWithTimeout } from '$lib/nostrFunctions';
+
+	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import { pubkey_viewer } from '$lib/stores/settings';
 	import postIcon from '@material-design-icons/svg/round/post_add.svg?raw';
 

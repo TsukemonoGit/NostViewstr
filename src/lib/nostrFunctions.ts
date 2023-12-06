@@ -199,97 +199,97 @@ export function windowOpen(str: string): void {
 	);
 }
 
-///
-export async function publishEventWithTimeout(
-	obj: Event,
-	relays: string[],
-	timeout: number = 5000
-): Promise<{
-	isSuccess: boolean;
-	event?: Nostr.Event;
-	msg: string;
-}> {
-	if (relays.length === 0) {
-		console.error('relay設定されてない');
-		return { isSuccess: false, msg: 'relayが設定されていません' };
-	}
-	let isSuccess = false;
-	const msgObj: { [relay: string]: boolean } = {};
-	relays.forEach((relay) => {
-		msgObj[relay] = false;
-	});
-	console.log(obj);
+// ///
+// export async function publishEventWithTimeout(
+// 	obj: Event,
+// 	relays: string[],
+// 	timeout: number = 5000
+// ): Promise<{
+// 	isSuccess: boolean;
+// 	event?: Nostr.Event;
+// 	msg: string;
+// }> {
+// 	if (relays.length === 0) {
+// 		console.error('relay設定されてない');
+// 		return { isSuccess: false, msg: 'relayが設定されていません' };
+// 	}
+// 	let isSuccess = false;
+// 	const msgObj: { [relay: string]: boolean } = {};
+// 	relays.forEach((relay) => {
+// 		msgObj[relay] = false;
+// 	});
+// 	console.log(obj);
 
-	const pubkey = await getPub();
-	if (obj.pubkey === '') {
-		obj.pubkey = pubkey;
-	} else if (obj.pubkey !== pubkey) {
-		console.log('ログイン中のpubとsignEvのpubが違う');
+// 	const pubkey = await getPub();
+// 	if (obj.pubkey === '') {
+// 		obj.pubkey = pubkey;
+// 	} else if (obj.pubkey !== pubkey) {
+// 		console.log('ログイン中のpubとsignEvのpubが違う');
 
-		return { isSuccess: false, msg: 'login error' };
-	}
+// 		return { isSuccess: false, msg: 'login error' };
+// 	}
 
-	try {
-		// const t: ToastSettings = {
-		// 	message: `publishing ...`
-		// };
-		// const publishingToast = toastStore.trigger(t);
-		const event = obj;
-		event.id = getEventHash(event);
-		console.log(event);
-		const rxNostr = createRxNostr();
+// 	try {
+// 		// const t: ToastSettings = {
+// 		// 	message: `publishing ...`
+// 		// };
+// 		// const publishingToast = toastStore.trigger(t);
+// 		const event = obj;
+// 		event.id = getEventHash(event);
+// 		console.log(event);
+// 		const rxNostr = createRxNostr();
 
-		await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
-		const sec = get(nsec);
-		const result = await Promise.race([
-			new Promise<{
-				isSuccess: boolean;
-				msg: string;
-				event?: Nostr.Event;
-			}>((resolve) => {
-				const subscription = rxNostr.send(event, sec).subscribe({
-					next: (packet) => {
-						//	console.log(packet);
-						msgObj[packet.from] = true;
-						isSuccess = true;
-					},
-					complete: () => {
-						resolve({
-							isSuccess,
-							event: event,
-							msg: formatResults(msgObj)
-						});
-					}
-				});
-			}),
-			new Promise<{
-				isSuccess: boolean;
-				msg: string;
-				event?: Nostr.Event;
-			}>((resolve) => {
-				setTimeout(() => {
-					const hasTrue = Object.values(msgObj).some((value) => value === true);
-					console.log(
-						'timeout',
-						event,
-						formatResults(msgObj),
-						hasTrue,
-						isSuccess
-					);
-					resolve({
-						isSuccess: hasTrue,
-						event: event,
-						msg: formatResults(msgObj)
-					});
-				}, timeout);
-			})
-		]);
-		//	toastStore.close(publishingToast);
-		return result;
-	} catch (error) {
-		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
-	}
-}
+// 		await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
+// 		const sec = get(nsec);
+// 		const result = await Promise.race([
+// 			new Promise<{
+// 				isSuccess: boolean;
+// 				msg: string;
+// 				event?: Nostr.Event;
+// 			}>((resolve) => {
+// 				const subscription = rxNostr.send(event, sec).subscribe({
+// 					next: (packet) => {
+// 						//	console.log(packet);
+// 						msgObj[packet.from] = true;
+// 						isSuccess = true;
+// 					},
+// 					complete: () => {
+// 						resolve({
+// 							isSuccess,
+// 							event: event,
+// 							msg: formatResults(msgObj)
+// 						});
+// 					}
+// 				});
+// 			}),
+// 			new Promise<{
+// 				isSuccess: boolean;
+// 				msg: string;
+// 				event?: Nostr.Event;
+// 			}>((resolve) => {
+// 				setTimeout(() => {
+// 					const hasTrue = Object.values(msgObj).some((value) => value === true);
+// 					console.log(
+// 						'timeout',
+// 						event,
+// 						formatResults(msgObj),
+// 						hasTrue,
+// 						isSuccess
+// 					);
+// 					resolve({
+// 						isSuccess: hasTrue,
+// 						event: event,
+// 						msg: formatResults(msgObj)
+// 					});
+// 				}, timeout);
+// 			})
+// 		]);
+// 		//	toastStore.close(publishingToast);
+// 		return result;
+// 	} catch (error) {
+// 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+// 	}
+// }
 // try {
 // 	//const event = await signEv(obj);
 // 	const event = obj;
@@ -353,7 +353,7 @@ export async function publishEventWithTimeout(
 //}
 
 // リレーの結果を指定の形式に整形
-function formatResults(msg: { [relay: string]: boolean }): string {
+export function formatResults(msg: { [relay: string]: boolean }): string {
 	let resultString = '';
 	for (const relay in msg) {
 		resultString += msg[relay] ? `OK ${relay}<br/>` : `failed ${relay}<br/>`;

@@ -17,9 +17,9 @@
 		getPub,
 		getRelays,
 		isOneDimensionalArray,
-		publishEventWithTimeout,
 		setRelays
 	} from '$lib/nostrFunctions';
+	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import { afterUpdate, onMount } from 'svelte';
 	import Header from '$lib/components/Header.svelte';
 

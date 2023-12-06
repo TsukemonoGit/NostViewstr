@@ -23,7 +23,6 @@
 		getPub,
 		getRelays,
 		isOneDimensionalArray,
-		publishEventWithTimeout,
 		setRelays
 	} from '$lib/nostrFunctions';
 	import { afterUpdate, onMount } from 'svelte';
@@ -63,7 +62,10 @@
 	import { afterNavigate } from '$app/navigation';
 	import Header from './Header.svelte';
 	import { kindsValidTag } from '$lib/kind';
-	import { StoreFetchFilteredEvents } from '$lib/streamEventLists';
+	import {
+		StoreFetchFilteredEvents,
+		publishEventWithTimeout
+	} from '$lib/streamEventLists';
 
 	export let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> | undefined;
