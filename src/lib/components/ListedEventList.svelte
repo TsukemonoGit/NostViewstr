@@ -61,7 +61,7 @@
 
 	import { afterNavigate } from '$app/navigation';
 	import Header from './Header.svelte';
-	import { kindsValidTag } from '$lib/kind';
+
 	import {
 		StoreFetchFilteredEvents,
 		publishEventWithTimeout
@@ -701,51 +701,19 @@
 			);
 
 			if (result.isSuccess) {
-				// const updatedEvent = result.event as Nostr.Event;
-				// if ($eventListsMap) {
-				// 	$eventListsMap[pubkey] = $eventListsMap[pubkey] || {};
-				// 	$eventListsMap[pubkey][kind] =
-				// 		$eventListsMap[pubkey][kind] || new Map<string, Nostr.Event>();
-				// 	$eventListsMap[pubkey][kind].set(
-				// 		$keysArray[listNumber],
-				// 		updatedEvent
-				// 	);
-				// 	viewEvent = updatedEvent;
-				// }
-				// //identifierEventも更新する
-				// const tag = updatedEvent.tags.find((tag) => tag[0] === 'd');
-				// const title = updatedEvent.tags.find((tag) => tag[0] === 'title');
-				// const image = updatedEvent.tags.find((tag) => tag[0] === 'image');
-				// const description = updatedEvent.tags.find(
-				// 	(tag) => tag[0] === 'description'
-				// );
-				// const newIdentifierList: Identifiers = {
-				// 	identifier: tag ? tag[1] : undefined,
-				// 	title: title ? title[1] : undefined,
-				// 	image: image ? image[1] : undefined,
-				// 	description: description ? description[1] : undefined
-				// };
-				// if ($identifierList) {
-				// 	$identifierList[pubkey] = $identifierList[pubkey] || {};
-				// 	$identifierList[pubkey][kind] = $identifierList[pubkey][kind] || [];
-				// 	$identifierList[pubkey][kind][listNumber] = newIdentifierList;
-				// } else {
-				// 	$identifierList = { [pubkey]: { [kind]: [newIdentifierList] } };
-				// }
+				const toastMessage = result.isSuccess
+					? 'Add note<br>' + result.msg
+					: $_('toast.failed_publish');
+
+				const t = {
+					message: toastMessage,
+					timeout: 3000,
+					background: result.isSuccess
+						? 'variant-filled-secondary width-filled'
+						: 'bg-orange-500 text-white width-filled '
+				};
+				toastStore.trigger(t);
 			}
-			const toastMessage = result.isSuccess
-				? 'Add note<br>' + result.msg
-				: $_('toast.failed_publish');
-
-			const t = {
-				message: toastMessage,
-				timeout: 3000,
-				background: result.isSuccess
-					? 'variant-filled-secondary width-filled'
-					: 'bg-orange-500 text-white width-filled '
-			};
-
-			toastStore.trigger(t);
 		}
 	}
 </script>
