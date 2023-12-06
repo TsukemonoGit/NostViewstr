@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import {
+		connectingRelays,
 		eventListsMap,
 		identifierKeysArray,
 		identifierListsMap,
@@ -52,16 +53,26 @@
 	let pupupOpen: boolean = false;
 
 	$: console.log(pupupOpen);
+	$: readTrueArray = $connectingRelays
+		? Object.keys($connectingRelays).filter(
+				(item) => $connectingRelays[item].read === true
+		  )
+		: [];
 
-	afterUpdate(() => {
-		console.log('[relay state]', $relayState);
-		ongoingCount =
-			$relayState.size > 0
-				? Array.from($relayState.values()).filter(
-						(state) => state === 'ongoing'
-				  ).length
-				: 0;
-	});
+	$: ongoingCount =
+		$relayState && readTrueArray.length > 0
+			? readTrueArray.filter((relay) => $relayState[relay] === 'ongoing').length
+			: 0;
+
+	// afterUpdate(() => {
+
+	// 	console.log('[relay state]', $relayState);
+	// 	ongoingCount =
+	// 		$relayState && Object.keys($relayState).length > 0
+	// 			? Object.values($relayState).filter((state) => state === 'ongoing')
+	// 					.length
+	// 			: 0;
+	// });
 
 	$: listNaddr = viewEvent
 		? [
@@ -428,7 +439,7 @@
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
 			{ongoingCount}/
-			{$relaySet[pubkey]?.bookmarkRelays?.length}
+			{readTrueArray?.length}
 		</button>
 
 		<!-- <button
@@ -451,7 +462,7 @@
 			<div class="card p-4 w-72 shadow-xl z-[100]">
 				<div>
 					<p>relays state</p>
-					<RelayStateIcon bind:pubkey />
+					<RelayStateIcon bind:readTrueArray />
 				</div>
 
 				<div class="arrow bg-surface-100-800-token" />

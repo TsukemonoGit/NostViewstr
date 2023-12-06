@@ -16,11 +16,13 @@ import {
 	type MapEventLists,
 	identifierListsMap,
 	type MapIdentifierList,
-	relayState
+	relayState,
+	connectingRelays
 } from './stores/bookmarkEvents';
 import { formatResults, getPub } from './nostrFunctions';
 import { getEventHash } from 'nostr-tools';
-import { nsec } from './stores/settings';
+import { nsec, pubkey_viewer } from './stores/settings';
+import { relaySet } from './stores/relays';
 
 let storedEventsData: MapEventLists;
 eventListsMap.subscribe((value) => {
@@ -33,7 +35,11 @@ identifierListsMap.subscribe((value) => {
 
 const rxNostr = createRxNostr();
 rxNostr.createConnectionStateObservable().subscribe((packet) => {
-	get(relayState).set(packet.from, packet.state);
+	const tmp = get(relayState);
+
+	tmp[packet.from] = packet.state;
+	relayState.set(tmp);
+
 	console.log(packet);
 	console.log(get(relayState));
 });
@@ -56,12 +62,12 @@ export async function StoreFetchFilteredEvents(
 	}
 ) {
 	// relayStateのすべてのキーに対して処理
-	for (const relayKey of get(relayState).keys()) {
-		if (!data.relays.includes(relayKey)) {
-			// data.relaysに含まれないrelayのエントリを削除
-			get(relayState).delete(relayKey);
-		}
-	}
+	// for (const relayKey of get(relayState).keys()) {
+	// 	if (!data.relays.includes(relayKey)) {
+	// 		// data.relaysに含まれないrelayのエントリを削除
+	// 		get(relayState).delete(relayKey);
+	// 	}
+	// }
 
 	let eventsData = get(eventListsMap);
 
@@ -96,7 +102,13 @@ export async function StoreFetchFilteredEvents(
 	console.log('[get states]', rxNostr.getAllRelayState());
 	//console.log(relays);
 
-	rxNostr.setRelays(data.relays);
+	//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
+	const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
+
+	rxNostr.setRelays(mergeRelays(viewerRelay, data.relays));
+
+	console.log('[get relays]', rxNostr.getRelays());
+	relayState.set(rxNostr.getAllRelayState());
 
 	const rxReq = createRxForwardReq();
 	rxReq.emit(data.filters);
@@ -229,6 +241,13 @@ export async function publishEventWithTimeout(
 		event.id = getEventHash(event);
 		console.log(event);
 
+		//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
+		const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
+
+		rxNostr.setRelays(mergeRelays(viewerRelay, relays));
+
+		console.log('[get relays]', rxNostr.getRelays());
+
 		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
 		const sec = get(nsec);
 		const result = await Promise.race([
@@ -279,4 +298,23 @@ export async function publishEventWithTimeout(
 	} catch (error) {
 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
 	}
+}
+
+function mergeRelays(
+	writeRelays: string[],
+	readRelays: string[]
+): { [url: string]: { read: boolean; write: boolean } } {
+	const result: { [url: string]: { read: boolean; write: boolean } } = {};
+
+	const uniqueRelays = Array.from(new Set([...writeRelays, ...readRelays]));
+
+	for (const url of uniqueRelays) {
+		result[url] = {
+			read: readRelays.includes(url),
+			write: writeRelays.includes(url)
+		};
+	}
+	connectingRelays.set(result);
+	console.log(result);
+	return result;
 }

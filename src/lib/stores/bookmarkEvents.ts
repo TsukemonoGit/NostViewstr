@@ -34,7 +34,15 @@ export const identifierListsMap = writable<MapIdentifierList>({});
 export const identifierKeysArray = writable<string[]>([]);
 export const eventListsMap = writable<MapEventLists>({});
 export const keysArray = writable<string[]>([]);
-export const relayState = writable(new Map<string, ConnectionState>());
+//export const relayState = writable(new Map<string, ConnectionState>());
+
+export const connectingRelays = writable<{
+	[url: string]: {
+		read: boolean;
+		write: boolean;
+	};
+}>();
+export const relayState = writable<{ [relayURL: string]: ConnectionState }>();
 //export const bookmarkEvents = writable<EventLists>({});
 //export const identifierList = writable<IdentifierList>({});
 

@@ -1,16 +1,16 @@
 <script lang="ts">
 	import type { ConnectionState } from 'rx-nostr';
-	import { relayState } from '$lib/stores/bookmarkEvents';
+	import { connectingRelays, relayState } from '$lib/stores/bookmarkEvents';
 	import UpdateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import { GetRelayState, ReconnectRelay } from '$lib/streamEventLists';
 	import { get, writable } from 'svelte/store';
 	import { relaySet } from '$lib/stores/relays';
 	//$: stateArray = Array.from($relayState.keys()).sort();
 
-	export let pubkey: string;
+	//export let pubkey: string;
 	// ボタンの無効化を管理するストア
 	const disabledButtons = writable(new Set<string>());
-
+	export let readTrueArray: string[];
 	let stateColor = {
 		'not-started': 'bg-surface-500',
 		starting: 'bg-surface-500',
@@ -23,7 +23,7 @@
 	};
 
 	let dotColor = (relay: string) => {
-		const relayStateValue = $relayState.get(relay);
+		const relayStateValue = $relayState[relay];
 		// try {
 		// 	console.log(GetRelayState(relay));
 		// } catch (error) {
@@ -57,12 +57,13 @@
 	}
 </script>
 
-{#each $relaySet[pubkey].bookmarkRelays as relay, index}
-	{#if $relayState.has(relay)}
+{#each readTrueArray as relay, index}
+	{#if $relayState.hasOwnProperty(relay)}
 		<div class="flex items-center gap-1 break-all">
-			<div class="h-4 w-4 rounded-full {dotColor(relay)}" />
-			{relay.length > 30 ? `${relay.slice(0, 30)}...` : relay}
-			{#if ($relayState.get(relay) === 'error' || $relayState.get(relay) === 'not-started') && !get(disabledButtons).has(relay)}
+			<div class="h-4 w-4 rounded-full {dotColor(relay)} " />
+			{relay.length > 30 ? `${relay.slice(0, 28)}...` : relay}
+
+			{#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started') && !get(disabledButtons).has(relay)}
 				<button
 					on:click={() => handleClickReconnect(relay)}
 					class="btn p-1 fill-white ml-auto"

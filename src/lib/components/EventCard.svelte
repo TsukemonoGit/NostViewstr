@@ -66,7 +66,12 @@
 			response: (res: { openList?: boolean; kind: number }) => {
 				if (res && res.openList) {
 					$listNum = 0;
-
+					console.log(res);
+					console.log(
+						`${window.location.origin}/${nip19.npubEncode(metadata.pubkey)}/${
+							res.kind
+						}`
+					);
 					goto(
 						`${window.location.origin}/${nip19.npubEncode(metadata.pubkey)}/${
 							res.kind

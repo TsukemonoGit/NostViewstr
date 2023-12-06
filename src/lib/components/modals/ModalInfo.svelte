@@ -268,7 +268,7 @@
 									</button>
 								{/if}
 							</p>
-							<p class="pt-1">List</p>
+							<!-- <p class="pt-1">List</p>
 							<ol
 								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
 							>
@@ -292,7 +292,7 @@
 										>
 									</li>
 								{/each}
-							</ol>
+							</ol> -->
 						</div>
 					</div>
 				{/if}

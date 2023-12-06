@@ -5,6 +5,7 @@
 	import { nip19 } from 'nostr-tools';
 
 	import { kinds } from '$lib/kind';
+	import { goto } from '$app/navigation';
 
 	export let parent: any;
 	let selectValue: string = Object.keys(kinds)[0];
@@ -30,6 +31,7 @@
 	};
 	$: console.log(res);
 	function onFormSubmit(): void {
+		console.log(res.kind);
 		if ($modalStore[0].response) $modalStore[0].response(res);
 
 		modalStore.close();
@@ -138,9 +140,17 @@
 						type="button"
 						class="btn variant-filled-secondary p-1"
 						on:click={() => {
-							res.openList = true;
-							res.kind = Number(selectValue);
-							onFormSubmit();
+							//res.openList = true;
+							//res.kind = Number(selectValue);
+							// if (res && res.openList) {
+
+							goto(
+								`${window.location.origin}/${nip19.npubEncode(
+									$modalStore[0]?.meta.metadata.pubkey
+								)}/${selectValue}`
+							);
+							modalStore.close();
+							//onFormSubmit();
 						}}>open Lists</button
 					>
 				</div>
