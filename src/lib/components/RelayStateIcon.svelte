@@ -12,13 +12,14 @@
 	const disabledButtons = writable(new Set<string>());
 
 	let stateColor = {
-		ongoing: 'bg-success-600',
+		'not-started': 'bg-surface-500',
+		starting: 'bg-surface-500',
+		ongoing: 'bg-success-600', //接続中
+		reconnecting: 'bg-warning-600',
+
 		error: 'bg-error-600',
-		rejected: 'bg-black',
-		terminated: 'bg-surface-600',
-		'not-started': 'bg-surface-700',
-		starting: 'bg-surface-400',
-		reconnecting: 'bg-warning-600'
+		rejected: 'bg-error-600',
+		terminated: 'bg-error-600'
 	};
 
 	let dotColor = (relay: string) => {
