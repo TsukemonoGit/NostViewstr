@@ -50,9 +50,9 @@
 
 {#each stateArray as relay, index}
 	{#if $relayState.has(relay)}
-		<div class="flex items-center gap-1">
+		<div class="flex items-center gap-1 break-all">
 			<div class="h-4 w-4 rounded-full {dotColor(relay)}" />
-			{relay}
+			{relay.length > 30 ? `${relay.slice(0, 30)}...` : relay}
 			{#if $relayState.get(relay) === 'error' || $relayState.get(relay) === 'not-started'}
 				<button
 					on:click={() => handleClickReconnect(relay)}
