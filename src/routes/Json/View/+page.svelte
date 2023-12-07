@@ -14,14 +14,7 @@
 	import { afterUpdate, onMount } from 'svelte';
 	import Header from '$lib/components/Header.svelte';
 
-	import {
-		initRelaySet,
-		// searchRelays,
-		// postRelays,
-		// bookmarkRelays,
-		// relayPubkey
-		relaySet
-	} from '$lib/stores/relays';
+	import { initRelaySet, relaySet } from '$lib/stores/relays';
 	import {
 		iconView,
 		isMulti,
@@ -35,7 +28,7 @@
 
 	import { afterNavigate } from '$app/navigation';
 	import PublishIcon from '@material-design-icons/svg/round/publish.svg?raw';
-	import { kindsValidTag } from '$lib/kind';
+
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
 	import type {
 		ModalComponent,

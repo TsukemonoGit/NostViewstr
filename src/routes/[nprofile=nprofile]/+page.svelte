@@ -10,6 +10,7 @@
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
 
 	import { kinds } from '$lib/kind';
+	import { nip19 } from 'nostr-tools';
 
 	export let data: PageData;
 
@@ -17,17 +18,7 @@
 	async function settingFunc() {
 		settings = true;
 	}
-	//$: console.log($relaySet[data.pubkey].bookmarkRelays);
-	// $: console.log($URLPreview);
-	// $: console.log($iconView);
-	// onMount(async () => {
-	// 	if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
-	// 		$pubkey_viewer = await getPub();
-	// 	}
-	// });
-	// onMount(async () => {
-	// 	console.log(await getRelays(data.pubkey));
-	// }); //await setRelays(testRelay);}}
+
 	let kind: number;
 	let selectValue: any;
 	console.log(selectValue);
@@ -37,12 +28,17 @@
 	}
 </script>
 
-<!-- <div class="break-all">
-	<p>npub:{$page.params.npub}</p>
-	<p>read:{$searchRelays}</p>
-	<p>write:{$postRelays}</p>
-	<p>kind:?</p>
-</div> -->
+<svelte:head>
+	<meta
+		name="description"
+		content="nostr pubkey:{nip19.npubEncode(data.pubkey)}"
+	/>
+
+	<meta
+		property="og:description"
+		content="pubkey:{nip19.npubEncode(data.pubkey)}"
+	/>
+</svelte:head>
 
 {#if !settings}
 	<div class="container h-full mx-auto flex justify-center items-center">

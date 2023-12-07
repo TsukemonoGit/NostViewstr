@@ -17,24 +17,8 @@
 	function settingFunc() {
 		//	settings = true;
 	}
-	// $: console.log($URLPreview);
-	// $: console.log($iconView);
-	// onMount(async () => {
-	// 	if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
-	// 		$pubkey_viewer = await getPub();
-	// 	}
-	// });
-	// onMount(async () => {
-	// 	console.log(await getRelays(data.pubkey));
-	// }); //await setRelays(testRelay);}}
 </script>
 
-<!-- <div class="break-all">
-	<p>npub:{$page.params.npub}</p>
-	<p>read:{$searchRelays}</p>
-	<p>write:{$postRelays}</p>
-	<p>kind:?</p>
-</div> -->
 <svelte:head>
 	<meta
 		name="description"

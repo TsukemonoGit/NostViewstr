@@ -22,6 +22,12 @@
 	}
 </script>
 
+<svelte:head>
+	<meta name="description" content="home" />
+
+	<meta property="og:description" content="home" />
+</svelte:head>
+
 {#if !settings}
 	<div class="container h-full mx-auto flex justify-center items-center">
 		<div class="mt-5">
