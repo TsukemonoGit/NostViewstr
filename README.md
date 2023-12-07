@@ -1,6 +1,6 @@
-# NostrViewstr
+# NostViewstr
 
-https://nostrviewstr.vercel.app/
+https://nostviewstr.vercel.app/
 
 第五弾 SvelteKit と Skeleton と Tailwindcss と Nostr と Nosvelte と rx-nostr とその他諸々の勉強
 

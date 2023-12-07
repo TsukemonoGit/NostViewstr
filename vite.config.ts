@@ -10,8 +10,8 @@ export default defineConfig({
 			strategies: 'generateSW',
 			useCredentials: true,
 			manifest: {
-				name: `ListViewstr`,
-				short_name: 'りすとびうあ',
+				name: `NostViewstr`,
+				short_name: 'のすとびうあ',
 				theme_color: '#533573',
 				icons: [
 					{
