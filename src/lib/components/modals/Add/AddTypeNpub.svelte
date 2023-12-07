@@ -6,8 +6,12 @@
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
 	export let onFormSubmit: any;
+	export let viewList: string[][]; //今見てるリスト（pub,prvもく別）重複チェック
+
 	let input: string;
+
 	async function onClickCheck() {
+		//有効かチェック
 		const check = await checkInputNpub(input);
 		if (check.error && check.message) {
 			const t = {
@@ -19,7 +23,22 @@
 			toastStore.trigger(t);
 			//		$nowProgress = false;
 			return;
-		} else if (check.tag) {
+		}
+
+		//重複チェック
+		const index = viewList.findIndex((tag) => tag[1] === check.tag?.[1]);
+		if (index !== -1) {
+			const t = {
+				message: $_('toast.invalidEmoji'),
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
+			return;
+		}
+
+		if (check.tag) {
 			res.tag = check.tag;
 			onFormSubmit();
 		}

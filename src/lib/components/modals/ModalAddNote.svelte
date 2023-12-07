@@ -173,14 +173,19 @@
 							<AddTypeNaddr {res} {parent} {onFormSubmit} />
 						{/if}
 						{#if includesP}
-							<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
+							<AddTypeNpub
+								{res}
+								{parent}
+								{onFormSubmit}
+								viewList={$modalStore[0].value.viewList}
+							/>{/if}
 						{#if includesEmoji}
 							<AddTypeEmoji
 								{res}
 								{parent}
 								{onFormSubmit}
-								event={$modalStore[0].value.event}
 								tag={$modalStore[0].value.tag}
+								viewList={$modalStore[0].value.viewList}
 							/>
 						{/if}
 						{#if includesRelay}

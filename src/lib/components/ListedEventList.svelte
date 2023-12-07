@@ -407,7 +407,8 @@
 				type: 'add',
 				kind: kind,
 				pubkey: pubkey,
-				event: $eventListsMap[pubkey][kind].get($keysArray[$listNum])
+				//event: $eventListsMap[pubkey][kind].get($keysArray[$listNum])
+				viewList: viewList
 			},
 			response: async (res: { btn: string; tag: string[] }) => {
 				console.log(res); //有効だったらタグになって帰ってきてほしい

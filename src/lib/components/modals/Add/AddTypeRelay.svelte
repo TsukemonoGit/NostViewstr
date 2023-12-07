@@ -11,7 +11,9 @@
 	export let tag: string[];
 	export let number: number;
 	export let viewList: string[][];
+
 	let input: string = tag ? tag[1] : '';
+
 	async function onClickCheck() {
 		//
 		input = input.trim();

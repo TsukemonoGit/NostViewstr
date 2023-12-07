@@ -7,7 +7,7 @@
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
 	export let onFormSubmit: any;
-	export let event: Nostr.Event;
+	export let viewList: string[][];
 	export let tag: string[];
 	let emojiUrl: string = tag ? tag[2] : '';
 	let emojiName: string = tag ? tag[1] : '';
@@ -18,7 +18,7 @@
 			return;
 		}
 
-		const index = event.tags.findIndex((tag) => tag[1] === emojiName);
+		const index = viewList.findIndex((tag) => tag[1] === emojiName);
 		if (index !== -1) {
 			//同じリストに同じ名前の絵文字があったら無効
 			const t = {
