@@ -77,52 +77,11 @@
 		kind = Number(event.currentTarget.value);
 		console.log(kind);
 	}
-
-	// let files: FileList | undefined;
-	// let fileData: File | undefined;
-	// const allowedExtensions = ['.json'];
-	// const handleFileChange = () => {
-	// 	const selectedFile = files?.[0];
-
-	// 	if (selectedFile) {
-	// 		const fileExtension = selectedFile.name.split('.').pop()?.toLowerCase();
-
-	// 		if (!allowedExtensions.includes(`.${fileExtension}`)) {
-	// 			const t = {
-	// 				message: $_('toast.invalidJson'),
-	// 				timeout: 3000,
-	// 				background: 'bg-orange-500 text-white width-filled '
-	// 			};
-
-	// 			toastStore.trigger(t);
-
-	// 			// ファイル選択をクリア
-	// 			files = undefined;
-	// 			return;
-	// 		}
-	// 		fileData = selectedFile;
-	// 		console.log(fileData);
-	// 	}
-	// };
-	// $: console.log(fileData);
 </script>
-
-<!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
 
 <div class="container h-full mx-auto flex justify-center items-center">
 	<div class="space-y-5">
 		<h1 class="h1">{$_('main.title')}</h1>
-		<!-- <p>Start by exploring:</p>
-		<ul>
-			<li>
-				<code class="code">/src/routes/+layout.svelte</code> - barebones layout
-			</li>
-			<li><code class="code">/src/app.postcss</code> - app wide css</li>
-			<li>
-				<code class="code">/src/routes/+page.svelte</code> - this page, you can replace
-				the contents
-			</li>
-		</ul> -->
 
 		<div class="space-t-5 min-w-[80vw]">
 			<h5 class="h5">{$_('main.input_public_key')}</h5>

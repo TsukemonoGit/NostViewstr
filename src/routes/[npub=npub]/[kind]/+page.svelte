@@ -8,6 +8,7 @@
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
 	import { URLPreview } from '$lib/stores/settings';
+	import { nip19 } from 'nostr-tools';
 
 	export let data: PageData;
 
@@ -34,6 +35,19 @@
 	<p>write:{$postRelays}</p>
 	<p>kind:?</p>
 </div> -->
+<svelte:head>
+	<meta
+		name="description"
+		content="nostr kind:{data.kind}
+pubkey:{nip19.npubEncode(data.pubkey)}"
+	/>
+
+	<meta
+		property="og:description"
+		content="kind:{data.kind}
+pubkey:{nip19.npubEncode(data.pubkey)}"
+	/>
+</svelte:head>
 
 {#if $URLPreview === undefined}
 	<div class="container h-full mx-auto flex justify-center items-center">
