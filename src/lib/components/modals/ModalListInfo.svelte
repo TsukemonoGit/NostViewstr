@@ -20,6 +20,18 @@
 
 		modalStore.close();
 	}
+
+	$: console.log($identifierListsMap);
+	$: console.log(pubkey);
+	$: console.log(kind);
+	$: console.log($identifierKeysArray[$listNum]);
+	$: console.log(
+		$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
+	);
+	$: console.log(
+		$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
+			?.title
+	);
 	// Form Data
 	let res: {
 		title?: string;
@@ -28,15 +40,9 @@
 		share?: boolean;
 		update?: boolean;
 	} = {
-		title:
-			$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
-				?.title ?? '',
-		image:
-			$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
-				?.image ?? '',
-		description:
-			$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
-				?.description ?? ''
+		title: $modalStore[0]?.value?.title,
+		image: $modalStore[0]?.value?.image,
+		description: $modalStore[0]?.value?.description
 	};
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';

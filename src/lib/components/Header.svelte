@@ -108,7 +108,22 @@
 			// Provide arbitrary metadata to your modal instance:
 			title: $_('modal.listInfo.title'),
 
-			value: { pubkey: pubkey },
+			value: {
+				pubkey: pubkey,
+				kind: kind,
+				title:
+					$identifierListsMap?.[pubkey]?.[kind]?.get(
+						$identifierKeysArray[$listNum]
+					)?.title ?? '',
+				image:
+					$identifierListsMap?.[pubkey]?.[kind]?.get(
+						$identifierKeysArray[$listNum]
+					)?.image ?? '',
+				description:
+					$identifierListsMap?.[pubkey]?.[kind]?.get(
+						$identifierKeysArray[$listNum]
+					)?.description ?? ''
+			},
 			// Returns the updated response value
 			response: async (res) => {
 				console.log(res);
@@ -116,7 +131,7 @@
 					if (res.update) {
 						$nowProgress = true;
 						await updateListInfo(res);
-						$nowProgress = true;
+						$nowProgress = false;
 					} else if (res.share) {
 						//postNoteModalをだす
 						openModaltoShare();
@@ -286,7 +301,7 @@
 	<div
 		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-hidden rounded-b"
 	>
-		<div>
+		<div class="max-w-full overflow-hidden">
 			<!-- {#if JSON}【JSON MODE】 kind:{kind}
 				{#if kinds[kind]} ({kinds[kind]}) {/if} -->
 			{#if !JSON}
@@ -303,8 +318,8 @@
 			{/if}
 
 			{#if $identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])?.identifier}
-				<div class="text-xs">
-					{#if kind === 30003 && !JSON}
+				<div class="text-xs box-border break-all max-w-1/2 overflow-x-hidden">
+					{#if kind >= 30000 && kind < 40000 && !JSON}<!-- 30003-->
 						{#if !$identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title || $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title === ''}
 							<button
 								class=" flex items-center pt-1 overflow-hidden min-w-[7em] text-left"
@@ -365,7 +380,7 @@
 						{/if}
 					{:else}
 						<!---->
-						<div class=" h4 p-1">
+						<div class="overflow-x-hidden h4 p-1 truncate overflow-x-hidden">
 							{$identifierListsMap[pubkey][kind].get(
 								$identifierKeysArray[$listNum]
 							)?.identifier}
