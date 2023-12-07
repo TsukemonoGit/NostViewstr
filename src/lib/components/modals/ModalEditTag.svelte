@@ -14,7 +14,7 @@
 	export let selectedValue: number;
 
 	$: pubkey = $modalStore[0]?.value?.pubkey;
-	$: kind = $modalStore[0]?.value?.kind;
+	$: kind = $modalStore[0]?.value?.kind as number;
 
 	// Form Data
 	let res: {
@@ -173,7 +173,7 @@
 								bind:value={selectedValue}
 								on:change={handleChange}
 							>
-								{#each $identifierKeysArray[pubkey][kind] as tag, index}
+								{#each $identifierKeysArray as tag, index}
 									<option value={index}
 										>{$identifierListsMap[pubkey][kind].get(tag)
 											?.identifier}</option

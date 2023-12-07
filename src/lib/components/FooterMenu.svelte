@@ -235,30 +235,6 @@
 						[pubkey]: { [kind]: new Map([[value.id, res.event]]) }
 					});
 				}
-
-				// //IdentifierListも更新する
-				// const identifierListData = get(identifierList);
-
-				// const tag = res.event.tags.find((tag) => tag[0] === 'd');
-				// const title = res.event.tags.find((tag) => tag[0] === 'title');
-				// const image = res.event.tags.find((tag) => tag[0] === 'image');
-				// const description = res.event.tags.find(
-				// 	(tag) => tag[0] === 'description'
-				// );
-				// const newIdentifierList: Identifiers = {
-				// 	identifier: tag ? tag[1] : undefined,
-				// 	title: title ? title[1] : undefined,
-				// 	image: image ? image[1] : undefined,
-				// 	description: description ? description[1] : undefined
-				// };
-				// if (identifierListData !== undefined) {
-				// 	identifierListData[pubkey][kind].push(newIdentifierList);
-				// 	identifierList.set(identifierListData);
-				// } else {
-				// 	identifierList.set({ [pubkey]: { [kind]: [newIdentifierList] } });
-				// }
-				// identifierListData[pubkey][kind][num] = newIdentifierList;
-				// identifierList.set(identifierListData);
 			}
 		} else {
 			const t = {
@@ -304,6 +280,13 @@
 			//const tmpId = get(identifierListsMap);
 
 			$eventListsMap[pubkey][kind].delete($keysArray[tagIndex]); //削除
+			$identifierListsMap[pubkey][kind].delete($keysArray[tagIndex]); //IDListも
+			$identifierKeysArray =
+				$identifierListsMap[pubkey] && $identifierListsMap[pubkey][kind]
+					? Array.from($identifierListsMap[pubkey][kind].keys()).sort((a, b) =>
+							a.localeCompare(b)
+					  )
+					: [];
 
 			//IDリストも更新
 			//tmpId[pubkey][kind].splice(tagIndex, 1); //削除
