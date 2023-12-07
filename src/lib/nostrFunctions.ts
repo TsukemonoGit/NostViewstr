@@ -1275,22 +1275,31 @@ export function isOneDimensionalArray(arr: string[]) {
 export async function addPrivates(
 	content: string,
 	pubkey: string,
-	tags: string[][]
+	tags: string[][],
+	check: boolean
 ): Promise<string> {
 	console.log(content, pubkey, tags);
 	let array: string[][] = [];
 	if (content.length > 0) {
 		try {
 			const privateContent = await nip04De(pubkey, content);
-			const parsedContent = JSON.parse(privateContent);
+			const parsedContent: string[][] = JSON.parse(privateContent);
 			if (Array.isArray(parsedContent) && Array.isArray(parsedContent[0])) {
+				if (check) {
+					tags.map((tag) => {
+						const index = parsedContent.findIndex((item) => item[1] === tag[1]);
+						if (index !== -1) {
+							throw Error(`same name exists`);
+						}
+					});
+				}
 				parsedContent.push(...tags);
 				array = parsedContent;
 			} else {
 				throw new Error('content is not array');
 			}
-		} catch (error) {
-			throw new Error('Decode error');
+		} catch (error: any) {
+			throw new Error(error);
 		}
 	} else {
 		array = tags;

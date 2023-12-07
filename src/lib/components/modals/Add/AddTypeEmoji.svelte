@@ -4,11 +4,12 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import type { Nostr } from 'nosvelte';
 
-	export let res: { btn: string; tag: string[] };
+	export let res: { btn: string; tag: string[]; check: boolean };
 	export let parent: any;
 	export let onFormSubmit: any;
-	export let viewList: string[][];
+	//export let viewList: string[][];
 	export let tag: string[];
+
 	let emojiUrl: string = tag ? tag[2] : '';
 	let emojiName: string = tag ? tag[1] : '';
 
@@ -18,19 +19,20 @@
 			return;
 		}
 
-		const index = viewList.findIndex((tag) => tag[1] === emojiName);
-		if (index !== -1) {
-			//同じリストに同じ名前の絵文字があったら無効
-			const t = {
-				message: $_('toast.invalidEmoji'),
-				timeout: 3000,
-				background: 'bg-orange-500 text-white width-filled '
-			};
+		// const index = viewList.findIndex((tag) => tag[1] === emojiName);
+		// if (index !== -1) {
+		// 	//同じリストに同じ名前の絵文字があったら無効
+		// 	const t = {
+		// 		message: $_('toast.invalidEmoji'),
+		// 		timeout: 3000,
+		// 		background: 'bg-orange-500 text-white width-filled '
+		// 	};
 
-			toastStore.trigger(t);
-			return;
-		}
+		// 	toastStore.trigger(t);
+		// 	return;
+		// }
 		res.tag = ['emoji', emojiName, emojiUrl];
+		res.check = true;
 		onFormSubmit();
 	}
 </script>
