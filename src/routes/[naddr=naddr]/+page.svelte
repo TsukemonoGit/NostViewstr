@@ -1,25 +1,12 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
 
-	import {
-		URLPreview,
-		iconView,
-		nowProgress,
-		pubkey_viewer
-	} from '$lib/stores/settings';
-	import {
-		LightSwitch,
-		ProgressBar,
-		ProgressRadial
-	} from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
-	import { relaySet } from '$lib/stores/relays';
-	import { onMount } from 'svelte';
-	import { getPub, getRelays } from '$lib/nostrFunctions';
+
+	import { nip19 } from 'nostr-tools';
 
 	export let data: PageData;
 	const kind = data.kind;
@@ -41,12 +28,19 @@
 	// }); //await setRelays(testRelay);}}
 </script>
 
-<!-- <div class="break-all">
-	<p>npub:{$page.params.npub}</p>
-	<p>read:{$searchRelays}</p>
-	<p>write:{$postRelays}</p>
-	<p>kind:?</p>
-</div> -->
+<svelte:head>
+	<meta
+		name="description"
+		content="nostr kind:{data.kind} ID:{identifier}
+pubkey:{nip19.npubEncode(data.pubkey)}"
+	/>
+
+	<meta
+		property="og:description"
+		content="kind:{data.kind} ID:{identifier}
+pubkey:{nip19.npubEncode(data.pubkey)}"
+	/>
+</svelte:head>
 
 {#if !settings}
 	<Settings {settingFunc} />
