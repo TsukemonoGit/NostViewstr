@@ -162,7 +162,6 @@
 								{parent}
 								{onFormSubmit}
 								tag={$modalStore[0].value.tag}
-								number={$modalStore[0].value.number}
 							/>
 						{/if}
 						{#if includesA && includesE}

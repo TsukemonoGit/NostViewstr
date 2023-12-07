@@ -708,15 +708,14 @@
 				pubkey: pubkey,
 				event: $eventListsMap[pubkey][kind].get($keysArray[listNumber]),
 				tag: tagArray,
-				number: number,
-				viewList: viewList //同じタグがあるかどうかチェック（pub,prvたんいで）
+				number: number
 			},
 			response: async (res: { btn: string; tag: string[] }) => {
-				console.log(res); //有効だったらタグになって帰ってきてほしい
-				if (res) {
+				console.log(JSON.stringify(res.tag) !== JSON.stringify(tagArray)); //有効だったらタグになって帰ってきてほしい
+				if (res && JSON.stringify(res.tag) !== JSON.stringify(tagArray)) {
 					res.btn = bkm; //編集だから元のボタンといっしょだから
 					$nowProgress = true;
-					await EditTagEvent(listNumber, res, number);
+					//	await EditTagEvent(listNumber, res, number);
 					$nowProgress = false;
 				}
 			}
