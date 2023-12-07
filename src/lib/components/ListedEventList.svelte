@@ -114,6 +114,7 @@
 		if (!isOnMount) {
 			console.log('afterNavigate');
 			isOnMount = true; // onMountが呼ばれたことを示すフラグを変更
+
 			$listNum = 0;
 			$pageNum = 0;
 			await init();
@@ -135,6 +136,7 @@
 
 	export async function bkminit(pub: string) {
 		$listNum = 0;
+
 		bkm = 'pub';
 		$isMulti = false;
 		console.log('bkminit');
@@ -189,7 +191,7 @@
 			relays: $relaySet[pubkey].bookmarkRelays,
 			filters: filter
 		});
-
+		listedEventRef.viewUpdate(); //
 		toastStore.close(searchingEventsToast);
 	}
 

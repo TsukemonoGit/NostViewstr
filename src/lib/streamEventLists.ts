@@ -23,7 +23,7 @@ import { formatResults, getPub } from './nostrFunctions';
 import { getEventHash } from 'nostr-tools';
 import { nsec, pubkey_viewer } from './stores/settings';
 import { relaySet } from './stores/relays';
-
+import type { ConnectionState } from 'rx-nostr';
 let storedEventsData: MapEventLists;
 eventListsMap.subscribe((value) => {
 	storedEventsData = value;
@@ -35,10 +35,15 @@ identifierListsMap.subscribe((value) => {
 
 const rxNostr = createRxNostr();
 rxNostr.createConnectionStateObservable().subscribe((packet) => {
-	const tmp = get(relayState);
+	let tmp: { [relayURL: string]: ConnectionState } = get(relayState);
 
-	tmp[packet.from] = packet.state;
-	relayState.set(tmp);
+	if (tmp) {
+		tmp[packet.from] = packet.state;
+		relayState.set(tmp);
+	} else {
+		tmp = Object.assign({}, tmp, { [packet.from]: packet.state });
+		relayState.set(tmp);
+	}
 
 	console.log(packet);
 	console.log(get(relayState));
