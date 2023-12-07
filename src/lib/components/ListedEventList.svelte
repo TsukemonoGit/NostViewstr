@@ -678,6 +678,7 @@
 			}
 			const deleteRes = await deleteNotesfromLists(from.tag, indexes);
 			//		$nowProgress = false;
+			listedEventRef.viewUpdate();
 		}
 	}
 
