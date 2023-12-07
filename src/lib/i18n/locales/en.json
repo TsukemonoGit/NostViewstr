@@ -110,7 +110,7 @@
     "create": "Create & AddNote",
     "create_to1": "Create and Add Note to [",
     "create_to2": "]",
-    "create_body": "enter kind:1's content"
+    "create_body": "enter kind:1's content (If you add it to Private, kind1 will be published.)"
   },
   "ModalEditTag": {
     "delete_body": "Delete list"

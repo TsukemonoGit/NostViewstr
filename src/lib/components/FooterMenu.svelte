@@ -287,7 +287,12 @@
 							a.localeCompare(b)
 					  )
 					: [];
-
+			$keysArray =
+				$eventListsMap[pubkey] && $eventListsMap[pubkey][kind]
+					? Array.from($eventListsMap[pubkey][kind].keys()).sort((a, b) =>
+							a.localeCompare(b)
+					  )
+					: [];
 			//IDリストも更新
 			//tmpId[pubkey][kind].splice(tagIndex, 1); //削除
 			//	identifierList.set(tmpId);
