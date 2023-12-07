@@ -1,6 +1,6 @@
-# nostr-bookmark-viewer5
+# NostrViewstr
 
-https://nostr-bookmark-viewer5.vercel.app/
+https://nostrviewstr.vercel.app/
 
 第五弾 SvelteKit と Skeleton と Tailwindcss と Nostr と Nosvelte と rx-nostr とその他諸々の勉強
 

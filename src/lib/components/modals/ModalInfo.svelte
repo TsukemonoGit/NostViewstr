@@ -346,7 +346,7 @@
 				class="btn p-0 badge-icon w-[24px] h-[24px] variant-filled-surface rounded-full"
 				rel="external noreferrer"
 				target="_blank"
-				href="https://github.com/TsukemonoGit/nostr-bookamrk-viewer5"
+				href="https://github.com/TsukemonoGit/nostrviewstr"
 			>
 				<img
 					src={githubIconWhite}
