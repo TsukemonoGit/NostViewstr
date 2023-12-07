@@ -470,12 +470,16 @@
 			if (bkmk) {
 				const tagsToAdd = () => {
 					if (btn === 'pub') {
-						idTagList.map((tag) => {
-							const index = bkmk?.tags.findIndex((item) => item[1] === tag[1]);
-							if (index !== -1) {
-								throw Error(`$_('toast.invalidEmoji')`);
-							}
-						});
+						if (check) {
+							idTagList.map((tag) => {
+								const index = bkmk?.tags.findIndex(
+									(item) => item[1] === tag[1]
+								);
+								if (index !== -1) {
+									throw Error(`$_('toast.invalidEmoji')`);
+								}
+							});
+						}
 						return [...bkmk.tags, ...idTagList];
 					} else {
 						return bkmk.tags;
