@@ -1,134 +1,135 @@
 {
-	"popup": {
-		"Share": "nostrで共有",
-		"delete": "削除",
-		"open": "外部サイトで開く",
-		"move": "別のリストに移動",
-		"pub": "公開リスト",
-		"prv": "非公開リスト"
-	},
-	"PostNote": {
-		"copied": "クリップボードにコピーしました",
-		"failed_copy": "コピーに失敗しました",
-		"popup_copy": "クリップボードにコピー",
-		"p_tag": "引用元のpubkeyを含める"
-	},
-	"modal": {
-		"failed_copy": "コピーに失敗しました",
-		"postNote": {
-			"title": "Post Note"
-		},
-		"tagList": {
-			"title": "リスト一覧",
-			"noList": "no list 編集ボタンから新しいリストを作成できます",
-			"editTag": "編集"
-		},
-		"editTags": {
-			"title": "リストの編集",
-			"body": "新規リストの作成",
-			"editTag": "編集"
-		},
-		"deleteTag": {
-			"title": "リストの削除",
-			"body": "下記リストを削除します"
-		},
-		"info": {
-			"title": "設定",
-			"relay": {
-				"list": "読み込み用",
-				"search": "ノートの検索用",
-				"title": "設定中のリレー",
-				"white": "書込用リレー"
-			},
-			"light_switch": "表示モード",
-			"share": "myListたち(閲覧中のURL)をnostrで共有",
-			"urlandIcon": "アイコン、URLプレビューの表示・非表示",
-			"urlandIconOff": "軽量モード",
-			"urlandIconOn": "通常モード",
-			"contentwarning": "コンテントワーニングの全表示"
-		},
-		"listInfo": {
-			"ex": {
-				"title": "(例: 本情報)",
-				"image": "(例: https://example.com/image.webp)",
-				"summary": "(例: みんなのおすすめの本情報たち)"
-			},
-			"title": "情報"
-		},
-		"addNote_body": "'note' , 'nevent' , 'nostr:' or 'naddr'のいずれかから始まるIDを入力してください.",
-		"deleteNote": {
-			"content": "(空のコンテント)",
-			"title": "削除",
-			"body": "以下のノートを削除"
-		},
-		"moveNote": {
-			"title": "ノートの移動",
-			"body_from": "[",
-			"body_to": "]からの移動先を選択してください"
-		},
-		"search": {
-			"title": "検索"
-		},
-		"publishjson": {
-			"body": "修正したい所があれば修正してPublishをクリック（generated欄は自動で更新されます）",
-			"title": "データをリレーに書き込む"
-		},
-		"addNote": {
-			"edit": "編集",
-			"add": "追加"
-		}
-	},
-	"created_at": "最終更新日時",
-	"public": "公開",
-	"private": "非公開",
-	"ModalEditTag": {
-		"delete_body": "リストの削除"
-	},
-	"msg": {
-		"nanka": "ログインエラー"
-	},
-	"ModalAddNote": {
-		"add_note": "リスト\nに追加",
-		"add_note_to1": "[",
-		"add_note_to2": "] に追加",
-		"add_note_tag": "（タグから）",
-		"create": "ノートを作成して追加",
-		"create_to1": "ノートを作成して、[",
-		"create_to2": "]に追加",
-		"create_body": "ポストする内容を入力してください（kind:1ノートのcontent）（privateに追加してもkind:1は公開されます）"
-	},
-	"main": {
-		"title": "のすとびうあ",
-		"input_public_key": "🔑公開鍵(public key)"
-	},
-	"mode": {
-		"normal": "通常モード",
-		"light": "通信量軽量モード",
-		"light_exp": "【通信量軽量モード】",
-		"light_switch": "ライトモード / ダークモードの切り替え",
-		"normal_exp": "【通常モード】",
-		"normal_exp2": "URLプレビュー(OGP), プロフィールアイコンが表示されます。",
-		"light_exp2": "URLプレビュー(OGP), プロフィールアイコンが表示されません。（通信量が削減できます）",
-		"viewMode": "表示モードを選択してください"
-	},
-	"modalEditTag": {
-		"list": {
-			"title": "追加情報（あとから変更可能）",
-			"ID": "（必須/変更不可/英数字のみ入力可能）"
-		}
-	},
-	"toast": {
-		"failed_publish": "書き込みに失敗しました",
-		"invalidtag": "無効なタグです",
-		"invalidJson": "許可されていないファイル形式です。JSONファイルを選択してください",
-		"selectJson": "JSONファイルを選択してください",
-		"checkJson": "無効なJSONファイルです",
-		"failed_npub": "公開鍵を確認してください",
-		"invalidEmoji": "すでに同じ名前のものが存在します",
-		"relaySearching": "リレー取得中",
-		"eventSearching": "イベント取得中",
-		"invalidEvent": "無効なイベントです",
-		"checkRelay": "リレーアドレスを確認してください"
-	},
-	"icon_description": "アイコンについて"
+  "popup": {
+    "Share": "nostrで共有",
+    "delete": "削除",
+    "open": "外部サイトで開く",
+    "move": "別のリストに移動",
+    "pub": "公開リスト",
+    "prv": "非公開リスト"
+  },
+  "PostNote": {
+    "copied": "クリップボードにコピーしました",
+    "failed_copy": "コピーに失敗しました",
+    "popup_copy": "クリップボードにコピー",
+    "p_tag": "引用元のpubkeyを含める"
+  },
+  "modal": {
+    "failed_copy": "コピーに失敗しました",
+    "postNote": {
+      "title": "Post Note"
+    },
+    "tagList": {
+      "title": "リスト一覧",
+      "noList": "no list 編集ボタンから新しいリストを作成できます",
+      "editTag": "編集"
+    },
+    "editTags": {
+      "title": "リストの編集",
+      "body": "新規リストの作成",
+      "editTag": "編集"
+    },
+    "deleteTag": {
+      "title": "リストの削除",
+      "body": "下記リストを削除します"
+    },
+    "info": {
+      "title": "設定",
+      "relay": {
+        "list": "読み込み用",
+        "search": "ノートの検索用",
+        "title": "設定中のリレー",
+        "white": "書込用リレー"
+      },
+      "light_switch": "表示モード",
+      "share": "myListたち(閲覧中のURL)をnostrで共有",
+      "urlandIcon": "アイコン、URLプレビューの表示・非表示",
+      "urlandIconOff": "軽量モード",
+      "urlandIconOn": "通常モード",
+      "contentwarning": "コンテントワーニングの全表示",
+      "shareNaddr": "List (naddr) をnostrで共有"
+    },
+    "listInfo": {
+      "ex": {
+        "title": "(例: 本情報)",
+        "image": "(例: https://example.com/image.webp)",
+        "summary": "(例: みんなのおすすめの本情報たち)"
+      },
+      "title": "情報"
+    },
+    "addNote_body": "'note' , 'nevent' , 'nostr:' or 'naddr'のいずれかから始まるIDを入力してください.",
+    "deleteNote": {
+      "content": "(空のコンテント)",
+      "title": "削除",
+      "body": "以下のノートを削除"
+    },
+    "moveNote": {
+      "title": "ノートの移動",
+      "body_from": "[",
+      "body_to": "]からの移動先を選択してください"
+    },
+    "search": {
+      "title": "検索"
+    },
+    "publishjson": {
+      "body": "修正したい所があれば修正してPublishをクリック（generated欄は自動で更新されます）",
+      "title": "データをリレーに書き込む"
+    },
+    "addNote": {
+      "edit": "編集",
+      "add": "追加"
+    }
+  },
+  "created_at": "最終更新日時",
+  "public": "公開",
+  "private": "非公開",
+  "ModalEditTag": {
+    "delete_body": "リストの削除"
+  },
+  "msg": {
+    "nanka": "ログインエラー"
+  },
+  "ModalAddNote": {
+    "add_note": "リスト\nに追加",
+    "add_note_to1": "[",
+    "add_note_to2": "] に追加",
+    "add_note_tag": "（タグから）",
+    "create": "ノートを作成して追加",
+    "create_to1": "ノートを作成して、[",
+    "create_to2": "]に追加",
+    "create_body": "ポストする内容を入力してください（kind:1ノートのcontent）（privateに追加してもkind:1は公開されます）"
+  },
+  "main": {
+    "title": "のすとびうあ",
+    "input_public_key": "🔑公開鍵(public key)"
+  },
+  "mode": {
+    "normal": "通常モード",
+    "light": "通信量軽量モード",
+    "light_exp": "【通信量軽量モード】",
+    "light_switch": "ライトモード / ダークモードの切り替え",
+    "normal_exp": "【通常モード】",
+    "normal_exp2": "URLプレビュー(OGP), プロフィールアイコンが表示されます。",
+    "light_exp2": "URLプレビュー(OGP), プロフィールアイコンが表示されません。（通信量が削減できます）",
+    "viewMode": "表示モードを選択してください"
+  },
+  "modalEditTag": {
+    "list": {
+      "title": "追加情報（あとから変更可能）",
+      "ID": "（必須/変更不可/英数字のみ入力可能）"
+    }
+  },
+  "toast": {
+    "failed_publish": "書き込みに失敗しました",
+    "invalidtag": "無効なタグです",
+    "invalidJson": "許可されていないファイル形式です。JSONファイルを選択してください",
+    "selectJson": "JSONファイルを選択してください",
+    "checkJson": "無効なJSONファイルです",
+    "failed_npub": "公開鍵を確認してください",
+    "invalidEmoji": "すでに同じ名前のものが存在します",
+    "relaySearching": "リレー取得中",
+    "eventSearching": "イベント取得中",
+    "invalidEvent": "無効なイベントです",
+    "checkRelay": "リレーアドレスを確認してください"
+  },
+  "icon_description": "アイコンについて"
 }

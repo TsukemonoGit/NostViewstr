@@ -37,10 +37,12 @@
 
 	let res: {
 		share: boolean;
+		shareNaddr: boolean;
 		openJson: boolean;
 		openMyJson: boolean;
 	} = {
 		share: false,
+		shareNaddr: false,
 		openJson: false,
 		openMyJson: false
 	};
@@ -54,7 +56,7 @@
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 my-2';
 	const cHeader = 'text-2xl font-bold';
 	//	let copyData: string = 'test';
-	let copied = false;
+	//let copied = false;
 
 	async function onClickLogin() {
 		try {
@@ -179,13 +181,24 @@
 			{$_('modal.info.share')}
 			<button
 				class="btn-icon btn-icon-sm m-0 p-0 variant-filled-primary fill-white"
-				disabled={copied}
 				on:click={() => {
 					res.share = true;
 					onFormSubmit();
 				}}>{@html shareIcon}</button
 			>
 		</div>
+		<!--NADDRで共有-->
+		<div class="flex gap-2">
+			{$_('modal.info.shareNaddr')}
+			<button
+				class="btn-icon btn-icon-sm m-0 p-0 variant-filled-primary fill-white"
+				on:click={() => {
+					res.shareNaddr = true;
+					onFormSubmit();
+				}}>{@html shareIcon}</button
+			>
+		</div>
+
 		<!--きょうゆう-->
 		<!-- <div>
 			list name: {$identifierList[$listNum].identifier}

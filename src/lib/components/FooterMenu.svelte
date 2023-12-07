@@ -7,7 +7,7 @@
 		nowProgress,
 		pubkey_viewer
 	} from '$lib/stores/settings';
-	import type { Event as NostrEvent } from 'nostr-tools';
+	import { nip19, type Event as NostrEvent } from 'nostr-tools';
 	import Setting from '@material-design-icons/svg/round/settings.svg?raw';
 	import firstIcon from '@material-design-icons/svg/round/first_page.svg?raw';
 	import lastIcon from '@material-design-icons/svg/round/last_page.svg?raw';
@@ -335,11 +335,30 @@
 				pubkey: pubkey,
 				relaySet: $relaySet[pubkey]
 			},
-			response: (res) => {
+			response: (res: {
+				share: boolean;
+				shareNaddr: boolean;
+				openJson: boolean;
+				openMyJson: boolean;
+			}) => {
 				if (res) {
-					if (res.share) {
-						const url = window.location.href;
-						const tags = [['r', url]];
+					if (res.share || res.shareNaddr) {
+						const address: nip19.AddressPointer = {
+							identifier:
+								$identifierListsMap?.[pubkey]?.[kind].get(
+									$identifierKeysArray[$listNum]
+								)?.identifier ?? '',
+							pubkey: pubkey,
+							kind: kind,
+							relays: $relaySet[pubkey]?.bookmarkRelays
+						};
+
+						const url = res.share
+							? window.location.href
+							: window.location.origin + '/' + nip19.naddrEncode(address);
+						const tags = res.share
+							? [['r', url]]
+							: ['a', `${kind}:${pubkey}:${address.identifier}`, ['r', url]];
 						console.log(tags);
 						const modal: ModalSettings = {
 							type: 'component',
