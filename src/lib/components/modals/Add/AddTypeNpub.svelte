@@ -3,10 +3,11 @@
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 
-	export let res: { btn: string; tag: string[] };
+	export let res: { btn: string; tag: string[]; check: boolean };
 	export let parent: any;
 	export let onFormSubmit: any;
-	export let viewList: string[][]; //今見てるリスト（pub,prvもく別）重複チェック
+
+	//export let viewList: string[][]; //今見てるリスト（pub,prvもく別）重複チェック
 
 	let input: string;
 
@@ -22,24 +23,26 @@
 
 			toastStore.trigger(t);
 			//		$nowProgress = false;
+
 			return;
 		}
 
-		//重複チェック
-		const index = viewList.findIndex((tag) => tag[1] === check.tag?.[1]);
-		if (index !== -1) {
-			const t = {
-				message: $_('toast.invalidEmoji'),
-				timeout: 3000,
-				background: 'bg-orange-500 text-white width-filled '
-			};
+		// //重複チェック
+		// const index = viewList.findIndex((tag) => tag[1] === check.tag?.[1]);
+		// if (index !== -1) {
+		// 	const t = {
+		// 		message: $_('toast.invalidEmoji'),
+		// 		timeout: 3000,
+		// 		background: 'bg-orange-500 text-white width-filled '
+		// 	};
 
-			toastStore.trigger(t);
-			return;
-		}
+		// 	toastStore.trigger(t);
+		// 	return;
+		// }
 
 		if (check.tag) {
 			res.tag = check.tag;
+			res.check = true;
 			onFormSubmit();
 		}
 	}

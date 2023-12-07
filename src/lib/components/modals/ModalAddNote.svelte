@@ -25,9 +25,10 @@
 		: '';
 	let content: string;
 	// Form Data
-	const res: { btn: string; tag: string[] } = {
+	const res: { btn: string; tag: string[]; check: boolean } = {
 		btn: 'pub',
-		tag: []
+		tag: [],
+		check: false
 		// value: '',
 		// btn: 'pub',
 		// create: false,
@@ -162,7 +163,6 @@
 								{onFormSubmit}
 								tag={$modalStore[0].value.tag}
 								number={$modalStore[0].value.number}
-								viewList={$modalStore[0].value.viewList}
 							/>
 						{/if}
 						{#if includesA && includesE}
@@ -173,19 +173,13 @@
 							<AddTypeNaddr {res} {parent} {onFormSubmit} />
 						{/if}
 						{#if includesP}
-							<AddTypeNpub
-								{res}
-								{parent}
-								{onFormSubmit}
-								viewList={$modalStore[0].value.viewList}
-							/>{/if}
+							<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
 						{#if includesEmoji}
 							<AddTypeEmoji
 								{res}
 								{parent}
 								{onFormSubmit}
 								tag={$modalStore[0].value.tag}
-								viewList={$modalStore[0].value.viewList}
 							/>
 						{/if}
 						{#if includesRelay}

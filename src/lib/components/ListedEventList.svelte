@@ -406,12 +406,13 @@
 			value: {
 				type: 'add',
 				kind: kind,
-				pubkey: pubkey,
+				pubkey: pubkey
 				//event: $eventListsMap[pubkey][kind].get($keysArray[$listNum])
-				viewList: viewList
+				//	viewList: viewList
 			},
-			response: async (res: { btn: string; tag: string[] }) => {
+			response: async (res: { btn: string; tag: string[]; check: boolean }) => {
 				console.log(res); //有効だったらタグになって帰ってきてほしい
+				//check=trueは重複チェックして
 				$nowProgress = true;
 				await addNotesuruyatu(res);
 				$nowProgress = false;
@@ -420,12 +421,33 @@
 		modalStore.trigger(modal);
 	}
 
-	async function addNotesuruyatu(res: { btn: string; tag: string[] }) {
+	async function addNotesuruyatu(res: {
+		btn: string;
+		tag: string[];
+		check: boolean;
+	}) {
 		console.log(res);
 		if (res) {
 			const listNumber = $listNum;
+			try {
+				await addNotesToLists(
+					listNumber,
+					res.btn,
+					[res.tag],
+					pubkey,
+					kind,
+					res.check
+				);
+			} catch (error) {
+				console.log(error);
+				const t = {
+					message: $_('toast.invalidEmoji'),
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
 
-			await addNotesToLists(listNumber, res.btn, [res.tag], pubkey, kind);
+				toastStore.trigger(t);
+			}
 			$nowProgress = false;
 		}
 		//}
@@ -436,7 +458,8 @@
 		btn: string,
 		idTagList: string[][],
 		pubkey: string,
-		kind: number
+		kind: number,
+		check: boolean //重複チェック有無
 	): Promise<boolean> {
 		let isSuccess = false;
 
@@ -445,12 +468,26 @@
 				$keysArray[listNumber]
 			);
 			if (bkmk) {
-				const tagsToAdd =
-					btn === 'pub'
-						? bkmk !== undefined
-							? [...bkmk.tags, ...idTagList]
-							: idTagList
-						: bkmk.tags;
+				const tagsToAdd = () => {
+					if (btn === 'pub') {
+						idTagList.map((tag) => {
+							const index = bkmk?.tags.findIndex((item) => item[1] === tag[1]);
+							if (index !== -1) {
+								throw Error(`$_('toast.invalidEmoji')`);
+							}
+						});
+						return [...bkmk.tags, ...idTagList];
+					} else {
+						return bkmk.tags;
+					}
+				};
+
+				// const tagsToAdd =
+				// 	btn === 'pub'
+				// 		? bkmk !== undefined
+				// 			? [...bkmk.tags, ...idTagList]
+				// 			: idTagList
+				// 		: bkmk.tags;
 
 				const contentToAdd = async (): Promise<string> => {
 					if (btn === 'pub') {
@@ -461,9 +498,18 @@
 						}
 					} else {
 						if (bkmk && bkmk.content) {
-							return await addPrivates(bkmk.content, pubkey, idTagList);
+							try {
+								return await addPrivates(
+									bkmk.content,
+									pubkey,
+									idTagList,
+									check
+								);
+							} catch (error: any) {
+								throw Error(error);
+							}
 						} else {
-							return await addPrivates('', pubkey, idTagList);
+							return await addPrivates('', pubkey, idTagList, check);
 						}
 					}
 				};
@@ -473,7 +519,7 @@
 					pubkey: pubkey,
 					created_at: Math.floor(Date.now() / 1000),
 					kind: kind,
-					tags: tagsToAdd,
+					tags: tagsToAdd(),
 					content: await contentToAdd(),
 					sig: ''
 				};
@@ -504,16 +550,17 @@
 					isSuccess = result.isSuccess;
 				}
 			}
-		} catch (error) {
-			console.error(error);
+		} catch (error: any) {
+			throw Error(error);
+			// console.error(error);
 
-			const t = {
-				message: $_('toast.failed_publish'),
-				timeout: 3000,
-				background: 'bg-orange-500 text-white width-filled '
-			};
+			// const t = {
+			// 	message: $_('toast.failed_publish'),
+			// 	timeout: 3000,
+			// 	background: 'bg-orange-500 text-white width-filled '
+			// };
 
-			toastStore.trigger(t);
+			// toastStore.trigger(t);
 		}
 
 		return isSuccess;
@@ -610,8 +657,15 @@
 			//toの方にaddNoteする。
 
 			//await updateBkmTag(pubkey, kind, from.tag); //最新の状態に更新
-
-			const addRes = await addNotesToLists(to.tag, to.bkm, tags, pubkey, kind);
+			//moveのときは重複チェック無しで...
+			const addRes = await addNotesToLists(
+				to.tag,
+				to.bkm,
+				tags,
+				pubkey,
+				kind,
+				false
+			);
 			if (!addRes) {
 				//		$nowProgress = false;
 				return;

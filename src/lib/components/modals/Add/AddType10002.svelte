@@ -4,13 +4,13 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import type { Nostr } from 'nosvelte';
 
-	export let res: { btn: string; tag: string[] };
+	export let res: { btn: string; tag: string[]; check: boolean };
 	export let parent: any;
 	export let onFormSubmit: any;
 	//export let event: Nostr.Event;
 	export let tag: string[]; //編集の場合はここに初期値が
 	export let number: number;
-	export let viewList: string[][];
+	//export let viewList: string[][];
 	console.log(tag);
 
 	let input: string = tag ? tag[1] : '';
@@ -54,23 +54,23 @@
 			input += '/';
 		}
 
-		const index = viewList?.findIndex((tag) => {
-			const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
-			return modifiedTag === input;
-		});
-		console.log(index, number);
-		// myIndex と index が一致する場合は処理をスキップ
-		if (index !== -1 && number !== index) {
-			// 同じリストに同じ名前のあったら無効
-			const t = {
-				message: $_('toast.invalidEmoji'),
-				timeout: 3000,
-				background: 'bg-orange-500 text-white width-filled '
-			};
+		// const index = viewList?.findIndex((tag) => {
+		// 	const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
+		// 	return modifiedTag === input;
+		// });
+		// console.log(index, number);
+		// // myIndex と index が一致する場合は処理をスキップ
+		// if (index !== -1 && number !== index) {
+		// 	// 同じリストに同じ名前のあったら無効
+		// 	const t = {
+		// 		message: $_('toast.invalidEmoji'),
+		// 		timeout: 3000,
+		// 		background: 'bg-orange-500 text-white width-filled '
+		// 	};
 
-			toastStore.trigger(t);
-			return;
-		}
+		// 	toastStore.trigger(t);
+		// 	return;
+		// }
 
 		const existRelay = await checkRelayExist(input);
 		if (!existRelay) {
@@ -89,6 +89,7 @@
 					? ['r', input]
 					: ['r', input, selectValue === 'read' ? 'read' : 'write'];
 			console.log(res.tag);
+			res.check = true;
 			onFormSubmit();
 		}
 	}
