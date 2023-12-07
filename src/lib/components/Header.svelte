@@ -299,7 +299,7 @@
 	class="z-10 fixed h-[4em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden box-border"
 >
 	<div
-		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] gap-2 overflow-hidden rounded-b"
+		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] md:gap-2 gap-0.5 overflow-hidden rounded-b"
 	>
 		<div class="max-w-full overflow-hidden">
 			<!-- {#if JSON}【JSON MODE】 kind:{kind}
@@ -318,7 +318,7 @@
 			{/if}
 
 			{#if $identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])?.identifier}
-				<div class="text-xs box-border break-all max-w-1/2 overflow-x-hidden">
+				<div class="text-xs box-border break-all overflow-x-hidden">
 					{#if kind >= 30000 && kind < 40000 && !JSON}<!-- 30003-->
 						{#if !$identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title || $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title === ''}
 							<button
@@ -395,7 +395,7 @@
 				</div>
 			{/if}
 		</div>
-		<div class="grid grid-cols-[auto_auto] p-1 h-[4em]">
+		<div class="grid grid-cols-[auto_auto] py-1 h-[4em]">
 			<button
 				class={bkm === 'pub' ? borderClassActive : borderClass}
 				disabled={bkm === 'pub'}
