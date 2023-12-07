@@ -395,7 +395,7 @@
 			component: addModalComponent,
 			// Provide arbitrary metadata to your modal instance:
 			title:
-				$identifierListsMap[pubkey][kind] &&
+				$identifierListsMap[pubkey]?.[kind] &&
 				$identifierListsMap[pubkey][kind].has($identifierKeysArray[$listNum]) &&
 				$identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])
 					?.identifier
