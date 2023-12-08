@@ -56,7 +56,9 @@
     "editTags": {
       "body": "Create a new list",
       "editTag": "Edit",
-      "title": "edit a list"
+      "title": "edit a list",
+      "kind": "Delete with e-tag designation kind5 (Delete List above is overwritten with an empty matrix)",
+      "kindexp": "If you delete an event by kind5 and an old event remains, you may see the old event when you reload the event."
     },
     "deleteNote": {
       "content": "(empty content)",

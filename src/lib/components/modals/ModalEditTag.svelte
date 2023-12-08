@@ -21,10 +21,12 @@
 		btn: string;
 		tagIndex: number;
 		value: { id: string; title?: string; image?: string; description?: string };
+		kind5?: boolean;
 	} = {
 		value: { id: '' },
 		btn: '',
-		tagIndex: 0
+		tagIndex: 0,
+		kind5: false
 	};
 
 	// We've created a custom submit function to pass the response and close the modal.
@@ -83,6 +85,8 @@
 			onFormSubmit();
 		}
 	}
+
+	let kind5button: boolean = false;
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -93,7 +97,9 @@
 
 		<Accordion autocollapse>
 			<AccordionItem open>
-				<svelte:fragment slot="lead">{@html editIcon}</svelte:fragment>
+				<svelte:fragment slot="lead"
+					><div class="dark:fill-white">{@html editIcon}</div></svelte:fragment
+				>
 				<svelte:fragment slot="summary"
 					>{$_('modal.editTags.body')}</svelte:fragment
 				>
@@ -145,7 +151,7 @@
 								</label>
 							</div>
 						{/if}
-						<footer class="modal-footer {parent.regionFooter}">
+						<footer class="modal-footer {parent.regionFooter} pt-1">
 							<button
 								class="btn {parent.buttonNeutral}"
 								on:click={parent.onClose}>{parent.buttonTextCancel}</button
@@ -160,7 +166,11 @@
 			</AccordionItem>
 
 			<AccordionItem>
-				<svelte:fragment slot="lead">{@html deleteIcon}</svelte:fragment>
+				<svelte:fragment slot="lead"
+					><div class="dark:fill-white">
+						{@html deleteIcon}
+					</div></svelte:fragment
+				>
 				<svelte:fragment slot="summary"
 					>{$_('ModalEditTag.delete_body')}</svelte:fragment
 				>
@@ -191,10 +201,29 @@
 									class="btn variant-filled-warning"
 									on:click={() => {
 										res.btn = 'delete';
+										res.kind5 = false;
 										onFormSubmit();
 									}}>Delete List</button
 								>
 							</footer>
+							<button
+								class="btn-icon"
+								on:click={() => {
+									kind5button = !kind5button;
+								}}>{kind5button ? '▼' : '▶'}</button
+							>
+							{#if kind5button}
+								<p>{$_('modal.editTags.kind')}</p>
+								<p>{$_('modal.editTags.kindexp')}</p>
+								<button
+									class="btn variant-filled-warning"
+									on:click={() => {
+										res.btn = 'delete';
+										res.kind5 = true;
+										onFormSubmit();
+									}}>kind5 delete</button
+								>
+							{/if}
 						{:else}no lists{/if}
 					</div>
 				</svelte:fragment>

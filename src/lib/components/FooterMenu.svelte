@@ -168,7 +168,7 @@
 								response: async (res2) => {
 									//console.log(res);
 									if (res2) {
-										await deleteTag(res.tagIndex);
+										await deleteTag(res.tagIndex, res.kind5);
 									}
 								}
 							};
@@ -249,20 +249,32 @@
 		//	throw new Error('Function not implemented.');
 	}
 
-	async function deleteTag(tagIndex: any) {
+	async function deleteTag(tagIndex: number, kind5: boolean) {
 		console.log(tagIndex);
 		$nowProgress = true;
 		const bkm = get(eventListsMap)[pubkey][kind];
-
-		const event: NostrEvent = {
-			id: '',
-			pubkey: pubkey,
-			sig: '',
-			content: '',
-			tags: [['e', bkm.get($keysArray[tagIndex])!.id]],
-			created_at: Math.floor(Date.now() / 1000),
-			kind: 5
-		};
+		const dtag = bkm
+			.get($keysArray[tagIndex])
+			?.tags.find((item) => item[0] === 'd');
+		const event: NostrEvent = kind5
+			? {
+					id: '',
+					pubkey: pubkey,
+					sig: '',
+					content: '',
+					tags: [['e', bkm.get($keysArray[tagIndex])!.id]],
+					created_at: Math.floor(Date.now() / 1000),
+					kind: 5
+			  }
+			: {
+					id: '',
+					pubkey: pubkey,
+					sig: '',
+					content: '',
+					tags: dtag ? [dtag] : [],
+					created_at: Math.floor(Date.now() / 1000),
+					kind: bkm.get($keysArray[tagIndex])!.kind
+			  };
 		const res = await publishEventWithTimeout(
 			event,
 			$relaySet[$pubkey_viewer].bookmarkRelays
@@ -278,21 +290,22 @@
 			toastStore.trigger(t);
 
 			//const tmpId = get(identifierListsMap);
-
-			$eventListsMap[pubkey][kind].delete($keysArray[tagIndex]); //削除
-			$identifierListsMap[pubkey][kind].delete($keysArray[tagIndex]); //IDListも
-			$identifierKeysArray =
-				$identifierListsMap[pubkey] && $identifierListsMap[pubkey][kind]
-					? Array.from($identifierListsMap[pubkey][kind].keys()).sort((a, b) =>
-							a.localeCompare(b)
-					  )
-					: [];
-			$keysArray =
-				$eventListsMap[pubkey] && $eventListsMap[pubkey][kind]
-					? Array.from($eventListsMap[pubkey][kind].keys()).sort((a, b) =>
-							a.localeCompare(b)
-					  )
-					: [];
+			if (kind5) {
+				$eventListsMap[pubkey][kind].delete($keysArray[tagIndex]); //削除
+				$identifierListsMap[pubkey][kind].delete($keysArray[tagIndex]); //IDListも
+				$identifierKeysArray =
+					$identifierListsMap[pubkey] && $identifierListsMap[pubkey][kind]
+						? Array.from($identifierListsMap[pubkey][kind].keys()).sort(
+								(a, b) => a.localeCompare(b)
+						  )
+						: [];
+				$keysArray =
+					$eventListsMap[pubkey] && $eventListsMap[pubkey][kind]
+						? Array.from($eventListsMap[pubkey][kind].keys()).sort((a, b) =>
+								a.localeCompare(b)
+						  )
+						: [];
+			}
 			//IDリストも更新
 			//tmpId[pubkey][kind].splice(tagIndex, 1); //削除
 			//	identifierList.set(tmpId);

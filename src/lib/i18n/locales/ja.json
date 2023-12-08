@@ -26,7 +26,9 @@
     "editTags": {
       "title": "リストの編集",
       "body": "新規リストの作成",
-      "editTag": "編集"
+      "editTag": "編集",
+      "kind": "eタグ指定kind5での削除（上記Delete Listは空行列での上書き）",
+      "kindexp": "kind5による削除を行った場合、古いイベントが残っている場合は再読み込みをすると古いイベントが表示されることがあります"
     },
     "deleteTag": {
       "title": "リストの削除",
