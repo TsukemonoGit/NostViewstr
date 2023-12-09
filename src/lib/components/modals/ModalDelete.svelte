@@ -31,7 +31,7 @@
 						<div class=" ml-2">
 							{e && e.hasOwnProperty('content') && e.content !== ''
 								? e.content
-								: `${$modalStore[0].value.tag}`}
+								: `${$modalStore[0].value?.tags?.[index]}`}
 						</div>
 					</div>
 				{/each}

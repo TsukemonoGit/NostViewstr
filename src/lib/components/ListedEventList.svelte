@@ -236,7 +236,7 @@
 			body: `${$_('modal.deleteNote.body')}`,
 			value: {
 				event: [e.detail.event],
-				tag: e.detail.tagArray
+				tags: [e.detail.tagArray]
 			},
 			response: async (res) => {
 				//console.log(res);
@@ -638,7 +638,8 @@
 			title: $_('modal.deleteNote.title'),
 			body: `${$_('modal.deleteNote.body')}`,
 			value: {
-				event: $checkedIndexList.map((item) => item.event)
+				event: $checkedIndexList.map((item) => item.event),
+				tags: $checkedIndexList.map((item) => item.tagArray)
 			},
 			response: async (res) => {
 				//console.log(res);
