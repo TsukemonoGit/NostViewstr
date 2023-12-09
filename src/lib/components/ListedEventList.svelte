@@ -560,6 +560,14 @@
 
 					toastStore.trigger(t);
 					isSuccess = result.isSuccess;
+				} else {
+					const t = {
+						message: $_('toast.failed_publish'),
+						timeout: 3000,
+						background: 'bg-orange-500 text-white width-filled '
+					};
+
+					toastStore.trigger(t);
 				}
 			}
 		} catch (error: any) {
@@ -781,6 +789,14 @@
 						? 'variant-filled-secondary width-filled'
 						: 'bg-orange-500 text-white width-filled '
 				};
+				toastStore.trigger(t);
+			} else {
+				const t = {
+					message: $_('toast.failed_publish'),
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
+
 				toastStore.trigger(t);
 			}
 		}

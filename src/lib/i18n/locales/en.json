@@ -87,7 +87,8 @@
   "private": "private",
   "main": {
     "title": "NostViewstr",
-    "input_public_key": "🔑 public key"
+    "input_public_key": "🔑 public key",
+    "publish": "(Signature: Currently only writing by nip07 is possible (writing by direct input of private key is not possible))"
   },
   "mode": {
     "light_switch": "Switch between Light and Dark Mode",

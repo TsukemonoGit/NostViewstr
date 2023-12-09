@@ -255,51 +255,106 @@ export async function publishEventWithTimeout(
 
 		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
 		const sec = get(nsec);
-		const result = await Promise.race([
-			new Promise<{
-				isSuccess: boolean;
-				msg: string;
-				event?: Nostr.Event;
-			}>((resolve) => {
-				const subscription = rxNostr.send(event, sec).subscribe({
-					next: (packet) => {
-						//	console.log(packet);
-						msgObj[packet.from] = true;
-						isSuccess = true;
-					},
-					complete: () => {
+		if (sec) {
+			//
+			return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+
+			const result = await Promise.race([
+				new Promise<{
+					isSuccess: boolean;
+					msg: string;
+					event?: Nostr.Event;
+				}>((resolve) => {
+					const subscription = rxNostr.send(event, sec).subscribe({
+						next: (packet) => {
+							//	console.log(packet);
+							msgObj[packet.from] = true;
+							isSuccess = true;
+						},
+						complete: () => {
+							resolve({
+								isSuccess,
+								event: event,
+								msg: formatResults(msgObj)
+							});
+						}
+					});
+				}),
+				new Promise<{
+					isSuccess: boolean;
+					msg: string;
+					event?: Nostr.Event;
+				}>((resolve) => {
+					setTimeout(() => {
+						const hasTrue = Object.values(msgObj).some(
+							(value) => value === true
+						);
+						console.log(
+							'timeout',
+							event,
+							formatResults(msgObj),
+							hasTrue,
+							isSuccess
+						);
 						resolve({
-							isSuccess,
+							isSuccess: hasTrue,
 							event: event,
 							msg: formatResults(msgObj)
 						});
-					}
-				});
-			}),
-			new Promise<{
-				isSuccess: boolean;
-				msg: string;
-				event?: Nostr.Event;
-			}>((resolve) => {
-				setTimeout(() => {
-					const hasTrue = Object.values(msgObj).some((value) => value === true);
-					console.log(
-						'timeout',
-						event,
-						formatResults(msgObj),
-						hasTrue,
-						isSuccess
-					);
-					resolve({
-						isSuccess: hasTrue,
-						event: event,
-						msg: formatResults(msgObj)
+					}, timeout);
+				})
+			]);
+			//	toastStore.close(publishingToast);
+			return result;
+		} else {
+			const result = await Promise.race([
+				new Promise<{
+					isSuccess: boolean;
+					msg: string;
+					event?: Nostr.Event;
+				}>((resolve) => {
+					const subscription = rxNostr.send(event).subscribe({
+						next: (packet) => {
+							//	console.log(packet);
+							msgObj[packet.from] = true;
+							isSuccess = true;
+						},
+						complete: () => {
+							resolve({
+								isSuccess,
+								event: event,
+								msg: formatResults(msgObj)
+							});
+						}
 					});
-				}, timeout);
-			})
-		]);
-		//	toastStore.close(publishingToast);
-		return result;
+				}),
+				new Promise<{
+					isSuccess: boolean;
+					msg: string;
+					event?: Nostr.Event;
+				}>((resolve) => {
+					setTimeout(() => {
+						const hasTrue = Object.values(msgObj).some(
+							(value) => value === true
+						);
+						console.log(
+							'timeout',
+							event,
+							formatResults(msgObj),
+							hasTrue,
+							isSuccess
+						);
+						resolve({
+							isSuccess: hasTrue,
+							event: event,
+							msg: formatResults(msgObj)
+						});
+					}, timeout);
+				})
+			]);
+			//	toastStore.close(publishingToast);
+			return result;
+		}
 	} catch (error) {
 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
 	}

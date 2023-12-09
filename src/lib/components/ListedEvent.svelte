@@ -81,10 +81,12 @@
 					$listSize = res.length;
 					viewList = res;
 				} catch (error) {
+					$listSize = 0;
 					viewList = [];
 					message = listEvent.content;
 				}
 			} else {
+				$listSize = 0;
 				viewList = [];
 				message = listEvent.content;
 			}

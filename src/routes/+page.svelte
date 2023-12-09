@@ -95,6 +95,7 @@
 					class="p-0 input-group-shim btn variant-filled-secondary"
 					on:click={onClickExtension}>nip07<br />extension</button
 				>
+
 				<input
 					class="input p-1 truncate"
 					type="text"
@@ -102,6 +103,7 @@
 					bind:value={inputValue}
 				/>
 			</div>
+			<div class="mt-1 text-sm">{$_('main.publish')}</div>
 			<div class="mt-10">
 				<h5 class="h5">{`kind`}</h5>
 
