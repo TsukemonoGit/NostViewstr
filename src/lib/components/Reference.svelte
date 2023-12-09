@@ -28,6 +28,11 @@
 							)}...{:else}{tagArray[1]}{/if}</a
 					>{/if}
 			{/await}
+		{:else if tagArray.length > 1}
+			<!--urlいがいのreferenceわかんないけどとりあえずタグの長さわかんないから…-->
+			{#each tagArray.slice(1) as array, index}
+				<div class="pl-2">{array}</div>
+			{/each}
 		{/if}
 	</div>
 </div>
