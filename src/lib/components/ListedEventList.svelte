@@ -779,75 +779,77 @@
 	}
 </script>
 
-<!--header-->
-<Header {kind} bind:bkm {pubkey} bind:viewEvent />
-<!-- {#await bkminit(pubkey) then bkminti} -->
+{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+	<NostrApp relays={$relaySet[pubkey].searchRelays}>
+		<!--header-->
+		<Header {kind} bind:bkm {pubkey} bind:viewEvent />
+		<!-- {#await bkminit(pubkey) then bkminti} -->
 
-<!--サイドバーとメイン-->
-<div
-	class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
->
-	<div class="flex overflow-x-hidden">
-		<!-- Left Sidebar (Hidden on small screens) -->
-		{#if !isNaddr}
-			<div
-				class="hidden md:flex h-full w-[12em] pb-[6em] bg-surface-200-700-token overflow-y-auto fixed"
-			>
-				<!-- Your sidebar content goes here -->
-				<!-- For example, you can add links or other elements -->
-				<!--さいどばー-->
-				{#if $identifierListsMap && $identifierListsMap[pubkey] && $identifierListsMap[pubkey][kind]?.size > 0}
-					<ListBox
-						class=" overflow-y-auto w-full"
-						active="variant-ghost-primary box-border"
-					>
-						{#each $identifierKeysArray as list, index}
-							<ListBoxItem
-								bind:group={$listNum}
-								name={$identifierListsMap[pubkey][kind].get(list)?.identifier ??
-									''}
-								value={index}
-								class="truncate "
-								padding="px-2 py-2"
-								labelledby="truncate"
-								on:change={() => {
-									$listNum = index;
-								}}
-								><svelte:fragment slot="lead"
-									><div
-										class="rounded-full w-[1.5em] h-[1.5em] variant-soft-primary h6 text-center"
-									>
-										{(index + 1).toString().padStart(2, '0')}
-									</div></svelte:fragment
-								>
-								{#if $identifierListsMap[pubkey][kind].get(list)?.title}
-									<div class="text-xs">
-										{$identifierListsMap[pubkey][kind].get(list)?.identifier}
-									</div>
-									<div>
-										{$identifierListsMap[pubkey][kind].get(list)?.title}
-									</div>
-								{:else}
-									{$identifierListsMap[pubkey][kind].get(list)?.identifier}
-								{/if}
-							</ListBoxItem>
-							<hr />
-						{/each}
-					</ListBox>
-					<!-- {:else if !$nowProgress}
-					{$_('modal.tagList.noList')} -->
-				{/if}
-			</div>
-		{/if}
-		<!--めいん-->
-		<main
-			class="flex-1 {isNaddr
-				? ''
-				: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
+		<!--サイドバーとメイン-->
+		<div
+			class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
 		>
-			<!-- Add ml-64 to push main to the right -->
-			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-				<NostrApp relays={$relaySet[pubkey].searchRelays}>
+			<div class="flex overflow-x-hidden">
+				<!-- Left Sidebar (Hidden on small screens) -->
+				{#if !isNaddr}
+					<div
+						class="hidden md:flex h-full w-[12em] pb-[6em] bg-surface-200-700-token overflow-y-auto fixed"
+					>
+						<!-- Your sidebar content goes here -->
+						<!-- For example, you can add links or other elements -->
+						<!--さいどばー-->
+						{#if $identifierListsMap && $identifierListsMap[pubkey] && $identifierListsMap[pubkey][kind]?.size > 0}
+							<ListBox
+								class=" overflow-y-auto w-full"
+								active="variant-ghost-primary box-border"
+							>
+								{#each $identifierKeysArray as list, index}
+									<ListBoxItem
+										bind:group={$listNum}
+										name={$identifierListsMap[pubkey][kind].get(list)
+											?.identifier ?? ''}
+										value={index}
+										class="truncate "
+										padding="px-2 py-2"
+										labelledby="truncate"
+										on:change={() => {
+											$listNum = index;
+										}}
+										><svelte:fragment slot="lead"
+											><div
+												class="rounded-full w-[1.5em] h-[1.5em] variant-soft-primary h6 text-center"
+											>
+												{(index + 1).toString().padStart(2, '0')}
+											</div></svelte:fragment
+										>
+										{#if $identifierListsMap[pubkey][kind].get(list)?.title}
+											<div class="text-xs">
+												{$identifierListsMap[pubkey][kind].get(list)
+													?.identifier}
+											</div>
+											<div>
+												{$identifierListsMap[pubkey][kind].get(list)?.title}
+											</div>
+										{:else}
+											{$identifierListsMap[pubkey][kind].get(list)?.identifier}
+										{/if}
+									</ListBoxItem>
+									<hr />
+								{/each}
+							</ListBox>
+							<!-- {:else if !$nowProgress}
+					{$_('modal.tagList.noList')} -->
+						{/if}
+					</div>
+				{/if}
+				<!--めいん-->
+				<main
+					class="flex-1 {isNaddr
+						? ''
+						: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
+				>
+					<!-- Add ml-64 to push main to the right -->
+
 					<ListedEvent
 						bind:this={listedEventRef}
 						listEvent={viewEvent}
@@ -860,14 +862,13 @@
 						on:EditTag={EditTag}
 						bind:viewList
 					/>
-				</NostrApp>
-				<!-- {:else}
-				{`now getting relay list ...`} -->
-			{/if}
-		</main>
-	</div>
-</div>
-
+				</main>
+			</div>
+		</div>
+	</NostrApp>
+	<!-- {:else}
+{`now getting relay list ...`} -->
+{/if}
 {#if $eventListsMap && $eventListsMap[pubkey] && $eventListsMap[pubkey][kind] && $eventListsMap[pubkey][kind].size > 0}
 	<!---->
 {:else}
