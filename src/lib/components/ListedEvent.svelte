@@ -532,7 +532,7 @@
 							on:CheckNote={CheckNote}
 						/>
 					</div>
-				{:else if (tag[0] === 'r' && tag[1].startsWith('ws')) || tag[0] === 'relay'}
+				{:else if (tag[0] === 'r' && tag.length > 1 && tag[1].startsWith('ws')) || tag[0] === 'relay'}
 					<!--りれー-->
 					<div
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
