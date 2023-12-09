@@ -691,6 +691,7 @@
 	function EditTag(e: CustomEvent<any>): void {
 		console.log(e.detail);
 		const listNumber = $listNum; //ここにきたじてんのNumberでこてい
+
 		const number: number = e.detail.number + $pageNum * $amount;
 		const tagArray: string[] = e.detail.tagArray;
 		const modal: ModalSettings = {
@@ -699,7 +700,7 @@
 			component: addModalComponent,
 			// Provide arbitrary metadata to your modal instance:
 			title:
-				$identifierListsMap[pubkey][kind] &&
+				$identifierListsMap[pubkey]?.[kind] &&
 				$identifierListsMap[pubkey][kind].has(
 					$identifierKeysArray[listNumber]
 				) &&
@@ -715,13 +716,13 @@
 				type: 'edit',
 				kind: kind,
 				pubkey: pubkey,
-				event: $eventListsMap[pubkey][kind].get($keysArray[listNumber]),
+				event: $eventListsMap[pubkey]?.[kind]?.get($keysArray[listNumber]),
 				tag: tagArray,
 				number: number
 			},
 			response: async (res: { btn: string; tag: string[] }) => {
-				console.log(JSON.stringify(res.tag) !== JSON.stringify(tagArray)); //有効だったらタグになって帰ってきてほしい
 				if (res && JSON.stringify(res.tag) !== JSON.stringify(tagArray)) {
+					console.log(JSON.stringify(res.tag) !== JSON.stringify(tagArray)); //有効だったらタグになって帰ってきてほしい
 					res.btn = bkm; //編集だから元のボタンといっしょだから
 					$nowProgress = true;
 					await EditTagEvent(listNumber, res, number);
