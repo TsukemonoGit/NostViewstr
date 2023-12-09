@@ -80,7 +80,9 @@
 			//validtagかちぇっく
 			if (
 				!tagArray ||
-				!kindsValidTag[$modalStore[0].value.kind].includes(tagArray[0])
+				!kindsValidTag[$modalStore[0].value.kind].includes(tagArray[0]) ||
+				tagArray.length <= 1 ||
+				tagArray[1] === ''
 			) {
 				throw new Error();
 			}
@@ -216,9 +218,9 @@
 			</AccordionItem>
 
 			<!--タグそれぞれの入力画面作ったし入れれるタグ制限してるしタグから追加モードいらないかも-->
-
+			<!--
 			{#if tag === undefined}
-				<!--へんしゅうではないとき-->
+			
 
 				<AccordionItem>
 					<svelte:fragment slot="lead">🗒</svelte:fragment>
@@ -227,7 +229,7 @@
 							{$_('ModalAddNote.add_note')}
 							{$_('ModalAddNote.add_note_tag')}
 						{:else}
-							<!---->
+						
 							{$_('modal.addNote.edit')}
 							{$_('ModalAddNote.add_note_tag')}
 						{/if}
@@ -242,7 +244,7 @@
 									)}
 									{$_('ModalAddNote.add_note_tag')}
 								{:else}
-									<!---->
+							
 								{/if}
 							</header>
 							<article class="body break-all">
@@ -251,7 +253,7 @@
 									{tag},
 								{/each}
 							</article>
-							<!-- Enable for debugging: -->
+						
 
 							<input
 								class="input p-2 m-2"
@@ -282,6 +284,8 @@
 					</svelte:fragment>
 				</AccordionItem>
 			{/if}
+
+			-->
 			{#if tag === undefined && ($modalStore[0].value.kind === 30003 || $modalStore[0].value.kind === 10003)}
 				<AccordionItem>
 					<svelte:fragment slot="lead">🖊</svelte:fragment>
