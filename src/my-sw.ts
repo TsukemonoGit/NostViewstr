@@ -1,9 +1,32 @@
-// sw.js ファイル内の例
-import { precacheAndRoute } from 'workbox-precaching';
+// //https://github.com/vite-pwa/sveltekit/tree/main/examples/sveltekit-ts
+// /// <reference lib="WebWorker" />
+// /// <reference types="vite/client" />
+// /// <reference no-default-lib="true"/>
+// /// <reference lib="esnext" />
+// import {
+// 	cleanupOutdatedCaches,
+// 	createHandlerBoundToURL,
+// 	precacheAndRoute
+// } from 'workbox-precaching';
+// // import { NavigationRoute, registerRoute } from 'workbox-routing';
 
-// precacheAndRoute メソッドを使ってキャッシュを設定する
-precacheAndRoute([
-	{ url: '/' }
-	// 他のプリキャッシュしたいリソースも追加
-]);
-console.log('[service worker]');
+// declare let self: ServiceWorkerGlobalScope;
+
+// self.addEventListener('message', (event) => {
+// 	if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+// });
+
+// // self.__WB_MANIFEST is default injection point
+// precacheAndRoute([
+// 	{ url: '/' }
+// 	// 他のプリキャッシュしたいリソースも追加
+// ]);
+
+// // clean old assets
+// cleanupOutdatedCaches();
+
+// // let allowlist: undefined | RegExp[];
+// // if (import.meta.env.DEV) allowlist = [/^\/$/];
+
+// // // to allow work offline
+// // registerRoute(new NavigationRoute(createHandlerBoundToURL('/'), { allowlist }));
