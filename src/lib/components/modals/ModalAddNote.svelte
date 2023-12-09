@@ -276,7 +276,7 @@
 					</div>
 				</svelte:fragment>
 			</AccordionItem>
-			{#if $modalStore[0].value.kind === 30003 || $modalStore[0].value.kind === 10003}
+			{#if tag === undefined && ($modalStore[0].value.kind === 30003 || $modalStore[0].value.kind === 10003)}
 				<AccordionItem>
 					<svelte:fragment slot="lead">🖊</svelte:fragment>
 					<svelte:fragment slot="summary"
