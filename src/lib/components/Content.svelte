@@ -7,7 +7,7 @@
 
 	import { Metadata, Nostr, NostrApp, Text } from 'nosvelte';
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
-	import { getOgp } from '$lib/otherFunctions.js';
+	import { encodedURL, getOgp, loadOgp } from '$lib/otherFunctions.js';
 	import OGP from './OGP.svelte';
 	import { contentStore, ogpStore } from '$lib/stores/bookmarkEvents';
 	import { URLPreview } from '$lib/stores/settings';
@@ -50,27 +50,27 @@
 		}
 	}
 
-	// URLが存在する場合はストアの値を使用し、ない場合はOGP情報を取得してストアを更新する
-	async function loadOgp(url: string) {
-		if (!$ogpStore[url] || $ogpStore[url].title === '') {
-			try {
-				const ogp = await getOgp(url); // OGP情報を取得
-				ogpStore.update((store) => {
-					// 取得したOGP情報をストアに追加
-					return {
-						...store,
-						[url]: ogp
-					};
-				});
-			} catch (error) {
-				console.log(error);
-				$ogpStore[url].title = '';
-				$ogpStore[url].image = '';
-				$ogpStore[url].description = '';
-				$ogpStore[url].favicon = '';
-			}
-		}
-	}
+	// // URLが存在する場合はストアの値を使用し、ない場合はOGP情報を取得してストアを更新する
+	// export async function loadOgp(url: string) {
+	// 	if (!$ogpStore[url] || $ogpStore[url].title === '') {
+	// 		try {
+	// 			const ogp = await getOgp(url); // OGP情報を取得
+	// 			ogpStore.update((store) => {
+	// 				// 取得したOGP情報をストアに追加
+	// 				return {
+	// 					...store,
+	// 					[url]: ogp
+	// 				};
+	// 			});
+	// 		} catch (error) {
+	// 			console.log(error);
+	// 			$ogpStore[url].title = '';
+	// 			$ogpStore[url].image = '';
+	// 			$ogpStore[url].description = '';
+	// 			$ogpStore[url].favicon = '';
+	// 		}
+	// 	}
+	// }
 
 	const pathname = (urlstr: string) => {
 		const url = new URL(urlstr);
@@ -135,12 +135,12 @@
 	function clickView() {
 		view = true;
 	}
-	const encodedURL = (str: string): string => {
-		//https://github.com/akiomik/nosey
-		const encodedstr = encodeURIComponent(str);
-		const url = `https://nosey.vercel.app/?q=${encodedstr}`;
-		return url;
-	};
+	// export const encodedURL = (str: string): string => {
+	// 	//https://github.com/akiomik/nosey
+	// 	const encodedstr = encodeURIComponent(str);
+	// 	const url = `https://nosey.vercel.app/?q=${encodedstr}`;
+	// 	return url;
+	// };
 </script>
 
 {#if tag.some((tag) => tag[0] === 'content-warning') && view == false}

@@ -1,4 +1,6 @@
+import { get } from 'svelte/store';
 import type { Metadata } from 'unfurl.js/dist/types';
+import { ogpStore } from './stores/bookmarkEvents';
 
 export enum MenuMode {
 	Multi, //複数選択モード
@@ -45,7 +47,28 @@ export async function getOgp(url: string): Promise<Ogp> {
 		};
 	}
 }
-
+// URLが存在する場合はストアの値を使用し、ない場合はOGP情報を取得してストアを更新する
+export async function loadOgp(url: string) {
+	const ogp = get(ogpStore);
+	if (!ogp[url] || ogp[url].title === '') {
+		try {
+			const ogp = await getOgp(url); // OGP情報を取得
+			ogpStore.update((store) => {
+				// 取得したOGP情報をストアに追加
+				return {
+					...store,
+					[url]: ogp
+				};
+			});
+		} catch (error) {
+			console.log(error);
+			ogp[url].title = '';
+			ogp[url].image = '';
+			ogp[url].description = '';
+			ogp[url].favicon = '';
+		}
+	}
+}
 export const uniqueTags = async (tags: any[]): Promise<string[][]> => {
 	if (tags.length > 0) {
 		return await tags.reduce((acc: any[][], curr: [any, any]) => {
@@ -71,4 +94,12 @@ export const uniqueTags = async (tags: any[]): Promise<string[][]> => {
 	} else {
 		return [];
 	}
+};
+
+export const encodedURL = (str: string): string => {
+	//https://github.com/akiomik/noseyハッシュタグ以外も出てくるので変更しました
+	//https://github.com/SnowCait/nostter
+	const encodedstr = encodeURIComponent(str);
+	const url = `https://nostter.app/search?q=${encodedstr}`; //`https://nosey.vercel.app/?q=${encodedstr}`;
+	return url;
 };

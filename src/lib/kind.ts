@@ -44,6 +44,6 @@ export let kindsValidTag: { [key: number]: string[] } = {
 
 export let tagExp: Record<string, string> = {
 	t: 'hashtag',
-	r: 'url',
+	r: 'reference (URL, etc)',
 	word: 'word'
 };

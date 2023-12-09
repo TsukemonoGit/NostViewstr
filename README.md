@@ -40,7 +40,8 @@ npm run build
 
 - [nostr-zap](https://github.com/SamSamskies/nostr-zap)
 
-- [nosey](https://github.com/akiomik/nosey/) - ハッシュタグのリンク先に使用
+- [nostter](https://github.com/SnowCait/nostter) - ハッシュタグのリンク先に使用
+<!-- [nosey](https://github.com/akiomik/nosey/) ハッシュタグ以外も出てくるので変更しました-->
 
 - [nostr_band](https://nostr.band/) - プロフィール,ノートのリンク先に使用
 
