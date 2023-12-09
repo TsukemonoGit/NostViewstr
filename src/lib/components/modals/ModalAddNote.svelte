@@ -19,6 +19,7 @@
 	import AddTypeEmoji from './Add/AddTypeEmoji.svelte';
 	import AddTypeRelay from './Add/AddTypeRelay.svelte';
 	import AddType10002 from './Add/AddType10002.svelte';
+	import AddTypeOther from './Add/AddTypeOther.svelte';
 
 	let input: string = $modalStore[0]?.value?.tag
 		? JSON.stringify($modalStore[0]?.value?.tag)
@@ -35,6 +36,10 @@
 		// type: AddTyle.Id,
 		// tagvalue: ''
 	};
+
+	//これがundifinedじゃなかったら編集として
+	let tag: string[] | undefined = $modalStore[0]?.value?.tag;
+
 	// "a" と "e" が両方含まれているか確認
 	const includesA = kindsValidTag[$modalStore[0].value.kind].includes('a');
 	const includesE = kindsValidTag[$modalStore[0].value.kind].includes('e');
@@ -43,6 +48,12 @@
 		kindsValidTag[$modalStore[0].value.kind].includes('relay');
 	const includesEmoji =
 		kindsValidTag[$modalStore[0].value.kind].includes('emoji');
+
+	const charactersToCheck = ['t', 'word', 'r'];
+	const countCharacters = kindsValidTag[$modalStore[0].value.kind].filter(
+		(tag) => charactersToCheck.some((char) => tag.includes(char))
+	);
+	console.log(countCharacters);
 	// We've created a custom submit function to pass the response and close the modal.
 	function onFormSubmit(): void {
 		console.log(res);
@@ -164,16 +175,16 @@
 								tag={$modalStore[0].value.tag}
 							/>
 						{/if}
-						{#if includesA && includesE}
+						{#if (tag === undefined && includesA && includesE) || (tag !== undefined && (tag[0] === 'a' || tag[0] === 'e'))}
 							<AddTypeNoteAndNaddr {res} {parent} {onFormSubmit} />
-						{:else if includesE}
+						{:else if (tag === undefined && includesE) || (tag !== undefined && tag[0] === 'e')}
 							<AddTypeNote {res} {parent} {onFormSubmit} />
-						{:else if includesA}
+						{:else if (tag === undefined && includesA) || (tag !== undefined && tag[0] === 'a')}
 							<AddTypeNaddr {res} {parent} {onFormSubmit} />
 						{/if}
-						{#if includesP}
+						{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
 							<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
-						{#if includesEmoji}
+						{#if (tag === undefined && includesEmoji) || (tag !== undefined && tag[0] === 'emoji')}
 							<AddTypeEmoji
 								{res}
 								{parent}
@@ -181,7 +192,7 @@
 								tag={$modalStore[0].value.tag}
 							/>
 						{/if}
-						{#if includesRelay}
+						{#if (tag === undefined && includesRelay) || (tag !== undefined && tag[0] === 'relay')}
 							<AddTypeRelay
 								{res}
 								{parent}
@@ -189,6 +200,15 @@
 								tag={$modalStore[0].value.tag}
 								number={$modalStore[0].value.number}
 								viewList={$modalStore[0].value.viewList}
+							/>
+						{/if}
+						{#if $modalStore[0].value.kind !== 10002 && ((tag === undefined && countCharacters.length > 0) || (tag !== undefined && (tag[0] === 'r' || tag[0] === 't' || tag[0] === 'word')))}
+							<AddTypeOther
+								{res}
+								{parent}
+								{onFormSubmit}
+								tag={$modalStore[0].value.tag}
+								{countCharacters}
 							/>
 						{/if}
 					</div>

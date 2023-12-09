@@ -18,6 +18,7 @@
 
 	import { createEventDispatcher } from 'svelte';
 	import Relay from './Relay.svelte';
+	import Other from './Other.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -545,6 +546,35 @@
 							myIndex={index}
 							tagArray={tag}
 							share={false}
+							note={undefined}
+							menuMode={isOwner
+								? $isMulti
+									? MenuMode.Multi
+									: MenuMode.Owner
+								: MenuMode.none}
+							on:DeleteNote={DeleteNote}
+							on:MoveNote={MoveNote}
+							on:CheckNote={CheckNote}
+						/>
+					</div>
+				{:else if tag[0] === 'r' || tag[0] === 't' || tag[0] === 'word'}
+					<!--a,e,d以外あとでかく-->
+
+					<div
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
+					>
+						<Other tagArray={tag} />
+						{#if isOwner}
+							<button
+								class="btn p-2 fill-surface-600 dark:fill-surface-300"
+								on:click={() => {
+									handleClick(index, tag);
+								}}>{@html EditIcon}</button
+							>
+						{/if}
+						<MenuButtons
+							myIndex={index}
+							tagArray={tag}
 							note={undefined}
 							menuMode={isOwner
 								? $isMulti

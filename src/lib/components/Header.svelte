@@ -10,13 +10,12 @@
 		relayState
 	} from '$lib/stores/bookmarkEvents';
 	import { pageNum } from '$lib/stores/pagination';
-	import { iconView, nowProgress } from '$lib/stores/settings';
+	import { iconView, nowProgress, pubkey_viewer } from '$lib/stores/settings';
 	// import PrvBkm from './Button/PrvBkm.svelte';
 	// import PubBkm from './Button/PubBkm.svelte';
 	import { prvIcon } from '$lib/components/icons';
 	import { pubIcon } from '$lib/components/icons';
-	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
-	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
+	import LocationHomeIcon from '@material-design-icons/svg/round/person.svg?raw';
 	import RelayIcon from '@material-design-icons/svg/outlined/hub.svg?raw';
 	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
 	import { relaySet } from '$lib/stores/relays';
@@ -305,16 +304,21 @@
 			<!-- {#if JSON}【JSON MODE】 kind:{kind}
 				{#if kinds[kind]} ({kinds[kind]}) {/if} -->
 			{#if !JSON}
-				<select
-					class="border rounded border-primary-400 bg-primary-700 px-1 bg-primary-500 w-fit"
-					bind:value={selectValue}
-					on:change={handleKindChange}
-					disabled={$nowProgress}
-				>
-					{#each Object.keys(kinds) as value (value)}
-						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-					{/each}
-				</select>
+				<div class="flex max-w-full">
+					<select
+						class="border rounded border-primary-400 bg-primary-700 px-1 bg-primary-500 w-fit flex max-w-[85%]"
+						bind:value={selectValue}
+						on:change={handleKindChange}
+						disabled={$nowProgress}
+					>
+						{#each Object.keys(kinds) as value (value)}
+							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
+						{/each}
+					</select>
+					{#if pubkey === $pubkey_viewer}
+						<span class="fill-white">{@html LocationHomeIcon}</span>
+					{/if}
+				</div>
 			{/if}
 
 			{#if $identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])?.identifier}

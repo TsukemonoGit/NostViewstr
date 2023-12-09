@@ -469,13 +469,19 @@
 			const bkmk = $eventListsMap?.[pubkey]?.[kind]?.get(
 				$keysArray[listNumber]
 			);
+			//重複したタグ（二番目の要素まで）があるかちぇっく
 			if (bkmk) {
 				const tagsToAdd = () => {
 					if (btn === 'pub') {
 						if (check) {
 							idTagList.map((tag) => {
 								const index = bkmk?.tags.findIndex(
-									(item) => item[1] === tag[1]
+									(item: string[]) =>
+										item
+											.slice(0, 2)
+											.every((element, index) => element === tag[index])
+
+									//item.slice(0, 2) === tag.slice(0, 2)
 								);
 								if (index !== -1) {
 									throw Error(`$_('toast.invalidEmoji')`);
@@ -685,6 +691,7 @@
 	function EditTag(e: CustomEvent<any>): void {
 		console.log(e.detail);
 		const listNumber = $listNum; //ここにきたじてんのNumberでこてい
+
 		const number: number = e.detail.number + $pageNum * $amount;
 		const tagArray: string[] = e.detail.tagArray;
 		const modal: ModalSettings = {
@@ -693,7 +700,7 @@
 			component: addModalComponent,
 			// Provide arbitrary metadata to your modal instance:
 			title:
-				$identifierListsMap[pubkey][kind] &&
+				$identifierListsMap[pubkey]?.[kind] &&
 				$identifierListsMap[pubkey][kind].has(
 					$identifierKeysArray[listNumber]
 				) &&
@@ -709,16 +716,16 @@
 				type: 'edit',
 				kind: kind,
 				pubkey: pubkey,
-				event: $eventListsMap[pubkey][kind].get($keysArray[listNumber]),
+				event: $eventListsMap[pubkey]?.[kind]?.get($keysArray[listNumber]),
 				tag: tagArray,
 				number: number
 			},
 			response: async (res: { btn: string; tag: string[] }) => {
-				console.log(JSON.stringify(res.tag) !== JSON.stringify(tagArray)); //有効だったらタグになって帰ってきてほしい
 				if (res && JSON.stringify(res.tag) !== JSON.stringify(tagArray)) {
+					console.log(JSON.stringify(res.tag) !== JSON.stringify(tagArray)); //有効だったらタグになって帰ってきてほしい
 					res.btn = bkm; //編集だから元のボタンといっしょだから
 					$nowProgress = true;
-					//	await EditTagEvent(listNumber, res, number);
+					await EditTagEvent(listNumber, res, number);
 					$nowProgress = false;
 				}
 			}
