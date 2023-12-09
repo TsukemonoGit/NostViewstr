@@ -506,7 +506,7 @@
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1"
 					>
 						<Emoji tagArray={tag} />
-						{#if isOwner}
+						{#if isOwner && !$isMulti}
 							<button
 								class="btn p-2 fill-surface-600 dark:fill-surface-300"
 								on:click={() => {
@@ -534,7 +534,7 @@
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 					>
 						<Relay tagArray={tag} />
-						{#if isOwner}
+						{#if isOwner && !$isMulti}
 							<button
 								class="btn p-2 fill-surface-600 dark:fill-surface-300"
 								on:click={() => {
@@ -564,7 +564,7 @@
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 					>
 						<Other tagArray={tag} />
-						{#if isOwner}
+						{#if isOwner && !$isMulti}
 							<button
 								class="btn p-2 fill-surface-600 dark:fill-surface-300"
 								on:click={() => {
@@ -593,7 +593,7 @@
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 					>
 						{JSON.stringify(tag)}
-						{#if isOwner}
+						{#if isOwner && !$isMulti}
 							<button
 								class="btn p-2 fill-surface-600 dark:fill-surface-300"
 								on:click={() => {
