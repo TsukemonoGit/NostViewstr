@@ -41,3 +41,9 @@ export let kindsValidTag: { [key: number]: string[] } = {
 	10007: ['relay'],
 	30002: ['relay']
 };
+
+export let tagExp: Record<string, string> = {
+	t: 'hashtag',
+	r: 'url',
+	word: 'word'
+};
