@@ -215,67 +215,73 @@
 				</svelte:fragment>
 			</AccordionItem>
 
-			<AccordionItem>
-				<svelte:fragment slot="lead">🗒</svelte:fragment>
-				<svelte:fragment slot="summary">
-					{#if $modalStore[0].value.type === 'add'}
-						{$_('ModalAddNote.add_note')}
-						{$_('ModalAddNote.add_note_tag')}
-					{:else}
-						<!---->
-						{$_('modal.addNote.edit')}
-						{$_('ModalAddNote.add_note_tag')}
-					{/if}
-				</svelte:fragment>
-				<svelte:fragment slot="content">
-					<div class="card p-4">
-						<header class={cHeader}>
-							{#if $modalStore[0].value.type === 'add'}🗒 {$_(
-									'ModalAddNote.add_note_to1'
-								)}{$modalStore[0].title ?? '(title missing)'}{$_(
-									'ModalAddNote.add_note_to2'
-								)}
-								{$_('ModalAddNote.add_note_tag')}
-							{:else}
-								<!---->
-							{/if}
-						</header>
-						<article class="body break-all">
-							valid tag:
-							{#each kindsValidTag[$modalStore[0].value.kind] as tag, index}
-								{tag},
-							{/each}
-						</article>
-						<!-- Enable for debugging: -->
+			<!--タグそれぞれの入力画面作ったし入れれるタグ制限してるしタグから追加モードいらないかも-->
 
-						<input
-							class="input p-2 m-2"
-							type="text"
-							bind:value={input}
-							placeholder="[”e”,”1234”]"
-						/>
+			{#if tag === undefined}
+				<!--へんしゅうではないとき-->
 
-						<footer class=" rid grid-cols-3 gap-2 flex justify-end mt-2">
-							<button
-								class="btn variant-filled-warning {parent.buttonPositive}"
-								on:click={() => {
-									res.btn = 'prv';
-									onTagkara();
-									//onFormSubmit();
-								}}>Private</button
-							>
-							<button
-								class="btn {parent.buttonPositive}"
-								on:click={() => {
-									res.btn = 'pub';
-									onTagkara();
-									//onFormSubmit();
-								}}>Public</button
-							>
-						</footer>
-					</div>
-				</svelte:fragment>
-			</AccordionItem>
+				<AccordionItem>
+					<svelte:fragment slot="lead">🗒</svelte:fragment>
+					<svelte:fragment slot="summary">
+						{#if $modalStore[0].value.type === 'add'}
+							{$_('ModalAddNote.add_note')}
+							{$_('ModalAddNote.add_note_tag')}
+						{:else}
+							<!---->
+							{$_('modal.addNote.edit')}
+							{$_('ModalAddNote.add_note_tag')}
+						{/if}
+					</svelte:fragment>
+					<svelte:fragment slot="content">
+						<div class="card p-4">
+							<header class={cHeader}>
+								{#if $modalStore[0].value.type === 'add'}🗒 {$_(
+										'ModalAddNote.add_note_to1'
+									)}{$modalStore[0].title ?? '(title missing)'}{$_(
+										'ModalAddNote.add_note_to2'
+									)}
+									{$_('ModalAddNote.add_note_tag')}
+								{:else}
+									<!---->
+								{/if}
+							</header>
+							<article class="body break-all">
+								valid tag:
+								{#each kindsValidTag[$modalStore[0].value.kind] as tag, index}
+									{tag},
+								{/each}
+							</article>
+							<!-- Enable for debugging: -->
+
+							<input
+								class="input p-2 m-2"
+								type="text"
+								bind:value={input}
+								placeholder="[”e”,”1234”]"
+							/>
+
+							<footer class=" rid grid-cols-3 gap-2 flex justify-end mt-2">
+								<button
+									class="btn variant-filled-warning {parent.buttonPositive}"
+									on:click={() => {
+										res.btn = 'prv';
+										onTagkara();
+										//onFormSubmit();
+									}}>Private</button
+								>
+								<button
+									class="btn {parent.buttonPositive}"
+									on:click={() => {
+										res.btn = 'pub';
+										onTagkara();
+										//onFormSubmit();
+									}}>Public</button
+								>
+							</footer>
+						</div>
+					</svelte:fragment>
+				</AccordionItem>
+			{/if}
 			{#if tag === undefined && ($modalStore[0].value.kind === 30003 || $modalStore[0].value.kind === 10003)}
 				<AccordionItem>
 					<svelte:fragment slot="lead">🖊</svelte:fragment>
