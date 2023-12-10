@@ -24,6 +24,7 @@
 				<img
 					src={list[2]}
 					alt={list[1]}
+					title={list[1]}
 					class="max-h-[1.5em] w-fit inline-flex"
 				/>
 			{/if}
