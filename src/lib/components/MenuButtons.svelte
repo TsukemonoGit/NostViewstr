@@ -26,7 +26,7 @@
 	export let note: Event | undefined; //noteないときはwindow openとかできないらしい
 	export let myIndex: number | undefined;
 	export let share = true; //pたぐのときはシェア不可にしてるらしい
-
+	export let kind: number | undefined;
 	enum State {
 		Default,
 		Delete,
@@ -37,6 +37,7 @@
 	const dispatch = createEventDispatcher();
 
 	function handleClick(state: State) {
+		//console.log(state);
 		switch (state) {
 			case State.Delete:
 				dispatch('DeleteNote', {
@@ -139,8 +140,10 @@
 				disabled={!share}
 				on:click={shareNote}>{@html ShareIcon}</button
 			>
+
 			<button
 				class="btn m-0 p-0 bg-surface-500 w-fit fill-white"
+				disabled={!kind || kind < 30000 || kind >= 40000}
 				on:click={() => handleClick(State.Move)}>{@html MoveIcon}</button
 			>
 		</div>
@@ -166,24 +169,26 @@
 	</div>
 {:else if menuMode === MenuMode.Viewer}
 	<!--修正ボタンなし-->
-	<div class="flex flex-col w-7">
-		<button
-			class="btn m-0 p-0 mb-1 bg-surface-500 w-fit fill-white"
-			disabled={!share}
-			on:click={shareNote}>{@html ShareIcon}</button
-		>
-
-		{#if note}
+	{#if share || note !== undefined}
+		<div class="flex flex-col w-7">
 			<button
-				class="btn m-0 p-0 bg-surface-500 w-fit fill-white"
-				on:click={() => {
-					if (tagArray && note) {
-						windowOpen(note.id);
-					}
-				}}>{@html OpenIcon}</button
+				class="btn m-0 p-0 mb-1 bg-surface-500 w-fit fill-white"
+				disabled={!share}
+				on:click={shareNote}>{@html ShareIcon}</button
 			>
-		{/if}
-	</div>
+
+			{#if note}
+				<button
+					class="btn m-0 p-0 bg-surface-500 w-fit fill-white"
+					on:click={() => {
+						if (tagArray && note) {
+							windowOpen(note.id);
+						}
+					}}>{@html OpenIcon}</button
+				>
+			{/if}
+		</div>
+	{/if}
 {:else if menuMode === MenuMode.Multi}
 	<!--複数選択モード-->
 	<input
@@ -204,6 +209,7 @@
 	<div class="flex flex-col w-fit">
 		<button
 			class="btn m-0 p-0 mb-1 bg-surface-500 w-fit fill-white"
+			disabled={!kind || kind < 30000 || kind >= 40000}
 			on:click={() => handleClick(State.Move)}>{@html MoveIcon}</button
 		>
 

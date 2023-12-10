@@ -276,7 +276,7 @@
 	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
 		console.log(Number(event.currentTarget.value));
 		console.log(window.location);
-
+		bkm = 'pub';
 		goto(`/${nip19.npubEncode(pubkey)}/${selectValue}`);
 	}
 

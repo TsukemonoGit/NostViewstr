@@ -35,16 +35,23 @@
 
 	export let parent: any;
 
+	let viewRelays: boolean = false;
+	let selectValue: string = Object.keys(kinds)[0];
+
 	let res: {
 		share: boolean;
 		shareNaddr: boolean;
 		openJson: boolean;
 		openMyJson: boolean;
+		goto: boolean;
+		selectValue: string;
 	} = {
 		share: false,
 		shareNaddr: false,
 		openJson: false,
-		openMyJson: false
+		openMyJson: false,
+		goto: false,
+		selectValue: selectValue
 	};
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(res);
@@ -79,15 +86,15 @@
 	let warningToggle: boolean = $allView;
 	$: $allView = warningToggle;
 
-	let viewRelays: boolean = false;
-	let selectValue: string = Object.keys(kinds)[0];
-
 	function gotoMyList() {
 		console.log($pubkey_viewer);
 		console.log(`/${nip19.npubEncode($pubkey_viewer)}/${selectValue}`);
-		goto(`/${nip19.npubEncode($pubkey_viewer)}/${selectValue}`);
+		res.goto = true;
+		res.selectValue = selectValue;
+		onFormSubmit();
+		// goto(`/${nip19.npubEncode($pubkey_viewer)}/${selectValue}`);
 
-		modalStore.close();
+		// modalStore.close();
 	}
 	$: eventTime = $relaySet[$pubkey_viewer]?.relayEvent as Nostr.Event;
 

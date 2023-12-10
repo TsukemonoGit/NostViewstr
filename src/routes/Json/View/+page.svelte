@@ -231,6 +231,7 @@
 	pubkey={$JsonEventData.pubkey}
 	kind={$JsonEventData.kind}
 	disabled={true}
+	{bkm}
 />
 
 <!-------------------------------あど----->

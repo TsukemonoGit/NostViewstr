@@ -66,6 +66,7 @@
 		StoreFetchFilteredEvents,
 		publishEventWithTimeout
 	} from '$lib/streamEventLists';
+	import FooterMenu from './FooterMenu.svelte';
 
 	export let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> | undefined;
@@ -192,6 +193,7 @@
 			relays: $relaySet[pubkey].bookmarkRelays,
 			filters: filter
 		});
+		bkm = 'pub';
 		listedEventRef.viewUpdate(); //
 		toastStore.close(searchingEventsToast);
 	}
@@ -342,8 +344,9 @@
 			component: moveModalComponent,
 			title: $_('modal.moveNote.title'),
 			body: `${$_('modal.moveNote.body_from')} ${
-				$identifierListsMap[pubkey][kind].get($identifierKeysArray[listNumber])
-					?.identifier
+				$identifierListsMap[pubkey]?.[kind]?.get(
+					$identifierKeysArray[listNumber]
+				)?.identifier
 			}[${_bkm === 'pub' ? $_('public') : $_('private')}] ${$_(
 				'modal.moveNote.body_to'
 			)}`,
@@ -932,6 +935,7 @@
 		</div>
 	</div>
 {/if}
+<FooterMenu bind:pubkey {kind} naddr={true} bind:bkm />
 
 <!-- {/await} -->
 

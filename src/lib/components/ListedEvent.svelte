@@ -155,6 +155,7 @@
 								isPageOwner={isOwner}
 							/>
 							<MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
@@ -174,6 +175,7 @@
 								isPageOwner={isOwner}
 							/>
 							<MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
@@ -192,6 +194,7 @@
 								message={`not found [${tag}]`}
 								isPageOwner={isOwner}
 							/><MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
@@ -218,6 +221,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
 									note={text}
@@ -238,6 +242,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
 									note={text}
@@ -258,6 +263,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
 									note={text}
@@ -278,6 +284,7 @@
 									{pubkey}
 								/>
 								<MenuButtons
+									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
 									note={text}
@@ -302,6 +309,7 @@
 								message={`loading [${tag}]`}
 								isPageOwner={isOwner}
 							/><MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
@@ -320,6 +328,7 @@
 								message={`error [${tag}]`}
 								isPageOwner={isOwner}
 							/><MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
@@ -339,6 +348,7 @@
 								isPageOwner={isOwner}
 							/>
 							<MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
@@ -365,6 +375,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
 									note={uniqueEvent(events)}
@@ -385,6 +396,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
 									note={uniqueEvent(events)}
@@ -405,6 +417,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
 									note={uniqueEvent(events)}
@@ -425,6 +438,7 @@
 									{pubkey}
 								/>
 								<MenuButtons
+									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
 									note={uniqueEvent(events)}
@@ -448,6 +462,7 @@
 						>
 							loading ... {JSON.stringify(tag)}
 							<MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
@@ -463,6 +478,7 @@
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1 break-all"
 						>
 							not found {JSON.stringify(tag)}<MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
@@ -478,6 +494,7 @@
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1 break-all"
 						>
 							not found {JSON.stringify(tag)}<MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
@@ -493,6 +510,7 @@
 						>
 							<ProfileCard {metadata} tagArray={tag} />
 							<MenuButtons
+								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={metadata}
@@ -519,10 +537,13 @@
 							>
 						{/if}
 						<MenuButtons
+							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
 							note={undefined}
-							menuMode={isOwner
+							menuMode={noEdit
+								? MenuMode.Viewer
+								: isOwner
 								? $isMulti
 									? MenuMode.Multi
 									: MenuMode.Owner
@@ -547,11 +568,14 @@
 							>
 						{/if}
 						<MenuButtons
+							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
 							share={false}
 							note={undefined}
-							menuMode={isOwner
+							menuMode={noEdit
+								? MenuMode.Viewer
+								: isOwner
 								? $isMulti
 									? MenuMode.Multi
 									: MenuMode.Owner
@@ -575,10 +599,13 @@
 							>
 						{/if}
 						<MenuButtons
+							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
 							note={undefined}
-							menuMode={isOwner
+							menuMode={noEdit
+								? MenuMode.Viewer
+								: isOwner
 								? $isMulti
 									? MenuMode.Multi
 									: MenuMode.Owner
@@ -604,10 +631,13 @@
 							>
 						{/if}
 						<MenuButtons
+							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
 							note={undefined}
-							menuMode={isOwner
+							menuMode={noEdit
+								? MenuMode.Viewer
+								: isOwner
 								? $isMulti
 									? MenuMode.Multi
 									: MenuMode.Owner
@@ -633,10 +663,13 @@
 							>
 						{/if}
 						<MenuButtons
+							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
 							note={undefined}
-							menuMode={isOwner
+							menuMode={noEdit
+								? MenuMode.Viewer
+								: isOwner
 								? $isMulti
 									? MenuMode.Multi
 									: MenuMode.Owner
@@ -662,10 +695,13 @@
 							>
 						{/if}
 						<MenuButtons
+							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
 							note={undefined}
-							menuMode={isOwner
+							menuMode={noEdit
+								? MenuMode.Viewer
+								: isOwner
 								? $isMulti
 									? MenuMode.Multi
 									: MenuMode.Owner

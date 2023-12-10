@@ -67,5 +67,5 @@
 {:else}
 	<ListedEventList bind:pubkey={data.pubkey} {kind} isNaddr={false} />
 
-	<FooterMenu bind:pubkey={data.pubkey} {kind} />
+	<!-- <FooterMenu bind:pubkey={data.pubkey} {kind} /> -->
 {/if}

@@ -43,11 +43,12 @@
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import { relaySet } from '$lib/stores/relays';
 	import { get } from 'svelte/store';
+	import { goto } from '$app/navigation';
 
 	export let pubkey: string;
 	export let kind: number;
 	export let naddr: boolean = false;
-
+	export let bkm: string;
 	//$: console.log(
 	//	`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
 	//);
@@ -353,6 +354,8 @@
 				shareNaddr: boolean;
 				openJson: boolean;
 				openMyJson: boolean;
+				goto: boolean;
+				selectValue: string;
 			}) => {
 				if (res) {
 					if (res.share || res.shareNaddr) {
@@ -412,6 +415,9 @@
 							component: jsonModalComponent
 						};
 						modalStore.trigger(modal);
+					} else if (res.goto) {
+						bkm = 'pub';
+						goto(`/${nip19.npubEncode($pubkey_viewer)}/${res.selectValue}`);
 					}
 				}
 			}
@@ -521,7 +527,7 @@
 
 			<button
 				class="btn btn-icon pageIcon {multiButtonClass}"
-				disabled={pubkey !== $pubkey_viewer}
+				disabled={pubkey !== $pubkey_viewer || disabled}
 				on:click={onClickMulti}>{@html multiIcon}</button
 			>
 
