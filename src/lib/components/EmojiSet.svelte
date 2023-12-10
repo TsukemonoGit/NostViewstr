@@ -18,7 +18,7 @@
 
 <div class="grid grid-rows-[auto_1fr] w-full">
 	<div class="h4">{dtag && dtag.length > 1 ? dtag[1] : '(noname)'}</div>
-	<div class="card p-2 m-1 bg-surface-50 dark:bg-surface-50">
+	<div class="card p-2 m-1 bg-surface-50 dark:bg-surface-200">
 		{#each event?.tags as list, index}
 			{#if list[0] === 'emoji'}
 				<img
