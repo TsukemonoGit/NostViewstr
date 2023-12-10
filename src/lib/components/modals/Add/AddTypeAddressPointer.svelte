@@ -64,55 +64,60 @@
 			toastStore.trigger(t);
 		}
 	}
+	let openaddr: boolean = false;
 </script>
 
-<article class="body">
-	{`kind,pubkey,identifier`}
+<article class="body py-2">
+	<button on:click={() => (openaddr = !openaddr)}
+		>{openaddr ? '▼' : '▶'}{`add from kind,pubkey,identifier`}
+	</button>
 </article>
-<div
-	class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"
->
-	<div class="input-group-shim">kind</div>
-	<input
-		class="input p-2 w-full"
-		type="text"
-		inputmode="numeric"
-		bind:value={inputKind}
-		{disabled}
-		on:input={() => (inputKind = inputKind.replace(/[^0-9]/g, ''))}
-		placeholder="number"
-	/>
-	<div class="input-group-shim">pubkey</div>
-	<input
-		class="input p-2"
-		type="text"
-		bind:value={inputPubkey}
-		placeholder="npub1..."
-	/>
-
-	<div class="input-group-shim">identifier</div>
-	<input
-		class="input p-2"
-		type="text"
-		bind:value={inputId}
-		on:input={() => (inputId = inputId.replace(/[^a-zA-Z0-9-_]/g, ''))}
-		placeholder="..."
-	/>
-</div>
-
-<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	<button
-		class="btn variant-filled-warning {parent.buttonPositive}"
-		on:click={() => {
-			res.btn = 'prv';
-			onClickCheck();
-		}}>Private</button
+{#if openaddr}
+	<div
+		class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"
 	>
-	<button
-		class="btn {parent.buttonPositive}"
-		on:click={() => {
-			res.btn = 'pub';
-			onClickCheck();
-		}}>Public</button
-	>
-</footer>
+		<div class="input-group-shim">kind</div>
+		<input
+			class="input p-2 w-full"
+			type="text"
+			inputmode="numeric"
+			bind:value={inputKind}
+			{disabled}
+			on:input={() => (inputKind = inputKind.replace(/[^0-9]/g, ''))}
+			placeholder="number"
+		/>
+		<div class="input-group-shim">pubkey</div>
+		<input
+			class="input p-2"
+			type="text"
+			bind:value={inputPubkey}
+			placeholder="npub1..."
+		/>
+
+		<div class="input-group-shim">identifier</div>
+		<input
+			class="input p-2"
+			type="text"
+			bind:value={inputId}
+			on:input={() => (inputId = inputId.replace(/[^a-zA-Z0-9-_]/g, ''))}
+			placeholder="..."
+		/>
+	</div>
+
+	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
+		<button
+			class="btn variant-filled-warning {parent.buttonPositive}"
+			on:click={() => {
+				res.btn = 'prv';
+				onClickCheck();
+			}}>Private</button
+		>
+		<button
+			class="btn {parent.buttonPositive}"
+			on:click={() => {
+				res.btn = 'pub';
+				onClickCheck();
+			}}>Public</button
+		>
+	</footer>
+{/if}
