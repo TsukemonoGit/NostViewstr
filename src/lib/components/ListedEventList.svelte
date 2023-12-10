@@ -935,7 +935,7 @@
 		</div>
 	</div>
 {/if}
-<FooterMenu bind:pubkey {kind} naddr={true} bind:bkm />
+<FooterMenu bind:pubkey {kind} naddr={isNaddr} bind:bkm />
 
 <!-- {/await} -->
 
