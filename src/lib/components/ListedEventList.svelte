@@ -182,7 +182,8 @@
 							'#d': [identifier]
 						}
 				  ];
-
+		console.log(filter);
+		console.log(pubkey, $relaySet[pubkey].bookmarkRelays);
 		const t: ToastSettings = {
 			message: `${$_('toast.eventSearching')}`
 		};

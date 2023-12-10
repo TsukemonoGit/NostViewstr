@@ -174,8 +174,10 @@
 							>
 								<blockquote class="twitter-tweet">
 									<p lang="ja" dir="ltr">
-										<a class="anchor break-all" href={item.content}
-											>{item.content}</a
+										<a
+											class="anchor break-all"
+											rel="external noreferrer"
+											href={item.content}>{item.content}</a
 										>
 									</p>
 								</blockquote>
@@ -214,7 +216,11 @@
 								>{:then ogp}
 								{#if $ogpStore[item.content] && $ogpStore[item.content].title && $ogpStore[item.content].title !== ''}
 									<OGP ogp={$ogpStore[item.content]} url={item.content} />
-								{:else}<a class="anchor" href={item.content} target="_blank"
+								{:else}<a
+										class="anchor"
+										href={item.content}
+										target="_blank"
+										rel="external noreferrer"
 										>{#if item.content.length > 80}{item.content.slice(
 												0,
 												75
@@ -222,7 +228,11 @@
 									>{/if}
 							{/await}
 						{/if}
-					{:else}<a class="anchor" href={item.content} target="_blank"
+					{:else}<a
+							class="anchor"
+							href={item.content}
+							target="_blank"
+							rel="external noreferrer"
 							>{#if item.content.length > 80}{item.content.slice(0, 75)}...
 							{:else}{item.content}{/if}</a
 						>{/if}
@@ -237,7 +247,11 @@
 								on:click={() => handleClickImage(item.content)}
 							/></span
 						>{:else}<span class="break-all break-all"
-							><a class="anchor" href={item.content} target="_blank"
+							><a
+								class="anchor"
+								href={item.content}
+								target="_blank"
+								rel="external noreferrer"
 								>{#if item.content.length > 80}{item.content.slice(
 										0,
 										75

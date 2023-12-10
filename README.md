@@ -46,3 +46,5 @@ npm run build
 - [nostr_band](https://nostr.band/) - プロフィール,ノートのリンク先に使用
 
 - [うにゅうハウス](https://unyu-house.vercel.app/) - チャンネルのリンク先
+
+- [emojis-iota](https://emojis-iota.vercel.app/) - 絵文字リストのリンク先

@@ -20,6 +20,7 @@
 	import AddTypeRelay from './Add/AddTypeRelay.svelte';
 	import AddType10002 from './Add/AddType10002.svelte';
 	import AddTypeOther from './Add/AddTypeOther.svelte';
+	import AddTypeAddressPointer from './Add/AddTypeAddressPointer.svelte';
 
 	let input: string = $modalStore[0]?.value?.tag
 		? JSON.stringify($modalStore[0]?.value?.tag)
@@ -39,7 +40,7 @@
 
 	//これがundifinedじゃなかったら編集として
 	let tag: string[] | undefined = $modalStore[0]?.value?.tag;
-
+	let kind: number = $modalStore[0]?.value?.kind;
 	// "a" と "e" が両方含まれているか確認
 	const includesA = kindsValidTag[$modalStore[0].value.kind].includes('a');
 	const includesE = kindsValidTag[$modalStore[0].value.kind].includes('e');
@@ -183,6 +184,9 @@
 							<AddTypeNote {res} {parent} {onFormSubmit} />
 						{:else if (tag === undefined && includesA) || (tag !== undefined && tag[0] === 'a')}
 							<AddTypeNaddr {res} {parent} {onFormSubmit} />
+						{/if}
+						{#if tag === undefined && includesA}
+							<AddTypeAddressPointer {res} {parent} {onFormSubmit} {kind} />
 						{/if}
 						{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
 							<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}

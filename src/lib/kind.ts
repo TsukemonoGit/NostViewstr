@@ -22,24 +22,31 @@ export const kinds: { [name: number]: string } = {
 
 export let kindsValidTag: { [key: number]: string[] } = {
 	3: ['p'],
-	10003: ['e', 'a', 't', 'r'],
-	30003: ['e', 'a', 't', 'r'],
+	10003: ['e', 'a', 't', 'r'], //a-30023 etc
+	30003: ['e', 'a', 't', 'r'], //a-30023 etc
 	10006: ['relay'],
-	10004: ['a'],
-	30004: ['a', 'e'],
-	10030: ['emoji', 'a'],
+	10004: ['a'], //a-34550 (kind:34550 community definitions)
+	30004: ['a', 'e'], //"a" (kind:30023 articles), "e" (kind:1 notes)
+	10030: ['emoji', 'a'], //a-30030(kind:30030 emoji set)
 	30030: ['emoji'],
-	10015: ['t', 'a'],
+	10015: ['t', 'a'], //a-30015(kind:30015 interest set)
 	30015: ['t'],
 	30001: [],
 	10000: ['p', 't', 'word', 'e'],
 	30000: ['p'],
 	10001: ['e'],
-	30008: ['a', 'e'],
-	10005: ['e'],
+	30008: ['a', 'e'], //a-30009 e-kind8
+	10005: ['e'], //kind40 (kind:40 channel definitions)
 	10002: ['r'],
 	10007: ['relay'],
 	30002: ['relay']
+};
+
+export let naddrVaridKind: { [key: number]: number[] } = {
+	10004: [34550],
+	10030: [30030],
+	10015: [30015],
+	30008: [30009]
 };
 
 export let tagExp: Record<string, string> = {

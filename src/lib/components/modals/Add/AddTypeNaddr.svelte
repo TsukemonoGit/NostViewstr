@@ -2,12 +2,13 @@
 	import { checkInputNaddr } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
+	import { nip19 } from 'nostr-tools';
 
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
 	export let onFormSubmit: any;
 	let input: string;
-	async function onClickCheck() {
+	async function onClickNaddr() {
 		const check = await checkInputNaddr(input);
 		if (check.error && check.message) {
 			const t = {
@@ -26,6 +27,7 @@
 	}
 </script>
 
+<!---->
 <article class="body">
 	{`nostr:naddr... or naddr...`}
 </article>
@@ -43,14 +45,16 @@
 		class="btn variant-filled-warning {parent.buttonPositive}"
 		on:click={() => {
 			res.btn = 'prv';
-			onClickCheck();
+			onClickNaddr();
 		}}>Private</button
 	>
 	<button
 		class="btn {parent.buttonPositive}"
 		on:click={() => {
 			res.btn = 'pub';
-			onClickCheck();
+			onClickNaddr();
 		}}>Public</button
 	>
 </footer>
+
+<!---->

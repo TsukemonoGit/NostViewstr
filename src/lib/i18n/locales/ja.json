@@ -132,7 +132,8 @@
     "relaySearching": "リレー取得中",
     "eventSearching": "イベント取得中",
     "invalidEvent": "無効なイベントです",
-    "checkRelay": "リレーアドレスを確認してください"
+    "checkRelay": "リレーアドレスを確認してください",
+    "checkInput": "入力を確認してください"
   },
   "icon_description": "アイコンについて"
 }
