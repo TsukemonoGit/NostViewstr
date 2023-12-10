@@ -133,7 +133,8 @@
     "relaySearching": "Relay Searching ...",
     "eventSearching": "Searching events ...",
     "invalidEvent": "invalid event",
-    "checkRelay": "Check relay address"
+    "checkRelay": "Check relay address",
+    "checkInput": "Please confirm your input"
   },
   "icon_description": "Icon description"
 }
