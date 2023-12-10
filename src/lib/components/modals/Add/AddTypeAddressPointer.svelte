@@ -67,7 +67,7 @@
 	let openaddr: boolean = false;
 </script>
 
-<article class="body py-2">
+<article class="body pt-4">
 	<button on:click={() => (openaddr = !openaddr)}
 		>{openaddr ? '▼' : '▶'}{`add from kind,pubkey,identifier`}
 	</button>

@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	// Props
-	/** Exposes parent props to this component. */
-	export let parent: any;
 
-	// Stores
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import AddTypeNoteAndNaddr from './Add/AddTypeNoteAndNaddr.svelte';
 	import { isOneDimensionalArray } from '$lib/nostrFunctions';
@@ -22,10 +18,12 @@
 	import AddTypeOther from './Add/AddTypeOther.svelte';
 	import AddTypeAddressPointer from './Add/AddTypeAddressPointer.svelte';
 
+	export let parent: any;
+
 	let input: string = $modalStore[0]?.value?.tag
 		? JSON.stringify($modalStore[0]?.value?.tag)
 		: '';
-	let content: string;
+	let content: string = '';
 	// Form Data
 	const res: { btn: string; tag: string[]; check: boolean } = {
 		btn: 'pub',
@@ -185,9 +183,7 @@
 						{:else if (tag === undefined && includesA) || (tag !== undefined && tag[0] === 'a')}
 							<AddTypeNaddr {res} {parent} {onFormSubmit} />
 						{/if}
-						{#if tag === undefined && includesA}
-							<AddTypeAddressPointer {res} {parent} {onFormSubmit} {kind} />
-						{/if}
+
 						{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
 							<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
 						{#if (tag === undefined && includesEmoji) || (tag !== undefined && tag[0] === 'emoji')}
@@ -216,6 +212,9 @@
 								tag={$modalStore[0].value.tag}
 								{countCharacters}
 							/>
+						{/if}
+						{#if tag === undefined && includesA}
+							<AddTypeAddressPointer {res} {parent} {onFormSubmit} {kind} />
 						{/if}
 					</div>
 				</svelte:fragment>
