@@ -17,6 +17,7 @@
 	import { goto } from '$app/navigation';
 	import { listNum } from '$lib/stores/bookmarkEvents';
 	import PubCha from './PubCha.svelte';
+	import EmojiSet from './EmojiSet.svelte';
 
 	export let isPageOwner: boolean;
 	export let note: Event;
@@ -263,6 +264,8 @@
 					{/await}
 				{:else if note.kind === 40 || note.kind === 41}
 					<PubCha event={note} text={note.content} id={note.id} />
+				{:else if note.kind === 30030}
+					<EmojiSet event={note} />
 				{:else}<Content
 						text={note.content}
 						tag={note.tags}
