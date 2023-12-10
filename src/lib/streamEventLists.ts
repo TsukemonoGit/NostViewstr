@@ -109,7 +109,7 @@ export async function StoreFetchFilteredEvents(
 
 	//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
 	const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
-
+	console.log(data.relays);
 	rxNostr.setRelays(mergeRelays(viewerRelay, data.relays));
 
 	console.log('[get relays]', rxNostr.getRelays());

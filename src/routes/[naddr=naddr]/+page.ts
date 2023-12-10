@@ -27,7 +27,7 @@ export const load: PageLoad<{
 			//AddressPointer
 			const address = data as AddressPointer;
 			//pubkey.set(address.pubkey);
-			if (address.relays && address.relays) {
+			if (address.relays && address.relays.length > 0) {
 				const tmp_relaySet = get(relaySet);
 				tmp_relaySet[address.pubkey] = initRelaySet;
 				tmp_relaySet[address.pubkey].bookmarkRelays = address.relays;
@@ -35,12 +35,12 @@ export const load: PageLoad<{
 				tmp_relaySet[address.pubkey].searchRelays = defaultRelays;
 				relaySet.set(tmp_relaySet);
 			}
-
+			console.log(get(relaySet));
 			return {
 				pubkey: address.pubkey,
 				kind: address.kind,
 				identifier: address.identifier,
-				relays: address.relays ? address.relays : []
+				relays: address.relays ?? []
 			};
 		} else {
 			console.error('[type error]', type);
