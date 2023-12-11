@@ -11,15 +11,18 @@
 
 	import { kinds } from '$lib/kind';
 	import { nip19 } from 'nostr-tools';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 
 	console.log('PageData', data.pubkey);
-	async function settingFunc() {
+
+	function settingFunc() {
 		settings = true;
+		goto('/' + nip19.npubEncode(data.pubkey) + '/' + kind);
 	}
 
-	let kind: number;
+	let kind: number = Number(Object.keys(kinds)[0]);
 	let selectValue: any;
 	console.log(selectValue);
 	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
@@ -39,7 +42,6 @@
 		content="pubkey:{nip19.npubEncode(data.pubkey)}"
 	/>
 </svelte:head>
-
 {#if !settings}
 	<div class="container h-full mx-auto flex justify-center items-center">
 		<div class="mt-5">
@@ -49,7 +51,7 @@
 					<h5 class="h5">{`kind`}</h5>
 
 					<select
-						class="input p-1"
+						class="select"
 						bind:value={selectValue}
 						on:change={handleKindChange}
 					>
@@ -60,12 +62,8 @@
 				</div>
 			</div>
 			<div class="space-t-5">
-				<settingFunc />
+				<Settings {settingFunc} />
 			</div>
 		</div>
 	</div>
-{:else}
-	<ListedEventList bind:pubkey={data.pubkey} {kind} isNaddr={false} />
-
-	<!-- <FooterMenu bind:pubkey={data.pubkey} {kind} /> -->
 {/if}

@@ -18,7 +18,7 @@ export const load: PageLoad<{
 		const { type, data } = nip19.decode(params.nprofile);
 		console.log('[decode]', type, data);
 		const nprofile = data as nip19.ProfilePointer;
-		if (nprofile.relays && nprofile.relays) {
+		if (nprofile.relays && nprofile.relays && nprofile.relays.length > 0) {
 			const tmp_relaySet = get(relaySet);
 			tmp_relaySet[nprofile.pubkey].bookmarkRelays = nprofile.relays;
 			tmp_relaySet[nprofile.pubkey].postRelays = nprofile.relays;

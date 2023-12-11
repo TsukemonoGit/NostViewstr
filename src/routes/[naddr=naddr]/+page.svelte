@@ -51,5 +51,4 @@ pubkey:{nip19.npubEncode(data.pubkey)}"
 		{identifier}
 		isNaddr={true}
 	/>
-	<FooterMenu bind:pubkey={data.pubkey} {kind} naddr={true} />
 {/if}
