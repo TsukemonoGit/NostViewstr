@@ -23,9 +23,15 @@
 </script>
 
 <svelte:head>
-	<meta name="description" content="home" />
+	<meta
+		name="description"
+		content="Nostr's replaceable events and parameterized replaceable events viewer"
+	/>
 
-	<meta property="og:description" content="home" />
+	<meta
+		property="og:description"
+		content="Nostr's replaceable events and parameterized replaceable events viewer"
+	/>
 </svelte:head>
 
 {#if !settings}

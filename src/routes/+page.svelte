@@ -80,7 +80,10 @@
 </script>
 
 <svelte:head>
-	<meta property="og:description" content="home" />
+	<meta
+		property="og:description"
+		content="Nostr's replaceable events and parameterized replaceable events viewer"
+	/>
 	<meta name="description" content="home" />
 </svelte:head>
 
