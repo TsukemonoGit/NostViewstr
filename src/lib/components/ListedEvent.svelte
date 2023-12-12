@@ -460,13 +460,19 @@
 							slot="loading"
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1 break-all"
 						>
-							loading ... {JSON.stringify(tag)}
+							<SearchCard
+								{filter}
+								message={`loading [${tag}]`}
+								isPageOwner={isOwner}
+							/>
+
+							<!-- loading ... {JSON.stringify(tag)} -->
 							<MenuButtons
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
-								menuMode={menuEvent}
+								menuMode={menuSearch}
 								share={false}
 								on:DeleteNote={DeleteNote}
 								on:MoveNote={MoveNote}
@@ -477,12 +483,17 @@
 							slot="error"
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1 break-all"
 						>
-							not found {JSON.stringify(tag)}<MenuButtons
+							<SearchCard
+								{filter}
+								message={`not found [${tag}]`}
+								isPageOwner={isOwner}
+							/>
+							<MenuButtons
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
-								menuMode={menuEvent}
+								menuMode={menuSearch}
 								share={false}
 								on:DeleteNote={DeleteNote}
 								on:MoveNote={MoveNote}
@@ -493,12 +504,17 @@
 							slot="nodata"
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1 break-all"
 						>
-							not found {JSON.stringify(tag)}<MenuButtons
+							<SearchCard
+								{filter}
+								message={`not found [${tag}]`}
+								isPageOwner={isOwner}
+							/>
+							<MenuButtons
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
 								note={undefined}
-								menuMode={menuEvent}
+								menuMode={menuSearch}
 								share={false}
 								on:DeleteNote={DeleteNote}
 								on:MoveNote={MoveNote}

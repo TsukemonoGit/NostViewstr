@@ -121,8 +121,11 @@ export async function getIdByTag(
 		//取得失敗
 		return { id: '', kind: naddr.kind, filter: filter };
 		//	}
+	} else if (tag[0] === 'p') {
+		//タグがpの場合はプロフィールを取得
+		return { id: tag[1], filter: { kinds: [0], authors: [tag[1]] } };
 	} else {
-		//タグがa,e以外はそのままかえす
+		//タグがa,eかp以外はそのままかえす
 		return { id: tag[1], filter: {} };
 	}
 }
