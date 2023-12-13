@@ -120,7 +120,7 @@
 		</div>
 		{#if $modalStore[0].meta.tagArray && $modalStore[0].meta.tagArray.length > 0}
 			<div class="mt-2"><b>list tag</b></div>
-			<div class="grid grid-cols-[1fr_auto]">
+			<div class="grid grid-cols-[1fr_auto] max-w-[768px]">
 				<div
 					class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto p-1"
 				>
