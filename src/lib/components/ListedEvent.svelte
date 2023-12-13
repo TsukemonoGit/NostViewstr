@@ -5,7 +5,7 @@
 
 	import { Metadata, NostrApp, Text, UniqueEventList } from 'nosvelte';
 	import type { Event as NostrEvent } from 'nostr-tools';
-	import { getIdByTag, nip04De } from '$lib/nostrFunctions';
+	import { getIdByTag, nip04De, parseNaddr } from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
 
 	import { amount, pageNum, listSize } from '$lib/stores/pagination';
@@ -21,6 +21,7 @@
 	import Other from './Other.svelte';
 	import Reference from '$lib/components/Reference.svelte';
 	import Hashtag from './Hashtag.svelte';
+	import OGP from './OGP.svelte';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -304,11 +305,25 @@
 							slot="loading"
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
 						>
-							<SearchCard
-								{filter}
-								message={`loading [${tag}]`}
-								isPageOwner={isOwner}
-							/><MenuButtons
+							{#if kind && kind === 30023}
+								<OGP
+									ogp={{
+										title: '',
+										image: '',
+										description: '',
+										favicon: 'https://habla.news/favicon.png'
+									}}
+									url={'https://habla.news/a/' + parseNaddr(tag)}
+								/>
+								<!---->
+							{:else}
+								<SearchCard
+									{filter}
+									message={`loading [${tag}]`}
+									isPageOwner={isOwner}
+								/>
+							{/if}
+							<MenuButtons
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -323,11 +338,25 @@
 							slot="error"
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
 						>
-							<SearchCard
-								{filter}
-								message={`error [${tag}]`}
-								isPageOwner={isOwner}
-							/><MenuButtons
+							{#if kind && kind === 30023}
+								<OGP
+									ogp={{
+										title: '',
+										image: '',
+										description: '',
+										favicon: 'https://habla.news/favicon.png'
+									}}
+									url={'https://habla.news/a/' + parseNaddr(tag)}
+								/>
+								<!---->
+							{:else}
+								<SearchCard
+									{filter}
+									message={`error [${tag}]`}
+									isPageOwner={isOwner}
+								/>
+							{/if}
+							<MenuButtons
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -342,11 +371,24 @@
 							slot="nodata"
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
 						>
-							<SearchCard
-								{filter}
-								message={`not found [${tag}]`}
-								isPageOwner={isOwner}
-							/>
+							{#if kind && kind === 30023}
+								<OGP
+									ogp={{
+										title: '',
+										image: '',
+										description: '',
+										favicon: 'https://habla.news/favicon.png'
+									}}
+									url={'https://habla.news/a/' + parseNaddr(tag)}
+								/>
+								<!---->
+							{:else}
+								<SearchCard
+									{filter}
+									message={`not found [${tag}]`}
+									isPageOwner={isOwner}
+								/>
+							{/if}
 							<MenuButtons
 								kind={listEvent?.kind}
 								myIndex={index}
@@ -374,7 +416,8 @@
 									note={uniqueEvent(events)}
 									metadata={undefined}
 									{pubkey}
-								/><MenuButtons
+								/>
+								<MenuButtons
 									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}

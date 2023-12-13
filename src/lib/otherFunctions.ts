@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import type { Metadata } from 'unfurl.js/dist/types';
 import { ogpStore } from './stores/bookmarkEvents';
-
+import type { Event as NostrEvent } from 'nostr-tools';
 export enum MenuMode {
 	Multi, //複数選択モード
 	Owner, //追加削除ボタン込み
@@ -103,3 +103,26 @@ export const encodedURL = (str: string): string => {
 	const url = `https://nostter.app/search?q=${encodedstr}`; //`https://nosey.vercel.app/?q=${encodedstr}`;
 	return url;
 };
+
+export function setOgps(ev: NostrEvent<number>): {
+	ogp: Ogp;
+	site: string;
+} {
+	const titletag = ev.tags.find((item) => item[0] === 'title');
+	const imagetag = ev.tags.find((item) => item[0] === 'image');
+	const summarytag = ev.tags.find((item) => item[0] === 'summary');
+	const noslitag = ev.tags.find(
+		(item) => item[0] === 't' && item[1] === 'nosli'
+	);
+	return {
+		ogp: {
+			title: titletag ? titletag[1] : '',
+			image: imagetag ? imagetag[1] : '',
+			description: summarytag ? summarytag[1] : '',
+			favicon: noslitag
+				? 'https://nosli.vercel.app/favicon.svg'
+				: 'https://habla.news/favicon.png'
+		},
+		site: noslitag ? 'https://nosli.vercel.app/li/' : 'https://habla.news/a/'
+	};
+}

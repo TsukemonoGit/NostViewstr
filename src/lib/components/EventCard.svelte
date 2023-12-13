@@ -5,7 +5,7 @@
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { nip19, type Event } from 'nostr-tools';
 
-	import { uniqueTags } from '$lib/otherFunctions.js';
+	import { setOgps, uniqueTags } from '$lib/otherFunctions.js';
 	import { _ } from 'svelte-i18n';
 	import type { MenuMode } from '$lib/otherFunctions.js';
 	import EventTag from './EventTag.svelte';
@@ -18,6 +18,8 @@
 	import { listNum } from '$lib/stores/bookmarkEvents';
 	import PubCha from './PubCha.svelte';
 	import EmojiSet from './EmojiSet.svelte';
+	import OGP from './OGP.svelte';
+	import { parseNaddr } from '$lib/nostrFunctions';
 
 	export let isPageOwner: boolean;
 	export let note: Event;
@@ -233,18 +235,20 @@
 
 		<!--tag?-->
 		{#await uniqueTags(note.tags) then tags}
-			{#if tags.length > 0}
-				<div
-					class="max-h-[4em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50 box-border h-fit"
-				>
-					{#each tags as tag}
-						<EventTag
-							{tag}
-							handleClickDate={OpenNoteJson}
-							handleClickPubkey={OpenProfile}
-						/>
-					{/each}
-				</div>
+			{#if note.kind !== 30023 && note.kind !== 30030}<!--タグを表示しない-->
+				{#if tags.length > 0}
+					<div
+						class="max-h-[4em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50 box-border h-fit"
+					>
+						{#each tags as tag}
+							<EventTag
+								{tag}
+								handleClickDate={OpenNoteJson}
+								handleClickPubkey={OpenProfile}
+							/>
+						{/each}
+					</div>
+				{/if}
 			{/if}
 			<!--note-->
 			<div class="break-all box-border overflow-x-auto">
@@ -266,6 +270,11 @@
 					<PubCha event={note} text={note.content} id={note.id} />
 				{:else if note.kind === 30030}
 					<EmojiSet event={note} />
+				{:else if note.kind === 30023 && tagArray !== undefined}
+					<OGP
+						ogp={setOgps(note).ogp}
+						url={setOgps(note).site + nip19.naddrEncode(parseNaddr(tagArray))}
+					/>
 				{:else}<Content
 						text={note.content}
 						tag={note.tags}
