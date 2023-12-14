@@ -49,6 +49,6 @@ npm run build
 
 - [emojis-iota](https://emojis-iota.vercel.app/) - 絵文字リストのリンク先
 
-- [Habla](https://habla.news/) - kind:30023 (long form content) のリンク先
+- [Habla](https://habla.news/) - kind:30023 (long form content) , kind:34550 (communities) のリンク先
 
 - [Nosli](https://nosli.vercel.app/) - kind:30023 の #nosli がついている投稿のリンク先
