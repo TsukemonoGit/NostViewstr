@@ -90,3 +90,6 @@ export const naddrStore = writable<NaddrStore>({});
 export const contentStore = writable<ContentStore>({});
 
 export const JsonEventData = writable<Nostr.Event>();
+
+export interface ClientInfo {}
+export const clientMap = writable(new Map<string[], ClientInfo>());

@@ -1,7 +1,9 @@
 import { get } from 'svelte/store';
 import type { Metadata } from 'unfurl.js/dist/types';
-import { ogpStore } from './stores/bookmarkEvents';
+import { clientMap, ogpStore } from './stores/bookmarkEvents';
 import type { Event as NostrEvent } from 'nostr-tools';
+import { fetchFilteredEvents, parseNaddr } from './nostrFunctions';
+import type { Nostr } from 'nosvelte';
 export enum MenuMode {
 	Multi, //複数選択モード
 	Owner, //追加削除ボタン込み
@@ -104,7 +106,8 @@ export const encodedURL = (str: string): string => {
 	return url;
 };
 
-export function setOgps(ev: NostrEvent<number>): {
+//long form contentsのOGP
+export function setLFCOgps(ev: NostrEvent<number>): {
 	ogp: Ogp;
 	site: string;
 } {
@@ -114,6 +117,16 @@ export function setOgps(ev: NostrEvent<number>): {
 	const noslitag = ev.tags.find(
 		(item) => item[0] === 't' && item[1] === 'nosli'
 	);
+	// const clientTag = ev.tags.find((item) => item[0] === 'client');
+	// if (clientTag) {
+	// 	const test = parseNaddr(clientTag);
+	// 	if(!get(clientMap).has(clientTag)){
+	// 		const filter={kinds:[test.kind],"#d":test.identifier,pubkey:test.pubkey};
+	// 		const res = fetchFilteredEvents//rx-nostrのバージョン挙げないと色々面倒くさいかも
+	// 	}
+
+	// 		console.log(test);
+	//}
 	return {
 		ogp: {
 			title: titletag ? titletag[1] : '',
@@ -124,5 +137,35 @@ export function setOgps(ev: NostrEvent<number>): {
 				: 'https://habla.news/favicon.png'
 		},
 		site: noslitag ? 'https://nosli.vercel.app/li/' : 'https://habla.news/a/'
+	};
+}
+
+//communitiesのOGP
+export function setComOgps(ev: NostrEvent<number>): {
+	ogp: Ogp;
+	site: string;
+} {
+	const dTag = ev.tags.find((item) => item[0] === 'd');
+	const discriptiontTag = ev.tags.find((item) => item[0] === 'description');
+	const imagetag = ev.tags.find((item) => item[0] === 'image');
+
+	// const clientTag = ev.tags.find((item) => item[0] === 'client');
+	// if (clientTag) {
+	// 	const test = parseNaddr(clientTag);
+	// 	if(!get(clientMap).has(clientTag)){
+	// 		const filter={kinds:[test.kind],"#d":test.identifier,pubkey:test.pubkey};
+	// 		const res = fetchFilteredEvents//rx-nostrのバージョン挙げないと色々面倒くさいかも
+	// 	}
+
+	// 		console.log(test);
+	//}
+	return {
+		ogp: {
+			title: dTag ? dTag[1] : '',
+			image: imagetag ? imagetag[1] : '',
+			description: discriptiontTag ? discriptiontTag[1] : '',
+			favicon: 'https://habla.news/favicon.png'
+		},
+		site: 'https://habla.news/c/'
 	};
 }

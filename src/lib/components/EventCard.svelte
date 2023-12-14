@@ -5,7 +5,7 @@
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { nip19, type Event } from 'nostr-tools';
 
-	import { setOgps, uniqueTags } from '$lib/otherFunctions.js';
+	import { setComOgps, setLFCOgps, uniqueTags } from '$lib/otherFunctions.js';
 	import { _ } from 'svelte-i18n';
 	import type { MenuMode } from '$lib/otherFunctions.js';
 	import EventTag from './EventTag.svelte';
@@ -270,10 +270,17 @@
 					<PubCha event={note} text={note.content} id={note.id} />
 				{:else if note.kind === 30030}
 					<EmojiSet event={note} />
-				{:else if note.kind === 30023 && tagArray !== undefined}
+				{:else if note.kind === 30023 && tagArray !== undefined}<!--long form content-->
 					<OGP
-						ogp={setOgps(note).ogp}
-						url={setOgps(note).site + nip19.naddrEncode(parseNaddr(tagArray))}
+						ogp={setLFCOgps(note).ogp}
+						url={setLFCOgps(note).site +
+							nip19.naddrEncode(parseNaddr(tagArray))}
+					/>
+				{:else if note.kind === 34550 && tagArray !== undefined}<!--communities-->
+					<OGP
+						ogp={setComOgps(note).ogp}
+						url={setComOgps(note).site +
+							nip19.naddrEncode(parseNaddr(tagArray))}
 					/>
 				{:else}<Content
 						text={note.content}

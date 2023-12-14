@@ -305,7 +305,7 @@
 							slot="loading"
 							class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
 						>
-							{#if kind && kind === 30023}
+							{#if kind && kind === 30023}<!--long form content-->
 								<OGP
 									ogp={{
 										title: '',
@@ -316,6 +316,16 @@
 									url={'https://habla.news/a/' + parseNaddr(tag)}
 								/>
 								<!---->
+							{:else if kind && kind === 34550}<!--communities-->
+								<OGP
+									ogp={{
+										title: '',
+										image: '',
+										description: '',
+										favicon: 'https://habla.news/favicon.png'
+									}}
+									url={'https://habla.news/c/' + parseNaddr(tag)}
+								/>
 							{:else}
 								<SearchCard
 									{filter}
@@ -349,6 +359,16 @@
 									url={'https://habla.news/a/' + parseNaddr(tag)}
 								/>
 								<!---->
+							{:else if kind && kind === 34550}<!--communities-->
+								<OGP
+									ogp={{
+										title: '',
+										image: '',
+										description: '',
+										favicon: 'https://habla.news/favicon.png'
+									}}
+									url={'https://habla.news/c/' + parseNaddr(tag)}
+								/>
 							{:else}
 								<SearchCard
 									{filter}
@@ -382,6 +402,16 @@
 									url={'https://habla.news/a/' + parseNaddr(tag)}
 								/>
 								<!---->
+							{:else if kind && kind === 34550}<!--communities-->
+								<OGP
+									ogp={{
+										title: '',
+										image: '',
+										description: '',
+										favicon: 'https://habla.news/favicon.png'
+									}}
+									url={'https://habla.news/c/' + parseNaddr(tag)}
+								/>
 							{:else}
 								<SearchCard
 									{filter}
