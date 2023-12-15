@@ -260,7 +260,8 @@
 									title: data.name,
 									image: data.banner,
 									description: data.about,
-									favicon: data.picture
+									favicon: data.picture,
+									memo: 'kind: ' + note.kind + ' Application'
 								}}
 								url={data.website}
 							/>
