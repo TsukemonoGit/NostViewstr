@@ -31,6 +31,7 @@
 	export let isOwner: boolean;
 	export let noEdit: boolean = false;
 	export let pubkey: string;
+	export let isNaddr: boolean;
 	console.log(bkm);
 	//let viewList: string[][];
 	//一つのタグに一種類のイベントしかないことにして日付だけ見る
@@ -156,6 +157,7 @@
 								isPageOwner={isOwner}
 							/>
 							<MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -176,6 +178,7 @@
 								isPageOwner={isOwner}
 							/>
 							<MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -195,6 +198,7 @@
 								message={`not found [${tag}]`}
 								isPageOwner={isOwner}
 							/><MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -222,6 +226,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									{isNaddr}
 									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
@@ -243,6 +248,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									{isNaddr}
 									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
@@ -264,6 +270,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									{isNaddr}
 									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
@@ -285,6 +292,7 @@
 									{pubkey}
 								/>
 								<MenuButtons
+									{isNaddr}
 									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
@@ -334,6 +342,7 @@
 								/>
 							{/if}
 							<MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -377,6 +386,7 @@
 								/>
 							{/if}
 							<MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -420,6 +430,7 @@
 								/>
 							{/if}
 							<MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -448,6 +459,7 @@
 									{pubkey}
 								/>
 								<MenuButtons
+									{isNaddr}
 									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
@@ -469,6 +481,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									{isNaddr}
 									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
@@ -490,6 +503,7 @@
 									metadata={undefined}
 									{pubkey}
 								/><MenuButtons
+									{isNaddr}
 									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
@@ -511,6 +525,7 @@
 									{pubkey}
 								/>
 								<MenuButtons
+									{isNaddr}
 									kind={listEvent?.kind}
 									myIndex={index}
 									tagArray={tag}
@@ -541,6 +556,7 @@
 
 							<!-- loading ... {JSON.stringify(tag)} -->
 							<MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -562,6 +578,7 @@
 								isPageOwner={isOwner}
 							/>
 							<MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -583,6 +600,7 @@
 								isPageOwner={isOwner}
 							/>
 							<MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -599,6 +617,7 @@
 						>
 							<ProfileCard {metadata} tagArray={tag} />
 							<MenuButtons
+								{isNaddr}
 								kind={listEvent?.kind}
 								myIndex={index}
 								tagArray={tag}
@@ -626,6 +645,7 @@
 							>
 						{/if}
 						<MenuButtons
+							{isNaddr}
 							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
@@ -657,6 +677,7 @@
 							>
 						{/if}
 						<MenuButtons
+							{isNaddr}
 							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
@@ -688,6 +709,7 @@
 							>
 						{/if}
 						<MenuButtons
+							{isNaddr}
 							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
@@ -720,6 +742,7 @@
 							>
 						{/if}
 						<MenuButtons
+							{isNaddr}
 							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
@@ -752,6 +775,7 @@
 							>
 						{/if}
 						<MenuButtons
+							{isNaddr}
 							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}
@@ -784,6 +808,7 @@
 							>
 						{/if}
 						<MenuButtons
+							{isNaddr}
 							kind={listEvent?.kind}
 							myIndex={index}
 							tagArray={tag}

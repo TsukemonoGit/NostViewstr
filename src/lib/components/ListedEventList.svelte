@@ -887,6 +887,7 @@
 						bind:isOwner
 						on:EditTag={EditTag}
 						bind:viewList
+						{isNaddr}
 					/>
 				</NostrApp>
 				<!-- {:else}

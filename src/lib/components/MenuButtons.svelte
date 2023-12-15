@@ -27,6 +27,7 @@
 	export let myIndex: number | undefined;
 	export let share = true; //pたぐのときはシェア不可にしてるらしい
 	export let kind: number | undefined;
+	export let isNaddr: boolean;
 	enum State {
 		Default,
 		Delete,
@@ -143,7 +144,7 @@
 
 			<button
 				class="btn m-0 p-0 bg-surface-500 w-fit fill-white"
-				disabled={!kind || kind < 30000 || kind >= 40000}
+				disabled={!kind || kind < 30000 || kind >= 40000 || isNaddr}
 				on:click={() => handleClick(State.Move)}>{@html MoveIcon}</button
 			>
 		</div>
