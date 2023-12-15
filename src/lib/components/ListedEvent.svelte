@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import EventCard from '$lib/components/EventCard.svelte';
-	import { MenuMode } from '$lib/otherFunctions.js';
+	import { MenuMode, ogpDescription } from '$lib/otherFunctions.js';
 
 	import { Metadata, NostrApp, Text, UniqueEventList } from 'nosvelte';
-	import type { Event as NostrEvent } from 'nostr-tools';
+	import { nip19, type Event as NostrEvent } from 'nostr-tools';
 	import { getIdByTag, nip04De, parseNaddr } from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
 
@@ -22,6 +22,7 @@
 	import Reference from '$lib/components/Reference.svelte';
 	import Hashtag from './Hashtag.svelte';
 	import OGP from './OGP.svelte';
+	import { kinds } from '$lib/kind';
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -316,23 +317,27 @@
 							{#if kind && kind === 30023}<!--long form content-->
 								<OGP
 									ogp={{
-										title: '',
+										title: 'Long Form Content',
 										image: '',
-										description: '',
+										description:
+											'open in habla' + ogpDescription(parseNaddr(tag)),
 										favicon: 'https://habla.news/favicon.png'
 									}}
-									url={'https://habla.news/a/' + parseNaddr(tag)}
+									url={'https://habla.news/a/\n' +
+										nip19.naddrEncode(parseNaddr(tag))}
 								/>
 								<!---->
 							{:else if kind && kind === 34550}<!--communities-->
 								<OGP
 									ogp={{
-										title: '',
+										title: 'Communities',
 										image: '',
-										description: '',
+										description:
+											'open in habla\n' + ogpDescription(parseNaddr(tag)),
 										favicon: 'https://habla.news/favicon.png'
 									}}
-									url={'https://habla.news/c/' + parseNaddr(tag)}
+									url={'https://habla.news/c/' +
+										nip19.naddrEncode(parseNaddr(tag))}
 								/>
 							{:else}
 								<SearchCard
@@ -360,23 +365,27 @@
 							{#if kind && kind === 30023}
 								<OGP
 									ogp={{
-										title: '',
+										title: 'Long Form Content',
 										image: '',
-										description: '',
+										description:
+											'open in habla\n' + ogpDescription(parseNaddr(tag)),
 										favicon: 'https://habla.news/favicon.png'
 									}}
-									url={'https://habla.news/a/' + parseNaddr(tag)}
+									url={'https://habla.news/a/' +
+										nip19.naddrEncode(parseNaddr(tag))}
 								/>
 								<!---->
 							{:else if kind && kind === 34550}<!--communities-->
 								<OGP
 									ogp={{
-										title: '',
+										title: 'Communities',
 										image: '',
-										description: '',
+										description:
+											'open in habla\n' + ogpDescription(parseNaddr(tag)),
 										favicon: 'https://habla.news/favicon.png'
 									}}
-									url={'https://habla.news/c/' + parseNaddr(tag)}
+									url={'https://habla.news/c/' +
+										nip19.naddrEncode(parseNaddr(tag))}
 								/>
 							{:else}
 								<SearchCard
@@ -404,23 +413,27 @@
 							{#if kind && kind === 30023}
 								<OGP
 									ogp={{
-										title: '',
+										title: 'Long Form Content',
 										image: '',
-										description: '',
+										description:
+											'open in habla\n' + ogpDescription(parseNaddr(tag)),
 										favicon: 'https://habla.news/favicon.png'
 									}}
-									url={'https://habla.news/a/' + parseNaddr(tag)}
+									url={'https://habla.news/a/' +
+										nip19.naddrEncode(parseNaddr(tag))}
 								/>
 								<!---->
 							{:else if kind && kind === 34550}<!--communities-->
 								<OGP
 									ogp={{
-										title: '',
+										title: 'Communities',
 										image: '',
-										description: '',
+										description:
+											'open in habla\n' + ogpDescription(parseNaddr(tag)),
 										favicon: 'https://habla.news/favicon.png'
 									}}
-									url={'https://habla.news/c/' + parseNaddr(tag)}
+									url={'https://habla.news/c/' +
+										nip19.naddrEncode(parseNaddr(tag))}
 								/>
 							{:else}
 								<SearchCard

@@ -6,6 +6,7 @@
 		image: string;
 		description: string;
 		favicon: string;
+		memo?: string;
 	};
 	export let url: string;
 </script>
@@ -33,6 +34,7 @@
 					</div>
 					<div
 						class="line-clamp-4 text-xs text-primary-500 dark:text-primary-300"
+						style="	white-space: pre-wrap; word-break: break-word;"
 					>
 						{ogp.description}
 					</div>
@@ -48,7 +50,9 @@
 					/>
 				{/if}
 				<div class="text-xs text-primary-500 dark:text-primary-300">
-					{new URL(url).hostname}
+					{#if ogp.memo}
+						{ogp.memo} /
+					{/if}{new URL(url).hostname}
 				</div>
 			</div>
 		</div>

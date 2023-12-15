@@ -1,7 +1,8 @@
 import { get } from 'svelte/store';
 import type { Metadata } from 'unfurl.js/dist/types';
 import { clientMap, ogpStore } from './stores/bookmarkEvents';
-import type { Event as NostrEvent } from 'nostr-tools';
+import { type Event as NostrEvent, nip19 } from 'nostr-tools';
+
 import { fetchFilteredEvents, parseNaddr } from './nostrFunctions';
 import type { Nostr } from 'nosvelte';
 export enum MenuMode {
@@ -18,6 +19,7 @@ interface Ogp {
 	image: string;
 	description: string;
 	favicon: string;
+	memo?: string;
 }
 
 export async function getOgp(url: string): Promise<Ogp> {
@@ -107,7 +109,10 @@ export const encodedURL = (str: string): string => {
 };
 
 //long form contentsのOGP
-export function setLFCOgps(ev: NostrEvent<number>): {
+export function setLFCOgps(
+	ev: NostrEvent<number>,
+	address: nip19.AddressPointer
+): {
 	ogp: Ogp;
 	site: string;
 } {
@@ -129,19 +134,25 @@ export function setLFCOgps(ev: NostrEvent<number>): {
 	//}
 	return {
 		ogp: {
-			title: titletag ? titletag[1] : '',
+			title: titletag ? titletag[1] : 'LongFormContent',
 			image: imagetag ? imagetag[1] : '',
-			description: summarytag ? summarytag[1] : '',
+			description: summarytag
+				? summarytag[1]
+				: 'open in habla\n' + ogpDescription(address),
 			favicon: noslitag
 				? 'https://nosli.vercel.app/favicon.svg'
-				: 'https://habla.news/favicon.png'
+				: 'https://habla.news/favicon.png',
+			memo: 'kind:' + ev.kind + ' LongFormContent'
 		},
 		site: noslitag ? 'https://nosli.vercel.app/li/' : 'https://habla.news/a/'
 	};
 }
 
 //communitiesのOGP
-export function setComOgps(ev: NostrEvent<number>): {
+export function setComOgps(
+	ev: NostrEvent<number>,
+	address: nip19.AddressPointer
+): {
 	ogp: Ogp;
 	site: string;
 } {
@@ -161,11 +172,20 @@ export function setComOgps(ev: NostrEvent<number>): {
 	//}
 	return {
 		ogp: {
-			title: dTag ? dTag[1] : '',
+			title: dTag ? dTag[1] : 'Communities',
 			image: imagetag ? imagetag[1] : '',
-			description: discriptiontTag ? discriptiontTag[1] : '',
-			favicon: 'https://habla.news/favicon.png'
+			description: discriptiontTag
+				? discriptiontTag[1]
+				: 'open in habla\n' + ogpDescription(address),
+			favicon: 'https://habla.news/favicon.png',
+			memo: 'kind:' + ev.kind + ' Communities'
 		},
 		site: 'https://habla.news/c/'
 	};
+}
+
+export function ogpDescription(address: nip19.AddressPointer) {
+	return `kind:${address.kind}, pubkey:${nip19.npubEncode(
+		address.pubkey
+	)}, id:${address.identifier}`;
 }

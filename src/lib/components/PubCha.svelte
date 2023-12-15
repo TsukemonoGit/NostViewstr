@@ -50,6 +50,7 @@
 
 <Ogp
 	ogp={{
+		memo: 'kind:' + event.kind + '  Public Chat ',
 		title: name,
 		image: picture,
 		description: about,

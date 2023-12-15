@@ -272,14 +272,14 @@
 					<EmojiSet event={note} />
 				{:else if note.kind === 30023 && tagArray !== undefined}<!--long form content-->
 					<OGP
-						ogp={setLFCOgps(note).ogp}
-						url={setLFCOgps(note).site +
+						ogp={setLFCOgps(note, parseNaddr(tagArray)).ogp}
+						url={setLFCOgps(note, parseNaddr(tagArray)).site +
 							nip19.naddrEncode(parseNaddr(tagArray))}
 					/>
 				{:else if note.kind === 34550 && tagArray !== undefined}<!--communities-->
 					<OGP
-						ogp={setComOgps(note).ogp}
-						url={setComOgps(note).site +
+						ogp={setComOgps(note, parseNaddr(tagArray)).ogp}
+						url={setComOgps(note, parseNaddr(tagArray)).site +
 							nip19.naddrEncode(parseNaddr(tagArray))}
 					/>
 				{:else}<Content
