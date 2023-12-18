@@ -169,9 +169,7 @@
 						alt=""
 						on:click={() => handleClickImage(item.url)}
 					/>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
-							<div
-								class="max-w-full max-h-[24rem] w-[28rem] overflow-auto break-all"
-							>
+							<div class="max-w-full overflow-auto break-all">
 								<blockquote class="twitter-tweet">
 									<p lang="ja" dir="ltr">
 										<a
