@@ -197,7 +197,8 @@ export function windowOpen(str: string): void {
 		//     ? nip19.naddrEncode(parseNaddr(tagArray))
 		//     : nip19.noteEncode(tagArray[1])
 		// }`,
-		`https://nostr.band/?q=${str}`,
+		//`https://nostr.band/?q=${str}`,
+		`https://njump.me/${str}`,
 		'_blank'
 	);
 }

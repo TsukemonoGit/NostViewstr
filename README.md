@@ -43,7 +43,8 @@ npm run build
 - [nostter](https://github.com/SnowCait/nostter) - ハッシュタグのリンク先に使用
 <!-- [nosey](https://github.com/akiomik/nosey/) ハッシュタグ以外も出てくるので変更しました-->
 
-- [nostr_band](https://nostr.band/) - プロフィール,ノートのリンク先に使用
+- [njump](https://njump.me/) - プロフィール,ノートのリンク先に使用
+<!-- - [nostr_band](https://nostr.band/) - プロフィール,ノートのリンク先に使用 -->
 
 - [うにゅうハウス](https://unyu-house.vercel.app/) - チャンネルのリンク先
 
