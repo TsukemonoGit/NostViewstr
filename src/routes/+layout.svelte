@@ -49,6 +49,7 @@
 	<!-- Google tag (gtag.js) -->
 	<!-- Google tag (gtag.js) -->
 	<!-- Google tag (gtag.js) -->
+	<!-- Google tag (gtag.js) -->
 	<script
 		async
 		src="https://www.googletagmanager.com/gtag/js?id=G-Y4HDVYX0Z6"
@@ -60,6 +61,7 @@
 		}
 		gtag('js', new Date());
 		gtag('config', 'G-Y4HDVYX0Z6', {
+			ad_storage: 'denied',
 			analytics_storage: 'denied'
 		});
 	</script>
