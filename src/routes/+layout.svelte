@@ -55,6 +55,7 @@
 	// }
 	afterNavigate(() => {
 		if (typeof window !== 'undefined' && (window as any).goatcounter) {
+			//console.log('nabigate');
 			(window as any).goatcounter.count({
 				path: window?.location.pathname
 				// 他の情報があればここで追加
