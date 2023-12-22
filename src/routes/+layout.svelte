@@ -46,11 +46,8 @@
 	{@html webManifestLink}
 
 	<!-- Google tag (gtag.js) -->
-	<!-- Google tag (gtag.js) -->
-	<!-- Google tag (gtag.js) -->
-	<!-- Google tag (gtag.js) -->
-	<!-- Google tag (gtag.js) -->
-	<script
+
+	<!-- <script
 		async
 		src="https://www.googletagmanager.com/gtag/js?id=G-Y4HDVYX0Z6"
 	></script>
@@ -64,7 +61,7 @@
 			ad_storage: 'denied',
 			analytics_storage: 'denied'
 		});
-	</script>
+	</script> -->
 </svelte:head>
 
 {#if mounted && pwaInfo}
