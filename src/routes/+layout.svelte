@@ -24,6 +24,7 @@
 	import RegisterSw from '$lib/components/RegisterSW.svelte';
 	import { onMount } from 'svelte';
 	import { backButton } from '$lib/stores/settings';
+	import { afterNavigate } from '$app/navigation';
 
 	let mounted = false;
 	initializeStores();
@@ -39,11 +40,30 @@
 			backButton.set(backBtn === 'true' ?? false);
 		}
 	});
+
+	$: location =
+		typeof window !== 'undefined' ? window?.location.href : undefined;
+	$: {
+		if (
+			location &&
+			typeof window !== 'undefined' &&
+			(window as any).goatcounter
+		) {
+			(window as any).goatcounter.path = location;
+			// 他の設定があればここで追加
+		}
+	}
 </script>
 
 <title>{$_('main.title')}</title>
 <svelte:head>
 	{@html webManifestLink}
+
+	<script
+		data-goatcounter="https://mono.goatcounter.com/count"
+		async
+		src="//gc.zgo.at/count.js"
+	></script>
 </svelte:head>
 
 {#if mounted && pwaInfo}

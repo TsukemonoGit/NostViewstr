@@ -219,6 +219,7 @@
 						bind:bkm
 						{isOwner}
 						noEdit={true}
+						isNaddr={false}
 					/>
 				</NostrApp>
 				<!-- {:else}

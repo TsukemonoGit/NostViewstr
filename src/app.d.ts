@@ -8,5 +8,5 @@ declare namespace App {
 	// interface Platform {}
 	interface Navigator {
 		connection?: NetworkInformation;
-	  }
+	}
 }
