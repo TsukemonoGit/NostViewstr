@@ -299,10 +299,12 @@
 	class="z-10 fixed h-[4em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden box-border"
 >
 	<div
-		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[auto_1fr_auto_auto_auto] sm:gap-2 gap-0 overflow-hidden rounded-b"
+		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[auto_1fr_auto_auto_auto] sm:gap-2 gap-0.5 overflow-hidden rounded-b"
 	>
 		<div class="flex h-full items-center ml-1">
-			<UserIcon {pubkey} />
+			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+				<UserIcon {pubkey} />
+			{/if}
 		</div>
 		<div class="max-w-full overflow-hidden">
 			<!-- {#if JSON}【JSON MODE】 kind:{kind}

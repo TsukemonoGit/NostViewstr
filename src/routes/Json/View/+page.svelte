@@ -191,25 +191,26 @@
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
 
-<!--header-->
-<Header
-	kind={$JsonEventData.kind}
-	bind:bkm
-	{pubkey}
-	bind:viewEvent
-	JSON={true}
-/>
+{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+	<NostrApp relays={$relaySet[pubkey].searchRelays}>
+		<!--header-->
+		<Header
+			kind={$JsonEventData.kind}
+			bind:bkm
+			{pubkey}
+			bind:viewEvent
+			JSON={true}
+		/>
 
-<!--サイドバーとメイン-->
-<div
-	class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
->
-	<div class="flex overflow-x-hidden">
-		<!--めいん-->
-		<main class="flex-1 overflow-y-auto h-fit overflow-x-hidden pb-[2em]">
-			<!-- Add ml-64 to push main to the right -->
-			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-				<NostrApp relays={$relaySet[pubkey].searchRelays}>
+		<!--サイドバーとメイン-->
+		<div
+			class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
+		>
+			<div class="flex overflow-x-hidden">
+				<!--めいん-->
+				<main class="flex-1 overflow-y-auto h-fit overflow-x-hidden pb-[2em]">
+					<!-- Add ml-64 to push main to the right -->
+
 					<ListedEvent
 						{pubkey}
 						listEvent={viewEvent}
@@ -221,20 +222,19 @@
 						noEdit={true}
 						isNaddr={false}
 					/>
-				</NostrApp>
-				<!-- {:else}
-				{`relay has not been set`} -->
-			{/if}
-		</main>
-	</div>
-</div>
-<FooterMenu
-	pubkey={$JsonEventData.pubkey}
-	kind={$JsonEventData.kind}
-	disabled={true}
-	{bkm}
-/>
-
+				</main>
+			</div>
+		</div>
+		<FooterMenu
+			pubkey={$JsonEventData.pubkey}
+			kind={$JsonEventData.kind}
+			disabled={true}
+			{bkm}
+		/>
+	</NostrApp>
+	<!-- {:else}
+{`relay has not been set`} -->
+{/if}
 <!-------------------------------あど----->
 <!-------------------------------あど----->
 {#if !$nowProgress}
