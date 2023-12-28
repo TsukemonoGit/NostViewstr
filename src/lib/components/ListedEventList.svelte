@@ -895,51 +895,51 @@
 				</main>
 			</div>
 		</div>
-
-		{#if $eventListsMap && $eventListsMap[pubkey] && $eventListsMap[pubkey][kind] && $eventListsMap[pubkey][kind].size > 0}
-			<!---->
-		{:else}
-			<div class="flex w-full h-full justify-center items-center text-center">
-				<!-- Left Sidebar (Hidden on small screens) -->
-
-				{#if $nowProgress}
-					{`now loading...`}
-				{:else}
-					{`no data`}
-				{/if}
-			</div>
-		{/if}
-		<!-------------------------------あど----->
-		{#if !$nowProgress && $pubkey_viewer === pubkey}
-			<div
-				class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
-					? 'multi'
-					: 'add'}"
-			>
-				<div class="fill-white overflow-x-hidden h-fit overflow-y-auto">
-					{#if !$isMulti}
-						<button
-							class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
-							on:click={onClickAdd}>{@html addIcon}</button
-						>
-					{:else}
-						<button
-							class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
-							on:click={onClickMultiMove}>{@html MoveIcon}</button
-						>
-						<button
-							class="overflow-x-hidden addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
-							on:click={onClickMultiDelete}>{@html DeleteIcon}</button
-						>
-					{/if}
-				</div>
-			</div>
-		{/if}
-		<FooterMenu bind:pubkey {kind} naddr={isNaddr} bind:bkm />
 	</NostrApp>
 	<!-- {:else}
 {`now getting relay list ...`} -->
 {/if}
+
+{#if $eventListsMap && $eventListsMap[pubkey] && $eventListsMap[pubkey][kind] && $eventListsMap[pubkey][kind].size > 0}
+	<!---->
+{:else}
+	<div class="flex w-full h-full justify-center items-center text-center">
+		<!-- Left Sidebar (Hidden on small screens) -->
+
+		{#if $nowProgress}
+			{`now loading...`}
+		{:else}
+			{`no data`}
+		{/if}
+	</div>
+{/if}
+<!-------------------------------あど----->
+{#if !$nowProgress && $pubkey_viewer === pubkey}
+	<div
+		class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
+			? 'multi'
+			: 'add'}"
+	>
+		<div class="fill-white overflow-x-hidden h-fit overflow-y-auto">
+			{#if !$isMulti}
+				<button
+					class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
+					on:click={onClickAdd}>{@html addIcon}</button
+				>
+			{:else}
+				<button
+					class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
+					on:click={onClickMultiMove}>{@html MoveIcon}</button
+				>
+				<button
+					class="overflow-x-hidden addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
+					on:click={onClickMultiDelete}>{@html DeleteIcon}</button
+				>
+			{/if}
+		</div>
+	</div>
+{/if}
+<FooterMenu bind:pubkey {kind} naddr={isNaddr} bind:bkm />
 
 <!-- {/await} -->
 
