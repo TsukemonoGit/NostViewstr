@@ -53,6 +53,9 @@
 	};
 
 	const OpenProfile = (metadata: { pubkey: string } | Event) => {
+		if (metadata == undefined && tagArray) {
+			metadata = { pubkey: tagArray[1] };
+		}
 		const modal: ModalSettings = {
 			type: 'component',
 			backdropClasses: '!bg-surface-400/80',
@@ -97,14 +100,6 @@
 		};
 		modalStore.trigger(modal);
 	};
-
-	function JsonCheck(text: string) {
-		try {
-			return JSON.parse(text);
-		} catch (error) {
-			return 'Json parse error';
-		}
-	}
 </script>
 
 <!--{#if $searchRelays}-->
@@ -119,8 +114,11 @@
 		<div class="pl-1 grid grid-cols-[auto_1fr] gap-1.5">
 			<!--icon-->
 
-			<div
+			<button
 				class="w-12 h-12 rounded-full flex justify-center overflow-hidden variant-filled-surface mt-1 items-center truncate"
+				on:click={() => {
+					OpenProfile(metadata);
+				}}
 			>
 				{#if $iconView && content.picture}
 					<img
@@ -133,7 +131,7 @@
 
 					{content.name}
 				{/if}
-			</div>
+			</button>
 
 			<!-- profile | note -->
 			<div class="grid grid-rows-[auto_1fr] w-full">
@@ -223,17 +221,9 @@
 			</div>
 		</div>
 
-		<!--ボタン群-->
-		<!-- <MenuButtons
-				{myIndex}
-				{tagArray}
-				note={metadata}
-				{menuMode}
-				share={false}
-				on:DeleteNote={DeleteNote}
-				on:MoveNote={MoveNote}
-				on:CheckNote={CheckNote}
-			/> -->
+		<!--metadataパースエラー-->
+	{:else if tagArray}
+		{JSON.stringify(tagArray)}
 	{/if}
 {/await}
 <!-- </div> -->

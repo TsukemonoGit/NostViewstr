@@ -126,8 +126,15 @@
 <div class="pl-1 grid grid-cols-[auto_1fr] gap-1.5">
 	<!--icon-->
 
-	<div
+	<button
 		class="w-12 h-12 rounded-full flex justify-center overflow-hidden variant-filled-surface mt-1 items-center truncate"
+		on:click={() => {
+			if (metadata !== undefined) {
+				OpenProfile(metadata);
+			} else {
+				OpenProfile({ pubkey: note.pubkey });
+			}
+		}}
 	>
 		{#if metadataContent && $iconView && metadataContent.picture}
 			<img
@@ -140,7 +147,7 @@
 		{:else}
 			{nip19.npubEncode(note.pubkey).slice(5, 10)}
 		{/if}
-	</div>
+	</button>
 
 	<!-- profile | note -->
 	<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">

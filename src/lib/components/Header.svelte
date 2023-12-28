@@ -38,6 +38,7 @@
 	import { get } from 'svelte/store';
 	import { afterUpdate } from 'svelte';
 	import RelayStateIcon from './RelayStateIcon.svelte';
+	import UserIcon from './UserIcon.svelte';
 
 	export let bkm: string;
 	export let kind: number;
@@ -83,8 +84,8 @@
 				}`
 		  ]
 		: [];
-	const borderClassActive = `break-keep border-b-2 border-white place-items-end  flex m-1 p-0.5 pb-0 h6 bkm`;
-	const borderClass = `break-keep  place-items-end p-0.5 flex m-1 h6 bkm`;
+	const borderClassActive = `break-keep border-b-2 border-white place-items-end sm:m-1 sm:p-0.5 py-1 m-0 flex   h6 bkm`;
+	const borderClass = `break-keep  place-items-end sm:p-0.5 sm:m-1 py-1 m-0 flex  h6 bkm`;
 
 	//-------------------------------------------------------edit tag
 	const listInfoModalComponent: ModalComponent = {
@@ -298,8 +299,11 @@
 	class="z-10 fixed h-[4em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden box-border"
 >
 	<div
-		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[1fr_auto_auto_auto] md:gap-2 gap-0.5 overflow-hidden rounded-b"
+		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[auto_1fr_auto_auto_auto] sm:gap-2 gap-0 overflow-hidden rounded-b"
 	>
+		<div class="flex h-full items-center ml-1">
+			<UserIcon {pubkey} />
+		</div>
 		<div class="max-w-full overflow-hidden">
 			<!-- {#if JSON}【JSON MODE】 kind:{kind}
 				{#if kinds[kind]} ({kinds[kind]}) {/if} -->
@@ -315,14 +319,14 @@
 							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
 						{/each}
 					</select>
-					{#if pubkey === $pubkey_viewer}
+					<!-- {#if pubkey === $pubkey_viewer}
 						<span class="fill-white">{@html LocationHomeIcon}</span>
-					{/if}
+					{/if} -->
 				</div>
 			{/if}
 
 			{#if $identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])?.identifier}
-				<div class="text-xs box-border break-all overflow-x-hidden">
+				<div class="text-xs box-border break-all overflow-x-hidden ml-1">
 					{#if kind >= 30000 && kind < 40000 && !JSON}<!-- 30003-->
 						{#if !$identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title || $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title === ''}
 							<button
@@ -393,7 +397,7 @@
 				</div>
 			{:else}
 				<!---->
-				<div class="h5 self-center w-fit break-all">
+				<div class="h5 self-center w-fit break-all ml-1">
 					{#if JSON}<div class="h6">【JSON MODE】</div> {/if}kind:{kind}
 					{#if kinds[kind]} ({kinds[kind]}) {/if}
 				</div>
@@ -494,5 +498,16 @@
 	:global(.relayIcon svg) {
 		width: 1.2em;
 		height: 1.2em;
+	}
+
+	:global(.test svg) {
+		width: 1.2em;
+		height: 1.2em;
+	}
+	@media screen and (max-width: 600px) {
+		:global(.test svg) {
+			width: 0.5em; /* 小さいサイズに変更 */
+			height: 0.5em; /* 小さいサイズに変更 */
+		}
 	}
 </style>
