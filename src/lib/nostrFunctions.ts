@@ -61,7 +61,8 @@ import {
 	//relayEvent,
 	relaySearchRelays,
 	relaySet,
-	relayStore
+	relayStore,
+	type RelayConfig
 	//searchRelays
 } from './stores/relays';
 import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -866,12 +867,12 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 	let write: string[] = [];
 	const kind10002 = events.find((item) => item.kind === 10002);
 	const kind3 = events.find((item) => item.kind === 3);
-	const tmp_relaySet = get(relaySet);
-
+	//const tmp_relaySet = get(relaySet);
+	const tmp_relay: RelayConfig = { ...initRelaySet };
 	// もし pubKey が存在しなければ初期化
-	if (!tmp_relaySet[pubkey]) {
-		tmp_relaySet[pubkey] = { ...initRelaySet };
-	}
+	// if (!tmp_relaySet[pubkey]) {
+	// 	tmp_relaySet[pubkey] = { ...initRelaySet };
+	//}
 
 	if (kind10002 && kind10002.tags.length > 0) {
 		for (const item of kind10002.tags) {
@@ -891,7 +892,7 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 				}
 			}
 
-			tmp_relaySet[pubkey].relayEvent = kind10002;
+			tmp_relay.relayEvent = kind10002;
 		}
 	} else if (kind3 && kind3.content !== '') {
 		try {
@@ -910,36 +911,37 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 				}
 			}
 
-			tmp_relaySet[pubkey].relayEvent = kind3;
+			tmp_relay.relayEvent = kind3;
 		} catch (error) {
 			console.error('JSON parse error:', error);
 		}
 	}
 
 	if (read.length > 0) {
-		tmp_relaySet[pubkey].searchRelays = read;
+		tmp_relay.searchRelays = read;
 	}
 	if (write.length > 0) {
-		tmp_relaySet[pubkey].bookmarkRelays = write;
-		tmp_relaySet[pubkey].postRelays = write;
+		tmp_relay.bookmarkRelays = write;
+		tmp_relay.postRelays = write;
 	}
-	if (tmp_relaySet[pubkey].searchRelays.length === 0) {
-		tmp_relaySet[pubkey].searchRelays = defaultRelays;
+	if (tmp_relay.searchRelays.length === 0) {
+		tmp_relay.searchRelays = defaultRelays;
 	}
-	if (tmp_relaySet[pubkey].bookmarkRelays.length === 0) {
-		tmp_relaySet[pubkey].bookmarkRelays = defaultRelays;
+	if (tmp_relay.bookmarkRelays.length === 0) {
+		tmp_relay.bookmarkRelays = defaultRelays;
 	}
-	if (tmp_relaySet[pubkey].postRelays.length === 0) {
-		tmp_relaySet[pubkey].postRelays = defaultRelays;
+	if (tmp_relay.postRelays.length === 0) {
+		tmp_relay.postRelays = defaultRelays;
 	}
 
-	// Subscribe を使って直接変更を検知し、それに基づいて更新
-	relaySet.update((prev) => ({
-		...prev,
-		[pubkey]: { ...prev[pubkey], ...tmp_relaySet[pubkey] }
-	}));
-
-	console.log(`complete set relsys`);
+	// // Subscribe を使って直接変更を検知し、それに基づいて更新
+	// relaySet.update((prev) => ({
+	// 	...prev,
+	// 	[pubkey]: { ...prev[pubkey], ...tmp_relaySet[pubkey] }
+	// }));
+	console.log('pub, tmp_relay', pubkey, tmp_relay);
+	relaySet.set({ ...get(relaySet), [pubkey]: tmp_relay });
+	console.log(`complete set relsys`, get(relaySet));
 }
 
 // そのURLのリレーが存在するか確認 NIP11

@@ -7,7 +7,8 @@ import {
 	Nostr,
 	uniq,
 	verify,
-	createRxForwardReq
+	createRxForwardReq,
+	type Relay
 } from 'rx-nostr';
 import { get } from 'svelte/store';
 import {
@@ -77,6 +78,8 @@ export function GetAllRelayState() {
 export async function RelaysReconnectChallenge() {
 	const states = Object.entries(rxNostr.getAllRelayState());
 	console.log('[relay states]', states);
+	//console.log('[relay]', rxNostr.getRelays());
+
 	states.forEach(([relayUrl, state]) => {
 		if (reconnectableStates.includes(state)) {
 			rxNostr.reconnect(relayUrl);
@@ -144,10 +147,15 @@ export async function StoreFetchFilteredEvents(
 	//console.log(relays);
 
 	//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
+	//この段階で閲覧者のリレー情報がわかってたらここでwriteリレー情報も入る
+	//なかったらとりあえずreadだけtrueのはず
 	const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 	console.log(data.relays);
+	console.log(viewerRelay);
+	//const merges = mergeRelays(viewerRelay, data.relays);
+	//if( Object.entries(rxNostr.getRelays())!==merges){
 	rxNostr.setRelays(mergeRelays(viewerRelay, data.relays));
-
+	//}
 	console.log('[get relays]', rxNostr.getRelays());
 	relayState.set(rxNostr.getAllRelayState());
 
@@ -283,10 +291,15 @@ export async function publishEventWithTimeout(
 		console.log(event);
 
 		//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
-		const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
+		//もし書き込みリレーがセットされてない場合のみこの設定を行う
+		//セットされてるリレーのWriteがtrueのものがなかったら設定する
+		const setting_relays = rxNostr.getRelays();
+		const hasWriteTrue = setting_relays.some((item) => item.write === true);
+		if (!hasWriteTrue) {
+			//const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 
-		rxNostr.setRelays(mergeRelays(viewerRelay, relays));
-
+			rxNostr.setRelays(addSetRelays(relays));
+		}
 		console.log('[get relays]', rxNostr.getRelays());
 
 		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
@@ -413,4 +426,22 @@ function mergeRelays(
 	connectingRelays.set(result);
 	console.log(result);
 	return result;
+}
+function addSetRelays(relays: string[]): {
+	[url: string]: { read: boolean; write: boolean };
+} {
+	const tmp = Object.fromEntries(
+		rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
+	);
+
+	relays.forEach((relay) => {
+		if (tmp[relay]) {
+			// tmpがrelay要素を持っていた場合
+			tmp[relay].write = true;
+		} else {
+			// tmpがrelay要素を持っていなかった場合
+			tmp[relay] = { read: false, write: true };
+		}
+	});
+	return tmp;
 }
