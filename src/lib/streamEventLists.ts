@@ -24,10 +24,22 @@ import { getEventHash } from 'nostr-tools';
 import { nsec, pubkey_viewer } from './stores/settings';
 import { relaySet } from './stores/relays';
 import type { ConnectionState } from 'rx-nostr';
+
+const reconnectableStates: ConnectionState[] = [
+	'not-started',
+	'error',
+	//'rejected',
+	'terminated'
+	//'waiting-for-retrying',
+	//'retrying',
+	//'dormant'
+];
+
 let storedEventsData: MapEventLists;
 eventListsMap.subscribe((value) => {
 	storedEventsData = value;
 });
+
 let storedIdentifiersData: MapIdentifierList;
 identifierListsMap.subscribe((value) => {
 	storedIdentifiersData = value;
@@ -57,6 +69,29 @@ export async function GetRelayState(relay: string) {
 	return rxNostr.getRelayState(relay);
 }
 
+export function GetAllRelayState() {
+	return rxNostr.getAllRelayState();
+}
+
+export async function RelaysReconnectChallenge() {
+	const states = Object.entries(rxNostr.getAllRelayState());
+	console.log('[relay states]', states);
+	states.forEach(([relayUrl, state]) => {
+		if (reconnectableStates.includes(state)) {
+			rxNostr.reconnect(relayUrl);
+		}
+	});
+	// if (
+	// 	states.filter(([, state]) => reconnectableStates.includes(state)).length *
+	// 		2 <
+	// 	states.length
+	// ) {
+	// 	return;
+	// }
+
+	// console.log('[reload]', states);
+	// rxNostr.setRelays(rxNostr.getRelays()); //どう破ったらリコネクトしてくれるのかわかんないからとりあえず
+}
 //export const eventListsMap = writable(new Map<string, Nostr.Event>());---------------------------------------------------------------
 export async function StoreFetchFilteredEvents(
 	pubkey: string,
