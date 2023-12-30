@@ -88,6 +88,8 @@ export async function RelaysReconnectChallenge() {
 		const tmp = Object.fromEntries(
 			rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
 		);
+		//すでにセットされてる場合は何もおこらないっぽい？ので一度全部外す
+		rxNostr.setRelays({});
 		rxNostr.setRelays(tmp);
 
 		// states.forEach(([relayUrl, state]) => {
