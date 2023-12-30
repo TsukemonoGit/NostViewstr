@@ -78,23 +78,23 @@ export function GetAllRelayState() {
 export async function RelaysReconnectChallenge() {
 	const states = Object.entries(rxNostr.getAllRelayState());
 	console.log('[relay states]', states);
-	//console.log('[relay]', rxNostr.getRelays());
 
-	states.forEach(([relayUrl, state]) => {
-		if (reconnectableStates.includes(state)) {
-			rxNostr.reconnect(relayUrl);
-		}
-	});
-	// if (
-	// 	states.filter(([, state]) => reconnectableStates.includes(state)).length *
-	// 		2 <
-	// 	states.length
-	// ) {
-	// 	return;
-	// }
+	const reconnectableCount = states.filter(([relayUrl, state]) =>
+		reconnectableStates.includes(state)
+	).length;
+	if (reconnectableCount / states.length >= 2 / 3) {
+		//設定中のリレーの2/3以上が接続切れてたらセットし直してみる
+		const tmp = Object.fromEntries(
+			rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
+		);
+		rxNostr.setRelays(tmp);
 
-	// console.log('[reload]', states);
-	// rxNostr.setRelays(rxNostr.getRelays()); //どう破ったらリコネクトしてくれるのかわかんないからとりあえず
+		// states.forEach(([relayUrl, state]) => {
+		//   if (reconnectableStates.includes(state)) {
+		//     rxNostr.reconnect(relayUrl);
+		//   }
+		// });
+	}
 }
 //export const eventListsMap = writable(new Map<string, Nostr.Event>());---------------------------------------------------------------
 export async function StoreFetchFilteredEvents(

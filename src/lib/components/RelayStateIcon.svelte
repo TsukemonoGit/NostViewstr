@@ -63,7 +63,9 @@
 			<div class="h-4 w-4 rounded-full {dotColor(relay)} " />
 			{relay.length > 30 ? `${relay.slice(0, 28)}...` : relay}
 
-			{#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started' || $relayState[relay] === 'terminated') && !get(disabledButtons).has(relay)}
+			<!-- {#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started' || $relayState[relay] === 'terminated') && !get(disabledButtons).has(relay)} -->
+
+			{#if $relayState[relay] === 'error' && !get(disabledButtons).has(relay)}
 				<button
 					on:click={() => handleClickReconnect(relay)}
 					class="btn p-1 fill-white ml-auto"
