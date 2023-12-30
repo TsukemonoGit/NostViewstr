@@ -82,6 +82,7 @@ export async function RelaysReconnectChallenge() {
 	const reconnectableCount = states.filter(([relayUrl, state]) =>
 		reconnectableStates.includes(state)
 	).length;
+	console.log(reconnectableCount, states.length);
 	if (reconnectableCount / states.length >= 2 / 3) {
 		//設定中のリレーの2/3以上が接続切れてたらセットし直してみる
 		const tmp = Object.fromEntries(
