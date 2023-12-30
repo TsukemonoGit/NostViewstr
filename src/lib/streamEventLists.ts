@@ -26,6 +26,7 @@ import { relaySet } from './stores/relays';
 import type { ConnectionState } from 'rx-nostr';
 
 const reconnectableStates: ConnectionState[] = [
+	'reconnecting', //りこねくてぃんぐ表示から変化しないようにみえるから追加してみる
 	'not-started',
 	'error',
 	//'rejected',
