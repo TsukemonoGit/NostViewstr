@@ -72,7 +72,7 @@
 		}
 	}
 	let selectValue: any;
-	console.log(selectValue);
+	//console.log(selectValue);
 	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
 		kind = Number(event.currentTarget.value);
 		console.log(kind);

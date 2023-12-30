@@ -7,7 +7,8 @@ import {
 	Nostr,
 	uniq,
 	verify,
-	createRxForwardReq
+	createRxForwardReq,
+	type Relay
 } from 'rx-nostr';
 import { get } from 'svelte/store';
 import {
@@ -24,10 +25,23 @@ import { getEventHash } from 'nostr-tools';
 import { nsec, pubkey_viewer } from './stores/settings';
 import { relaySet } from './stores/relays';
 import type { ConnectionState } from 'rx-nostr';
+
+const reconnectableStates: ConnectionState[] = [
+	'reconnecting', //りこねくてぃんぐ表示から変化しないようにみえるから追加してみる
+	'not-started',
+	'error',
+	//'rejected',
+	'terminated'
+	//'waiting-for-retrying',
+	//'retrying',
+	//'dormant'
+];
+
 let storedEventsData: MapEventLists;
 eventListsMap.subscribe((value) => {
 	storedEventsData = value;
 });
+
 let storedIdentifiersData: MapIdentifierList;
 identifierListsMap.subscribe((value) => {
 	storedIdentifiersData = value;
@@ -57,6 +71,34 @@ export async function GetRelayState(relay: string) {
 	return rxNostr.getRelayState(relay);
 }
 
+export function GetAllRelayState() {
+	return rxNostr.getAllRelayState();
+}
+
+export async function RelaysReconnectChallenge() {
+	const states = Object.entries(rxNostr.getAllRelayState());
+	console.log('[relay states]', states);
+
+	const reconnectableCount = states.filter(([relayUrl, state]) =>
+		reconnectableStates.includes(state)
+	).length;
+	console.log(reconnectableCount, states.length);
+	if (reconnectableCount / states.length >= 2 / 3) {
+		//設定中のリレーの2/3以上が接続切れてたらセットし直してみる
+		const tmp = Object.fromEntries(
+			rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
+		);
+		//すでにセットされてる場合は何もおこらないっぽい？ので一度全部外す
+		rxNostr.setRelays({});
+		rxNostr.setRelays(tmp);
+
+		// states.forEach(([relayUrl, state]) => {
+		//   if (reconnectableStates.includes(state)) {
+		//     rxNostr.reconnect(relayUrl);
+		//   }
+		// });
+	}
+}
 //export const eventListsMap = writable(new Map<string, Nostr.Event>());---------------------------------------------------------------
 export async function StoreFetchFilteredEvents(
 	pubkey: string,
@@ -108,10 +150,15 @@ export async function StoreFetchFilteredEvents(
 	//console.log(relays);
 
 	//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
+	//この段階で閲覧者のリレー情報がわかってたらここでwriteリレー情報も入る
+	//なかったらとりあえずreadだけtrueのはず
 	const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 	console.log(data.relays);
+	console.log(viewerRelay);
+	//const merges = mergeRelays(viewerRelay, data.relays);
+	//if( Object.entries(rxNostr.getRelays())!==merges){
 	rxNostr.setRelays(mergeRelays(viewerRelay, data.relays));
-
+	//}
 	console.log('[get relays]', rxNostr.getRelays());
 	relayState.set(rxNostr.getAllRelayState());
 
@@ -247,10 +294,15 @@ export async function publishEventWithTimeout(
 		console.log(event);
 
 		//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
-		const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
+		//もし書き込みリレーがセットされてない場合のみこの設定を行う
+		//セットされてるリレーのWriteがtrueのものがなかったら設定する
+		const setting_relays = rxNostr.getRelays();
+		const hasWriteTrue = setting_relays.some((item) => item.write === true);
+		if (!hasWriteTrue) {
+			//const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 
-		rxNostr.setRelays(mergeRelays(viewerRelay, relays));
-
+			rxNostr.setRelays(addSetRelays(relays));
+		}
 		console.log('[get relays]', rxNostr.getRelays());
 
 		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
@@ -377,4 +429,22 @@ function mergeRelays(
 	connectingRelays.set(result);
 	console.log(result);
 	return result;
+}
+function addSetRelays(relays: string[]): {
+	[url: string]: { read: boolean; write: boolean };
+} {
+	const tmp = Object.fromEntries(
+		rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
+	);
+
+	relays.forEach((relay) => {
+		if (tmp[relay]) {
+			// tmpがrelay要素を持っていた場合
+			tmp[relay].write = true;
+		} else {
+			// tmpがrelay要素を持っていなかった場合
+			tmp[relay] = { read: false, write: true };
+		}
+	});
+	return tmp;
 }

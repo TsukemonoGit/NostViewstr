@@ -25,6 +25,7 @@
 	import { onMount } from 'svelte';
 	import { backButton } from '$lib/stores/settings';
 	import { afterNavigate } from '$app/navigation';
+	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
 
 	let mounted = false;
 	initializeStores();
@@ -35,7 +36,7 @@
 	onMount(() => {
 		mounted = true;
 		const backBtn = localStorage.getItem('back');
-		console.log('backButton', backBtn);
+		//console.log('backButton', backBtn);
 		if (backBtn) {
 			backButton.set(backBtn === 'true' ?? false);
 		}
@@ -64,9 +65,18 @@
 			// // 他の設定があればここで追加
 		}
 	});
+
+	async function onVisibilityChange() {
+		console.log(document.visibilityState);
+		if (document.visibilityState === 'visible') {
+			await RelaysReconnectChallenge();
+		}
+	}
 </script>
 
 <title>{$_('main.title')}</title>
+
+<svelte:document on:visibilitychange={onVisibilityChange} />
 <svelte:head>
 	{@html webManifestLink}
 

@@ -43,6 +43,7 @@ export async function getOgp(url: string): Promise<Ogp> {
 		};
 	} catch (error) {
 		console.log(error);
+
 		return {
 			title: '',
 			image: '',
@@ -54,16 +55,24 @@ export async function getOgp(url: string): Promise<Ogp> {
 // URLが存在する場合はストアの値を使用し、ない場合はOGP情報を取得してストアを更新する
 export async function loadOgp(url: string) {
 	const ogp = get(ogpStore);
-	if (!ogp[url] || ogp[url].title === '') {
+
+	//取得処理が終わる前に同じURLでリクエストが来ないようにとりあえず空のogpをセット（errorだったときは再リクエストしない）
+
+	if (!ogp[url]) {
+		ogpStore.set({
+			...ogp,
+			[url]: {
+				title: '',
+				image: '',
+				description: '',
+				favicon: ''
+			}
+		});
 		try {
-			const ogp = await getOgp(url); // OGP情報を取得
-			ogpStore.update((store) => {
-				// 取得したOGP情報をストアに追加
-				return {
-					...store,
-					[url]: ogp
-				};
-			});
+			const newOgp = await getOgp(url); // OGP情報を取得
+			const tmp = get(ogpStore);
+			tmp[url] = newOgp;
+			ogpStore.set(tmp);
 		} catch (error) {
 			console.log(error);
 			ogp[url].title = '';
