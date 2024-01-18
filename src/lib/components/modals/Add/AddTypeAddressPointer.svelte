@@ -40,11 +40,17 @@
 	inputKind = constKind !== undefined ? constKind[0].toString() : '';
 
 	function onClickCheck() {
+		console.log(inputKind);
+		console.log(inputPubkey);
 		try {
 			if (inputId === '') {
 				throw Error();
 			}
-			const hexpub = nip19.decode(inputPubkey).data as string;
+			const tmp =
+				inputPubkey && inputPubkey.startsWith('npub')
+					? inputPubkey
+					: nip19.npubEncode(inputPubkey);
+			const hexpub = nip19.decode(tmp).data as string;
 			const addressPointer: nip19.AddressPointer = {
 				identifier: inputId,
 				pubkey: hexpub,
@@ -99,9 +105,8 @@
 			class="input p-2"
 			type="text"
 			bind:value={inputId}
-			on:input={() => (inputId = inputId.replace(/[^a-zA-Z0-9-_]/g, ''))}
 			placeholder="..."
-		/>
+		/><!--on:input={() => (inputId = inputId.replace(/[^a-zA-Z0-9-_]/g, ''))}-->
 	</div>
 
 	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
