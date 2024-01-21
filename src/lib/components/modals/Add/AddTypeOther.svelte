@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { checkInputNpub } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
-	import { modalStore, toastStore } from '$lib/stores/store';
-	import type { Nostr } from 'nosvelte';
+
 	import { tagExp } from '$lib/kind';
+	import { nowProgress } from '$lib/stores/settings';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
 	export let parent: any;
@@ -49,13 +48,15 @@
 		on:click={() => {
 			res.btn = 'prv';
 			onClickCheck();
-		}}>Private</button
+		}}
+		disabled={$nowProgress}>Private</button
 	>
 	<button
 		class="btn {parent.buttonPositive}"
 		on:click={() => {
 			res.btn = 'pub';
 			onClickCheck();
-		}}>Public</button
+		}}
+		disabled={$nowProgress}>Public</button
 	>
 </footer>

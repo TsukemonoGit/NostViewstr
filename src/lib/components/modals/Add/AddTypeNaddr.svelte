@@ -3,6 +3,7 @@
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
+	import { nowProgress } from '$lib/stores/settings';
 
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
@@ -46,14 +47,16 @@
 		on:click={() => {
 			res.btn = 'prv';
 			onClickNaddr();
-		}}>Private</button
+		}}
+		disabled={$nowProgress}>Private</button
 	>
 	<button
 		class="btn {parent.buttonPositive}"
 		on:click={() => {
 			res.btn = 'pub';
 			onClickNaddr();
-		}}>Public</button
+		}}
+		disabled={$nowProgress}>Public</button
 	>
 </footer>
 

@@ -17,6 +17,7 @@
 	import AddType10002 from './Add/AddType10002.svelte';
 	import AddTypeOther from './Add/AddTypeOther.svelte';
 	import AddTypeAddressPointer from './Add/AddTypeAddressPointer.svelte';
+	import { nowProgress } from '$lib/stores/settings';
 
 	export let parent: any;
 
@@ -102,6 +103,7 @@
 	}
 
 	async function onClickCreate() {
+		$nowProgress = true;
 		//contentのなかみをkind1に書き込みしてたぐにして返す
 		const event: Nostr.Event<any> = {
 			id: '',
@@ -128,6 +130,7 @@
 
 				if (response.event) {
 					res.tag = ['e', response.event.id]; //追加するノートIDがこれ
+					$nowProgress = false;
 					onFormSubmit();
 				} else {
 					const t = {
@@ -136,6 +139,7 @@
 						background: 'bg-orange-500 text-white width-filled '
 					};
 					toastStore.trigger(t);
+					$nowProgress = false;
 					//		$nowProgress = false;
 					return;
 				}
@@ -320,7 +324,8 @@
 										}
 										res.btn = 'prv';
 										onClickCreate();
-									}}>Private</button
+									}}
+									disabled={$nowProgress}>Private</button
 								>
 								<button
 									class="btn {parent.buttonPositive}"
@@ -330,7 +335,8 @@
 										}
 										res.btn = 'pub';
 										onClickCreate();
-									}}>Public</button
+									}}
+									disabled={$nowProgress}>Public</button
 								>
 							</footer>
 						</div>
