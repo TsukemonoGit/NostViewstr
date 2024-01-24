@@ -149,7 +149,10 @@
 			next: (packet: EventPacket) => {
 				console.log(packet);
 				relaysState[packet.from] = RelayState.Exist;
-				event = packet.event;
+				if (event.sig === '' || packet.event.created_at > event.created_at) {
+					event = packet.event;
+					event = packet.event;
+				}
 			},
 			error: (error) => {
 				console.error('Error occurred:', error);
@@ -227,7 +230,7 @@
 <!-- @component This example creates a simple form modal. -->
 
 {#if $modalStore[0]}
-	<div class="modal-example-form {cBase} overflow-h-auto">
+	<div class="modal-example-form {cBase} overflow-y-auto max-h-screen">
 		<div class="grid grid-cols-[1fr_auto]">
 			<header class={cHeader}>
 				{$modalStore[0].title ?? '(title missing)'}
