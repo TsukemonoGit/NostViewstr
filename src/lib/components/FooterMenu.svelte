@@ -87,6 +87,7 @@
 
 	function openLists() {
 		if ($eventListsMap) {
+			//console.log(Object.keys(pubkey).some((k) => Number(k) === kind));
 			const modal: ModalSettings = {
 				type: 'component',
 				component: tagListModalComponent,
