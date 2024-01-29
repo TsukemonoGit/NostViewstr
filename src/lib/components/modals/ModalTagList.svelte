@@ -45,7 +45,7 @@
 		<ListBox
 			class="border border-surface-500 p-4 rounded-container-token max-h-80 overflow-y-auto"
 		>
-			{#if kind !== -1 && pubkey !== '' && Object.keys(pubkey).some((k) => Number(k) === kind) && $identifierListsMap[pubkey][kind].size > 0}
+			{#if kind !== -1 && pubkey !== '' && Object.keys($identifierListsMap[pubkey]).some((k) => Number(k) === kind) && $identifierListsMap[pubkey][kind].size > 0}
 				{#each $identifierKeysArray as list, index}
 					<ListBoxItem
 						bind:group={selectTag}
