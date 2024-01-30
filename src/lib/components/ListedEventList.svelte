@@ -477,10 +477,11 @@
 			//重複したタグ（二番目の要素まで）があるかちぇっく
 			//if (bkmk) {//すでにあるとこに追加
 			const tagsToAdd = () => {
-				if (btn === 'pub') {
-					if (check) {
+				if (btn === 'pub' && bkmk) {
+					if (check && bkmk) {
+						console.log(idTagList);
 						idTagList.map((tag) => {
-							const index = bkmk?.tags.findIndex(
+							const index = bkmk.tags.findIndex(
 								(item: string[]) =>
 									item
 										.slice(0, 2)
@@ -488,6 +489,7 @@
 
 								//item.slice(0, 2) === tag.slice(0, 2)
 							);
+
 							if (index !== -1) {
 								throw Error(`$_('toast.invalidEmoji')`);
 							}
@@ -499,7 +501,7 @@
 				} else if (bkmk) {
 					return bkmk.tags;
 				} else {
-					return [];
+					return idTagList;
 				}
 			};
 
