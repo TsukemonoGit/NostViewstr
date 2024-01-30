@@ -468,112 +468,112 @@
 		check: boolean //重複チェック有無
 	): Promise<boolean> {
 		let isSuccess = false;
-
+		console.log(idTagList);
 		try {
 			const bkmk = $eventListsMap?.[pubkey]?.[kind]?.get(
 				$keysArray[listNumber]
 			);
+			console.log(bkmk);
 			//重複したタグ（二番目の要素まで）があるかちぇっく
-			if (bkmk) {
-				const tagsToAdd = () => {
-					if (btn === 'pub') {
-						if (check) {
-							idTagList.map((tag) => {
-								const index = bkmk?.tags.findIndex(
-									(item: string[]) =>
-										item
-											.slice(0, 2)
-											.every((element, index) => element === tag[index])
+			//if (bkmk) {//すでにあるとこに追加
+			const tagsToAdd = () => {
+				if (btn === 'pub') {
+					if (check) {
+						idTagList.map((tag) => {
+							const index = bkmk?.tags.findIndex(
+								(item: string[]) =>
+									item
+										.slice(0, 2)
+										.every((element, index) => element === tag[index])
 
-									//item.slice(0, 2) === tag.slice(0, 2)
-								);
-								if (index !== -1) {
-									throw Error(`$_('toast.invalidEmoji')`);
-								}
-							});
-						}
-						return [...bkmk.tags, ...idTagList];
-					} else {
-						return bkmk.tags;
-					}
-				};
-
-				// const tagsToAdd =
-				// 	btn === 'pub'
-				// 		? bkmk !== undefined
-				// 			? [...bkmk.tags, ...idTagList]
-				// 			: idTagList
-				// 		: bkmk.tags;
-
-				const contentToAdd = async (): Promise<string> => {
-					if (btn === 'pub') {
-						if (bkmk && bkmk.content) {
-							return bkmk.content;
-						} else {
-							return '';
-						}
-					} else {
-						if (bkmk && bkmk.content) {
-							try {
-								return await addPrivates(
-									bkmk.content,
-									pubkey,
-									idTagList,
-									check
-								);
-							} catch (error: any) {
-								throw Error(error);
+								//item.slice(0, 2) === tag.slice(0, 2)
+							);
+							if (index !== -1) {
+								throw Error(`$_('toast.invalidEmoji')`);
 							}
-						} else {
-							return await addPrivates('', pubkey, idTagList, check);
-						}
+						});
 					}
-				};
-
-				const event: Nostr.Event = {
-					id: '',
-					pubkey: pubkey,
-					created_at: Math.floor(Date.now() / 1000),
-					kind: kind,
-					tags: tagsToAdd(),
-					content: await contentToAdd(),
-					sig: ''
-				};
-
-				console.log(event);
-
-				const result = await publishEventWithTimeout(
-					event,
-					$relaySet[$pubkey_viewer]?.bookmarkRelays
-				);
-
-				if (result.isSuccess) {
-					listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
-
-					const toastMessage = result.isSuccess
-						? 'Add note<br>' + result.msg
-						: $_('toast.failed_publish');
-
-					const t = {
-						message: toastMessage,
-						timeout: 3000,
-						background: result.isSuccess
-							? 'variant-filled-secondary width-filled'
-							: 'bg-orange-500 text-white width-filled '
-					};
-
-					toastStore.trigger(t);
-					isSuccess = result.isSuccess;
+					const reTag =
+						bkmk !== undefined ? [...bkmk.tags, ...idTagList] : idTagList;
+					return reTag;
+				} else if (bkmk) {
+					return bkmk.tags;
 				} else {
-					const t = {
-						message: $_('toast.failed_publish'),
-						timeout: 3000,
-						background: 'bg-orange-500 text-white width-filled '
-					};
-
-					toastStore.trigger(t);
+					return [];
 				}
+			};
+
+			// const tagsToAdd =
+			// 	btn === 'pub'
+			// 		? bkmk !== undefined
+			// 			? [...bkmk.tags, ...idTagList]
+			// 			: idTagList
+			// 		: bkmk.tags;
+
+			const contentToAdd = async (): Promise<string> => {
+				if (btn === 'pub') {
+					if (bkmk && bkmk.content) {
+						return bkmk.content;
+					} else {
+						return '';
+					}
+				} else {
+					if (bkmk && bkmk.content) {
+						try {
+							return await addPrivates(bkmk.content, pubkey, idTagList, check);
+						} catch (error: any) {
+							throw Error(error);
+						}
+					} else {
+						return await addPrivates('', pubkey, idTagList, check);
+					}
+				}
+			};
+
+			const event: Nostr.Event = {
+				id: '',
+				pubkey: pubkey,
+				created_at: Math.floor(Date.now() / 1000),
+				kind: kind,
+				tags: tagsToAdd(),
+				content: await contentToAdd(),
+				sig: ''
+			};
+
+			console.log(event);
+
+			const result = await publishEventWithTimeout(
+				event,
+				$relaySet[$pubkey_viewer]?.bookmarkRelays
+			);
+
+			if (result.isSuccess) {
+				listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+
+				const toastMessage = result.isSuccess
+					? 'Add note<br>' + result.msg
+					: $_('toast.failed_publish');
+
+				const t = {
+					message: toastMessage,
+					timeout: 3000,
+					background: result.isSuccess
+						? 'variant-filled-secondary width-filled'
+						: 'bg-orange-500 text-white width-filled '
+				};
+
+				toastStore.trigger(t);
+				isSuccess = result.isSuccess;
+			} else {
+				const t = {
+					message: $_('toast.failed_publish'),
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
+
+				toastStore.trigger(t);
 			}
+			//	}
 		} catch (error: any) {
 			throw Error(error);
 			// console.error(error);
