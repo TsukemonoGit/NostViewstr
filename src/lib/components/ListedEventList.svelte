@@ -468,12 +468,12 @@
 		check: boolean //重複チェック有無
 	): Promise<boolean> {
 		let isSuccess = false;
-		console.log(idTagList);
+
 		try {
 			const bkmk = $eventListsMap?.[pubkey]?.[kind]?.get(
 				$keysArray[listNumber]
 			);
-			console.log(bkmk);
+
 			//重複したタグ（二番目の要素まで）があるかちぇっく
 			//if (bkmk) {//すでにあるとこに追加
 			const tagsToAdd = () => {
