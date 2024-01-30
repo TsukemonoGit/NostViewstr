@@ -268,6 +268,10 @@ export async function publishEventWithTimeout(
 		console.error('relay設定されてない');
 		return { isSuccess: false, msg: 'relayが設定されていません' };
 	}
+	const check = validCheck(obj);
+	if (!check) {
+		return { isSuccess: false, msg: '無効なイベントです' };
+	}
 	let isSuccess = false;
 	const msgObj: { [relay: string]: boolean } = {};
 	relays.forEach((relay) => {
@@ -447,4 +451,18 @@ function addSetRelays(relays: string[]): {
 		}
 	});
 	return tmp;
+}
+function validCheck(obj: Nostr.Event<number>): Boolean {
+	//３００００台でdtagsがなかったらエラー
+	if (obj.kind >= 30000 && obj.kind < 40000) {
+		const index = obj.tags.findIndex((tag: string[]) => tag[0] === 'd');
+		if (index === -1) {
+			return false;
+		}
+	}
+	//なんでもコンテントとtagのりょうほうが空だったらエラー
+	if (obj.content === '' && obj.tags.length === 0) {
+		return false;
+	}
+	return true;
 }
