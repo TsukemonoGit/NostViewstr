@@ -5,7 +5,7 @@
 	import OpenInNewIcon from '@material-design-icons/svg/round/open_in_new.svg?raw';
 	export let event: Nostr.Event;
 	const dtag = event?.tags?.find((item) => item[0] === 'd');
-	const emojisURL = 'https://emojis-iota.vercel.app/';
+	const emojisURL = 'https://emojito.meme/'; //'https://emojis-iota.vercel.app/';
 	const openEmojiURL =
 		emojisURL +
 		'a/' +
@@ -35,7 +35,7 @@
 		rel="external noreferrer"
 		target="_blank"
 		href={openEmojiURL}
-		>Open in emojis-iota<span
+		>Open in emojito<span
 			class="flex icon dark:fill-surface-400 fill-surface-600"
 			>{@html OpenInNewIcon}</span
 		></a

@@ -48,7 +48,8 @@ npm run build
 
 - [うにゅうハウス](https://unyu-house.vercel.app/) - チャンネルのリンク先
 
-- [emojis-iota](https://emojis-iota.vercel.app/) - 絵文字リストのリンク先
+- [emojito](https://emojito.meme/) - 絵文字リストのリンク先
+<!--- [emojis-iota](https://emojis-iota.vercel.app/) - 絵文字リストのリンク先-->
 
 - [Habla](https://habla.news/) - kind:30023 (long form content) , kind:34550 (communities) のリンク先
 
