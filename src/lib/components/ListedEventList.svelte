@@ -165,7 +165,7 @@
 		if (pub !== $pubkey_viewer && !$relaySet[$pubkey_viewer]) {
 			$relaySet[$pubkey_viewer] = initRelaySet;
 
-			getRelays($pubkey_viewer);
+			await getRelays($pubkey_viewer);
 		}
 		//	}
 		const filter =
