@@ -151,7 +151,7 @@
 <!-- @component This example creates a simple form modal. -->
 
 {#if $modalStore[0]}
-	<div class="modal-example-form {cBase}">
+	<div class="modal-example-form {cBase} max-h-screen overflow-y-auto">
 		<Accordion autocollapse>
 			<AccordionItem open>
 				<svelte:fragment slot="lead">🗒</svelte:fragment>
