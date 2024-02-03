@@ -66,6 +66,11 @@
 		</div>
 
 		<div class=" ">
+			<div class="label mt-2">
+				<span class="font-bold mr-2">d tag</span>
+				{$identifierKeysArray[$listNum]}
+			</div>
+
 			<label class="label mt-2">
 				<span class="font-bold">title</span>
 				{$_('modal.listInfo.ex.title')}
