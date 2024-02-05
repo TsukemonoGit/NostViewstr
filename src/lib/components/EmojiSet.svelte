@@ -25,7 +25,7 @@
 					src={list[2]}
 					alt={list[1]}
 					title={list[1]}
-					class="max-h-[1.5em] w-fit inline-flex"
+					class="max-h-[1.5em] max-w-full inline-flex object-contain"
 				/>
 			{/if}
 		{/each}
