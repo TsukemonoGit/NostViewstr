@@ -15,7 +15,7 @@
 		{/if}
 	</div>
 	<div class="grid grid-rows-[auto_1fr]">
-		<div class="h5">{tagArray[1]}</div>
+		<div class="h5 break-all">{tagArray[1]}</div>
 		<a
 			rel="external noreferrer"
 			target="_blank"
