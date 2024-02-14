@@ -93,21 +93,6 @@ export function parseNaddr(tag: string[]): AddressPointer {
 				pubkey: pubkey,
 				identifier: identifier
 		  };
-
-	// 	const parts = tag[1].split(':');
-	// 	//console.log([tag[2]]);
-	// 	return tag.length > 2 && tag[2] !== ''
-	// 		? {
-	// 				kind: Number(parts[0]),
-	// 				pubkey: parts.length > 1 ? parts[1] : '',
-	// 				identifier: parts.length > 2 ? parts[2] : '',
-	// 				relays: [tag[2]]
-	// 		  }
-	// 		: {
-	// 				kind: Number(parts[0]),
-	// 				pubkey: parts.length > 1 ? parts[1] : '',
-	// 				identifier: parts.length > 2 ? parts[2] : ''
-	// 		  };
 }
 
 export async function getIdByTag(
