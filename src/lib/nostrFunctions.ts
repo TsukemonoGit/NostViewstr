@@ -76,20 +76,38 @@ interface Kind3Relay {
 }
 
 export function parseNaddr(tag: string[]): AddressPointer {
-	const parts = tag[1].split(':');
-	//console.log([tag[2]]);
-	return tag.length > 2 && tag[2] !== ''
+	const [, reference, relay] = tag; // 配列の2番目の要素を取り出す
+	const [kind, pubkey, ...identifierParts] = reference.split(':'); // referenceをコロンで分割, identifierの中に:が含まれる可能性がある
+	const identifier = identifierParts.join(':'); // identifierの部分を結合する
+
+	//console.log(identifier);
+	return relay !== undefined && relay !== ''
 		? {
-				kind: Number(parts[0]),
-				pubkey: parts.length > 1 ? parts[1] : '',
-				identifier: parts.length > 2 ? parts[2] : '',
-				relays: [tag[2]]
+				kind: Number(kind),
+				pubkey: pubkey,
+				identifier: identifier,
+				relays: [relay]
 		  }
 		: {
-				kind: Number(parts[0]),
-				pubkey: parts.length > 1 ? parts[1] : '',
-				identifier: parts.length > 2 ? parts[2] : ''
+				kind: Number(kind),
+				pubkey: pubkey,
+				identifier: identifier
 		  };
+
+	// 	const parts = tag[1].split(':');
+	// 	//console.log([tag[2]]);
+	// 	return tag.length > 2 && tag[2] !== ''
+	// 		? {
+	// 				kind: Number(parts[0]),
+	// 				pubkey: parts.length > 1 ? parts[1] : '',
+	// 				identifier: parts.length > 2 ? parts[2] : '',
+	// 				relays: [tag[2]]
+	// 		  }
+	// 		: {
+	// 				kind: Number(parts[0]),
+	// 				pubkey: parts.length > 1 ? parts[1] : '',
+	// 				identifier: parts.length > 2 ? parts[2] : ''
+	// 		  };
 }
 
 export async function getIdByTag(
