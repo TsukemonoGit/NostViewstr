@@ -41,16 +41,16 @@
 	let tag: string[] | undefined = $modalStore[0]?.value?.tag;
 	let kind: number = $modalStore[0]?.value?.kind;
 	// "a" と "e" が両方含まれているか確認
-	const includesA = kindsValidTag[$modalStore[0].value.kind].includes('a');
-	const includesE = kindsValidTag[$modalStore[0].value.kind].includes('e');
-	const includesP = kindsValidTag[$modalStore[0].value.kind].includes('p');
+	const includesA = kindsValidTag[$modalStore[0].value.kind]?.includes('a');
+	const includesE = kindsValidTag[$modalStore[0].value.kind]?.includes('e');
+	const includesP = kindsValidTag[$modalStore[0].value.kind]?.includes('p');
 	const includesRelay =
-		kindsValidTag[$modalStore[0].value.kind].includes('relay');
+		kindsValidTag[$modalStore[0].value.kind]?.includes('relay');
 	const includesEmoji =
-		kindsValidTag[$modalStore[0].value.kind].includes('emoji');
+		kindsValidTag[$modalStore[0].value.kind]?.includes('emoji');
 
 	const charactersToCheck = ['t', 'word', 'r'];
-	const countCharacters = kindsValidTag[$modalStore[0].value.kind].filter(
+	const countCharacters = kindsValidTag[$modalStore[0].value.kind]?.filter(
 		(tag) => charactersToCheck.some((char) => tag.includes(char))
 	);
 	console.log(countCharacters);
@@ -80,7 +80,7 @@
 			//validtagかちぇっく
 			if (
 				!tagArray ||
-				!kindsValidTag[$modalStore[0].value.kind].includes(tagArray[0]) ||
+				!kindsValidTag[$modalStore[0].value.kind]?.includes(tagArray[0]) ||
 				tagArray.length <= 1 ||
 				tagArray[1] === ''
 			) {
@@ -208,7 +208,7 @@
 								viewList={$modalStore[0].value.viewList}
 							/>
 						{/if}
-						{#if $modalStore[0].value.kind !== 10002 && ((tag === undefined && countCharacters.length > 0) || (tag !== undefined && (tag[0] === 'r' || tag[0] === 't' || tag[0] === 'word')))}
+						{#if $modalStore[0].value.kind !== 10002 && ((tag === undefined && countCharacters?.length > 0) || (tag !== undefined && (tag[0] === 'r' || tag[0] === 't' || tag[0] === 'word')))}
 							<AddTypeOther
 								{res}
 								{parent}
