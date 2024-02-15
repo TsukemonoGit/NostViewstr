@@ -6,7 +6,7 @@
 	import AddTypeNoteAndNaddr from './Add/AddTypeNoteAndNaddr.svelte';
 	import { isOneDimensionalArray } from '$lib/nostrFunctions';
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
-	import { kindsValidTag } from '$lib/kind';
+	import { kindsValidTag, uniqueArray } from '$lib/kind';
 	import type { Nostr } from 'nosvelte';
 	import { relaySet } from '$lib/stores/relays';
 	import AddTypeNpub from './Add/AddTypeNpub.svelte';
@@ -15,8 +15,9 @@
 	import AddTypeEmoji from './Add/AddTypeEmoji.svelte';
 	import AddTypeRelay from './Add/AddTypeRelay.svelte';
 	import AddType10002 from './Add/AddType10002.svelte';
-	import AddTypeOther from './Add/AddTypeOther.svelte';
+	import AddTypeRandTandWord from './Add/AddTypeRandTandWord.svelte';
 	import AddTypeAddressPointer from './Add/AddTypeAddressPointer.svelte';
+	import EditTypeOther from './Add/EditTypeOther.svelte';
 	import { nowProgress } from '$lib/stores/settings';
 
 	export let parent: any;
@@ -40,19 +41,25 @@
 	//これがundifinedじゃなかったら編集として
 	let tag: string[] | undefined = $modalStore[0]?.value?.tag;
 	let kind: number = $modalStore[0]?.value?.kind;
+	//編集は今開いてる方に追加することになるから開いたときのpubかprvかをチェック
+	let bkm: string | undefined = $modalStore[0]?.value?.bkm;
 	// "a" と "e" が両方含まれているか確認
-	const includesA = kindsValidTag[$modalStore[0].value.kind].includes('a');
-	const includesE = kindsValidTag[$modalStore[0].value.kind].includes('e');
-	const includesP = kindsValidTag[$modalStore[0].value.kind].includes('p');
+	const includesA = kindsValidTag[$modalStore[0].value.kind]?.includes('a');
+	const includesE = kindsValidTag[$modalStore[0].value.kind]?.includes('e');
+	const includesP = kindsValidTag[$modalStore[0].value.kind]?.includes('p');
 	const includesRelay =
-		kindsValidTag[$modalStore[0].value.kind].includes('relay');
+		kindsValidTag[$modalStore[0].value.kind]?.includes('relay');
 	const includesEmoji =
-		kindsValidTag[$modalStore[0].value.kind].includes('emoji');
+		kindsValidTag[$modalStore[0].value.kind]?.includes('emoji');
 
 	const charactersToCheck = ['t', 'word', 'r'];
-	const countCharacters = kindsValidTag[$modalStore[0].value.kind].filter(
+	let countCharacters = kindsValidTag[$modalStore[0].value.kind]?.filter(
 		(tag) => charactersToCheck.some((char) => tag.includes(char))
 	);
+	console.log(countCharacters);
+	if (countCharacters === undefined && $modalStore[0].value.tag) {
+		countCharacters = [$modalStore[0].value.tag[0]];
+	}
 	console.log(countCharacters);
 	// We've created a custom submit function to pass the response and close the modal.
 	function onFormSubmit(): void {
@@ -80,7 +87,7 @@
 			//validtagかちぇっく
 			if (
 				!tagArray ||
-				!kindsValidTag[$modalStore[0].value.kind].includes(tagArray[0]) ||
+				!kindsValidTag[$modalStore[0].value.kind]?.includes(tagArray[0]) ||
 				tagArray.length <= 1 ||
 				tagArray[1] === ''
 			) {
@@ -208,14 +215,19 @@
 								viewList={$modalStore[0].value.viewList}
 							/>
 						{/if}
-						{#if $modalStore[0].value.kind !== 10002 && ((tag === undefined && countCharacters.length > 0) || (tag !== undefined && (tag[0] === 'r' || tag[0] === 't' || tag[0] === 'word')))}
-							<AddTypeOther
+						{#if $modalStore[0].value.kind !== 10002 && ((tag === undefined && countCharacters?.length > 0) || (tag !== undefined && (tag[0] === 'r' || tag[0] === 't' || tag[0] === 'word')))}
+							<AddTypeRandTandWord
 								{res}
 								{parent}
 								{onFormSubmit}
 								tag={$modalStore[0].value.tag}
 								{countCharacters}
+								{bkm}
 							/>
+						{/if}
+						<!--編集であり知らんタグのとき（タグの中身だけ変更可にする）-->
+						{#if tag !== undefined && !uniqueArray().includes(tag[0])}
+							<EditTypeOther {res} {parent} {onFormSubmit} {tag} {bkm} />
 						{/if}
 						{#if tag === undefined && includesA}
 							<AddTypeAddressPointer {res} {parent} {onFormSubmit} {kind} />

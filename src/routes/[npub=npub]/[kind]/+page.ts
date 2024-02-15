@@ -27,7 +27,8 @@ export const load: PageLoad<{
 		const { type, data } = nip19.decode(npub);
 		console.log('[decode]', type, data);
 		//pubkey.set(data as string);
-		if (!Number(kind)) {
+		if (!Number.isInteger(Number(kind)) || Number(kind) < 0) {
+			//kind:0でもエラーにならないように
 			console.error('[kind error]');
 			throw error(404, 'Not Found');
 		}

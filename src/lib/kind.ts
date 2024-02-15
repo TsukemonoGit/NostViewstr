@@ -42,6 +42,16 @@ export let kindsValidTag: { [key: number]: string[] } = {
 	30002: ['relay']
 };
 
+// 重複を排除して新しい配列を作成する
+export const uniqueArray = () => {
+	// すべての配列を取り出し、結合する
+	const combinedArray = Object.values(kindsValidTag).reduce(
+		(acc, val) => acc.concat(val),
+		[]
+	);
+	return [...new Set(combinedArray)];
+};
+
 export let naddrVaridKind: { [key: number]: number[] } = {
 	10004: [34550],
 	10030: [30030],

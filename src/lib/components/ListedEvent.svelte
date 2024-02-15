@@ -773,7 +773,7 @@
 						/>
 					</div>
 				{:else if tag[0] === 'word'}
-					<!--a,e,d以外あとでかく-->
+					<!--word-->
 
 					<div
 						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"

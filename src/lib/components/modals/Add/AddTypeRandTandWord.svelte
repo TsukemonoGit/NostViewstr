@@ -10,6 +10,7 @@
 	//export let viewList: string[][];
 	export let tag: string[];
 	export let countCharacters: string[];
+	export let bkm: string | undefined;
 	let selectValue: string = tag ? tag[0] : countCharacters[0];
 	$: placeholder = selectValue === 'r' ? 'url' : 'word';
 	let input: string = tag ? tag[1] : '';
@@ -43,20 +44,35 @@
 </div>
 
 <footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	<button
-		class="btn variant-filled-warning {parent.buttonPositive}"
-		on:click={() => {
-			res.btn = 'prv';
-			onClickCheck();
-		}}
-		disabled={$nowProgress}>Private</button
-	>
-	<button
-		class="btn {parent.buttonPositive}"
-		on:click={() => {
-			res.btn = 'pub';
-			onClickCheck();
-		}}
-		disabled={$nowProgress}>Public</button
-	>
+	{#if bkm !== undefined}
+		<!--編集のとき-->
+		<button
+			class="btn variant-filled-warning {parent.buttonPositive}"
+			on:click={() => {
+				if (bkm !== undefined) {
+					res.btn = bkm;
+					onClickCheck();
+				}
+			}}
+			disabled={$nowProgress}>SAVE</button
+		>
+	{:else}
+		<!--新規追加のとき-->
+		<button
+			class="btn variant-filled-warning {parent.buttonPositive}"
+			on:click={() => {
+				res.btn = 'prv';
+				onClickCheck();
+			}}
+			disabled={$nowProgress}>Private</button
+		>
+		<button
+			class="btn {parent.buttonPositive}"
+			on:click={() => {
+				res.btn = 'pub';
+				onClickCheck();
+			}}
+			disabled={$nowProgress}>Public</button
+		>
+	{/if}
 </footer>
