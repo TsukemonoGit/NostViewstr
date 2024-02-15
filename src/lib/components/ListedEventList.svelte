@@ -733,7 +733,8 @@
 				pubkey: pubkey,
 				event: $eventListsMap[pubkey]?.[kind]?.get($keysArray[listNumber]),
 				tag: tagArray,
-				number: number
+				number: number,
+				bkm: bkm //編集は今開いてる方だから
 			},
 			response: async (res: { btn: string; tag: string[] }) => {
 				if (res && JSON.stringify(res.tag) !== JSON.stringify(tagArray)) {
