@@ -157,13 +157,8 @@
 		{text}
 	{:then viewContent}
 		{#each viewContent as item, index}
-			{#if item.content.length > 0}
-				<!-- <div class="break-all  overflow-x-hidden"> -->
-				{#if item.type === 'emoji'}
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-					<img
-						class="align-bottom inline-flex h-[1.5em] max-w-full -mx-[2.2px] object-contain"
+			{#if item.content.length > 0}{#if item.type === 'emoji'}<img
+						class="align-bottom inline-flex h-[1.5em] max-w-full object-contain"
 						src={item.url}
 						height="6"
 						alt={item.content}
@@ -336,12 +331,10 @@
 						}}
 						>{item.content}
 					</span> -->
-				{:else if item.content.length > 0}
-					<span style="	white-space: pre-wrap; word-break: break-word;"
+				{:else if item.content.length > 0}<span
+						style="	white-space: pre-wrap; word-break: break-word;"
 						>{item.content}</span
-					>{/if}
-				<!-- </div> -->
-			{/if}
+					>{/if}{/if}
 		{/each}
 	{/await}
 {/if}
