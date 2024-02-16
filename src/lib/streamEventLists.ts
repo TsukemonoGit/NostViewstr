@@ -418,7 +418,7 @@ export async function publishEventWithTimeout(
 		return result;
 		//}
 	} catch (error) {
-		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+		return { isSuccess: false, msg: error as string };
 	}
 }
 
