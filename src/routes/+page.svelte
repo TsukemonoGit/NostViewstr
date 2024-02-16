@@ -80,13 +80,12 @@
 		console.log(kind);
 	}
 
-	let nostrAddress: string;
-
-	function onSignupClick() {
+	async function onSignupClick() {
 		// launch signup screen
-		launchNostrLoginDialog({
+		await launchNostrLoginDialog({
 			startScreen: 'signup'
 		});
+		onClickExtension();
 	}
 </script>
 
