@@ -2,14 +2,7 @@ import { _ } from 'svelte-i18n';
 
 import type { Observer } from 'rxjs';
 
-import {
-	createRxNostr,
-	Nostr,
-	uniq,
-	verify,
-	createRxForwardReq,
-	type Relay
-} from 'rx-nostr';
+import { createRxNostr, uniq, verify, createRxForwardReq } from 'rx-nostr';
 import { get } from 'svelte/store';
 import {
 	type Identifiers,
@@ -20,11 +13,12 @@ import {
 	relayState,
 	connectingRelays
 } from './stores/bookmarkEvents';
-import { formatResults, getPub } from './nostrFunctions';
+import { formatResults, getPub, signEv } from './nostrFunctions';
 import { getEventHash } from 'nostr-tools';
 import { nsec, pubkey_viewer } from './stores/settings';
 import { relaySet } from './stores/relays';
 import type { ConnectionState } from 'rx-nostr';
+import type { Nostr } from 'nosvelte';
 
 const reconnectableStates: ConnectionState[] = [
 	'reconnecting', //りこねくてぃんぐ表示から変化しないようにみえるから追加してみる
@@ -89,8 +83,8 @@ export async function RelaysReconnectChallenge() {
 			rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
 		);
 		//すでにセットされてる場合は何もおこらないっぽい？ので一度全部外す
-		rxNostr.setRelays({});
-		rxNostr.setRelays(tmp);
+		rxNostr.switchRelays({});
+		rxNostr.switchRelays(tmp);
 
 		// states.forEach(([relayUrl, state]) => {
 		//   if (reconnectableStates.includes(state)) {
@@ -157,7 +151,7 @@ export async function StoreFetchFilteredEvents(
 	console.log(viewerRelay);
 	//const merges = mergeRelays(viewerRelay, data.relays);
 	//if( Object.entries(rxNostr.getRelays())!==merges){
-	rxNostr.setRelays(mergeRelays(viewerRelay, data.relays));
+	rxNostr.switchRelays(mergeRelays(viewerRelay, data.relays));
 	//}
 	console.log('[get relays]', rxNostr.getRelays());
 	relayState.set(rxNostr.getAllRelayState());
@@ -175,7 +169,7 @@ export async function StoreFetchFilteredEvents(
 
 			if (kind >= 30000 && kind < 40000) {
 				//30000代の場合のキー値はdタグのあたい
-				const key = packet.event.tags.find((item) => item[0] === 'd');
+				const key = packet.event.tags.find((item: string[]) => item[0] === 'd');
 				if (key) {
 					const check = storedEventsData[pubkey][kind].get(key[1])?.created_at;
 
@@ -183,11 +177,17 @@ export async function StoreFetchFilteredEvents(
 						storedEventsData[pubkey][kind].set(key[1], packet.event);
 						eventListsMap.set(storedEventsData);
 
-						const tag = packet.event.tags.find((tag) => tag[0] === 'd');
-						const title = packet.event.tags.find((tag) => tag[0] === 'title');
-						const image = packet.event.tags.find((tag) => tag[0] === 'image');
+						const tag = packet.event.tags.find(
+							(tag: string[]) => tag[0] === 'd'
+						);
+						const title = packet.event.tags.find(
+							(tag: string[]) => tag[0] === 'title'
+						);
+						const image = packet.event.tags.find(
+							(tag: string[]) => tag[0] === 'image'
+						);
 						const description = packet.event.tags.find(
-							(tag) => tag[0] === 'description'
+							(tag: string[]) => tag[0] === 'description'
 						);
 						const newIdentifierList: Identifiers = {
 							identifier: tag ? tag[1] : undefined,
@@ -207,11 +207,17 @@ export async function StoreFetchFilteredEvents(
 
 						eventListsMap.set(storedEventsData);
 
-						const tag = packet.event.tags.find((tag) => tag[0] === 'd');
-						const title = packet.event.tags.find((tag) => tag[0] === 'title');
-						const image = packet.event.tags.find((tag) => tag[0] === 'image');
+						const tag = packet.event.tags.find(
+							(tag: string[]) => tag[0] === 'd'
+						);
+						const title = packet.event.tags.find(
+							(tag: string[]) => tag[0] === 'title'
+						);
+						const image = packet.event.tags.find(
+							(tag: string[]) => tag[0] === 'image'
+						);
 						const description = packet.event.tags.find(
-							(tag) => tag[0] === 'description'
+							(tag: string[]) => tag[0] === 'description'
 						);
 						const newIdentifierList: Identifiers = {
 							identifier: tag ? tag[1] : undefined,
@@ -293,7 +299,7 @@ export async function publishEventWithTimeout(
 		// 	message: `publishing ...`
 		// };
 		// const publishingToast = toastStore.trigger(t);
-		const event = obj;
+		const event = await signEv(obj);
 		event.id = getEventHash(event);
 		console.log(event);
 
@@ -305,112 +311,112 @@ export async function publishEventWithTimeout(
 		if (!hasWriteTrue) {
 			//const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 
-			rxNostr.setRelays(addSetRelays(relays));
+			rxNostr.switchRelays(addswitchRelays(relays));
 		}
 		console.log('[get relays]', rxNostr.getRelays());
 
-		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
+		//await rxNostr.switchRelays(relays); //[...relays, 'wss://test']);
 		const sec = get(nsec);
-		if (sec) {
-			//
-			return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+		//console.log(sec);
 
-			const result = await Promise.race([
-				new Promise<{
-					isSuccess: boolean;
-					msg: string;
-					event?: Nostr.Event;
-				}>((resolve) => {
-					const subscription = rxNostr.send(event, sec).subscribe({
-						next: (packet) => {
-							//	console.log(packet);
-							msgObj[packet.from] = true;
-							isSuccess = true;
-						},
-						complete: () => {
-							resolve({
-								isSuccess,
-								event: event,
-								msg: formatResults(msgObj)
-							});
-						}
-					});
-				}),
-				new Promise<{
-					isSuccess: boolean;
-					msg: string;
-					event?: Nostr.Event;
-				}>((resolve) => {
-					setTimeout(() => {
-						const hasTrue = Object.values(msgObj).some(
-							(value) => value === true
-						);
-						console.log(
-							'timeout',
-							event,
-							formatResults(msgObj),
-							hasTrue,
-							isSuccess
-						);
+		// if (sec) {
+		// 	//
+		// 	//	return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+
+		// 	const result = await Promise.race([
+		// 		new Promise<{
+		// 			isSuccess: boolean;
+		// 			msg: string;
+		// 			event?: Nostr.Event;
+		// 		}>((resolve) => {
+		// 			const subscription = rxNostr.send(event, sec).subscribe({
+		// 				next: (packet) => {
+		// 					console.log(packet);
+		// 					msgObj[packet.from] = true;
+		// 					isSuccess = true;
+		// 				},
+		// 				complete: () => {
+		// 					resolve({
+		// 						isSuccess,
+		// 						event: event,
+		// 						msg: formatResults(msgObj)
+		// 					});
+		// 				}
+		// 			});
+		// 		}),
+		// 		new Promise<{
+		// 			isSuccess: boolean;
+		// 			msg: string;
+		// 			event?: Nostr.Event;
+		// 		}>((resolve) => {
+		// 			setTimeout(() => {
+		// 				const hasTrue = Object.values(msgObj).some(
+		// 					(value) => value === true
+		// 				);
+		// 				console.log(
+		// 					'timeout',
+		// 					event,
+		// 					formatResults(msgObj),
+		// 					hasTrue,
+		// 					isSuccess
+		// 				);
+		// 				resolve({
+		// 					isSuccess: hasTrue,
+		// 					event: event,
+		// 					msg: formatResults(msgObj)
+		// 				});
+		// 			}, timeout);
+		// 		})
+		// 	]);
+		// 	//	toastStore.close(publishingToast);
+		// 	return result;
+		// } else {
+		const result = await Promise.race([
+			new Promise<{
+				isSuccess: boolean;
+				msg: string;
+				event?: Nostr.Event;
+			}>((resolve) => {
+				const subscription = rxNostr.send(event).subscribe({
+					next: (packet) => {
+						//	console.log(packet);
+						msgObj[packet.from] = true;
+						isSuccess = true;
+					},
+					complete: () => {
 						resolve({
-							isSuccess: hasTrue,
+							isSuccess,
 							event: event,
 							msg: formatResults(msgObj)
 						});
-					}, timeout);
-				})
-			]);
-			//	toastStore.close(publishingToast);
-			return result;
-		} else {
-			const result = await Promise.race([
-				new Promise<{
-					isSuccess: boolean;
-					msg: string;
-					event?: Nostr.Event;
-				}>((resolve) => {
-					const subscription = rxNostr.send(event).subscribe({
-						next: (packet) => {
-							//	console.log(packet);
-							msgObj[packet.from] = true;
-							isSuccess = true;
-						},
-						complete: () => {
-							resolve({
-								isSuccess,
-								event: event,
-								msg: formatResults(msgObj)
-							});
-						}
+					}
+				});
+			}),
+			new Promise<{
+				isSuccess: boolean;
+				msg: string;
+				event?: Nostr.Event;
+			}>((resolve) => {
+				setTimeout(() => {
+					const hasTrue = Object.values(msgObj).some((value) => value === true);
+					console.log(
+						'timeout',
+						event,
+						formatResults(msgObj),
+						hasTrue,
+						isSuccess
+					);
+					resolve({
+						isSuccess: hasTrue,
+						event: event,
+						msg: formatResults(msgObj)
 					});
-				}),
-				new Promise<{
-					isSuccess: boolean;
-					msg: string;
-					event?: Nostr.Event;
-				}>((resolve) => {
-					setTimeout(() => {
-						const hasTrue = Object.values(msgObj).some(
-							(value) => value === true
-						);
-						console.log(
-							'timeout',
-							event,
-							formatResults(msgObj),
-							hasTrue,
-							isSuccess
-						);
-						resolve({
-							isSuccess: hasTrue,
-							event: event,
-							msg: formatResults(msgObj)
-						});
-					}, timeout);
-				})
-			]);
-			//	toastStore.close(publishingToast);
-			return result;
-		}
+				}, timeout);
+			})
+		]);
+		//	toastStore.close(publishingToast);
+		return result;
+		//}
 	} catch (error) {
 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
 	}
@@ -434,7 +440,7 @@ function mergeRelays(
 	console.log(result);
 	return result;
 }
-function addSetRelays(relays: string[]): {
+function addswitchRelays(relays: string[]): {
 	[url: string]: { read: boolean; write: boolean };
 } {
 	const tmp = Object.fromEntries(

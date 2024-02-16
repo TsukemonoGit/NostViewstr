@@ -37,7 +37,6 @@ import {
 import {
 	createRxNostr,
 	createRxOneshotReq,
-	Nostr,
 	uniq,
 	verify,
 	latest,
@@ -67,6 +66,7 @@ import {
 } from './stores/relays';
 import type { ToastSettings } from '@skeletonlabs/skeleton';
 import { toastStore } from './stores/store';
+import type { Nostr } from 'nosvelte';
 
 interface Kind3Relay {
 	[key: string]: {
@@ -247,7 +247,7 @@ export function windowOpen(str: string): void {
 // 		console.log(event);
 // 		const rxNostr = createRxNostr();
 
-// 		await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
+// 		await rxNostr.switchRelays(relays); //[...relays, 'wss://test']);
 // 		const sec = get(nsec);
 // 		const result = await Promise.race([
 // 			new Promise<{
@@ -307,7 +307,7 @@ export function windowOpen(str: string): void {
 // 	//console.log(verifySignature(event));
 // 	const rxNostr = createRxNostr();
 
-// 	await rxNostr.setRelays(relays);
+// 	await rxNostr.switchRelays(relays);
 // 	const sec = get(nsec); //nsecでの書き込みはできません（たぶんrx-nostrのバージョン）
 // 	// Promiseを作成してObservableを待機
 // 	const result =
@@ -596,7 +596,9 @@ export function idlatestEach(): MonoTypeOperatorFunction<EventPacket> {
 				source.subscribe({
 					next(packet) {
 						console.log(packet);
-						const id = packet.event.tags.find((item) => item[0] === 'd'); //一応一個目にdがない場合も考慮
+						const id = packet.event.tags.find(
+							(item: string[]) => item[0] === 'd'
+						); //一応一個目にdがない場合も考慮
 						//console.log(id);
 						if (id) {
 							const key = id[1]; // タグをキーとして文字列化
@@ -717,7 +719,7 @@ export async function fetchFilteredEvents(
 	const rxNostr = createRxNostr();
 	//console.log(relays);
 
-	rxNostr.setRelays(relays);
+	rxNostr.switchRelays(relays);
 
 	console.log('[rx-nostr getRelays]', rxNostr.getRelays());
 	const rxReq = createRxOneshotReq({ filters });
@@ -825,7 +827,7 @@ export async function fetchFilteredEvents(
 
 export async function getRelays(author: string) {
 	const rxNostr = createRxNostr();
-	rxNostr.setRelays(relaySearchRelays);
+	rxNostr.switchRelays(relaySearchRelays);
 	console.log(rxNostr.getRelays());
 	const filters: Nostr.Filter[] = [{ authors: [author], kinds: [3, 10002] }];
 	console.log(filters);
@@ -860,12 +862,12 @@ export async function getRelays(author: string) {
 	});
 
 	//リレー用イベント取ってきたらそれをセットする
-	await setRelays(author, kekka);
+	await switchRelays(author, kekka);
 
 	return kekka;
 }
 
-export async function setRelays(pubkey: string, events: NostrEvent[]) {
+export async function switchRelays(pubkey: string, events: NostrEvent[]) {
 	console.log(`setting relays...`);
 	let read: string[] = [];
 	let write: string[] = [];

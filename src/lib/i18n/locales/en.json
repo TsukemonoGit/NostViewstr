@@ -88,7 +88,7 @@
   "main": {
     "title": "NostViewstr",
     "input_public_key": "🔑 public key",
-    "publish": "(Signature: Currently only writing by nip07 is possible (writing by direct input of private key is not possible))"
+    "publish": "Nsec is not saved in the browser. \nIf the nip07 extension is installed, the input for npub is acceptable.\nWithout the extension, and if npub input is provided, it will be for viewing only"
   },
   "mode": {
     "light_switch": "Switch between Light and Dark Mode",

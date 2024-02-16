@@ -54,3 +54,5 @@ npm run build
 - [Habla](https://habla.news/) - kind:30023 (long form content) , kind:34550 (communities) のリンク先
 
 - [Nosli](https://nosli.vercel.app/) - kind:30023 の #nosli がついている投稿のリンク先
+
+- [GoatCounter](https://github.com/arp242/goatcounter) - 各ページへのアクセス数を見るために使用
