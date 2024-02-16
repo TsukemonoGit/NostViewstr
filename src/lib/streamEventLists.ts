@@ -264,7 +264,7 @@ export async function StoreFetchFilteredEvents(
 export async function publishEventWithTimeout(
 	obj: Nostr.Event,
 	relays: string[],
-	timeout: number = 5000
+	timeout: number = 10000
 ): Promise<{
 	isSuccess: boolean;
 	event?: Nostr.Event;

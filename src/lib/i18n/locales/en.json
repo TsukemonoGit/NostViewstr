@@ -88,7 +88,7 @@
   "main": {
     "title": "NostViewstr",
     "input_public_key": "🔑 public key",
-    "publish": "Nsec is not saved in the browser. \nIf the nip07 extension is installed, the input for npub is acceptable.\nWithout the extension, and if npub input is provided, it will be for viewing only",
+    "publish": "Nsec is not saved in the browser. \nIf NPUB is entered without using either NIP07 or NIP46, access is restricted to browsing only.",
     "Nip46_login": "If you are directly inputting the private key, using the NIP07 extension, or only viewing, it is unnecessary."
   },
   "mode": {
