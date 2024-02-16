@@ -232,7 +232,7 @@
 
 					{$_('modal.info.relay.title')}
 				</div>
-				{#if viewRelays}
+				{#if viewRelays && eventTime}
 					<div class="card p-3">
 						<p class="pt-1">
 							My{$_('modal.info.relay.white')} kind:{eventTime.kind}

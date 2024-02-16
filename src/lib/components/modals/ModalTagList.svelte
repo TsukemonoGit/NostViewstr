@@ -16,6 +16,7 @@
 	let selectTag: number;
 	let pubkey = $modalStore[0]?.value?.pubkey ?? '';
 	let kind = $modalStore[0]?.value?.kind ?? -1;
+	//console.log($modalStore[0]);
 	//$: moveList = $tags.filter((item) => item !== $tags[$tabSet]);
 	// Handle Form Submission
 	function onFormSubmit(): void {
@@ -45,7 +46,7 @@
 		<ListBox
 			class="border border-surface-500 p-4 rounded-container-token max-h-80 overflow-y-auto"
 		>
-			{#if kind !== -1 && pubkey !== '' && Object.keys($identifierListsMap[pubkey]).some((k) => Number(k) === kind) && $identifierListsMap[pubkey][kind].size > 0}
+			{#if kind !== -1 && pubkey !== '' && $identifierListsMap?.[pubkey] && Object.keys($identifierListsMap[pubkey]).some((k) => Number(k) === kind) && $identifierListsMap[pubkey][kind].size > 0}
 				{#each $identifierKeysArray as list, index}
 					<ListBoxItem
 						bind:group={selectTag}
