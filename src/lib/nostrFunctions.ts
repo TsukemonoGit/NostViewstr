@@ -68,6 +68,8 @@ import type { ToastSettings } from '@skeletonlabs/skeleton';
 import { toastStore } from './stores/store';
 import type { Nostr } from 'nosvelte';
 
+import { launch as launchNostrLoginDialog } from 'nostr-login';
+
 interface Kind3Relay {
 	[key: string]: {
 		read: boolean;
@@ -470,26 +472,37 @@ export async function getPub(): Promise<string> {
 		//const sec = localStorage.getItem('nsec');
 		const sec = get(nsec);
 		if (sec && sec !== '') {
+			//nsecログイン
 			try {
 				pubkey_viewer.set(getPublicKey(sec));
 				unsubscribe();
 				return myPubkey;
 			} catch (error) {
 				try {
+					//nip07ログイン
 					pubkey_viewer.set(await window.nostr.getPublicKey());
 					unsubscribe();
 					return myPubkey;
 				} catch (error) {
+					//nip46ログイン
+					await launchNostrLoginDialog({
+						startScreen: 'signup'
+					});
 					unsubscribe();
 					return '';
 				}
 			}
 		} else {
 			try {
+				//nip07ログイン
 				pubkey_viewer.set(await window.nostr.getPublicKey());
 				unsubscribe();
 				return myPubkey;
 			} catch (error) {
+				//nip46ログイン
+				await launchNostrLoginDialog({
+					startScreen: 'signup'
+				});
 				unsubscribe();
 				return '';
 			}
