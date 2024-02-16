@@ -103,7 +103,7 @@
   "main": {
     "title": "のすとびうあ",
     "input_public_key": "🔑公開鍵(public key)",
-    "publish": "nsecはブラウザに保存されません, npub入力でNIP07もNIP46も使わない場合は閲覧限定",
+    "publish": "nsecはブラウザに保存されません",
     "Nip46_login": "nsecを直接入力するか、拡張機能を使う場合は不要です。"
   },
   "mode": {
