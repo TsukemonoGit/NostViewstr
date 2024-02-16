@@ -557,10 +557,11 @@ interface Event {
 	id: string;
 }
 
-async function signEv(obj: NostrEvent): Promise<Event> {
+export async function signEv(obj: NostrEvent): Promise<Event> {
 	//const sec = localStorage.getItem('nsec');
 	const sec = get(nsec);
 	if (sec && sec !== '') {
+		console.log('nsec');
 		try {
 			obj.sig = getSignature(obj, sec);
 			return obj;
@@ -1365,17 +1366,18 @@ export async function deletePrivates(
 }
 
 export function deletePubs(tags: string[][], numList: number[]): string[][] {
-	if (tags.length > 0 && numList.length > 0) {
+	const newTags = [...tags];
+	if (newTags.length > 0 && numList.length > 0) {
 		numList.sort((a, b) => b - a); //大きい順にソート
 		try {
 			for (const index of numList) {
-				tags.splice(index, 1); // インデックスに対応するノートを削除する
+				newTags.splice(index, 1); // インデックスに対応するノートを削除する
 			}
 		} catch (error) {
 			throw new Error('error');
 		}
 	}
-	return tags;
+	return newTags;
 }
 
 export async function editPrivates(
