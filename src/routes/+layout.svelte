@@ -26,6 +26,7 @@
 	import { backButton } from '$lib/stores/settings';
 	import { afterNavigate } from '$app/navigation';
 	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
+	import { init as initNostrLogin } from 'nostr-login';
 
 	let mounted = false;
 	initializeStores();
@@ -40,6 +41,9 @@
 		if (backBtn) {
 			backButton.set(backBtn === 'true' ?? false);
 		}
+		initNostrLogin({
+			/*options*/
+		});
 	});
 
 	// $: location =

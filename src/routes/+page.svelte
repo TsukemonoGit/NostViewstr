@@ -11,6 +11,8 @@
 	import { _ } from 'svelte-i18n';
 	import { kinds } from '$lib/kind';
 	import { toastStore } from '$lib/stores/store';
+	import { launch as launchNostrLoginDialog } from 'nostr-login';
+
 	let kind: number = Number(Object.keys(kinds)[0]); // Use Object.keys to get the first key
 
 	//let name: string;
@@ -77,6 +79,15 @@
 		kind = Number(event.currentTarget.value);
 		console.log(kind);
 	}
+
+	let nostrAddress: string;
+
+	function onSignupClick() {
+		// launch signup screen
+		launchNostrLoginDialog({
+			startScreen: 'signup'
+		});
+	}
 </script>
 
 <svelte:head>
@@ -108,6 +119,16 @@
 			</div>
 			<div class="ml-2 mt-1 text-sm whitespace-pre-wrap">
 				{$_('main.publish')}
+			</div>
+			<div class="mt-10">
+				<!-- <h5 class="h5">Option: {$_('main.Nip46_login')}</h5> -->
+
+				<button class=" btn variant-filled-secondary" on:click={onSignupClick}
+					>Login with NIP-46 Nostr Connect</button
+				>
+				<div class="ml-2 mt-1 text-sm whitespace-pre-wrap">
+					{$_('main.Nip46_login')}
+				</div>
 			</div>
 			<div class="mt-10">
 				<h5 class="h5">{`kind`}</h5>
