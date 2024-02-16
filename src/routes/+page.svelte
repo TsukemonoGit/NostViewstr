@@ -102,11 +102,13 @@
 				<input
 					class="input p-1 truncate"
 					type="text"
-					placeholder="npub1..."
+					placeholder="npub... or nsec..."
 					bind:value={inputValue}
 				/>
 			</div>
-			<div class="mt-1 text-sm">{$_('main.publish')}</div>
+			<div class="ml-2 mt-1 text-sm whitespace-pre-wrap">
+				{$_('main.publish')}
+			</div>
 			<div class="mt-10">
 				<h5 class="h5">{`kind`}</h5>
 

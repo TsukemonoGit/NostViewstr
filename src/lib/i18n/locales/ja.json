@@ -103,7 +103,7 @@
   "main": {
     "title": "のすとびうあ",
     "input_public_key": "🔑公開鍵(public key)",
-    "publish": "(署名について：現状nip07での書き込みのみ可能（秘密鍵直接入力による書き込み不可）)"
+    "publish": "nsecはブラウザに保存されません, \nnip07拡張機能を入れている場合はnpubの入力でok, \n拡張機能なし, npub入力の場合は閲覧限定"
   },
   "mode": {
     "normal": "通常モード",

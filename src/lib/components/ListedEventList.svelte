@@ -22,8 +22,7 @@
 		fetchFilteredEvents,
 		getPub,
 		getRelays,
-		isOneDimensionalArray,
-		setRelays
+		isOneDimensionalArray
 	} from '$lib/nostrFunctions';
 	import { afterUpdate, onMount } from 'svelte';
 
@@ -285,10 +284,11 @@
 					if (result.isSuccess && $eventListsMap && result.event) {
 						listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
 
-						$eventListsMap[pubkey][kind].set(
-							$keysArray[listNumber],
-							result.event
-						);
+						//streamの方で購読してるから要らん
+						// $eventListsMap[pubkey][kind].set(
+						// 	$keysArray[listNumber],
+						// 	result.event
+						// );
 						viewEvent = $eventListsMap[pubkey][kind].get(
 							$keysArray[listNumber]
 						);
