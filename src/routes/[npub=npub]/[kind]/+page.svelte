@@ -9,10 +9,24 @@
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
 	import { URLPreview } from '$lib/stores/settings';
 	import { nip19 } from 'nostr-tools';
+	import { onMount } from 'svelte';
 
-	export let data: PageData;
+	//export let data: PageData;
 
-	console.log('PageData', data.pubkey);
+	const data: { pubkey: string; kind: number } = { pubkey: '', kind: 0 };
+	onMount(() => {
+		// URLからnpubとkindを抽出
+
+		const pathParts = window.location.pathname.split('/');
+		if (pathParts.length > 2) {
+			data.pubkey = pathParts[1];
+			data.kind = parseInt(pathParts[2]);
+		} else {
+			console.error('Invalid URL format');
+		}
+		console.log('PageData', data.pubkey);
+	});
+
 	//let settings: boolean = false;
 	function settingFunc() {
 		//	settings = true;
