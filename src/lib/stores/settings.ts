@@ -11,3 +11,4 @@ export const nsec = writable<string>();
 export const isMulti = writable<boolean>(false);
 //export const kind = writable<number>(30001);
 export const backButton = writable<boolean>(false);
+export const nip46Check = writable<boolean>(true); //nip46ログインが拒否されたらfalse

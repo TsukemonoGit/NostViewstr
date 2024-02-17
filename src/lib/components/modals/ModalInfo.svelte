@@ -67,7 +67,7 @@
 
 	async function onClickLogin() {
 		try {
-			const res = await getPub();
+			const res = await getPub(true); //ログインボタン押したときはちゃんと全部チェック
 			if (res !== '') {
 				$pubkey_viewer = res;
 			}
@@ -135,7 +135,7 @@
 						on:click={onClickLogin}
 					>
 						Login{@html loginIcon}
-					</button>(use nip07 extension)
+					</button>(use NIP-07 extension or NIP-46 connect)
 				</div>
 			{:else}<div class="flex">
 					<select class="select" bind:value={selectValue}>

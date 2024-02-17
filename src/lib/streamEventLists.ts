@@ -285,7 +285,7 @@ export async function publishEventWithTimeout(
 	});
 	console.log(obj);
 
-	const pubkey = await getPub();
+	const pubkey = await getPub(true); //書き込みたいときには再度のNIP46チェックも含む
 	if (obj.pubkey === '') {
 		obj.pubkey = pubkey;
 	} else if (obj.pubkey !== pubkey) {
