@@ -36,14 +36,14 @@
 
 	onMount(() => {
 		mounted = true;
+		initNostrLogin({
+			/*options*/
+		});
 		const backBtn = localStorage.getItem('back');
 		//console.log('backButton', backBtn);
 		if (backBtn) {
 			backButton.set(backBtn === 'true' ?? false);
 		}
-		initNostrLogin({
-			/*options*/
-		});
 	});
 
 	// $: location =
