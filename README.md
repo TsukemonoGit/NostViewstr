@@ -4,10 +4,12 @@ https://nostviewstr.vercel.app/
 
 第五弾 SvelteKit と Skeleton と Tailwindcss と Nostr と Nosvelte と rx-nostr とその他諸々の勉強
 
-いまのとこリストの削除はリストの e タグ指定での kind5 送信による削除
-（空配列での同 kind への更新にする？）
+---
 
-いまのとこ書き込みは nip07 のみ（nsec 直接入力による書き込み不可）
+- nsec による書き込み（store）
+- nip-46 による書き込み
+- nip-07 により書き込み
+  に対応
 
 ## Tool for Displaying and Editing
 
