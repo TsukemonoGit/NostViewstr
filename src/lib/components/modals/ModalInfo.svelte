@@ -232,7 +232,7 @@
 
 					{$_('modal.info.relay.title')}
 				</div>
-				{#if viewRelays}
+				{#if viewRelays && eventTime}
 					<div class="card p-3">
 						<p class="pt-1">
 							My{$_('modal.info.relay.white')} kind:{eventTime.kind}
@@ -251,11 +251,11 @@
 								})}
 							</button>
 						</p>
-						{#if $relaySet[$pubkey_viewer].postRelays}
+						{#if $relaySet?.[$pubkey_viewer]?.postRelays}
 							<ol
 								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
 							>
-								{#each $relaySet[$pubkey_viewer].postRelays as relay, index}
+								{#each $relaySet?.[$pubkey_viewer]?.postRelays as relay, index}
 									<li>
 										<span>{index + 1}.</span><span class="break-all"
 											>{relay}</span
@@ -267,8 +267,8 @@
 						<div class="card p-3 mt-4">
 							<p>
 								{$_('modal.info.relay.list')}
-								{#if $modalStore[0].value.relaySet.relayEvent}
-									kind:{$modalStore[0].value.relaySet.relayEvent.kind}
+								{#if $modalStore[0].value.relaySet?.relayEvent}
+									kind:{$modalStore[0].value.relaySet?.relayEvent?.kind}
 
 									<button
 										class="underline decoration-secondary-400"
@@ -277,7 +277,8 @@
 											onFormSubmit();
 										}}
 										>{new Date(
-											$modalStore[0].value.relaySet.relayEvent.created_at * 1000
+											$modalStore[0].value.relaySet?.relayEvent?.created_at *
+												1000
 										).toLocaleString([], {
 											year: 'numeric',
 											month: '2-digit',

@@ -11,6 +11,8 @@
 	import { _ } from 'svelte-i18n';
 	import { kinds } from '$lib/kind';
 	import { toastStore } from '$lib/stores/store';
+	import { launch as launchNostrLoginDialog } from 'nostr-login';
+
 	let kind: number = Number(Object.keys(kinds)[0]); // Use Object.keys to get the first key
 
 	//let name: string;
@@ -77,6 +79,14 @@
 		kind = Number(event.currentTarget.value);
 		console.log(kind);
 	}
+
+	async function onSignupClick() {
+		// launch signup screen
+		await launchNostrLoginDialog({
+			startScreen: 'signup'
+		});
+		onClickExtension();
+	}
 </script>
 
 <svelte:head>
@@ -93,10 +103,17 @@
 
 		<div class="space-t-5 min-w-[80vw]">
 			<h5 class="h5">{$_('main.input_public_key')}</h5>
-			<div class="mt-1 input-group input-group-divider grid-cols-[auto_1fr]">
+			<div
+				class="mt-1 input-group input-group-divider grid-cols-[auto_auto_auto_1fr]"
+			>
 				<button
 					class="p-0 input-group-shim btn variant-filled-secondary"
-					on:click={onClickExtension}>nip07<br />extension</button
+					on:click={onSignupClick}>NIP-46<br />Connect</button
+				>
+				<span class="flex items-center">or</span>
+				<button
+					class="p-0 input-group-shim btn variant-filled-secondary"
+					on:click={onClickExtension}>NIP-07<br />Extension</button
 				>
 
 				<input
@@ -109,6 +126,16 @@
 			<div class="ml-2 mt-1 text-sm whitespace-pre-wrap">
 				{$_('main.publish')}
 			</div>
+			<!-- <div class="mt-10">
+			
+
+				<button class=" btn variant-filled-secondary" on:click={onSignupClick}
+					>Login with NIP-46 Nostr Connect</button
+				>
+				<div class="ml-2 mt-1 text-sm whitespace-pre-wrap">
+					{$_('main.Nip46_login')}
+				</div>
+			</div> -->
 			<div class="mt-10">
 				<h5 class="h5">{`kind`}</h5>
 

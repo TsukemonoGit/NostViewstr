@@ -264,7 +264,7 @@ export async function StoreFetchFilteredEvents(
 export async function publishEventWithTimeout(
 	obj: Nostr.Event,
 	relays: string[],
-	timeout: number = 5000
+	timeout: number = 10000
 ): Promise<{
 	isSuccess: boolean;
 	event?: Nostr.Event;
@@ -418,7 +418,7 @@ export async function publishEventWithTimeout(
 		return result;
 		//}
 	} catch (error) {
-		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
+		return { isSuccess: false, msg: error as string };
 	}
 }
 
