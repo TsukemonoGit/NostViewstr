@@ -5,14 +5,14 @@ import type { PageLoad, RouteParams } from './$types';
 
 interface CustomParams {
 	npub: string;
-	kind?: string;
+	kind: string;
 }
 //https://kit.svelte.jp/docs/load
 //ページを読み込む前に有効なparamかチェック
 export const load: PageLoad<{
 	pubkey: string;
 	relays?: string[];
-	kind?: number; // kindの情報を追加
+	kind: number; // kindの情報を追加
 }> = ({ params }: { params: RouteParams }) => {
 	const { npub, kind } = params as CustomParams; // キャストして kind を取得
 
@@ -25,6 +25,7 @@ export const load: PageLoad<{
 	// searchRelays.set([]);
 	try {
 		const { type, data } = nip19.decode(npub);
+		console.log(kind); // kindの情報をログに出力
 		console.log('[decode]', type, data);
 		//pubkey.set(data as string);
 		if (!Number.isInteger(Number(kind)) || Number(kind) < 0) {
