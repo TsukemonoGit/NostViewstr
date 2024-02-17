@@ -18,6 +18,7 @@
 	import {
 		iconView,
 		isMulti,
+		nip46Check,
 		nowProgress,
 		pubkey_viewer
 	} from '$lib/stores/settings';
@@ -99,7 +100,7 @@
 		bkm = 'pub';
 		console.log('bkminit');
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
-			$pubkey_viewer = await getPub();
+			$pubkey_viewer = await getPub($nip46Check);
 		}
 		if (!$relaySet || !$relaySet[pub]) {
 			$relaySet[pub] = initRelaySet;
