@@ -20,7 +20,12 @@ import {
 import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 
 import type { Event as NostrEvent } from 'nostr-tools';
-import { pubkey_viewer, nsec, nowProgress } from './stores/settings';
+import {
+	pubkey_viewer,
+	nsec,
+	nowProgress,
+	nip46Check
+} from './stores/settings';
 import {
 	type Observer,
 	groupBy,
@@ -394,7 +399,7 @@ export async function publishEvent(
 	});
 	console.log(obj);
 	console.log(relays);
-	const pubkey = await getPub();
+	const pubkey = await getPub(true); //書き込みたいときには再度のNIP46チェックも含む
 	if (obj.pubkey === '') {
 		obj.pubkey = pubkey;
 	} else if (obj.pubkey !== pubkey) {
@@ -461,7 +466,7 @@ export async function publishEvent(
 }
 
 //--------------------------------------------------nip07かnsecかでやるやつ
-export async function getPub(): Promise<string> {
+export async function getPub(nip46: boolean): Promise<string> {
 	let myPubkey: string = '';
 	const unsubscribe = pubkey_viewer.subscribe(($pubkey) => {
 		myPubkey = $pubkey;
@@ -478,34 +483,34 @@ export async function getPub(): Promise<string> {
 				unsubscribe();
 				return myPubkey;
 			} catch (error) {
-				try {
-					//nip07ログイン
-					pubkey_viewer.set(await window.nostr.getPublicKey());
-					unsubscribe();
-					return myPubkey;
-				} catch (error) {
-					//nip46ログイン
-					await launchNostrLoginDialog({
-						startScreen: 'signup'
-					});
-					unsubscribe();
-					return '';
+				//拡張機能があれば拡張機能優先。なければNIP46Challengeになるので？
+				if (nip46) {
+					try {
+						//nip07ログイン//nip46ログイン
+						pubkey_viewer.set(await window.nostr.getPublicKey());
+						return myPubkey;
+					} catch (error) {
+						//nip46ログイン
+						nip46Check.set(false);
+					}
 				}
-			}
-		} else {
-			try {
-				//nip07ログイン
-				pubkey_viewer.set(await window.nostr.getPublicKey());
-				unsubscribe();
-				return myPubkey;
-			} catch (error) {
-				//nip46ログイン
-				await launchNostrLoginDialog({
-					startScreen: 'signup'
-				});
 				unsubscribe();
 				return '';
 			}
+		} else {
+			//拡張機能があれば拡張機能優先。なければNIP46Challengeになるので？
+			if (nip46) {
+				try {
+					//nip07ログイン//nip46ログイン
+					pubkey_viewer.set(await window.nostr.getPublicKey());
+					return myPubkey;
+				} catch (error) {
+					//nip46ログイン
+					nip46Check.set(false);
+				}
+			}
+			unsubscribe();
+			return '';
 		}
 	}
 }

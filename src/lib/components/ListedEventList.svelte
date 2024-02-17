@@ -40,6 +40,7 @@
 	import {
 		iconView,
 		isMulti,
+		nip46Check,
 		nowProgress,
 		pubkey_viewer
 	} from '$lib/stores/settings';
@@ -143,7 +144,7 @@
 
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
-			$pubkey_viewer = await getPub();
+			$pubkey_viewer = await getPub($nip46Check); //NIP46拒否られてるときはNIP46画面出さない
 		}
 
 		console.log($pubkey_viewer);

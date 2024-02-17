@@ -4,7 +4,6 @@ import { StoreFetchFilteredEvents } from './streamEventLists';
 import {
 	createRxNostr,
 	createRxOneshotReq,
-	Nostr,
 	uniq,
 	verify,
 	latest,
