@@ -83,8 +83,8 @@ export async function RelaysReconnectChallenge() {
 			rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
 		);
 		//すでにセットされてる場合は何もおこらないっぽい？ので一度全部外す
-		rxNostr.switchRelays({});
-		rxNostr.switchRelays(tmp);
+		rxNostr.setRelays({});
+		rxNostr.setRelays(tmp);
 
 		// states.forEach(([relayUrl, state]) => {
 		//   if (reconnectableStates.includes(state)) {
@@ -151,7 +151,7 @@ export async function StoreFetchFilteredEvents(
 	console.log(viewerRelay);
 	//const merges = mergeRelays(viewerRelay, data.relays);
 	//if( Object.entries(rxNostr.getRelays())!==merges){
-	rxNostr.switchRelays(mergeRelays(viewerRelay, data.relays));
+	rxNostr.setRelays(mergeRelays(viewerRelay, data.relays));
 	//}
 	console.log('[get relays]', rxNostr.getRelays());
 	relayState.set(rxNostr.getAllRelayState());
@@ -311,11 +311,11 @@ export async function publishEventWithTimeout(
 		if (!hasWriteTrue) {
 			//const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 
-			rxNostr.switchRelays(addswitchRelays(relays));
+			rxNostr.setRelays(addsetRelays(relays));
 		}
 		console.log('[get relays]', rxNostr.getRelays());
 
-		//await rxNostr.switchRelays(relays); //[...relays, 'wss://test']);
+		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
 		const sec = get(nsec);
 		//console.log(sec);
 
@@ -440,7 +440,7 @@ function mergeRelays(
 	console.log(result);
 	return result;
 }
-function addswitchRelays(relays: string[]): {
+function addsetRelays(relays: string[]): {
 	[url: string]: { read: boolean; write: boolean };
 } {
 	const tmp = Object.fromEntries(

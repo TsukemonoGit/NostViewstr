@@ -103,6 +103,7 @@
 
 		<div class="space-t-5 min-w-[80vw]">
 			<h5 class="h5">{$_('main.input_public_key')}</h5>
+
 			<div class="mt-1 input-group input-group-divider grid-cols-[auto_1fr]">
 				<!--	<button
 					class="p-0 input-group-shim btn variant-filled-secondary"
@@ -121,9 +122,8 @@
 					bind:value={inputValue}
 				/>
 			</div>
-			<div class="ml-2 mt-1 text-sm break-all">
-				<p>{$_('main.publish')}</p>
 
+			<div class="ml-2 mt-1 text-sm break-all">
 				<p>
 					- <a
 						class="anchor"
