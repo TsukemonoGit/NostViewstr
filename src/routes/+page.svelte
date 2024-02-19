@@ -80,13 +80,13 @@
 		console.log(kind);
 	}
 
-	async function onSignupClick() {
-		// launch signup screen
-		await launchNostrLoginDialog({
-			startScreen: 'signup'
-		});
-		onClickExtension();
-	}
+	// async function onSignupClick() {
+	// 	// launch signup screen
+	// 	await launchNostrLoginDialog({
+	// 		startScreen: 'signup'
+	// 	});
+	// 	onClickExtension();
+	// }
 </script>
 
 <svelte:head>
@@ -104,18 +104,15 @@
 		<div class="space-t-5 min-w-[80vw]">
 			<h5 class="h5">{$_('main.input_public_key')}</h5>
 
-			<div
-				class="mt-1 input-group input-group-divider grid-cols-[auto_auto_auto_1fr]"
-			>
-				<button
-					class=" input-group-shim btn variant-filled-secondary"
-					on:click={onClickExtension}>use NIP-07</button
+			<div class="mt-1 input-group input-group-divider grid-cols-[auto_1fr]">
+				<!--	<button
+					class="p-0 input-group-shim btn variant-filled-secondary"
+					on:click={onSignupClick}>NIP-46<br />Connect</button
 				>
-
-				<span class="flex items-center">or</span>
+				 <span class="flex items-center">or</span> -->
 				<button
-					class=" input-group-shim btn variant-filled-secondary"
-					on:click={onSignupClick}>use NIP-46</button
+					class="p-0 input-group-shim btn variant-filled-secondary"
+					on:click={onClickExtension}>use NIP-07<br />or NIP-46</button
 				>
 
 				<input
@@ -125,9 +122,8 @@
 					bind:value={inputValue}
 				/>
 			</div>
-			<div class="ml-2 mt-1 text-sm break-all">
-				<p>{$_('main.publish')}</p>
 
+			<div class="ml-2 mt-1 text-sm break-all">
 				<p>
 					- <a
 						class="anchor"

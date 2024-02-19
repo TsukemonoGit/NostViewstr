@@ -254,7 +254,7 @@ export function windowOpen(str: string): void {
 // 		console.log(event);
 // 		const rxNostr = createRxNostr();
 
-// 		await rxNostr.switchRelays(relays); //[...relays, 'wss://test']);
+// 		await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
 // 		const sec = get(nsec);
 // 		const result = await Promise.race([
 // 			new Promise<{
@@ -314,7 +314,7 @@ export function windowOpen(str: string): void {
 // 	//console.log(verifySignature(event));
 // 	const rxNostr = createRxNostr();
 
-// 	await rxNostr.switchRelays(relays);
+// 	await rxNostr.setRelays(relays);
 // 	const sec = get(nsec); //nsecでの書き込みはできません（たぶんrx-nostrのバージョン）
 // 	// Promiseを作成してObservableを待機
 // 	const result =
@@ -737,7 +737,7 @@ export async function fetchFilteredEvents(
 	const rxNostr = createRxNostr();
 	//console.log(relays);
 
-	rxNostr.switchRelays(relays);
+	rxNostr.setRelays(relays);
 
 	console.log('[rx-nostr getRelays]', rxNostr.getRelays());
 	const rxReq = createRxOneshotReq({ filters });
@@ -845,7 +845,7 @@ export async function fetchFilteredEvents(
 
 export async function getRelays(author: string) {
 	const rxNostr = createRxNostr();
-	rxNostr.switchRelays(relaySearchRelays);
+	rxNostr.setRelays(relaySearchRelays);
 	console.log(rxNostr.getRelays());
 	const filters: Nostr.Filter[] = [{ authors: [author], kinds: [3, 10002] }];
 	console.log(filters);
@@ -880,12 +880,12 @@ export async function getRelays(author: string) {
 	});
 
 	//リレー用イベント取ってきたらそれをセットする
-	await switchRelays(author, kekka);
+	await setRelays(author, kekka);
 
 	return kekka;
 }
 
-export async function switchRelays(pubkey: string, events: NostrEvent[]) {
+export async function setRelays(pubkey: string, events: NostrEvent[]) {
 	console.log(`setting relays...`);
 	let read: string[] = [];
 	let write: string[] = [];

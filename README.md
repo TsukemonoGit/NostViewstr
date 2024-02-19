@@ -6,7 +6,8 @@ https://nostviewstr.vercel.app/
 
 ---
 
-- nsec による書き込み（store）
+<!-- - nsec による書き込み（store） nosvelteのばーじょんやんや-->
+
 - nip-46 による書き込み
 - nip-07 により書き込み
   に対応
