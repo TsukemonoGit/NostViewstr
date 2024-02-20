@@ -299,7 +299,7 @@ export async function publishEventWithTimeout(
 		// 	message: `publishing ...`
 		// };
 		// const publishingToast = toastStore.trigger(t);
-		const event = await signEv(obj);
+		const event = obj;
 		event.id = getEventHash(event);
 		console.log(event);
 
@@ -316,7 +316,7 @@ export async function publishEventWithTimeout(
 		console.log('[get relays]', rxNostr.getRelays());
 
 		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
-		const sec = get(nsec);
+		//const sec = get(nsec);
 		//console.log(sec);
 
 		// if (sec) {
