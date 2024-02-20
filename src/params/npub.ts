@@ -1,5 +1,5 @@
 import type { ParamMatcher } from '@sveltejs/kit';
 
 export const match = ((param) => {
-	return /^npub1[a-z0-9]{6,}$/i.test(param);
+	return /^npub\w{59}$/.test(param); //npubの長さは固定
 }) satisfies ParamMatcher;
