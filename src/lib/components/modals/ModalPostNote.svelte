@@ -14,15 +14,8 @@
 	let kind: number | undefined = $modalStore[0].value?.kind;
 	let isRepostable =
 		$modalStore[0].value?.tagArray?.[0] === 'e' && $modalStore[0].value?.pubkey;
-	let tags = [...$modalStore[0].value.tags];
-	//kind1の引用の場合のみqtagsに変更する
-	if (kind === 1) {
-		tags.map((item) => {
-			if (item[0] === 'e') {
-				item[0] = 'q';
-			}
-		});
-	}
+	let tags = $modalStore[0].value.tags;
+
 	let contents = {
 		//id:'',
 		pubkey: $modalStore[0].value.pubkey ? $modalStore[0].value.pubkey : '',
@@ -34,11 +27,11 @@
 	};
 	$: contents.content = res.content;
 
-	const tags_p = [['p', contents.pubkey, '', 'mention'], ...contents.tags];
+	const tags_p = [['p', contents.pubkey], ...contents.tags];
 
 	let res = {
 		content: $modalStore[0].value.content,
-		tags: $modalStore[0].value.tags
+		tags: tags
 	};
 
 	// We've created a custom submit function to pass the response and close the modal.
@@ -48,7 +41,7 @@
 		}
 		res.content = res.content.trim();
 		if (checked) {
-			res.tags = [['p', contents.pubkey, '', 'mention'], ...contents.tags];
+			res.tags = [['p', contents.pubkey], ...contents.tags];
 		}
 		//		if ($modalStore[0].response) $modalStore[0].response(res);
 		const event: Event = {

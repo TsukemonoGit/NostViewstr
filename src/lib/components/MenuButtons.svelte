@@ -64,6 +64,8 @@
 				break;
 		}
 	}
+	//https://github.com/nostr-protocol/nips/blob/master/10.md#marked-e-tags-preferred マーカーはオプションだからなくてもいいか
+	//リポストの仕様 https://github.com/nostr-protocol/nips/blob/master/18.md
 
 	//-----------------------------------------------引用ポスト
 	const postNoteModalComponent: ModalComponent = {
@@ -72,7 +74,9 @@
 	function shareNote() {
 		const tags = tagArray
 			? tagArray[0] === 'e'
-				? [[...tagArray, '', 'mention']]
+				? note?.kind !== 1
+					? [[...tagArray, '', 'mention']]
+					: [['q', ...tagArray.slice(1)]]
 				: [tagArray]
 			: [];
 		const modal: ModalSettings = {

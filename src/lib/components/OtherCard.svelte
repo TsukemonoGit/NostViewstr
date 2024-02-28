@@ -118,7 +118,9 @@
 	function shareNote() {
 		const tags = tagArray
 			? tagArray[0] === 'e'
-				? [[...tagArray, '', 'mention']]
+				? note?.kind !== 1
+					? [[...tagArray, '', 'mention']]
+					: [['q', ...tagArray.slice(1)]]
 				: [tagArray]
 			: [];
 		const modal: ModalSettings = {
