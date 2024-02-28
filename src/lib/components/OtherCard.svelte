@@ -132,10 +132,16 @@
 					tagArray && tagArray[0] === 'a'
 						? `\r\nnostr:${nip19.naddrEncode(parseNaddr(tagArray))}`
 						: tagArray && tagArray[0] === 'e'
-						? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
+						? note?.kind === 1
+							? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
+							: `\r\nnostr:${nip19.neventEncode({
+									id: tagArray[1],
+									relays: []
+							  })}`
 						: ''
 				}`,
 				tags: tags,
+				kind: note.kind,
 				pubkey: note.pubkey
 			}
 			// response: async (res) => {
