@@ -11,15 +11,24 @@
 
 	export let parent: any;
 	let checked: boolean;
+	let kind: number | undefined = $modalStore[0].value?.kind;
 	let isRepostable =
 		$modalStore[0].value?.tagArray?.[0] === 'e' && $modalStore[0].value?.pubkey;
-
+	let tags = [...$modalStore[0].value.tags];
+	//kind1の引用の場合のみqtagsに変更する
+	if (kind === 1) {
+		tags.map((item) => {
+			if (item[0] === 'e') {
+				item[0] = 'q';
+			}
+		});
+	}
 	let contents = {
 		//id:'',
 		pubkey: $modalStore[0].value.pubkey ? $modalStore[0].value.pubkey : '',
 		//created_at:,
 		kind: 1,
-		tags: $modalStore[0].value.tags,
+		tags: tags,
 		content: $modalStore[0].value.content
 		//sig:''
 	};
@@ -103,13 +112,16 @@
 				$modalStore[0].value.tagArray,
 				['p', $modalStore[0].value.pubkey]
 			];
+			if (kind !== undefined) {
+				tags.push(['k', kind.toString()]);
+			}
 			console.log(tags);
 
 			const event: Event = {
 				id: '',
 				pubkey: $pubkey_viewer,
 				created_at: Math.floor(Date.now() / 1000),
-				kind: 6,
+				kind: kind === 1 ? 6 : 16,
 				tags: tags,
 				content: '',
 				sig: ''
