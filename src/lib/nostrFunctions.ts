@@ -1448,7 +1448,7 @@ export async function broadcast(
 				ws.send(JSON.stringify(['EVENT', event]));
 			};
 			ws.onmessage = (e) => {
-				console.log(e);
+				console.log('[broadcast]', e);
 				const msg = JSON.parse(e.data);
 				msgObj[postRelays[i]] = msg[2];
 				clearTimeout(timerId); // タイムアウト用のタイマーをクリア
@@ -1466,7 +1466,7 @@ export async function broadcast(
 			Promise.all(wsPromises),
 			new Promise<void>((resolve, reject) => {
 				setTimeout(() => {
-					reject(new Error('Overall broadcast operation timed out'));
+					resolve(); // タイムアウト時に即座にresolveすることで待機中のPromise.allを解決
 				}, timeoutMs);
 			})
 		]);
