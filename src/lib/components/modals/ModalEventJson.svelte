@@ -6,7 +6,6 @@
 	import { _ } from 'svelte-i18n';
 	import { broadcast, parseNaddr } from '$lib/nostrFunctions';
 	import type { Nostr } from 'nosvelte';
-	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import { relaySet } from '$lib/stores/relays';
 	import { nowProgress, pubkey_viewer } from '$lib/stores/settings';
 
@@ -106,23 +105,14 @@
 		URL.revokeObjectURL(url);
 	};
 
-	// let res = {
-	// 	broadcast: false
-	// };
-	// function onFormSubmit(): void {
-	// 	console.log(res);
-	// 	if ($modalStore[0].response) $modalStore[0].response(res);
-	// 	modalStore.close();
-	// }
-
 	async function onClickBroadcast() {
 		console.log(event);
-		// res.broadcast = true;
-		// onFormSubmit();
+
 		console.log($relaySet[$pubkey_viewer].postRelays);
 		if ($relaySet[$pubkey_viewer].postRelays.length > 0) {
 			$nowProgress = true;
 			try {
+				//現バージョンのrx-nostrでは署名なしに送信できないので別で
 				const response = await broadcast(
 					event,
 					$relaySet[$pubkey_viewer].postRelays

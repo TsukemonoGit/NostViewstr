@@ -1418,8 +1418,7 @@ export async function editPrivates(
 	}
 }
 
-//DUp
-
+//現バージョンのrx-nostrでは署名なしに送信できないので別で
 export async function broadcast(
 	event: Nostr.Event,
 	postRelays: string[]
