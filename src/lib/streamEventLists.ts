@@ -300,7 +300,9 @@ export async function publishEventWithTimeout(
 		// };
 		// const publishingToast = toastStore.trigger(t);
 		const event = obj;
-		event.id = getEventHash(event);
+		if (event?.id == undefined || event?.id == '') {
+			event.id = getEventHash(event);
+		}
 		console.log(event);
 
 		//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー

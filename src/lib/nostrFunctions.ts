@@ -1417,3 +1417,67 @@ export async function editPrivates(
 		throw new Error('Decode error');
 	}
 }
+
+//DUp
+
+export async function broadcast(
+	event: Nostr.Event,
+	postRelays: string[]
+): Promise<string> {
+	const timeoutMs: number = 5000; // デフォルトのタイムアウト時間は5秒
+
+	let webSockets: WebSocket[] = [];
+
+	const msgObj: { [relay: string]: boolean } = {};
+	const wsPromises: Promise<void>[] = [];
+
+	postRelays.forEach((relay) => {
+		msgObj[relay] = false;
+	});
+
+	for (let i = 0; i < postRelays.length; i++) {
+		const ws = new WebSocket(postRelays[i]);
+		webSockets.push(ws);
+
+		const wsPromise = new Promise<void>((resolve) => {
+			const timerId = setTimeout(() => {
+				ws.close();
+			}, timeoutMs);
+
+			ws.onopen = () => {
+				// WebSocketがオープンされた後にイベントを送信
+				ws.send(JSON.stringify(['EVENT', event]));
+			};
+			ws.onmessage = (e) => {
+				console.log(e);
+				const msg = JSON.parse(e.data);
+				msgObj[postRelays[i]] = msg[2];
+				clearTimeout(timerId); // タイムアウト用のタイマーをクリア
+				ws.close();
+				resolve(); // メッセージ受信処理が完了したことを解決
+			};
+		});
+
+		wsPromises.push(wsPromise);
+	}
+
+	try {
+		// WebSocket処理が完了するか、タイムアウトするまで待つ
+		await Promise.race([
+			Promise.all(wsPromises),
+			new Promise<void>((resolve, reject) => {
+				setTimeout(() => {
+					reject(new Error('Overall broadcast operation timed out'));
+				}, timeoutMs);
+			})
+		]);
+	} catch (error) {
+		console.error(error);
+		// エラーが発生した場合、すべてのWebSocket接続を閉じる
+		webSockets.forEach((ws) => ws.close());
+		throw error;
+	}
+
+	// すべての処理が完了した後に結果を返す
+	return formatResults(msgObj);
+}

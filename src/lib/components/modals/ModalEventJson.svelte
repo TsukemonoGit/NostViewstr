@@ -4,8 +4,11 @@
 	import { nip19 } from 'nostr-tools';
 	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
 	import { _ } from 'svelte-i18n';
-	import { parseNaddr } from '$lib/nostrFunctions';
+	import { broadcast, parseNaddr } from '$lib/nostrFunctions';
 	import type { Nostr } from 'nosvelte';
+	import { publishEventWithTimeout } from '$lib/streamEventLists';
+	import { relaySet } from '$lib/stores/relays';
+	import { nowProgress, pubkey_viewer } from '$lib/stores/settings';
 
 	export let parent: any;
 
@@ -13,6 +16,8 @@
 	const cBase = 'card p-4  shadow-xl  break-all';
 	const cHeader = 'text-2xl font-bold';
 	//$modalStore[0]?.meta.hexKey
+
+	const event = $modalStore[0]?.meta?.note as Nostr.Event;
 
 	function onClickButton(str: string) {
 		const text =
@@ -84,7 +89,7 @@
 	}
 
 	const downloadJson = () => {
-		const event = $modalStore[0].meta.note as Nostr.Event;
+		//const event = $modalStore[0].meta.note as Nostr.Event;
 		const jsonStr = JSON.stringify(event, null, 2);
 		const blob = new Blob([jsonStr], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
@@ -100,6 +105,46 @@
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
 	};
+
+	// let res = {
+	// 	broadcast: false
+	// };
+	// function onFormSubmit(): void {
+	// 	console.log(res);
+	// 	if ($modalStore[0].response) $modalStore[0].response(res);
+	// 	modalStore.close();
+	// }
+
+	async function onClickBroadcast() {
+		console.log(event);
+		// res.broadcast = true;
+		// onFormSubmit();
+		console.log($relaySet[$pubkey_viewer].postRelays);
+		if ($relaySet[$pubkey_viewer].postRelays.length > 0) {
+			$nowProgress = true;
+			try {
+				const response = await broadcast(
+					event,
+					$relaySet[$pubkey_viewer].postRelays
+				);
+
+				const t = {
+					message: response,
+					timeout: 3000
+				};
+
+				toastStore.trigger(t);
+			} catch (error) {
+				const t = {
+					message: 'Error',
+					timeout: 3000
+				};
+
+				toastStore.trigger(t);
+			}
+		}
+		$nowProgress = false;
+	}
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -143,6 +188,12 @@
 					class="btn variant-filled-success p-1"
 					on:click={downloadJson}>Download Json</button
 				>
+				<button
+					type="button"
+					class="btn variant-filled-secondary p-1"
+					on:click={onClickBroadcast}>Broadcast</button
+				>
+
 				<button
 					type="button"
 					class="btn variant-filled-secondary p-1"
