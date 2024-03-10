@@ -27,6 +27,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
 	import { init as initNostrLogin } from 'nostr-login';
+	import { page } from '$app/stores';
 
 	let mounted = false;
 	initializeStores();
@@ -82,6 +83,16 @@
 
 <svelte:document on:visibilitychange={onVisibilityChange} />
 <svelte:head>
+	<title>NostViewstr</title>
+
+	<meta prefix="og: https://ogp.me/ns#" />
+	<meta property="og:title" content="NostViewstr（のすとびうあ）" />
+	<meta property="og:image" content={`${$page.url.origin}/ogp.png`} />
+	<meta
+		name="google-site-verification"
+		content="HWxV5BReP7P0s1OwtbD_e0NGQTV4d2SlCDLFTCfRe-c"
+	/>
+
 	{@html webManifestLink}
 
 	<script
