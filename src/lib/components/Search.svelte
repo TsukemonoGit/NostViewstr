@@ -216,7 +216,7 @@
 					// isSuccess = true;
 				} else {
 					logs.push(
-						`<span class="font-bold">Failed: ${$relaySet[$pubkey_viewer].postRelays[1]}</span> (reason:  ${msg[3]})`
+						`<span class="font-bold">Failed: ${$relaySet[$pubkey_viewer].postRelays[i]}</span> (reason:  ${msg[3]})`
 					);
 					logs = logs;
 				}
