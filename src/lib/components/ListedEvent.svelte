@@ -184,6 +184,8 @@
 
 		return sorted;
 	}
+	//スマホだとスクロールのドラッグとかぶるから…
+	$: dadClass = $isMulti === MultiMenu.Sort ? 'md:px-0 px-6' : '';
 </script>
 
 {#if viewPage && viewPage.length > 0}
@@ -196,6 +198,7 @@
 		}}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
+		class={dadClass}
 	>
 		{#each items as tag (tag.id)}
 			<div animate:flip={{ duration: flipDurationMs }}>

@@ -235,9 +235,17 @@
 	</div>
 {:else if menuMode === MenuMode.Sort}
 	<!--sortモード-->
-	<div class="fill-white">
+	<div class="pageIcon">
 		{@html swap}
 	</div>
 {:else}
 	<div />
 {/if}
+
+<style>
+	:global(.pageIcon svg) {
+		width: 2em;
+		height: 2em;
+		fill: white;
+	}
+</style>
