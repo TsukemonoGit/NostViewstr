@@ -21,6 +21,8 @@
 	import ShareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
 
+	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
+
 	export let menuMode: MenuMode;
 	export let tagArray: string[] | undefined;
 	export let note: Event | undefined; //noteないときはwindow openとかできないらしい
@@ -230,6 +232,11 @@
 				handleClick(State.Delete);
 			}}>{@html DeleteIcon}</button
 		>
+	</div>
+{:else if menuMode === MenuMode.Sort}
+	<!--sortモード-->
+	<div class="fill-white">
+		{@html swap}
 	</div>
 {:else}
 	<div />

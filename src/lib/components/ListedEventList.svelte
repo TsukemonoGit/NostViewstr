@@ -22,13 +22,15 @@
 		fetchFilteredEvents,
 		getPub,
 		getRelays,
-		isOneDimensionalArray
+		isOneDimensionalArray,
+		nip04En
 	} from '$lib/nostrFunctions';
 	import { afterUpdate, onMount } from 'svelte';
 
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
-
+	import CancelIcon from '@material-design-icons/svg/round/cancel.svg?raw';
+	import DoneIcon from '@material-design-icons/svg/round/done_outline.svg?raw';
 	import {
 		initRelaySet,
 		// searchRelays,
@@ -38,6 +40,7 @@
 		relaySet
 	} from '$lib/stores/relays';
 	import {
+		MultiMenu,
 		iconView,
 		isMulti,
 		nip46Check,
@@ -67,7 +70,6 @@
 		publishEventWithTimeout
 	} from '$lib/streamEventLists';
 	import FooterMenu from './FooterMenu.svelte';
-
 	export let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> | undefined;
 	export let pubkey: string;
@@ -139,7 +141,7 @@
 		$listNum = 0;
 
 		bkm = 'pub';
-		$isMulti = false;
+		$isMulti = MultiMenu.None;
 		console.log('bkminit');
 
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
@@ -200,7 +202,7 @@
 
 	//リストが変わったら1ページ目に戻す
 	$: if ($listNum !== -1 && typeof window !== 'undefined') {
-		$isMulti = false;
+		$isMulti = MultiMenu.None;
 		$pageNum = 0;
 		$checkedIndexList = [];
 		bkm = 'pub';
@@ -208,6 +210,7 @@
 	}
 	//ページが変わったらチェックリスト空にする
 	$: if (($pageNum !== -1 || bkm) && typeof window !== 'undefined') {
+		$isMulti = MultiMenu.None;
 		$checkedIndexList = [];
 		window.scrollTo({ top: 0 });
 	}
@@ -320,7 +323,7 @@
 			}
 		}
 		$checkedIndexList = [];
-		$isMulti = false;
+		$isMulti = MultiMenu.None;
 	}
 
 	//---------------------------------------------move
@@ -593,9 +596,6 @@
 		return isSuccess;
 	}
 
-	function onClickPage(arg0: number): any {
-		$listNum += arg0;
-	}
 	let viewList: string[][];
 	function onClickMultiMove() {
 		const listNumber = $listNum;
@@ -809,6 +809,87 @@
 			}
 		}
 	}
+
+	function onClickCancelSort() {
+		listedEventRef.resetItems();
+	}
+	function SortReset() {
+		listedEventRef.resetItems();
+	}
+	async function onClickDoneSort() {
+		$nowProgress = true;
+		const listNumber = $listNum;
+		const eventList = $eventListsMap[pubkey][kind].get($keysArray[listNumber]);
+		try {
+			if (!eventList) {
+				throw Error;
+			}
+
+			const tags = listedEventRef.getSortedTags();
+			console.log(tags);
+			const content = async (): Promise<string> => {
+				if (bkm === 'pub') {
+					return eventList.content;
+				} else {
+					try {
+						return await nip04En(pubkey, JSON.stringify(tags));
+					} catch (error) {
+						throw Error;
+					}
+				}
+			};
+
+			const event: Nostr.Event = {
+				id: '',
+				pubkey: pubkey,
+				created_at: Math.floor(Date.now() / 1000),
+				kind: kind,
+				tags: bkm === 'pub' ? tags : eventList.tags,
+				content: await content(),
+				sig: ''
+			};
+			const result = await publishEventWithTimeout(
+				event,
+				$relaySet[$pubkey_viewer].bookmarkRelays
+			);
+			//   console.log(result);
+			if (result.isSuccess && $eventListsMap && result.event) {
+				listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+
+				//streamの方で購読してるから要らん
+				// $eventListsMap[pubkey][kind].set(
+				// 	$keysArray[listNumber],
+				// 	result.event
+				// );
+				viewEvent = $eventListsMap[pubkey][kind].get($keysArray[listNumber]);
+				const t = {
+					message: 'Published Event<br>' + result.msg,
+					timeout: 3000
+				};
+
+				toastStore.trigger(t);
+			} else {
+				const t = {
+					message: $_('toast.failed_publish'),
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
+
+				toastStore.trigger(t);
+			}
+		} catch (error) {
+			const t = {
+				message: $_('toast.failed_publish'),
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
+		}
+		$checkedIndexList = [];
+		$isMulti = MultiMenu.None;
+		$nowProgress = false;
+	}
 </script>
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
@@ -925,12 +1006,12 @@
 			: 'add'}"
 	>
 		<div class="fill-white overflow-x-hidden h-fit overflow-y-auto">
-			{#if !$isMulti}
+			{#if $isMulti === MultiMenu.None}
 				<button
 					class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
 					on:click={onClickAdd}>{@html addIcon}</button
 				>
-			{:else}
+			{:else if $isMulti === MultiMenu.Multi}
 				<button
 					class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
 					on:click={onClickMultiMove}>{@html MoveIcon}</button
@@ -939,11 +1020,26 @@
 					class="overflow-x-hidden addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
 					on:click={onClickMultiDelete}>{@html DeleteIcon}</button
 				>
+			{:else if $isMulti === MultiMenu.Sort}
+				<button
+					class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
+					on:click={onClickCancelSort}>{@html CancelIcon}</button
+				>
+				<button
+					class="overflow-x-hidden addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
+					on:click={onClickDoneSort}>{@html DoneIcon}</button
+				>
 			{/if}
 		</div>
 	</div>
 {/if}
-<FooterMenu bind:pubkey {kind} naddr={isNaddr} bind:bkm />
+<FooterMenu
+	bind:pubkey
+	{kind}
+	naddr={isNaddr}
+	bind:bkm
+	on:SortReset={SortReset}
+/>
 
 <!-- {/await} -->
 

@@ -83,8 +83,8 @@ export async function RelaysReconnectChallenge() {
 			rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
 		);
 		//すでにセットされてる場合は何もおこらないっぽい？ので一度全部外す
-		rxNostr.setRelays({});
-		rxNostr.setRelays(tmp);
+		rxNostr.switchRelays({});
+		rxNostr.switchRelays(tmp);
 
 		// states.forEach(([relayUrl, state]) => {
 		//   if (reconnectableStates.includes(state)) {
@@ -151,7 +151,7 @@ export async function StoreFetchFilteredEvents(
 	console.log(viewerRelay);
 	//const merges = mergeRelays(viewerRelay, data.relays);
 	//if( Object.entries(rxNostr.getRelays())!==merges){
-	rxNostr.setRelays(mergeRelays(viewerRelay, data.relays));
+	rxNostr.switchRelays(mergeRelays(viewerRelay, data.relays));
 	//}
 	console.log('[get relays]', rxNostr.getRelays());
 	relayState.set(rxNostr.getAllRelayState());
@@ -313,7 +313,7 @@ export async function publishEventWithTimeout(
 		if (!hasWriteTrue) {
 			//const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 
-			rxNostr.setRelays(addsetRelays(relays));
+			rxNostr.switchRelays(addsetRelays(relays));
 		}
 		console.log('[get relays]', rxNostr.getRelays());
 
@@ -381,7 +381,7 @@ export async function publishEventWithTimeout(
 			}>((resolve) => {
 				const subscription = rxNostr.send(event).subscribe({
 					next: (packet) => {
-						//	console.log(packet);
+						//	console.log('test', packet);タイムアウトまでに署名がすんでないとなぜかタイムアウト直前にokpacketがとんでくる。署名もしてないのに
 						msgObj[packet.from] = true;
 						isSuccess = true;
 					},
