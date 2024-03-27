@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import {
+		MultiMenu,
 		allView,
 		backButton,
 		isMulti,
@@ -17,6 +18,7 @@
 	import menuIcon from '@material-design-icons/svg/round/menu.svg?raw';
 	import LeftIcon from '@material-design-icons/svg/round/west.svg?raw';
 	import HomeIcon from '@material-design-icons/svg/round/home.svg?raw';
+	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
 	import ModalTagList from '$lib/components/modals/ModalTagList.svelte';
 	import ModalInfo from '$lib/components/modals/ModalInfo.svelte';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
@@ -44,6 +46,7 @@
 	import { relaySet } from '$lib/stores/relays';
 	import { get } from 'svelte/store';
 	import { goto } from '$app/navigation';
+	import { createEventDispatcher } from 'svelte';
 
 	export let pubkey: string;
 	export let kind: number;
@@ -52,6 +55,7 @@
 	//$: console.log(
 	//	`${$amount * $pageNum} - ${Math.min(($pageNum + 1) * $amount, $listSize)}`
 	//);
+	const dispatch = createEventDispatcher();
 	$: last = $listSize === 0 ? 0 : Math.floor(($listSize - 1) / $amount);
 	function next() {
 		if ($pageNum < Math.floor(($listSize - 1) / $amount)) {
@@ -426,13 +430,24 @@
 
 		modalStore.trigger(modal);
 	}
-
 	let multiButtonClass: string = '';
 	function onClickMulti() {
-		$isMulti = !$isMulti;
+		if ($isMulti === MultiMenu.Sort) {
+			dispatch('SortReset');
+		}
+		$isMulti += 1;
+		if ($isMulti >= Object.keys(MultiMenu).length / 2) {
+			$isMulti = 0;
+		}
+		console.log($isMulti);
 	}
 	$: {
-		multiButtonClass = $isMulti ? 'variant-ghost-secondary rounded-full ' : '';
+		multiButtonClass =
+			$isMulti === MultiMenu.Multi
+				? 'variant-ghost-secondary rounded-full '
+				: $isMulti === MultiMenu.Sort
+				? 'variant-ghost-warning rounded-full'
+				: '';
 		$checkedIndexList = [];
 	}
 	export let disabled: boolean = false;
@@ -529,7 +544,8 @@
 			<button
 				class="btn btn-icon pageIcon {multiButtonClass}"
 				disabled={pubkey !== $pubkey_viewer || disabled}
-				on:click={onClickMulti}>{@html multiIcon}</button
+				on:click={onClickMulti}
+				>{@html $isMulti === MultiMenu.Sort ? swap : multiIcon}</button
 			>
 
 			<!-- <button class={buttonClass}>{@html updateIcon}</button> -->
