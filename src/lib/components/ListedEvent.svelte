@@ -185,7 +185,7 @@
 		return sorted;
 	}
 	//スマホだとスクロールのドラッグとかぶるから…
-	$: dadClass = $isMulti === MultiMenu.Sort ? 'md:px-0 px-6' : '';
+	$: dadClass = $isMulti === MultiMenu.Sort ? 'md:mr-0 mr-6 ' : '';
 </script>
 
 {#if viewPage && viewPage.length > 0}
@@ -193,12 +193,16 @@
 		use:dndzone={{
 			items,
 			flipDurationMs,
-			dropTargetStyle: {},
+
 			dragDisabled: $isMulti === MultiMenu.Sort ? false : true
 		}}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
 		class={dadClass}
+		on:touchmove|nonpassive={(e) => {
+			console.log(e);
+			$isMulti === MultiMenu.Sort ? e.preventDefault() : '';
+		}}
 	>
 		{#each items as tag (tag.id)}
 			<div animate:flip={{ duration: flipDurationMs }}>
