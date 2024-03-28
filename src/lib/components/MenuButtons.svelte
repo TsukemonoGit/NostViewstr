@@ -22,7 +22,7 @@
 	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
 
 	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
-
+	//import swap from '@material-design-icons/svg/round/drag_handle.svg?raw';
 	export let menuMode: MenuMode;
 	export let tagArray: string[] | undefined;
 	export let note: Event | undefined; //noteないときはwindow openとかできないらしい
@@ -235,7 +235,7 @@
 	</div>
 {:else if menuMode === MenuMode.Sort}
 	<!--sortモード-->
-	<div class="pageIcon">
+	<div class=" fill-black dark:fill-white swap items-center flex">
 		{@html swap}
 	</div>
 {:else}
@@ -243,9 +243,8 @@
 {/if}
 
 <style>
-	:global(.pageIcon svg) {
+	:global(.swap svg) {
 		width: 2em;
 		height: 2em;
-		fill: white;
 	}
 </style>
