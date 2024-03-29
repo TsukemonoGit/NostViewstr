@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { checkRelayExist } from '$lib/nostrFunctions';
 	import { relayStore } from '$lib/stores/relays';
-	import { MultiMenu, iconView, isMulti } from '$lib/stores/settings';
+	import { iconView } from '$lib/stores/settings';
 
 	export let tagArray: string[];
 	const relayURL = tagArray[1].endsWith('/') ? tagArray[1] : tagArray[1] + '/';
@@ -39,13 +39,13 @@
 			<div
 				class="w-12 h-12 rounded-full variant-filled-surface text-center flex items-center justify-center text-lg"
 			>
-				{#if $iconView && relayInfo.icon && $isMulti !== MultiMenu.Sort}
+				{#if $iconView && relayInfo.icon}
 					<img
 						src={relayInfo.icon}
 						class="w-12 h-12 rounded-full"
 						alt="relay Icon"
 					/>
-				{:else if $iconView && imageLoaded && $isMulti !== MultiMenu.Sort}
+				{:else if $iconView && imageLoaded}
 					<img
 						src={httpsUrl + 'favicon.ico'}
 						on:error={() => (imageLoaded = false)}
