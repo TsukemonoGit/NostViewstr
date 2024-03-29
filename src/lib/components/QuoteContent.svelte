@@ -8,7 +8,7 @@
 	import { fetchFilteredEvents } from '$lib/nostrFunctions';
 	import { uniqueTags } from '$lib/otherFunctions.js';
 	import { naddrStore } from '$lib/stores/bookmarkEvents';
-	import { allView, iconView } from '$lib/stores/settings';
+	import { MultiMenu, allView, iconView, isMulti } from '$lib/stores/settings';
 	import { relaySet } from '$lib/stores/relays';
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import Content from './Content.svelte';
@@ -325,7 +325,7 @@
 					</div>
 					<div class="w-full grid grid-cols-[auto_auto_1fr_auto] gap-1 h-fix">
 						<div>
-							{#if $iconView}
+							{#if $iconView && $isMulti !== MultiMenu.Sort}
 								{#if JSON.parse(metadata.content).picture}
 									<img
 										class="h-5 object-contain justify-center"
@@ -452,14 +452,14 @@
 	>
 		<div slot="loading">
 			<div
-				class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-hidden break-all whitespace-pre-wrap"
+				class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden break-all whitespace-pre-wrap"
 			>
 				{nip19Nprofile(encodedId).pubkey}
 			</div>
 		</div>
 		<div slot="error">
 			<div
-				class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-hidden break-all whitespace-pre-wrap"
+				class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden break-all whitespace-pre-wrap"
 			>
 				{nip19Nprofile(encodedId).pubkey}
 			</div>
@@ -467,7 +467,7 @@
 
 		<div slot="nodata">
 			<div
-				class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-hidden break-all whitespace-pre-wrap"
+				class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden break-all whitespace-pre-wrap"
 			>
 				{nip19Nprofile(encodedId).pubkey}
 			</div>

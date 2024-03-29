@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { pubkey_viewer, iconView } from '$lib/stores/settings';
+	import {
+		pubkey_viewer,
+		iconView,
+		MultiMenu,
+		isMulti
+	} from '$lib/stores/settings';
 	import { modalStore } from '$lib/stores/store';
 	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
 
@@ -105,7 +110,7 @@
 					OpenProfile(metadata);
 				}}
 			>
-				{#if $iconView && metadataContent.picture !== ''}
+				{#if $iconView && metadataContent.picture !== '' && $isMulti !== MultiMenu.Sort}
 					<img
 						class="max-w-8 max-h-8 object-contain justify-center"
 						src={metadataContent.picture}

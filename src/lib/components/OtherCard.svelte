@@ -20,7 +20,8 @@
 	import { checkedIndexList } from '$lib/stores/bookmarkEvents';
 	import Ogp from './OGP.svelte';
 	import Content from './Content.svelte';
-	import { allView, iconView } from '$lib/stores/settings';
+	import { MultiMenu, allView, iconView, isMulti } from '$lib/stores/settings';
+	import MenuButtons from './MenuButtons.svelte';
 
 	export let isPageOwner: boolean;
 	export let note: Event;
@@ -173,7 +174,7 @@
 	<!-- icon | その他-->
 	<div class="grid grid-cols-[auto_1fr] gap-1">
 		<!--icon-->
-		{#if $iconView && metadata}
+		{#if $iconView && metadata && $isMulti !== MultiMenu.Sort}
 			<div
 				class="w-12 h-12 rounded-full flex justify-center overflow-hidden bg-surface-500/25 mt-1"
 			>

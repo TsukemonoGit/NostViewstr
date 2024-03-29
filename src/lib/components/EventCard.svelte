@@ -12,7 +12,7 @@
 
 	import Ogp from './OGP.svelte';
 	import Content from './Content.svelte';
-	import { allView, iconView } from '$lib/stores/settings';
+	import { MultiMenu, allView, iconView, isMulti } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
 	import { goto } from '$app/navigation';
 	import { listNum } from '$lib/stores/bookmarkEvents';
@@ -136,7 +136,7 @@
 			}
 		}}
 	>
-		{#if metadataContent && $iconView && metadataContent.picture}
+		{#if metadataContent && $iconView && metadataContent.picture && $isMulti !== MultiMenu.Sort}
 			<img
 				class="max-w-12 max-h-12 object-contain justify-center"
 				src={metadataContent.picture}
