@@ -27,8 +27,6 @@
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
 
-	const flipDurationMs = 0;
-
 	export let DeleteNote: (e: CustomEvent<any>) => void;
 	export let MoveNote: (e: CustomEvent<any>) => void;
 	export let CheckNote: (e: CustomEvent<any>) => void;
@@ -192,9 +190,12 @@
 	<section
 		use:dndzone={{
 			items,
-			flipDurationMs,
-
-			dragDisabled: $isMulti === MultiMenu.Sort ? false : true
+			//flipDurationMs,
+			dropTargetStyle: {},
+			dragDisabled: $isMulti === MultiMenu.Sort ? false : true,
+			morphDisabled: true,
+			dropFromOthersDisabled: true,
+			centreDraggedOnCursor: false
 		}}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
@@ -205,7 +206,7 @@
 		}}
 	>
 		{#each items as tag (tag.id)}
-			<div animate:flip={{ duration: flipDurationMs }}>
+			<div>
 				{#await getIdByTag(tag.name)}
 					<!--loading a タグ　のなかみ-->
 					<div class="z-0 card drop-shadow px-1 py-1 my-0.5">

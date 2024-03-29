@@ -123,11 +123,11 @@
 	}
 
 	async function getTextParts(text: string, tag: string[][]) {
-		if (id in $contentStore) {
-			return $contentStore[id];
+		if ($contentStore.has(id)) {
+			return $contentStore.get(id)!; // Non-null assertion operator used to assert that $contentStore.get(id) is not undefined
 		} else {
 			const content = await extractTextParts(text, tag);
-			$contentStore[id] = content;
+			$contentStore.set(id, content);
 			return content;
 		}
 	}
@@ -157,13 +157,15 @@
 		{text}
 	{:then viewContent}
 		{#each viewContent as item, index}
-			{#if item.content.length > 0}{#if item.type === 'emoji'}<img
-						class="align-bottom inline-flex h-[1.5em] max-w-full object-contain"
-						src={item.url}
-						height="6"
-						alt={item.content}
+			{#if item.content.length > 0}{#if item.type === 'emoji'}<button
 						on:click={() => handleClickImage(item.url)}
-					/>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
+						><img
+							class="align-bottom inline-flex h-[1.5em] max-w-full object-contain"
+							src={item.url}
+							height="6"
+							alt={item.content}
+						/></button
+					>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
 							<div class="max-w-full overflow-auto break-all">
 								<blockquote class="twitter-tweet">
 									<p lang="ja" dir="ltr">
@@ -231,7 +233,7 @@
 						>{/if}
 				{:else if item.type === 'image'}
 					{#if $URLPreview}<span
-							class="w-[fit-content] inline-flex flex align-bottom"
+							class="w-[fit-content] inline-flex align-bottom"
 							><!-- svelte-ignore a11y-no-noninteractive-element-interactions --><!-- svelte-ignore a11y-click-events-have-key-events --><img
 								class="max-h-[10em] object-contain"
 								src={item.content}
@@ -239,7 +241,7 @@
 								loading="lazy"
 								on:click={() => handleClickImage(item.content)}
 							/></span
-						>{:else}<span class="break-all break-all"
+						>{:else}<span class=" break-all"
 							><a
 								class="anchor"
 								href={item.content}
@@ -280,9 +282,9 @@
 							</div>
 
 							<button
-								class="flex inline-flex text-surface-600 dark:text-surface-300"
+								class=" inline-flex text-surface-600 dark:text-surface-300"
 								on:click={() => {
-									const test = item.number === undefined ? 0 : item.number;
+									//const test = item.number === undefined ? 0 : item.number;
 									handleClickPubkey(metadata);
 								}}
 								><u
