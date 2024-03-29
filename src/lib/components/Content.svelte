@@ -10,7 +10,7 @@
 	import { encodedURL, getOgp, loadOgp } from '$lib/otherFunctions.js';
 	import OGP from './OGP.svelte';
 	import { contentStore, ogpStore } from '$lib/stores/bookmarkEvents';
-	import { URLPreview } from '$lib/stores/settings';
+	import { isMulti, MultiMenu, URLPreview } from '$lib/stores/settings';
 	import QuoteContent from './QuoteContent.svelte';
 	import QuoteContent2 from './QuoteContent2.svelte';
 	import { goto } from '$app/navigation';
@@ -165,7 +165,7 @@
 							height="6"
 							alt={item.content}
 						/></button
-					>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
+					>{:else if item.type === 'url'}{#if $URLPreview && $isMulti !== MultiMenu.Sort}{#if new URL(item.content).hostname.endsWith('twitter.com')}
 							<div class="max-w-full overflow-auto break-all">
 								<blockquote class="twitter-tweet">
 									<p lang="ja" dir="ltr">
@@ -232,7 +232,7 @@
 							{:else}{item.content}{/if}</a
 						>{/if}
 				{:else if item.type === 'image'}
-					{#if $URLPreview}<span
+					{#if $URLPreview && $isMulti !== MultiMenu.Sort}<span
 							class="w-[fit-content] inline-flex align-bottom"
 							><!-- svelte-ignore a11y-no-noninteractive-element-interactions --><!-- svelte-ignore a11y-click-events-have-key-events --><img
 								class="max-h-[10em] object-contain"

@@ -14,6 +14,8 @@ https://nostviewstr.vercel.app/
 
 - 下メニューの設定（⚙）の横のボタンは 普通モード → 複数編集モード → 並べ替えモード → 普通モード　…
 
+  <!--並べ替え動作が重いときは ⚙ から軽量モードにしたら多少ましになるかも-->
+
 ## Tool for Displaying and Editing
 
 The tool, based on NIP-51, provides functionality for displaying and editing categorized bookmarks. Additionally, it allows users to view information related to other categories such as 'bookmark sets,' 'blocked relays,' 'communities,' 'curation sets,' 'emojis,' 'emoji sets,' 'interests,' 'interest sets,' 'lists,' 'mute,' 'people sets,' 'pin,' 'profile badges,' 'public chats,' 'relay sets,' and 'search relays.'
