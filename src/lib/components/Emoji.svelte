@@ -6,11 +6,14 @@
 
 <div class="grid grid-cols-[auto_1fr] gap-1">
 	<div class="m-2">
-		{#if iconView}
+		{#if $iconView}
 			<img
 				class="max-w-16 max-h-16 h-16 object-contain justify-center"
 				src={tagArray[2]}
 				alt={tagArray[1]}
+			/>{:else}
+			<div
+				class="w-4 h-4 object-contain justify-center variant-filled-surface"
 			/>
 		{/if}
 	</div>
