@@ -312,7 +312,7 @@
 			{#if !JSON}
 				<div class="flex max-w-full">
 					<select
-						class="border rounded border-primary-400 bg-primary-700 px-1 bg-primary-500 w-fit flex max-w-[85%]"
+						class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"
 						bind:value={selectValue}
 						on:change={handleKindChange}
 						disabled={$nowProgress}
@@ -390,7 +390,7 @@
 						{/if}
 					{:else}
 						<!---->
-						<div class="overflow-x-hidden h4 p-1 truncate overflow-x-hidden">
+						<div class="overflow-x-hidden h4 p-1 truncate">
 							{$identifierListsMap[pubkey][kind].get(
 								$identifierKeysArray[$listNum]
 							)?.identifier}
