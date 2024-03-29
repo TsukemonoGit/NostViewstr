@@ -8,7 +8,7 @@
 	import { _ } from 'svelte-i18n';
 	import type { MenuMode } from '$lib/otherFunctions.js';
 
-	import { MultiMenu, allView, iconView, isMulti } from '$lib/stores/settings';
+	import { allView, iconView } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
 	import { goto } from '$app/navigation';
 	import { listNum } from '$lib/stores/bookmarkEvents';
@@ -120,7 +120,7 @@
 					OpenProfile(metadata);
 				}}
 			>
-				{#if $iconView && content.picture && $isMulti !== MultiMenu.Sort}
+				{#if $iconView && content.picture}
 					<img
 						class="max-w-12 max-h-12 object-contain justify-center"
 						src={content.picture}
