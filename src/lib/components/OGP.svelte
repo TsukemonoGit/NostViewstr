@@ -19,11 +19,7 @@
 			<div class="grid grid-cols-[auto_1fr] gap-0.5">
 				<div class="overflow-hidden relative rounded-xl max-h-[6rem]">
 					{#if $iconView && ogp.image}
-						<img
-							class="object-contain object-contain max-h-[6rem]"
-							src={ogp.image}
-							alt=""
-						/>
+						<img class="object-contain max-h-[6rem]" src={ogp.image} alt="" />
 					{/if}
 				</div>
 				<div class="p-0.5 grid grid-rows-[auto_1fr] z-10 min-w-[12em]">
