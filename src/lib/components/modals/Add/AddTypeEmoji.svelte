@@ -44,7 +44,9 @@
 <div
 	class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"
 >
-	<div class="input-group-shim">emoji name</div>
+	<div class="input-group-shim">
+		emoji name (only alphanumeric characters and underscores)
+	</div>
 	<input
 		class="input p-2 my-2 w-full"
 		type="text"
