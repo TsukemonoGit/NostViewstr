@@ -16,6 +16,7 @@
 
 	import { initRelaySet, relaySet } from '$lib/stores/relays';
 	import {
+		MultiMenu,
 		iconView,
 		isMulti,
 		nip46Check,
@@ -96,7 +97,7 @@
 	export async function bkminit(pub: string) {
 		$listNum = 0;
 		$pageNum = 0;
-		$isMulti = false;
+		$isMulti = MultiMenu.None;
 		bkm = 'pub';
 		console.log('bkminit');
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
