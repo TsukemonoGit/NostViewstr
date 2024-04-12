@@ -39,7 +39,8 @@ export const defaultRelays = [
 	//'wss://relay.nostr.wirednet.jp'
 	'wss://relay.nostr.band',
 	'wss://nos.lol',
-	'wss://relayable.org'
+	'wss://relayable.org',
+	'wss://nostr.bitcoiner.social'
 ];
 
 export interface RelayInfo {
