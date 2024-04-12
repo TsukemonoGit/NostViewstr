@@ -40,7 +40,7 @@
 	let MoveNote: (e: CustomEvent<any>) => void;
 	let CheckNote: (e: CustomEvent<any>) => void;
 	let isOwner: boolean = false;
-	//	$: isOwner = $pubkey_viewer === pubkey;
+	$: isOwner = $pubkey_viewer === pubkey;
 
 	$: console.log('isOwner', isOwner);
 	onMount(async () => {
@@ -88,42 +88,11 @@
 		if (!kind) {
 			kind = viewEvent.kind;
 		}
-		//await bkminit(pubkey);
-		$nowProgress = false;
-	};
-
-	export async function bkminit(pub: string) {
-		$listNum = 0;
-		$pageNum = 0;
-		$isMulti = MultiMenu.None;
-		bkm = 'pub';
-		console.log('bkminit');
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
 			$pubkey_viewer = await getPub($nip46Check);
 		}
-		if (!$relaySet || !$relaySet[pub]) {
-			$relaySet[pub] = initRelaySet;
-			// bookmarkRelays.set([]);
-			// postRelays.set([]);
-			// searchRelays.set([]);
-			const t: ToastSettings = {
-				message: `${$_('toast.relaySearching')}`
-			};
-			const getRelaysToast = toastStore.trigger(t);
-			$relaySet[pub] = initRelaySet;
-			await getRelays(pub);
-			toastStore.close(getRelaysToast);
-			//$relayPubkey = pubkey;
-		}
-		if (pub !== $pubkey_viewer && !$relaySet[$pubkey_viewer]) {
-			$relaySet[$pubkey_viewer] = initRelaySet;
-			// bookmarkRelays.set([]);
-			// postRelays.set([]);
-			// searchRelays.set([]);
-			getRelays($pubkey_viewer);
-			//$relayPubkey = pubkey;
-		}
-	}
+		$nowProgress = false;
+	};
 
 	//ページが変わったらチェックリスト空にする
 	$: if ($pageNum !== -1 || bkm) {
