@@ -10,6 +10,7 @@
 	import { initRelaySet, relaySet } from '$lib/stores/relays';
 	import {
 		MultiMenu,
+		URLPreview,
 		iconView,
 		isMulti,
 		nip46Check,
@@ -29,6 +30,7 @@
 	import type { PageData } from './$types';
 	import { getViewEvent } from './function';
 	import { createRxNostr } from 'rx-nostr';
+	import Settings from '$lib/components/Settings.svelte';
 	export let data: PageData;
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number>;
@@ -41,7 +43,11 @@
 	let CheckNote: (e: CustomEvent<any>) => void;
 	let isOwner: boolean = false;
 	$: isOwner = $pubkey_viewer === pubkey;
-
+	let settings: boolean = false;
+	function settingFunc() {
+		settings = true;
+		//goto(`${window.location.pathname}/${kind}`);
+	}
 	$: console.log('isOwner', isOwner);
 	onMount(async () => {
 		if (!isOnMount) {
@@ -156,39 +162,52 @@
 	// }
 </script>
 
-<!-- {#await bkminit(pubkey) then bkminti} -->
-{#if kind && typeof WebSocket !== 'undefined' && pubkey && $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-	<NostrApp relays={$relaySet[pubkey].searchRelays}>
-		<!--header-->
-		<Header {kind} bind:bkm {pubkey} bind:viewEvent nevent={true} />
+{#if $URLPreview === undefined}
+	<div class="container h-full mx-auto flex justify-center items-center">
+		<div class="mt-5">
+			<h1 class="h1 mb-5">{$_('main.title')}</h1>
 
-		<!--サイドバーとメイン-->
-		<div
-			class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
-		>
-			<div class="flex overflow-x-hidden">
-				<!--めいん-->
-				<main class="flex-1 overflow-y-auto h-fit overflow-x-hidden pb-[2em]">
-					<!-- Add ml-64 to push main to the right -->
-
-					<ListedEvent
-						{pubkey}
-						listEvent={viewEvent}
-						{DeleteNote}
-						{MoveNote}
-						{CheckNote}
-						bind:bkm
-						{isOwner}
-						noEdit={true}
-						isNaddr={false}
-					/>
-				</main>
+			<div class="space-t-5">
+				kind:{data.kind}
+				<Settings {settingFunc} />
 			</div>
 		</div>
-		<FooterMenu {pubkey} {kind} disabled={true} {bkm} />
-	</NostrApp>
-	<!-- {:else}
+	</div>
+{:else}
+	<!-- {#await bkminit(pubkey) then bkminti} -->
+	{#if kind && typeof WebSocket !== 'undefined' && pubkey && $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+		<NostrApp relays={$relaySet[pubkey].searchRelays}>
+			<!--header-->
+			<Header {kind} bind:bkm {pubkey} bind:viewEvent nevent={true} />
+
+			<!--サイドバーとメイン-->
+			<div
+				class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
+			>
+				<div class="flex overflow-x-hidden">
+					<!--めいん-->
+					<main class="flex-1 overflow-y-auto h-fit overflow-x-hidden pb-[2em]">
+						<!-- Add ml-64 to push main to the right -->
+
+						<ListedEvent
+							{pubkey}
+							listEvent={viewEvent}
+							{DeleteNote}
+							{MoveNote}
+							{CheckNote}
+							bind:bkm
+							{isOwner}
+							noEdit={true}
+							isNaddr={false}
+						/>
+					</main>
+				</div>
+			</div>
+			<FooterMenu {pubkey} {kind} disabled={true} {bkm} />
+		</NostrApp>
+		<!-- {:else}
 {`relay has not been set`} -->
+	{/if}
 {/if}
 
 <!-- {/await} -->
