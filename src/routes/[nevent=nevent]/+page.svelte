@@ -1,0 +1,248 @@
+<script lang="ts">
+	import { _ } from 'svelte-i18n';
+
+	import ListedEvent from '$lib/components/ListedEvent.svelte';
+	import { checkedIndexList, listNum } from '$lib/stores/bookmarkEvents';
+	import { getPub, getRelays } from '$lib/nostrFunctions';
+	import { afterUpdate, onMount } from 'svelte';
+	import Header from '$lib/components/Header.svelte';
+
+	import { initRelaySet, relaySet } from '$lib/stores/relays';
+	import {
+		MultiMenu,
+		iconView,
+		isMulti,
+		nip46Check,
+		nowProgress,
+		pubkey_viewer
+	} from '$lib/stores/settings';
+	//import type { Event } from 'nostr-tools';
+	import { amount, listSize, pageNum } from '$lib/stores/pagination';
+
+	import { NostrApp, type Nostr } from 'nosvelte';
+
+	import { afterNavigate } from '$app/navigation';
+
+	import FooterMenu from '$lib/components/FooterMenu.svelte';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
+	import { modalStore, toastStore } from '$lib/stores/store';
+	import type { PageData } from './$types';
+	import { getViewEvent } from './function';
+	import { createRxNostr } from 'rx-nostr';
+	export let data: PageData;
+	let bkm: string = 'pub';
+	let viewEvent: Nostr.Event<number>;
+	let pubkey: string = data.pubkey;
+	let kind: number | undefined = data.kind;
+
+	let isOnMount = false;
+	let DeleteNote: (e: CustomEvent<any>) => void;
+	let MoveNote: (e: CustomEvent<any>) => void;
+	let CheckNote: (e: CustomEvent<any>) => void;
+	let isOwner: boolean = false;
+	//	$: isOwner = $pubkey_viewer === pubkey;
+
+	$: console.log('isOwner', isOwner);
+	onMount(async () => {
+		if (!isOnMount) {
+			console.log('onMount');
+			isOnMount = true; // onMountが呼ばれたことを示すフラグを変更
+			await init();
+			isOnMount = false; // onMountが呼ばれたことを示すフラグを変更
+		}
+	});
+
+	afterNavigate(async () => {
+		if (!isOnMount) {
+			console.log('afterNavigate');
+			isOnMount = true; // onMountが呼ばれたことを示すフラグを変更
+			$listNum = 0;
+			$pageNum = 0;
+			await init();
+			isOnMount = false; // onMountが呼ばれたことを示すフラグを変更
+		}
+	});
+	//ぷぶきーがかわるごとにしょきか？
+	// $: if (pubkey) {
+	// 	init();
+	// }
+
+	const init = async () => {
+		$nowProgress = true;
+		console.log('onMount executed');
+		// if ($pubkey_viewer === '') {
+		// 	try {
+		// 		const res = await getPub();
+		// 		if (res !== '') {
+		// 			$pubkey_viewer = res;
+		// 		}
+		// 	} catch (error) {
+		// 		//			$nowProgress = false;
+		// 		console.log('failed to login');
+		// 	}
+		// }
+		viewEvent = await getViewEvent(data.id as string, data.relays as string[]);
+		if (!pubkey) {
+			pubkey = viewEvent.pubkey;
+		}
+		if (!kind) {
+			kind = viewEvent.kind;
+		}
+		//await bkminit(pubkey);
+		$nowProgress = false;
+	};
+
+	export async function bkminit(pub: string) {
+		$listNum = 0;
+		$pageNum = 0;
+		$isMulti = MultiMenu.None;
+		bkm = 'pub';
+		console.log('bkminit');
+		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
+			$pubkey_viewer = await getPub($nip46Check);
+		}
+		if (!$relaySet || !$relaySet[pub]) {
+			$relaySet[pub] = initRelaySet;
+			// bookmarkRelays.set([]);
+			// postRelays.set([]);
+			// searchRelays.set([]);
+			const t: ToastSettings = {
+				message: `${$_('toast.relaySearching')}`
+			};
+			const getRelaysToast = toastStore.trigger(t);
+			$relaySet[pub] = initRelaySet;
+			await getRelays(pub);
+			toastStore.close(getRelaysToast);
+			//$relayPubkey = pubkey;
+		}
+		if (pub !== $pubkey_viewer && !$relaySet[$pubkey_viewer]) {
+			$relaySet[$pubkey_viewer] = initRelaySet;
+			// bookmarkRelays.set([]);
+			// postRelays.set([]);
+			// searchRelays.set([]);
+			getRelays($pubkey_viewer);
+			//$relayPubkey = pubkey;
+		}
+	}
+
+	//ページが変わったらチェックリスト空にする
+	$: if ($pageNum !== -1 || bkm) {
+		$checkedIndexList = [];
+		if (typeof window !== 'undefined') {
+			window?.scrollTo({ top: 0 });
+		}
+	}
+
+	// //--------------------------------------Add note
+	// const publishJsonModalComponent: ModalComponent = {
+	// 	ref: ModalPublishJson
+	// };
+	// function onClickAddfromJson(
+	// 	event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
+	// ) {
+	// 	let newEvent = Object.assign({}, viewEvent); //参照の問題を回避
+	// 	newEvent.created_at = '<generated>' as any; // 一時的にanyとしてキャストするか、正しい型に変更する
+	// 	newEvent.sig = '<generated>' as any;
+	// 	newEvent.pubkey = '<generated>' as any;
+	// 	newEvent.id = '<generated>' as any;
+
+	// 	const modal: ModalSettings = {
+	// 		type: 'component',
+	// 		component: publishJsonModalComponent,
+	// 		title: $_('modal.publishjson.title'),
+	// 		body: `${$_('modal.publishjson.body')}`,
+	// 		value: {
+	// 			event: newEvent
+	// 		},
+	// 		response: async (res) => {
+	// 			//console.log(res);
+	// 			if (res) {
+	// 				$nowProgress = true;
+	// 				console.log(res);
+	// 				//updateするやつ
+	// 				const result = await publishEventWithTimeout(
+	// 					res,
+	// 					$relaySet[$pubkey_viewer]?.bookmarkRelays || []
+	// 				);
+
+	// 				const toastMessage = result.isSuccess
+	// 					? 'Add note<br>' + result.msg
+	// 					: $_('toast.failed_publish');
+
+	// 				const t = {
+	// 					message: toastMessage,
+	// 					timeout: 3000,
+	// 					background: result.isSuccess
+	// 						? 'variant-filled-secondary width-filled'
+	// 						: 'bg-orange-500 text-white width-filled '
+	// 				};
+
+	// 				toastStore.trigger(t);
+
+	// 				$nowProgress = false;
+	// 			}
+	// 		}
+	// 	};
+	// 	modalStore.trigger(modal);
+	// }
+</script>
+
+<!-- {#await bkminit(pubkey) then bkminti} -->
+{#if kind && typeof WebSocket !== 'undefined' && pubkey && $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+	<NostrApp relays={$relaySet[pubkey].searchRelays}>
+		<!--header-->
+		<Header {kind} bind:bkm {pubkey} bind:viewEvent nevent={true} />
+
+		<!--サイドバーとメイン-->
+		<div
+			class="mb-12 mt-16 container max-w-[1024px] h-full mx-auto justify-center items-center box-border"
+		>
+			<div class="flex overflow-x-hidden">
+				<!--めいん-->
+				<main class="flex-1 overflow-y-auto h-fit overflow-x-hidden pb-[2em]">
+					<!-- Add ml-64 to push main to the right -->
+
+					<ListedEvent
+						{pubkey}
+						listEvent={viewEvent}
+						{DeleteNote}
+						{MoveNote}
+						{CheckNote}
+						bind:bkm
+						{isOwner}
+						noEdit={true}
+						isNaddr={false}
+					/>
+				</main>
+			</div>
+		</div>
+		<FooterMenu {pubkey} {kind} disabled={true} {bkm} />
+	</NostrApp>
+	<!-- {:else}
+{`relay has not been set`} -->
+{/if}
+
+<!-- {/await} -->
+
+<style>
+	:global(.addIcon svg) {
+		width: 1.5em;
+		height: 1.5em;
+	}
+
+	:global(.arrow svg) {
+		width: 2em;
+		height: 2em;
+		fill: white;
+	}
+	:global(.test1 g) {
+		width: 2em;
+		height: 2em;
+		fill: black;
+	}
+
+	:global(.bkm svg) {
+		width: 24px;
+		height: 24px;
+	}
+</style>
