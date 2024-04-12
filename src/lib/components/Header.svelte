@@ -45,7 +45,7 @@
 	export let pubkey: string;
 	export let viewEvent: Nostr.Event<number> | undefined;
 	export let JSON: boolean = false;
-
+	export let nevent: boolean = false;
 	let ongoingCount: number;
 
 	$: console.log($storePopup.popupFeatured);
@@ -309,7 +309,7 @@
 		<div class="max-w-full overflow-hidden">
 			<!-- {#if JSON}【JSON MODE】 kind:{kind}
 				{#if kinds[kind]} ({kinds[kind]}) {/if} -->
-			{#if !JSON}
+			{#if !JSON && !nevent}
 				<div class="flex max-w-full">
 					<select
 						class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"
