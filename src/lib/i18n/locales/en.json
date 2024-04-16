@@ -137,5 +137,8 @@
     "checkRelay": "Check relay address",
     "checkInput": "Please confirm your input"
   },
-  "icon_description": "Icon description"
+  "icon_description": "Icon description",
+  "feedback": {
+    "setumei": "Your message will be sent via encrypted DM using a randomly generated key."
+  }
 }

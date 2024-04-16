@@ -17,6 +17,7 @@
 	import LocationHomeIcon from '@material-design-icons/svg/round/person.svg?raw';
 	import ViewIcon from '@material-design-icons/svg/round/expand_less.svg?raw';
 	import HideIcon from '@material-design-icons/svg/round/expand_more.svg?raw';
+	import FeedbackIcon from '@material-design-icons/svg/round/announcement.svg?raw';
 	import { getPub } from '$lib/nostrFunctions';
 	import {
 		URLPreview,
@@ -45,13 +46,16 @@
 		openMyJson: boolean;
 		goto: boolean;
 		selectValue: string;
+		feedback?: boolean;
 	} = {
 		share: false,
 		shareNaddr: false,
 		openJson: false,
 		openMyJson: false,
 		goto: false,
-		selectValue: selectValue
+		selectValue: selectValue,
+
+		feedback: false
 	};
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(res);
@@ -388,9 +392,16 @@
 				class="light btn p-0 m-0 w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full"
 				data-npub="npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw"
 				data-note-id="note1sgfa7nh4p4k76k23e0vr0k95svg5hp3xqshq6ewd9jaut6hnp7jq8jhpy8"
-				data-relays="wss://yabu.me.io,wss://nos.lol,wss://relay-jp.nostr.wirednet.jp,wss://relay.nostr.band"
+				data-relays="wss://yabu.me,wss://nos.lol,wss://relay.nostr.wirednet.jp,wss://relay.nostr.band"
 				>{@html lightningIcon}</button
-			> <script src="https://cdn.jsdelivr.net/npm/nostr-zap@0.21.0"></script>
+			> <script src="https://cdn.jsdelivr.net/npm/nostr-zap@0.22.0"></script>
+			<button
+				class="feedback btn p-0 m-0 w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full"
+				on:click={() => {
+					res.feedback = true;
+					onFormSubmit();
+				}}>{@html FeedbackIcon}</button
+			>
 		</div>
 
 		<footer class="modal-footer {parent.regionFooter}">
@@ -409,7 +420,11 @@
 		height: 24px;
 		fill: yellow;
 	}
-
+	:global(.feedback svg) {
+		width: 18px;
+		height: 18px;
+		fill: white;
+	}
 	:global(.history svg) {
 		width: 1.5em;
 		height: 1.5em;

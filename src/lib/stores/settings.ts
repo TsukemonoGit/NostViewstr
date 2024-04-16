@@ -19,3 +19,5 @@ export const isMulti = writable<MultiMenu>(MultiMenu.None);
 //export const kind = writable<number>(30001);
 export const backButton = writable<boolean>(false);
 export const nip46Check = writable<boolean>(true); //nip46ログインが拒否されたらfalse
+
+export const send_pubhex = writable<string>('');

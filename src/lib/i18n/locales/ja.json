@@ -137,5 +137,8 @@
     "checkRelay": "リレーアドレスを確認してください",
     "checkInput": "入力を確認してください"
   },
-  "icon_description": "アイコンについて"
+  "icon_description": "アイコンについて",
+  "feedback": {
+    "setumei": "ランダム生成された鍵で暗号化されてDMで送信されます。"
+  }
 }

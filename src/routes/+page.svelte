@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { FileButton, LightSwitch } from '@skeletonlabs/skeleton';
-
 	import Settings from '$lib/components/Settings.svelte';
 
 	import { nsec, pubkey_viewer } from '$lib/stores/settings';
@@ -11,10 +9,9 @@
 	import { _ } from 'svelte-i18n';
 	import { kinds } from '$lib/kind';
 	import { toastStore } from '$lib/stores/store';
-	import { launch as launchNostrLoginDialog } from 'nostr-login';
 
 	let kind: number = Number(Object.keys(kinds)[0]); // Use Object.keys to get the first key
-
+	console.log();
 	//let name: string;
 	let inputValue: string;
 	//console.log(sortedKinds);

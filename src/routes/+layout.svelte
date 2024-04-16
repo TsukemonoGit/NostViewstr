@@ -23,12 +23,15 @@
 	import { setToastStore } from '$lib/stores/store';
 	import RegisterSw from '$lib/components/RegisterSW.svelte';
 	import { onMount } from 'svelte';
-	import { backButton } from '$lib/stores/settings';
+	import { backButton, send_pubhex } from '$lib/stores/settings';
 	import { afterNavigate } from '$app/navigation';
 	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
 	import { init as initNostrLogin } from 'nostr-login';
 	import { page } from '$app/stores';
 
+	export let data: import('./$types').LayoutServerData;
+
+	send_pubhex.set(data.send_pubhex);
 	let mounted = false;
 	initializeStores();
 	setModalStore();
