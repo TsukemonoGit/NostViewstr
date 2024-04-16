@@ -71,3 +71,11 @@ export interface RelayInfo {
 }
 
 export const relayStore = writable(new Map<string, RelayInfo>());
+
+//feedback送信用のリレー
+export const feedbackRelay = [
+	'wss://nos.lol',
+	'wss://relay.nostr.wirednet.jp',
+	'wss://relayable.org',
+	'wss://relay.nostr.band/'
+];

@@ -14,9 +14,16 @@ import {
 	connectingRelays
 } from './stores/bookmarkEvents';
 import { formatResults, getPub, signEv } from './nostrFunctions';
-import { getEventHash } from 'nostr-tools';
+import {
+	getEventHash,
+	generatePrivateKey,
+	getPublicKey,
+	nip04,
+	SimplePool,
+	getSignature
+} from 'nostr-tools';
 import { nsec, pubkey_viewer } from './stores/settings';
-import { relaySet } from './stores/relays';
+import { feedbackRelay, relaySet } from './stores/relays';
 import type { ConnectionState } from 'rx-nostr';
 import type { Nostr } from 'nosvelte';
 
@@ -264,6 +271,7 @@ export async function StoreFetchFilteredEvents(
 export async function publishEventWithTimeout(
 	obj: Nostr.Event,
 	relays: string[],
+	userCheck: boolean = true,
 	timeout: number = 10000
 ): Promise<{
 	isSuccess: boolean;
@@ -284,14 +292,15 @@ export async function publishEventWithTimeout(
 		msgObj[relay] = false;
 	});
 	console.log(obj);
+	if (userCheck) {
+		const pubkey = await getPub(true); //書き込みたいときには再度のNIP46チェックも含む
+		if (obj.pubkey === '') {
+			obj.pubkey = pubkey;
+		} else if (obj.pubkey !== pubkey) {
+			console.log('ログイン中のpubとsignEvのpubが違う');
 
-	const pubkey = await getPub(true); //書き込みたいときには再度のNIP46チェックも含む
-	if (obj.pubkey === '') {
-		obj.pubkey = pubkey;
-	} else if (obj.pubkey !== pubkey) {
-		console.log('ログイン中のpubとsignEvのpubが違う');
-
-		return { isSuccess: false, msg: 'login error' };
+			return { isSuccess: false, msg: 'login error' };
+		}
 	}
 
 	try {
@@ -473,4 +482,29 @@ function validCheck(obj: Nostr.Event<number>): Boolean {
 		return false;
 	}
 	return true;
+}
+
+export async function sendMessage(message: string, pubhex: string) {
+	if (!pubhex) {
+		throw Error;
+	}
+	const sk = generatePrivateKey();
+	const pk = getPublicKey(sk);
+	const encryptedMessage = await nip04.encrypt(sk, pubhex, message);
+	const pool = new SimplePool();
+	const ev = {
+		kind: 4,
+		created_at: Math.floor(Date.now() / 1000),
+		tags: [['p', pubhex]],
+
+		content: encryptedMessage,
+		pubkey: pk,
+		sig: '',
+		id: ''
+	};
+	ev.sig = getSignature(ev, sk);
+	ev.id = getEventHash(ev);
+	//サイン無しでrxnostrでやれないから
+	await Promise.any(pool.publish(feedbackRelay, ev));
+	pool.close(feedbackRelay);
 }

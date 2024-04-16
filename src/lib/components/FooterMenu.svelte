@@ -26,6 +26,7 @@
 	import ModalDelete from './modals/ModalDelete.svelte';
 	import ModalPostNote from './modals/ModalPostNote.svelte';
 	import ModalEventJson from './modals/ModalEventJson.svelte';
+	import ModalFeedback from './modals/ModalFeedback.svelte';
 	import {
 		eventListsMap,
 		checkedIndexList,
@@ -89,6 +90,13 @@
 		slot: `<p>Skeleton</p>`
 	};
 
+	const feedbackModalComponent: ModalComponent = {
+		ref: ModalFeedback,
+		// Add the component properties as key/value pairs
+		props: { background: 'bg-red-500' },
+		// Provide a template literal for the default component slot
+		slot: `<p>Skeleton</p>`
+	};
 	function openLists() {
 		if ($eventListsMap) {
 			//console.log(Object.keys(pubkey).some((k) => Number(k) === kind));
@@ -361,6 +369,7 @@
 				openMyJson: boolean;
 				goto: boolean;
 				selectValue: string;
+				feedback: boolean;
 			}) => {
 				if (res) {
 					if (res.share || res.shareNaddr) {
@@ -423,6 +432,13 @@
 					} else if (res.goto) {
 						bkm = 'pub';
 						goto(`/${nip19.npubEncode($pubkey_viewer)}/${res.selectValue}`);
+					} else if (res.feedback) {
+						const modal = {
+							type: 'component' as const,
+							title: 'Send Feedback',
+							component: feedbackModalComponent
+						};
+						modalStore.trigger(modal);
 					}
 				}
 			}
