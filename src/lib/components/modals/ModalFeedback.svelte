@@ -2,7 +2,6 @@
 	import type { TabGroup, ToastSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { _ } from 'svelte-i18n';
-	import type { Nostr } from 'nosvelte';
 	import { nowProgress, send_pubhex } from '$lib/stores/settings';
 	import { sendMessage } from '$lib/streamEventLists';
 
@@ -37,7 +36,7 @@
 		const mes =
 			'[NostViewstr]\nfrom\n' + inputName + '\n\nmessage\n' + inputMessage;
 		$nowProgress = true;
-		console.log(mes);
+		//	console.log(mes);
 		try {
 			if ($send_pubhex) {
 				await sendMessage(mes, $send_pubhex);

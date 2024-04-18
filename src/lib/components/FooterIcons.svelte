@@ -3,6 +3,27 @@
 	import lightningIcon from '@material-design-icons/svg/round/bolt.svg?raw';
 	import githubIconWhite from '$lib/assets/github-mark-white.png';
 	import { nostrIcon } from '$lib/components/icons';
+	import type { ModalComponent } from '@skeletonlabs/skeleton';
+	import ModalFeedback from './modals/ModalFeedback.svelte';
+	import { modalStore } from '$lib/stores/store';
+
+	const feedbackModalComponent: ModalComponent = {
+		ref: ModalFeedback,
+		// Add the component properties as key/value pairs
+		props: { background: 'bg-red-500' },
+		// Provide a template literal for the default component slot
+		slot: `<p>Skeleton</p>`
+	};
+
+	const modal = {
+		type: 'component' as const,
+		title: 'Send Feedback',
+		component: feedbackModalComponent
+	};
+
+	const handleClickFeedback = () => {
+		modalStore.trigger(modal);
+	};
 </script>
 
 <div class="flex gap-6 sm:gap-10 justify-center h-full">
@@ -32,7 +53,7 @@
 	> <script src="https://cdn.jsdelivr.net/npm/nostr-zap@0.22.0"></script>
 	<button
 		class="feedback btn p-0 m-0 sm:w-[32px] sm:h-[32px] w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full flex self-center"
-		on:click={() => {}}>{@html FeedbackIcon}</button
+		on:click={handleClickFeedback}>{@html FeedbackIcon}</button
 	>
 </div>
 
