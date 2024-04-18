@@ -45,7 +45,7 @@
 		<LightSwitch />
 	</div> 
 </div>-->
-<div class="mt-10">
+<div class="mt-10 mb-14">
 	<div class="grid grid-cols-[auto_1fr]">
 		<div class="ml-1">*</div>
 		<ul class=" text-sm pl-1 pt-1">
