@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { iconView, URLPreview } from '$lib/stores/settings';
+	import FooterIcons from './FooterIcons.svelte';
 
 	export let settingFunc: () => void;
 
@@ -58,4 +59,9 @@
 			</li>
 		</ul>
 	</div>
+</div>
+<div
+	class=" fixed bottom-0 left-0 w-full sm:h-12 h-10 bg-primary-200-700-token"
+>
+	<FooterIcons />
 </div>
