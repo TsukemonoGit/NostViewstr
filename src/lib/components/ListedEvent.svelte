@@ -51,13 +51,14 @@
 			//	try {
 			const decypt = await nip04De(list.pubkey, list.content);
 			return JSON.parse(decypt);
+
 			//		} catch (error) {
 			//			console.error('復号失敗');
 
 			//		return [];
 			//	}
 		} else {
-			console.log('プライベートブクマなんもないよ');
+			//console.log('プライベートブクマなんもないよ');
 			return [];
 		}
 	};
@@ -81,21 +82,21 @@
 	export async function viewUpdate() {
 		message = '';
 		console.log(bkm);
-		if (listEvent) {
-			if (bkm === 'pub') {
-				$listSize = listEvent ? listEvent.tags.length : 0;
-				viewList = listEvent ? listEvent.tags : [];
-			} else if (isOwner) {
-				try {
-					const res = await privateList(listEvent);
-					$listSize = res.length;
-					viewList = res;
-				} catch (error) {
-					$listSize = 0;
-					viewList = [];
-					message = listEvent.content;
-				}
-			} else {
+		if (!listEvent) {
+			$listSize = 0;
+			viewList = [];
+			return;
+		}
+
+		if (bkm === 'pub') {
+			$listSize = listEvent.tags.length;
+			viewList = listEvent.tags;
+		} else if (isOwner && listEvent.content.includes('?iv=')) {
+			try {
+				const res = await privateList(listEvent);
+				$listSize = res.length;
+				viewList = res;
+			} catch (error) {
 				$listSize = 0;
 				viewList = [];
 				message = listEvent.content;
@@ -103,6 +104,7 @@
 		} else {
 			$listSize = 0;
 			viewList = [];
+			message = listEvent.content;
 		}
 	}
 	//	$: console.log($listSize, $amount, $pageNum);

@@ -7,15 +7,11 @@
 
 	import { setComOgps, setLFCOgps, uniqueTags } from '$lib/otherFunctions.js';
 	import { _ } from 'svelte-i18n';
-	import type { MenuMode } from '$lib/otherFunctions.js';
 	import EventTag from './EventTag.svelte';
 
 	import Ogp from './OGP.svelte';
 	import Content from './Content.svelte';
 	import { allView, iconView } from '$lib/stores/settings';
-	import MenuButtons from './MenuButtons.svelte';
-	import { goto } from '$app/navigation';
-	import { listNum } from '$lib/stores/bookmarkEvents';
 	import PubCha from './PubCha.svelte';
 	import EmojiSet from './EmojiSet.svelte';
 	import OGP from './OGP.svelte';
@@ -26,14 +22,8 @@
 
 	export let metadata: Event | undefined;
 
-	// export let menuMode: MenuMode;
-	// export let myIndex: number | undefined;
 	export let tagArray: string[] | undefined;
-	// export let DeleteNote: (e: CustomEvent<any>) => void;
-	// export let MoveNote: (e: CustomEvent<any>) => void;
-	// export let CheckNote: (e: CustomEvent<any>) => void;
 	export let pubkey: string;
-	//const dispatch = createEventDispatcher();
 
 	let metadataContent: NostrProfile;
 	const modalStore = getModalStore();

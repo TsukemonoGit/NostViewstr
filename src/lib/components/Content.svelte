@@ -234,13 +234,14 @@
 				{:else if item.type === 'image'}
 					{#if $URLPreview}<span
 							class="w-[fit-content] inline-flex align-bottom"
-							><!-- svelte-ignore a11y-no-noninteractive-element-interactions --><!-- svelte-ignore a11y-click-events-have-key-events --><img
-								class="max-h-[10em] object-contain"
-								src={item.content}
-								alt=""
-								loading="lazy"
-								on:click={() => handleClickImage(item.content)}
-							/></span
+							><button on:click={() => handleClickImage(item.content)}
+								><img
+									class="max-h-[10em] object-contain"
+									src={item.content}
+									alt=""
+									loading="lazy"
+								/></button
+							></span
 						>{:else}<span class=" break-all"
 							><a
 								class="anchor"
@@ -313,9 +314,7 @@
 							}}>#{tag[item.number][1]}</button
 						>
 					{:else}{tag[item.number][1]}
-					{/if}{:else if item.type === 'hashtag'}<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
-					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+					{/if}{:else if item.type === 'hashtag'}
 					<a
 						class="anchor"
 						rel="external noreferrer"
@@ -340,9 +339,3 @@
 		{/each}
 	{/await}
 {/if}
-
-<style>
-	/* .example {
-		@apply text-primary-400;
-	} */
-</style>
