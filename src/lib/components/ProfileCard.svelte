@@ -13,7 +13,7 @@
 	import { goto } from '$app/navigation';
 	import { listNum } from '$lib/stores/bookmarkEvents';
 	import { relaySet } from '$lib/stores/relays';
-
+	import Content from './Content.svelte';
 	export let metadata: Event;
 
 	//export let menuMode: MenuMode;
@@ -200,14 +200,15 @@
 
 				<!--note-->
 				<div class="py-2 break-all box-border whitespace-break-spaces">
-					{content.about}
-					<!-- <Content
-					text={note.content}
-					tag={note.tags}
-					id={note.id}
-					view={$allView}
-					{isPageOwner}
-				/> -->
+					<!-- {content.about} -->
+					<Content
+						text={content.about}
+						tag={metadata.tags}
+						id={metadata.id}
+						view={$allView}
+						isPageOwner={false}
+						pubkey={metadata.pubkey}
+					/>
 				</div>
 
 				{#if content.website}
