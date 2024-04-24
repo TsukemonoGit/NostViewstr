@@ -9,7 +9,6 @@
 	import type { MenuMode } from '$lib/otherFunctions.js';
 
 	import { allView, iconView } from '$lib/stores/settings';
-	import MenuButtons from './MenuButtons.svelte';
 	import { goto } from '$app/navigation';
 	import { listNum } from '$lib/stores/bookmarkEvents';
 	import { relaySet } from '$lib/stores/relays';
