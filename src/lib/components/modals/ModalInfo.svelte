@@ -8,11 +8,6 @@
 	import shareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import lightningIcon from '@material-design-icons/svg/round/bolt.svg?raw';
 
-	import ArrowCircleRight from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
-	import Delete from '@material-design-icons/svg/round/delete.svg?raw';
-	import OpenInBrowser from '@material-design-icons/svg/round/open_in_browser.svg?raw';
-	import LeftIcon from '@material-design-icons/svg/round/west.svg?raw';
-	import RightIcon from '@material-design-icons/svg/round/east.svg?raw';
 	import HomeIcon from '@material-design-icons/svg/round/home.svg?raw';
 	import LocationHomeIcon from '@material-design-icons/svg/round/person.svg?raw';
 	import ViewIcon from '@material-design-icons/svg/round/expand_less.svg?raw';
