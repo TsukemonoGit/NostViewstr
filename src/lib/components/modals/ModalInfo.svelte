@@ -167,6 +167,8 @@
 		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-2">
 			{$_('modal.info.data')}<SlideToggle
+				border="border-solid border-2 border-indigo-600"
+				active="bg-secondary-600-300-token"
 				size="sm"
 				name="slide"
 				bind:checked={toggleValue}
@@ -179,8 +181,12 @@
 		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-2">
 			{$_('modal.info.contentwarning')}
-			<SlideToggle size="sm" name="slide" bind:checked={warningToggle}
-				>{warningToggle ? 'ON' : 'OFF'}</SlideToggle
+			<SlideToggle
+				border="border-solid border-2 border-indigo-600"
+				active="bg-secondary-600-300-token"
+				size="sm"
+				name="slide"
+				bind:checked={warningToggle}>{warningToggle ? 'ON' : 'OFF'}</SlideToggle
 			>
 		</div>
 
@@ -348,7 +354,7 @@
 				{$_('popup.prv')}
 			</div>
 		</div>
-		<div class="flex flex-wrap">
+		<!-- <div class="flex flex-wrap">
 			<div class="flex gap-1 pr-3">
 				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
 					{@html shareIcon}
@@ -373,7 +379,7 @@
 				</div>
 				{$_('popup.delete')}
 			</div>
-		</div>
+		</div> -->
 		<hr />
 		<div class="flex gap-3">
 			<a
