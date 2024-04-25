@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import EventCard from '$lib/components/EventCard.svelte';
-	import { MenuMode, ogpDescription } from '$lib/otherFunctions.js';
+
 	import ModalPostNote from '$lib/components/modals/ModalPostNote.svelte';
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import DescriptionIcon from '@material-design-icons/svg/round/description.svg?raw';
@@ -16,26 +15,16 @@
 		parseNaddr,
 		windowOpen
 	} from '$lib/nostrFunctions';
-	import SearchCard from './SearchCard.svelte';
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { amount, pageNum, listSize } from '$lib/stores/pagination';
 	import { MultiMenu, isMulti } from '$lib/stores/settings';
-	import MenuButtons from './MenuButtons.svelte';
 	//import MenuButtons2 from './MenuButtons2.svelte';
-	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
-	import Menu from '@material-design-icons/svg/round/More_Vert.svg?raw';
-	import ProfileCard from './ProfileCard.svelte';
-	import Emoji from './Emoji.svelte';
+
+	// import Menu from '@material-design-icons/svg/round/more_vert.svg?raw';
 
 	import { afterUpdate, createEventDispatcher } from 'svelte';
-	import Relay from './Relay.svelte';
-	import Other from './Other.svelte';
-	import Reference from '$lib/components/Reference.svelte';
-	import Hashtag from './Hashtag.svelte';
-	import OGP from './OGP.svelte';
-	import { kinds } from '$lib/kind';
+
 	import { modalStore } from '$lib/stores/store';
-	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
 	import {
 		ListBox,
@@ -384,8 +373,8 @@
 					comboboxValue = '';
 					shareNote(selectedIndex);
 				}}
-				><svelte:fragment slot="lead">{@html ShareIcon}</svelte:fragment
-				>Share</ListBoxItem
+				><svelte:fragment slot="lead">{@html ShareIcon}</svelte:fragment>Share
+				on Nostr</ListBoxItem
 			>
 
 			<ListBoxItem
