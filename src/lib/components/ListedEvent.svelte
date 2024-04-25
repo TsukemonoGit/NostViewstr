@@ -332,7 +332,7 @@
 		data-popup="popupCombobox"
 	>
 		<ListBox rounded="rounded-none" class="fill-black dark:fill-white ">
-			{#if selectedIndex.detail.editable}<ListBoxItem
+			{#if selectedIndex?.detail?.editable}<ListBoxItem
 					name="medium"
 					value="edit"
 					bind:group={comboboxValue}
@@ -388,7 +388,8 @@
 
 			<ListBoxItem
 				name="medium"
-				disabled={!selectedIndex.detail.event ||
+				disabled={!selectedIndex.detail.event &&
+					selectedIndex.detail.tagArray.length > 0 &&
 					selectedIndex.detail.tagArray[1].length !== 64}
 				value="Open"
 				bind:group={comboboxValue}
