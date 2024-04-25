@@ -48,6 +48,7 @@
 	import { get } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { createEventDispatcher } from 'svelte';
+	import { decode, naddrEncode } from '$lib/nip19';
 
 	export let pubkey: string;
 	export let kind: number;
@@ -382,6 +383,9 @@
 							kind: kind,
 							relays: $relaySet[pubkey]?.bookmarkRelays
 						};
+						console.log(address);
+						console.log(naddrEncode(address));
+						console.log(decode(naddrEncode(address)));
 
 						const url = res.share
 							? window.location.href
@@ -556,7 +560,7 @@
 						)} / ${$listSize}`}
 					</div>
 				</div> -->
-			<!--ボタン押したときに説明的なやつをとーすとてきなやつで-->
+			<!--ボタン押したときに説明的なやつをとーすとてきなやつでそれかポップアップメニューでやる-->
 			<button
 				class="btn btn-icon pageIcon {multiButtonClass}"
 				disabled={pubkey !== $pubkey_viewer || disabled}

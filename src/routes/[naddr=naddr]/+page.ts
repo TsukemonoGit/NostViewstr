@@ -6,6 +6,7 @@ import type { PageLoad } from './$types';
 import { relaySet, defaultRelays, initRelaySet } from '$lib/stores/relays';
 
 import { get } from 'svelte/store';
+import { decode } from '$lib/nip19';
 
 //https://kit.svelte.jp/docs/load
 //ページを読み込む前に有効なparamかチェック
@@ -20,7 +21,7 @@ export const load: PageLoad<{
 	//bookmarkEvents.set([]);
 
 	try {
-		const { type, data } = nip19.decode(params.naddr);
+		const { type, data } = decode(params.naddr);
 
 		console.log('[decode]', type, data);
 		if (type === 'naddr') {
