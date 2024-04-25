@@ -230,15 +230,17 @@
 						{/if}
 					</div>
 					<!--time-->
-					<div class="min-w-max">
-						<button
+					<div class="min-w-max text-sm place-self-center">
+						<!-- <button
 							class="text-sm underline decoration-secondary-500"
 							on:click={() => {
 								if (tagArray) {
 									OpenNoteJson(note, tagArray);
 								}
-							}}>{new Date(note.created_at * 1000).toLocaleString()}</button
-						>
+							}}>-->{new Date(
+							note.created_at * 1000
+						).toLocaleString()}<!-- </button 
+						>-->
 					</div>
 				{:else}
 					<!--name-->
@@ -256,15 +258,18 @@
 					<!--display_name-->
 					<div />
 					<!--time-->
-					<div class="min-w-max">
-						<button
+					<div class="min-w-max text-sm place-self-center">
+						<!-- <button
 							class="text-sm underline decoration-secondary-500"
 							on:click={() => {
 								if (tagArray) {
 									OpenNoteJson(note, tagArray);
 								}
-							}}>{new Date(note.created_at * 1000).toLocaleString()}</button
-						>
+							}}>-->{new Date(
+							note.created_at * 1000
+						).toLocaleString()}
+						<!-- </button 
+						>-->
 					</div>
 				{/if}
 			</div>

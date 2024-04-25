@@ -4,6 +4,7 @@
 	import { MenuMode, ogpDescription } from '$lib/otherFunctions.js';
 	import ModalPostNote from '$lib/components/modals/ModalPostNote.svelte';
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
+	import DescriptionIcon from '@material-design-icons/svg/round/description.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 	import OpenIcon from '@material-design-icons/svg/round/open_in_browser.svg?raw';
 	import ShareIcon from '@material-design-icons/svg/round/chat.svg?raw';
@@ -16,7 +17,7 @@
 		windowOpen
 	} from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
-
+	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { amount, pageNum, listSize } from '$lib/stores/pagination';
 	import { MultiMenu, isMulti } from '$lib/stores/settings';
 	import MenuButtons from './MenuButtons.svelte';
@@ -146,25 +147,6 @@
 		($pageNum + 1) * Math.min($amount, $listSize)
 	);
 
-	$: menuSearch = noEdit
-		? MenuMode.Viewer
-		: $isMulti === MultiMenu.Multi
-		? MenuMode.Multi
-		: $isMulti === MultiMenu.Sort
-		? MenuMode.Sort
-		: isOwner
-		? MenuMode.other
-		: MenuMode.none;
-	$: menuEvent = noEdit
-		? MenuMode.Viewer
-		: $isMulti === MultiMenu.Multi
-		? MenuMode.Multi
-		: $isMulti === MultiMenu.Sort
-		? MenuMode.Sort
-		: isOwner
-		? MenuMode.Owner
-		: MenuMode.Viewer;
-
 	const dispatch = createEventDispatcher();
 	function handleClick(myIndex: number, tagArray: string[]) {
 		dispatch('EditTag', {
@@ -283,6 +265,28 @@
 		};
 		modalStore.trigger(modal);
 	}
+
+	//-------------------------------イベントJSON表示
+	const jsonModalComponent: ModalComponent = {
+		ref: ModalEventJson
+	};
+
+	const OpenNoteJson = (selected: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => {
+		const modal = {
+			type: 'component' as const,
+			title: 'Details',
+			backdropClasses: '!bg-surface-400/80',
+			meta: {
+				note: selected.detail.event,
+				tagArray: selected.detail.tagArray
+			},
+
+			component: jsonModalComponent
+		};
+		modalStore.trigger(modal);
+	};
 </script>
 
 <div class=" relative">
@@ -403,6 +407,17 @@
 				}}
 				><svelte:fragment slot="lead">{@html OpenIcon}</svelte:fragment>Open in
 				njump</ListBoxItem
+			>
+			<ListBoxItem
+				name="medium"
+				value="detail"
+				bind:group={comboboxValue}
+				on:click={() => {
+					comboboxValue = '';
+					OpenNoteJson(selectedIndex);
+				}}
+				><svelte:fragment slot="lead">{@html DescriptionIcon}</svelte:fragment
+				>View Detail</ListBoxItem
 			>
 		</ListBox>
 		<!-- <div class="arrow bg-surface-100-800-token border" /> -->

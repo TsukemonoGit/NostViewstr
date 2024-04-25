@@ -164,22 +164,24 @@
 						{/if}
 					</div>
 					<!--time-->
-					<div class="min-w-max">
-						<button
+					<div class="min-w-max text-sm place-self-center">
+						<!-- <button
 							class="text-sm underline decoration-secondary-500"
 							on:click={() => {
 								if (tagArray) {
 									OpenNoteJson(metadata, tagArray);
 								}
 							}}
-							>{new Date(metadata.created_at * 1000).toLocaleString([], {
-								year: 'numeric',
-								month: '2-digit',
-								day: '2-digit',
-								hour: '2-digit',
-								minute: '2-digit'
-							})}</button
-						>
+							>-->{new Date(
+							metadata.created_at * 1000
+						).toLocaleString([], {
+							year: 'numeric',
+							month: '2-digit',
+							day: '2-digit',
+							hour: '2-digit',
+							minute: '2-digit'
+						})}<!-- </button
+						>-->
 					</div>
 				</div>
 

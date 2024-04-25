@@ -143,18 +143,8 @@
 		<header class={cHeader}>
 			{$modalStore[0].title ?? '(title missing)'}
 		</header>
-
-		<div
-			class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto break-all max-w-[768px] p-1"
-		>
-			{JSON.stringify($modalStore[0].meta.note, undefined, 4)}
-		</div>
-		<div class="text-right text-sm">
-			Content Length: {$modalStore[0].meta.note.content.length}, Tags Count: {$modalStore[0]
-				.meta.note.tags.length}
-		</div>
 		{#if $modalStore[0].meta.tagArray && $modalStore[0].meta.tagArray.length > 0}
-			<div class="mt-2"><b>list tag</b></div>
+			<div class="mt-2"><b>List tag</b></div>
 			<div class="grid grid-cols-[1fr_auto] max-w-[768px]">
 				<div
 					class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto p-1"
@@ -170,26 +160,40 @@
 				{/if}
 			</div>
 		{/if}
+
+		{#if event}<div class="mt-2"><b>Event</b></div>
+			<div
+				class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto break-all max-w-[768px] p-1"
+			>
+				{JSON.stringify($modalStore[0].meta.note, undefined, 4)}
+			</div>
+			<div class="text-right text-sm">
+				Content Length: {$modalStore[0].meta.note.content.length}, Tags Count: {$modalStore[0]
+					.meta.note.tags.length}
+			</div>
+		{/if}
+
 		<footer class="modal-footer {parent.regionFooter} mt-2">
 			<!--button-->
 			<div class="flex flex-wrap gap-2">
-				<button
-					type="button"
-					class="btn variant-filled-success p-1"
-					on:click={downloadJson}>Download Json</button
-				>
-				<button
-					type="button"
-					class="btn variant-filled-secondary p-1"
-					on:click={onClickBroadcast}>Broadcast</button
-				>
+				{#if event}
+					<button
+						type="button"
+						class="btn variant-filled-success p-1"
+						on:click={downloadJson}>Download Json</button
+					>
+					<button
+						type="button"
+						class="btn variant-filled-secondary p-1"
+						on:click={onClickBroadcast}>Broadcast</button
+					>
 
-				<button
-					type="button"
-					class="btn variant-filled-secondary p-1"
-					on:click={() => onClickButton('note')}>copy noteID</button
-				>
-
+					<button
+						type="button"
+						class="btn variant-filled-secondary p-1"
+						on:click={() => onClickButton('note')}>copy noteID</button
+					>
+				{/if}
 				<!-- <button
 					type="button"
 					class="btn variant-filled-secondary p-1"

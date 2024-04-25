@@ -564,7 +564,7 @@
 				setSelectedIndex={{
 					detail: {
 						number: tag.id,
-						event: undefined,
+						event: metadata,
 						tagArray: tag.name
 					}
 				}}
