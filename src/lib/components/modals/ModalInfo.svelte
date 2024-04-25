@@ -158,21 +158,30 @@
 		<!-- </div>  -->
 
 		<!-- Enable for debugging: -->
-		<div class="flex gap-2">{$_('modal.info.light_switch')}<LightSwitch /></div>
+		<div class="flex gap-2">
+			{$_('modal.info.light_switch')}<LightSwitch />
+		</div>
 
 		<!--ログインの許可のやつ全スキップした人のためとか-->
 
 		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-2">
-			{$_('modal.info.urlandIconOff')}
-			<SlideToggle size="sm" name="slide" bind:checked={toggleValue} />
-			{$_('modal.info.urlandIconOn')}
+			{$_('modal.info.data')}<SlideToggle
+				size="sm"
+				name="slide"
+				bind:checked={toggleValue}
+				>{toggleValue
+					? $_('modal.info.urlandIconOn')
+					: $_('modal.info.urlandIconOff')}</SlideToggle
+			>
 		</div>
 
 		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-2">
 			{$_('modal.info.contentwarning')}
-			<SlideToggle size="sm" name="slide" bind:checked={warningToggle} />
+			<SlideToggle size="sm" name="slide" bind:checked={warningToggle}
+				>{warningToggle ? 'ON' : 'OFF'}</SlideToggle
+			>
 		</div>
 
 		<div class="space-y-2">

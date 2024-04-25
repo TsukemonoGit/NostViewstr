@@ -43,10 +43,11 @@
       },
       "share": "Share myLists (URLs you are browsing) with nostr",
       "urlandIcon": "Show/hide icons and URL previews",
-      "urlandIconOff": "Light mode",
-      "urlandIconOn": "Normal mode",
+      "urlandIconOff": "Light",
+      "urlandIconOn": "Normal",
       "backButton": "Show Back button",
-      "shareNaddr": "Share myList (Naddr) with nostr"
+      "shareNaddr": "Share myList (Naddr) with nostr",
+      "data": "Traffic"
     },
     "addNote_body": "Enter an ID starting with 'note' , 'nevent' , 'nostr:' or 'naddr'.",
     "deleteTag": {
