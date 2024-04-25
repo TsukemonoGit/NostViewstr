@@ -383,9 +383,6 @@
 							kind: kind,
 							relays: $relaySet[pubkey]?.bookmarkRelays
 						};
-						console.log(address);
-						console.log(naddrEncode(address));
-						console.log(decode(naddrEncode(address)));
 
 						const url = res.share
 							? window.location.href

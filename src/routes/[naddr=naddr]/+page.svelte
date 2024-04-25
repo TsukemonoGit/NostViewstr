@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
-
+	import { _ } from 'svelte-i18n';
 	import type { PageData } from './$types';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
@@ -43,7 +43,16 @@ pubkey:{nip19.npubEncode(data.pubkey)}"
 </svelte:head>
 
 {#if !settings}
-	<Settings {settingFunc} />
+	<div class="container h-full mx-auto flex justify-center items-center">
+		<div class="mt-5">
+			<h1 class="h1 mb-5">{$_('main.title')}</h1>
+
+			<div class="space-t-5">
+				kind:{data.kind}
+				<Settings {settingFunc} />
+			</div>
+		</div>
+	</div>
 {:else}
 	<ListedEventList
 		bind:pubkey={data.pubkey}
