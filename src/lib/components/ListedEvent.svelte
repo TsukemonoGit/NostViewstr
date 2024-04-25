@@ -7,6 +7,7 @@
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 	import OpenIcon from '@material-design-icons/svg/round/open_in_browser.svg?raw';
 	import ShareIcon from '@material-design-icons/svg/round/chat.svg?raw';
+	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
 
 	import { nip19, type Event as NostrEvent } from 'nostr-tools';
 	import {
@@ -36,6 +37,7 @@
 	} from '@skeletonlabs/skeleton';
 	import EventandButtons from './EventandButtons.svelte';
 	import type { Nostr } from 'nosvelte';
+	import type { SelectIndex } from '$lib/otherFunctions';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
@@ -53,13 +55,7 @@
 	export let noEdit: boolean = false;
 	export let pubkey: string;
 	export let isNaddr: boolean;
-	let selectedIndex: {
-		detail: {
-			number: number;
-			event: Nostr.Event<number> | undefined;
-			tagArray: string[];
-		};
-	} = {
+	let selectedIndex: SelectIndex = {
 		detail: {
 			number: 0,
 			event: undefined,
@@ -137,7 +133,7 @@
 	);
 
 	const dispatch = createEventDispatcher();
-	function handleClick(myIndex: number, tagArray: string[]) {
+	function handleClickEdit(myIndex: number, tagArray: string[]) {
 		dispatch('EditTag', {
 			number: myIndex,
 			tagArray: tagArray
@@ -217,7 +213,7 @@
 	const postNoteModalComponent: ModalComponent = {
 		ref: ModalPostNote
 	};
-	function shareNote(selectedIndex: { detail: any }) {
+	function shareNote(selectedIndex: SelectIndex) {
 		const tagArray = selectedIndex.detail.tagArray;
 		const note = selectedIndex.detail.event;
 		const tags = tagArray
@@ -260,9 +256,7 @@
 		ref: ModalEventJson
 	};
 
-	const OpenNoteJson = (selected: {
-		detail: { number: number; event: any; tagArray: any };
-	}) => {
+	const OpenNoteJson = (selected: SelectIndex) => {
 		const modal = {
 			type: 'component' as const,
 			title: 'Details',
@@ -319,7 +313,7 @@
 								{filter}
 								bind:selectedIndex
 								{kind}
-								{handleClick}
+								handleClick={handleClickEdit}
 								{CheckNote}
 							/>
 						{/if}
@@ -334,10 +328,25 @@
 
 	<div
 		bind:this={popupElement}
-		class="absolute card w-48 shadow-xl py-2 border"
+		class="absolute card w-48 shadow-xl py-2 border border-primary-400-500-token"
 		data-popup="popupCombobox"
 	>
 		<ListBox rounded="rounded-none" class="fill-black dark:fill-white ">
+			{#if selectedIndex.detail.editable}<ListBoxItem
+					name="medium"
+					value="edit"
+					bind:group={comboboxValue}
+					on:click={() => {
+						comboboxValue = '';
+						handleClickEdit(
+							selectedIndex.detail.number,
+							selectedIndex.detail.tagArray
+						);
+						//atodekaku
+					}}
+					><svelte:fragment slot="lead">{@html EditIcon}</svelte:fragment
+					>Edit</ListBoxItem
+				>{/if}
 			<ListBoxItem
 				disabled={!isOwner ||
 					!listEvent?.kind ||
@@ -409,6 +418,7 @@
 				>View Detail</ListBoxItem
 			>
 		</ListBox>
+		<div class="arrow bg-primary-400-500-token" />
 		<!-- <div class="arrow bg-surface-100-800-token border" /> -->
 	</div>
 </div>

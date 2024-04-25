@@ -13,6 +13,14 @@ export enum MenuMode {
 	none, //ぼたんなし
 	Sort
 }
+export interface SelectIndex {
+	detail: {
+		number: number;
+		event: Nostr.Event<number> | undefined;
+		tagArray: string[];
+		editable?: boolean;
+	};
+}
 
 // サーバーサイドでのOGP情報取得は不要なので、クライアントサイド用の関数を追加する
 interface Ogp {

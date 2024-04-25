@@ -29,7 +29,7 @@
 
 	import MenuByType from './MenuByType.svelte';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
-
+	import type { SelectIndex } from '$lib/otherFunctions';
 	export let tag: {
 		id: number;
 		name: string[];
@@ -39,18 +39,10 @@
 	export let filter: {};
 	export let isOwner: boolean;
 	export let pubkey: string;
-	export let selectedIndex: {
-		detail: {
-			number: number;
-			event: Nostr.Event<number> | undefined;
-			tagArray: string[];
-		};
-	};
+	export let selectedIndex: SelectIndex;
 	export let kind: number | undefined;
 	export let handleClick: any;
-	export let CheckNote: (e: {
-		detail: { number: number; event: any; tagArray: any };
-	}) => void;
+	export let CheckNote: (e: SelectIndex) => void;
 	const uniqueEvent = (eventList: NostrEvent[]): NostrEvent => {
 		//console.log(eventList);
 		eventList.sort((a, b) => b.created_at - a.created_at);
@@ -580,20 +572,21 @@
 		class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1"
 	>
 		<Emoji tagArray={tag.name} />
-		{#if isOwner && !$isMulti}
+		<!-- {#if isOwner && !$isMulti}
 			<button
 				class="btn p-2 fill-surface-600 dark:fill-surface-300"
 				on:click={() => {
 					handleClick(tag.id, tag.name);
 				}}>{@html EditIcon}</button
 			>
-		{/if}
+		{/if} -->
 		<MenuByType
 			setSelectedIndex={{
 				detail: {
 					number: tag.id,
 					event: undefined,
-					tagArray: tag.name
+					tagArray: tag.name,
+					editable: isOwner
 				}
 			}}
 			{popupCombobox}
@@ -607,20 +600,21 @@
 		class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 	>
 		<Relay tagArray={tag.name} />
-		{#if isOwner && $isMulti === MultiMenu.None}
+		<!-- {#if isOwner && $isMulti === MultiMenu.None}
 			<button
 				class="btn p-2 fill-surface-600 dark:fill-surface-300"
 				on:click={() => {
 					handleClick(tag.id, tag.name);
 				}}>{@html EditIcon}</button
 			>
-		{/if}
+		{/if} -->
 		<MenuByType
 			setSelectedIndex={{
 				detail: {
 					number: tag.id,
 					event: undefined,
-					tagArray: tag.name
+					tagArray: tag.name,
+					editable: isOwner
 				}
 			}}
 			{popupCombobox}
@@ -633,20 +627,21 @@
 		class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 	>
 		<Reference tagArray={tag.name} />
-		{#if isOwner && $isMulti === MultiMenu.None}
+		<!-- {#if isOwner && $isMulti === MultiMenu.None}
 			<button
 				class="btn p-2 fill-surface-600 dark:fill-surface-300"
 				on:click={() => {
 					handleClick(tag.id, tag.name);
 				}}>{@html EditIcon}</button
 			>
-		{/if}
+		{/if} -->
 		<MenuByType
 			setSelectedIndex={{
 				detail: {
 					number: tag.id,
 					event: undefined,
-					tagArray: tag.name
+					tagArray: tag.name,
+					editable: isOwner
 				}
 			}}
 			{popupCombobox}
@@ -661,20 +656,21 @@
 		class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 	>
 		<Hashtag tagArray={tag.name} />
-		{#if isOwner && $isMulti === MultiMenu.None}
+		<!-- {#if isOwner && $isMulti === MultiMenu.None}
 			<button
 				class="btn p-2 fill-surface-600 dark:fill-surface-300"
 				on:click={() => {
 					handleClick(tag.id, tag.name);
 				}}>{@html EditIcon}</button
 			>
-		{/if}
+		{/if} -->
 		<MenuByType
 			setSelectedIndex={{
 				detail: {
 					number: tag.id,
 					event: undefined,
-					tagArray: tag.name
+					tagArray: tag.name,
+					editable: isOwner
 				}
 			}}
 			{popupCombobox}
@@ -689,20 +685,21 @@
 		class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 	>
 		<Other tagArray={tag.name} />
-		{#if isOwner && $isMulti === MultiMenu.None}
+		<!-- {#if isOwner && $isMulti === MultiMenu.None}
 			<button
 				class="btn p-2 fill-surface-600 dark:fill-surface-300"
 				on:click={() => {
 					handleClick(tag.id, tag.name);
 				}}>{@html EditIcon}</button
 			>
-		{/if}
+		{/if} -->
 		<MenuByType
 			setSelectedIndex={{
 				detail: {
 					number: tag.id,
 					event: undefined,
-					tagArray: tag.name
+					tagArray: tag.name,
+					editable: isOwner
 				}
 			}}
 			{popupCombobox}
@@ -717,20 +714,21 @@
 		class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto_auto] gap-1 break-all"
 	>
 		{JSON.stringify(tag.name)}
-		{#if isOwner && $isMulti === MultiMenu.None}
+		<!-- {#if isOwner && $isMulti === MultiMenu.None}
 			<button
 				class="btn p-2 fill-surface-600 dark:fill-surface-300"
 				on:click={() => {
 					handleClick(tag.id, tag.name);
 				}}>{@html EditIcon}</button
 			>
-		{/if}
+		{/if} -->
 		<MenuByType
 			setSelectedIndex={{
 				detail: {
 					number: tag.id,
 					event: undefined,
-					tagArray: tag.name
+					tagArray: tag.name,
+					editable: isOwner
 				}
 			}}
 			{popupCombobox}

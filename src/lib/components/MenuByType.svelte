@@ -4,25 +4,11 @@
 	import { MultiMenu, isMulti } from '$lib/stores/settings';
 	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
 	import { checkedIndexList } from '$lib/stores/bookmarkEvents';
-
+	import type { SelectIndex } from '$lib/otherFunctions';
 	export let popupCombobox: PopupSettings;
-	export let setSelectedIndex: {
-		detail: {
-			number: number;
-			event: Nostr.Event<number> | undefined;
-			tagArray: string[];
-		};
-	};
-	export let selectedIndex: {
-		detail: {
-			number: number;
-			event: Nostr.Event<number> | undefined;
-			tagArray: string[];
-		};
-	};
-	export let CheckNote: (e: {
-		detail: { number: number; event: any; tagArray: any };
-	}) => void;
+	export let setSelectedIndex: SelectIndex;
+	export let selectedIndex: SelectIndex;
+	export let CheckNote: (e: SelectIndex) => void;
 
 	function onChangeCheckList(
 		idx: number,
