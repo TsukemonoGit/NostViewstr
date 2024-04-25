@@ -73,8 +73,6 @@ import type { ToastSettings } from '@skeletonlabs/skeleton';
 import { toastStore } from './stores/store';
 import type { Nostr } from 'nosvelte';
 
-import { launch as launchNostrLoginDialog } from 'nostr-login';
-
 interface Kind3Relay {
 	[key: string]: {
 		read: boolean;

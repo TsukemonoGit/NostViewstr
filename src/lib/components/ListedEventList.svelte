@@ -232,6 +232,7 @@
 			return;
 		}
 		console.log('DeleteNote');
+		console.log(e.detail);
 		const number: number = e.detail.number + $pageNum * $amount;
 		const listNumber = $listNum;
 		console.log(number);
