@@ -556,7 +556,7 @@
 						)} / ${$listSize}`}
 					</div>
 				</div> -->
-
+			<!--ボタン押したときに説明的なやつをとーすとてきなやつで-->
 			<button
 				class="btn btn-icon pageIcon {multiButtonClass}"
 				disabled={pubkey !== $pubkey_viewer || disabled}

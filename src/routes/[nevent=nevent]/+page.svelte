@@ -38,9 +38,15 @@
 	let kind: number | undefined = data.kind;
 
 	let isOnMount = false;
-	let DeleteNote: (e: CustomEvent<any>) => void;
-	let MoveNote: (e: CustomEvent<any>) => void;
-	let CheckNote: (e: CustomEvent<any>) => void;
+	let DeleteNote: (e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => void;
+	let MoveNote: (e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => void;
+	let CheckNote: (e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => void;
 	let isOwner: boolean = false;
 	$: isOwner = $pubkey_viewer === pubkey;
 	let settings: boolean = false;
@@ -48,6 +54,7 @@
 		settings = true;
 		//goto(`${window.location.pathname}/${kind}`);
 	}
+	let relays: string[];
 	$: console.log('isOwner', isOwner);
 	onMount(async () => {
 		if (!isOnMount) {
@@ -87,7 +94,33 @@
 		// 		console.log('failed to login');
 		// 	}
 		// }
-		viewEvent = await getViewEvent(data.id as string, data.relays as string[]);
+		const getSetRelay = async (): Promise<string[]> => {
+			if (data.relays) {
+				return data.relays;
+			}
+
+			if (data.pubkey) {
+				$relaySet[data.pubkey] = initRelaySet;
+				await getRelays(data.pubkey);
+				return $relaySet[data.pubkey].bookmarkRelays;
+			} else {
+				return [];
+			}
+		};
+		relays = await getSetRelay();
+		console.log(relays);
+		if (relays.length <= 0) {
+			console.log(relays);
+			const t: ToastSettings = {
+				message: `error`,
+
+				timeout: undefined
+			};
+			const getRelaysToast = toastStore.trigger(t);
+			console.log(getRelaysToast);
+			return;
+		}
+		viewEvent = await getViewEvent(data.id as string, relays);
 		if (!pubkey) {
 			pubkey = viewEvent.pubkey;
 		}
@@ -162,7 +195,9 @@
 	// }
 </script>
 
-{#if $URLPreview === undefined}
+{#if relays?.length <= 0}
+	To display content, please specify relays or pubkey for the Nevent
+{:else if $URLPreview === undefined}
 	<div class="container h-full mx-auto flex justify-center items-center">
 		<div class="mt-5">
 			<h1 class="h1 mb-5">{$_('main.title')}</h1>
