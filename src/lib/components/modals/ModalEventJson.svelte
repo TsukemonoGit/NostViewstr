@@ -12,7 +12,7 @@
 	export let parent: any;
 
 	// Base Classes
-	const cBase = 'card p-4  shadow-xl  break-all';
+	const cBase = 'card p-4  shadow-xl  break-all w-[90vw] max-w-[768px] ';
 	const cHeader = 'text-2xl font-bold';
 	//$modalStore[0]?.meta.hexKey
 
