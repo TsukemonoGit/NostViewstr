@@ -6,11 +6,11 @@
 	import { nip19, type Event, nip05 } from 'nostr-tools';
 
 	import { _ } from 'svelte-i18n';
-	import type { MenuMode } from '$lib/otherFunctions.js';
-
-	import { allView, iconView } from '$lib/stores/settings';
+	import { loadOgp, type MenuMode } from '$lib/otherFunctions.js';
+	import OGP from './OGP.svelte';
+	import { URLPreview, allView, iconView } from '$lib/stores/settings';
 	import { goto } from '$app/navigation';
-	import { listNum } from '$lib/stores/bookmarkEvents';
+	import { listNum, ogpStore } from '$lib/stores/bookmarkEvents';
 	import { relaySet } from '$lib/stores/relays';
 	import Content from './Content.svelte';
 	export let metadata: Event;
@@ -213,12 +213,24 @@
 				</div>
 
 				{#if content.website}
-					<a
-						class="anchor mb-0.5"
-						href={content.website}
-						rel="external noreferrer"
-						target="_blank">{content.website}</a
-					>
+					{#if $URLPreview}{#await loadOgp(content.website)}<a
+								class="anchor mb-0.5 break-all"
+								href={content.website}
+								rel="external noreferrer"
+								target="_blank">{content.website}</a
+							>{:then ogp}{#if $ogpStore[content.website] && $ogpStore[content.website].title && $ogpStore[content.website].title !== ''}
+								<OGP ogp={$ogpStore[content.website]} url={content.website} />
+							{:else}<a
+									class="anchor mb-0.5 break-all"
+									href={content.website}
+									rel="external noreferrer"
+									target="_blank">{content.website}</a
+								>{/if}{/await}{:else}<a
+							class="anchor mb-0.5 break-all"
+							href={content.website}
+							rel="external noreferrer"
+							target="_blank">{content.website}</a
+						>{/if}
 				{/if}
 			</div>
 		</div>
