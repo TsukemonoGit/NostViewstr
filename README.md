@@ -12,7 +12,7 @@ https://nostviewstr.vercel.app/
 - nip-07 により書き込み
   に対応
 
-- 下メニューの設定（⚙）の横のボタンは 普通モード → 複数編集モード → 並べ替えモード → 普通モード　…
+
 
 ## Tool for Displaying and Editing
 
