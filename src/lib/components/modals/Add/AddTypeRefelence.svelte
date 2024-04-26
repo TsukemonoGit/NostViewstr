@@ -30,19 +30,19 @@
 </article>
 
 <div class="input1-group input1-group-divider grid-cols-[auto_1fr] m-2">
-	<label class="label">
+	<label class="label mt-1">
 		<span>Link Name</span>
 		<input
-			class="input px-1"
+			class="input px-1 py-1"
 			type="text"
 			placeholder="link name"
 			bind:value={input2}
 		/></label
 	>
-	<label class="label"
+	<label class="label mt-1"
 		><span>URL</span>
 		<input
-			class="input px-1"
+			class="input px-1 py-1"
 			type="text"
 			placeholder="http://"
 			bind:value={input1}
