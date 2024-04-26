@@ -482,7 +482,8 @@
 		modalStore.close();
 		//	}
 	}
-	let multimenuValue: string = 'normal';
+	const multimenuValueSet = ['normal', 'multi', 'sort'];
+	let multimenuValue: string = multimenuValueSet[0];
 	const popupMultiMenu: PopupSettings = {
 		event: 'click',
 		target: 'popupMultiMenu',
@@ -491,7 +492,8 @@
 		state: (test) => {
 			console.log(test);
 
-			if (!test.state) {
+			if (test.state) {
+				multimenuValue = multimenuValueSet[$isMulti];
 			}
 		}
 	};
@@ -613,9 +615,9 @@
 		<ListBox rounded="rounded-none">
 			<ListBoxItem
 				name="medium"
-				value="normal"
+				value={multimenuValueSet[0]}
 				bind:group={multimenuValue}
-				class={multimenuValue === 'normal'
+				class={multimenuValue === multimenuValueSet[0]
 					? 'dark:fill-black fill-white'
 					: 'dark:fill-white fill-black'}
 				on:click={() => {
@@ -626,13 +628,13 @@
 				>Normal</ListBoxItem
 			>
 			<ListBoxItem
-				value="multi"
+				value={multimenuValueSet[1]}
 				bind:group={multimenuValue}
 				name="medium"
 				on:click={() => {
 					$isMulti = MultiMenu.Multi;
 				}}
-				class={multimenuValue === 'multi'
+				class={multimenuValue === multimenuValueSet[1]
 					? 'dark:fill-black fill-white'
 					: 'dark:fill-white fill-black'}
 				><svelte:fragment slot="lead">{@html multiIcon}</svelte:fragment>Multi
@@ -640,8 +642,8 @@
 			</ListBoxItem>
 			<ListBoxItem
 				name="medium"
-				value="sort"
-				class={multimenuValue === 'sort'
+				value={multimenuValueSet[2]}
+				class={multimenuValue === multimenuValueSet[2]
 					? 'dark:fill-black fill-white'
 					: 'dark:fill-white fill-black'}
 				bind:group={multimenuValue}
