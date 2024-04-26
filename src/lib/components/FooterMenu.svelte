@@ -14,11 +14,13 @@
 	import lastIcon from '@material-design-icons/svg/round/last_page.svg?raw';
 	import backIcon from '@material-design-icons/svg/round/chevron_left.svg?raw';
 	import nextIcon from '@material-design-icons/svg/round/chevron_right.svg?raw';
-	import multiIcon from '@material-design-icons/svg/round/checklist_rtl.svg?raw';
+	import multiIcon from '@material-design-icons/svg/round/done_all.svg?raw';
 	import menuIcon from '@material-design-icons/svg/round/menu.svg?raw';
 	import LeftIcon from '@material-design-icons/svg/round/west.svg?raw';
 	import HomeIcon from '@material-design-icons/svg/round/home.svg?raw';
 	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
+	import checkIcon from '@material-design-icons/svg/outlined/toc.svg?raw';
+	import multiMenuIcon from '@material-design-icons/svg/round/checklist_rtl.svg?raw';
 	import ModalTagList from '$lib/components/modals/ModalTagList.svelte';
 	import ModalInfo from '$lib/components/modals/ModalInfo.svelte';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
@@ -37,9 +39,13 @@
 		identifierListsMap
 	} from '$lib/stores/bookmarkEvents';
 	import {
+		ListBox,
+		ListBoxItem,
 		ProgressRadial,
+		popup,
 		type ModalComponent,
 		type ModalSettings,
+		type PopupSettings,
 		type ToastSettings
 	} from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
@@ -476,6 +482,19 @@
 		modalStore.close();
 		//	}
 	}
+	let multimenuValue: string = 'normal';
+	const popupMultiMenu: PopupSettings = {
+		event: 'click',
+		target: 'popupMultiMenu',
+		placement: 'top',
+		closeQuery: '.listbox-item',
+		state: (test) => {
+			console.log(test);
+
+			if (!test.state) {
+			}
+		}
+	};
 </script>
 
 <div
@@ -558,13 +577,18 @@
 					</div>
 				</div> -->
 			<!--ボタン押したときに説明的なやつをとーすとてきなやつでそれかポップアップメニューでやる-->
-			<button
+			<!-- <button
 				class="btn btn-icon pageIcon {multiButtonClass}"
 				disabled={pubkey !== $pubkey_viewer || disabled}
 				on:click={onClickMulti}
 				>{@html $isMulti === MultiMenu.Sort ? swap : multiIcon}</button
+			> -->
+			<button
+				class="btn btn-icon pageIcon"
+				disabled={pubkey !== $pubkey_viewer || disabled}
+				use:popup={popupMultiMenu}>{@html multiMenuIcon}</button
 			>
-
+			<!-- {#if multimenuValue === 'multiIcon'}{@html multiIcon}{:else if multimenuValue === 'swap'}{@html swap}{:else}{@html checkIcon}{/if} -->
 			<!-- <button class={buttonClass}>{@html updateIcon}</button> -->
 
 			<button class={buttonClass} on:click={onClickInfo}>{@html Setting}</button
@@ -578,6 +602,56 @@
 			> -->
 		{/if}
 	</div>
+</div>
+
+<div
+	class="absolute card w-48 shadow-xl py-2 border border-primary-400-500-token"
+	data-popup="popupMultiMenu"
+>
+	<ListBox rounded="rounded-none">
+		<ListBoxItem
+			name="medium"
+			value="normal"
+			bind:group={multimenuValue}
+			class={multimenuValue === 'normal'
+				? 'dark:fill-black fill-white'
+				: 'dark:fill-white fill-black'}
+			on:click={() => {
+				//atodekaku
+				$isMulti = MultiMenu.None;
+			}}
+			><svelte:fragment slot="lead">{@html checkIcon}</svelte:fragment
+			>Normal</ListBoxItem
+		>
+		<ListBoxItem
+			value="multi"
+			bind:group={multimenuValue}
+			name="medium"
+			on:click={() => {
+				$isMulti = MultiMenu.Multi;
+			}}
+			class={multimenuValue === 'multi'
+				? 'dark:fill-black fill-white'
+				: 'dark:fill-white fill-black'}
+			><svelte:fragment slot="lead">{@html multiIcon}</svelte:fragment>Multi
+			Select Mode
+		</ListBoxItem>
+		<ListBoxItem
+			name="medium"
+			value="sort"
+			class={multimenuValue === 'sort'
+				? 'dark:fill-black fill-white'
+				: 'dark:fill-white fill-black'}
+			bind:group={multimenuValue}
+			on:click={() => {
+				dispatch('SortReset');
+				$isMulti = MultiMenu.Sort;
+			}}
+			><svelte:fragment slot="lead">{@html swap}</svelte:fragment>Sort Mode</ListBoxItem
+		>
+	</ListBox>
+	<div class="arrow bg-primary-400-500-token" />
+	<!-- <div class="arrow bg-surface-100-800-token border" /> -->
 </div>
 
 <style>
