@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 
-	import { tagExp } from '$lib/kind';
 	import { nowProgress } from '$lib/stores/settings';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
@@ -11,7 +10,6 @@
 	export let tag: string[];
 	export let bkm: string | undefined;
 
-	$: placeholder = 'r';
 	let input1: string = tag?.length > 1 ? tag[1] : '';
 	let input2: string = tag?.length > 2 ? tag[2] : '';
 
