@@ -19,6 +19,7 @@
 	import AddTypeAddressPointer from './Add/AddTypeAddressPointer.svelte';
 	import EditTypeOther from './Add/EditTypeOther.svelte';
 	import { nowProgress } from '$lib/stores/settings';
+	import AddTypeRefelence from './Add/AddTypeRefelence.svelte';
 
 	export let parent: any;
 
@@ -51,8 +52,9 @@
 		kindsValidTag[$modalStore[0].value.kind]?.includes('relay');
 	const includesEmoji =
 		kindsValidTag[$modalStore[0].value.kind]?.includes('emoji');
-
-	const charactersToCheck = ['t', 'word', 'r'];
+	const includesRefelence =
+		kindsValidTag[$modalStore[0].value.kind]?.includes('r');
+	const charactersToCheck = ['t', 'word'];
 	let countCharacters = kindsValidTag[$modalStore[0].value.kind]?.filter(
 		(tag) => charactersToCheck.some((char) => tag.includes(char))
 	);
@@ -158,7 +160,7 @@
 <!-- @component This example creates a simple form modal. -->
 
 {#if $modalStore[0]}
-	<div class="modal-example-form {cBase} max-h-screen overflow-y-auto">
+	<div class="modal-example-form {cBase} max-h-[90%] overflow-y-auto">
 		<Accordion autocollapse>
 			<AccordionItem open>
 				<svelte:fragment slot="lead">🗒</svelte:fragment>
@@ -180,6 +182,7 @@
 							{/if}
 						</header>
 						{#if $modalStore[0].value.kind === 10002}
+							<hr class="!border-dashed mt-1" />
 							<AddType10002
 								{res}
 								{parent}
@@ -188,16 +191,21 @@
 							/>
 						{/if}
 						{#if (tag === undefined && includesA && includesE) || (tag !== undefined && (tag[0] === 'a' || tag[0] === 'e'))}
+							<hr class="!border-dashed mt-1" />
 							<AddTypeNoteAndNaddr {res} {parent} {onFormSubmit} />
 						{:else if (tag === undefined && includesE) || (tag !== undefined && tag[0] === 'e')}
+							<hr class="!border-dashed mt-1" />
 							<AddTypeNote {res} {parent} {onFormSubmit} />
 						{:else if (tag === undefined && includesA) || (tag !== undefined && tag[0] === 'a')}
+							<hr class="!border-dashed mt-1" />
 							<AddTypeNaddr {res} {parent} {onFormSubmit} />
 						{/if}
 
 						{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
+							<hr class="!border-dashed mt-1" />
 							<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
 						{#if (tag === undefined && includesEmoji) || (tag !== undefined && tag[0] === 'emoji')}
+							<hr class="!border-dashed mt-1" />
 							<AddTypeEmoji
 								{res}
 								{parent}
@@ -206,6 +214,7 @@
 							/>
 						{/if}
 						{#if (tag === undefined && includesRelay) || (tag !== undefined && tag[0] === 'relay')}
+							<hr class="!border-dashed mt-1" />
 							<AddTypeRelay
 								{res}
 								{parent}
@@ -215,7 +224,8 @@
 								viewList={$modalStore[0].value.viewList}
 							/>
 						{/if}
-						{#if $modalStore[0].value.kind !== 10002 && ((tag === undefined && countCharacters?.length > 0) || (tag !== undefined && (tag[0] === 'r' || tag[0] === 't' || tag[0] === 'word')))}
+						{#if (tag === undefined && countCharacters?.length > 0) || (tag !== undefined && (tag[0] === 't' || tag[0] === 'word'))}
+							<hr class="!border-dashed mt-1" />
 							<AddTypeRandTandWord
 								{res}
 								{parent}
@@ -225,11 +235,23 @@
 								{bkm}
 							/>
 						{/if}
+						{#if ($modalStore[0].value.kind !== 10002 && includesRefelence) || (tag !== undefined && tag[0] === 'r')}
+							<hr class="!border-dashed mt-1" />
+							<AddTypeRefelence
+								{res}
+								{parent}
+								{onFormSubmit}
+								tag={$modalStore[0].value.tag}
+								{bkm}
+							/>
+						{/if}
 						<!--編集であり知らんタグのとき（タグの中身だけ変更可にする）-->
 						{#if tag !== undefined && !uniqueArray().includes(tag[0])}
+							<hr class="!border-dashed mt-1" />
 							<EditTypeOther {res} {parent} {onFormSubmit} {tag} {bkm} />
 						{/if}
 						{#if tag === undefined && includesA}
+							<hr class="!border-dashed mt-1" />
 							<AddTypeAddressPointer {res} {parent} {onFormSubmit} {kind} />
 						{/if}
 					</div>
