@@ -131,24 +131,24 @@
 			return ['p', data.pubkey];
 		}
 	};
-	const nip19DecodeData = (decodeData: string) => {
-		const data = decodeData as unknown as nip19.DecodeResult;
-		if (data.type === 'naddr') {
-			return data.data as nip19.AddressPointer;
-		} else if (data.type === 'note') {
-			return data.data as string;
-		} else if (data.type === 'nevent') {
-			return data.data as nip19.EventPointer;
-		} else if (data.type === 'npub') {
-			return data.data as string;
-		} else if (data.type === 'nprofile') {
-			return data.data as nip19.ProfilePointer;
-		} else if (data.type === 'nsec') {
-			return data.data as string;
-		} else {
-			return data.data as string;
-		}
-	};
+	// const nip19DecodeData = (decodeData: string) => {
+	// 	const data = decodeData as unknown as nip19.DecodeResult;
+	// 	if (data.type === 'naddr') {
+	// 		return data.data as nip19.AddressPointer;
+	// 	} else if (data.type === 'note') {
+	// 		return data.data as string;
+	// 	} else if (data.type === 'nevent') {
+	// 		return data.data as nip19.EventPointer;
+	// 	} else if (data.type === 'npub') {
+	// 		return data.data as string;
+	// 	} else if (data.type === 'nprofile') {
+	// 		return data.data as nip19.ProfilePointer;
+	// 	} else if (data.type === 'nsec') {
+	// 		return data.data as string;
+	// 	} else {
+	// 		return data.data as string;
+	// 	}
+	// };
 	const nip19Npub = (decodeData: string) => {
 		const data = nip19.decode(decodeData);
 		return data.data as string;
@@ -452,14 +452,14 @@
 	>
 		<div slot="loading">
 			<div
-				class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-hidden break-all whitespace-pre-wrap"
+				class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden break-all whitespace-pre-wrap"
 			>
 				{nip19Nprofile(encodedId).pubkey}
 			</div>
 		</div>
 		<div slot="error">
 			<div
-				class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-hidden break-all whitespace-pre-wrap"
+				class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden break-all whitespace-pre-wrap"
 			>
 				{nip19Nprofile(encodedId).pubkey}
 			</div>
@@ -467,7 +467,7 @@
 
 		<div slot="nodata">
 			<div
-				class="-mt-0.5 px-2 opacity-60 text-sm whitespace-nowrap overflow-hidden break-all whitespace-pre-wrap"
+				class="-mt-0.5 px-2 opacity-60 text-sm overflow-hidden break-all whitespace-pre-wrap"
 			>
 				{nip19Nprofile(encodedId).pubkey}
 			</div>

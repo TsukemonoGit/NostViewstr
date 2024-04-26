@@ -1,10 +1,7 @@
 <script lang="ts">
-	import type { TabGroup, ToastSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { getEventHash, nip19, validateEvent } from 'nostr-tools';
-	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
+	import { validateEvent } from 'nostr-tools';
 	import { _ } from 'svelte-i18n';
-	import { parseNaddr } from '$lib/nostrFunctions';
 	import type { Nostr } from 'nosvelte';
 	import { pubkey_viewer } from '$lib/stores/settings';
 	import { onMount } from 'svelte';

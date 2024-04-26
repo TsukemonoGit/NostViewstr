@@ -7,15 +7,11 @@
 
 	import { setComOgps, setLFCOgps, uniqueTags } from '$lib/otherFunctions.js';
 	import { _ } from 'svelte-i18n';
-	import type { MenuMode } from '$lib/otherFunctions.js';
 	import EventTag from './EventTag.svelte';
 
 	import Ogp from './OGP.svelte';
 	import Content from './Content.svelte';
 	import { allView, iconView } from '$lib/stores/settings';
-	import MenuButtons from './MenuButtons.svelte';
-	import { goto } from '$app/navigation';
-	import { listNum } from '$lib/stores/bookmarkEvents';
 	import PubCha from './PubCha.svelte';
 	import EmojiSet from './EmojiSet.svelte';
 	import OGP from './OGP.svelte';
@@ -26,14 +22,8 @@
 
 	export let metadata: Event | undefined;
 
-	// export let menuMode: MenuMode;
-	// export let myIndex: number | undefined;
 	export let tagArray: string[] | undefined;
-	// export let DeleteNote: (e: CustomEvent<any>) => void;
-	// export let MoveNote: (e: CustomEvent<any>) => void;
-	// export let CheckNote: (e: CustomEvent<any>) => void;
 	export let pubkey: string;
-	//const dispatch = createEventDispatcher();
 
 	let metadataContent: NostrProfile;
 	const modalStore = getModalStore();
@@ -185,22 +175,24 @@
 					{/if}
 				</div>
 				<!--time-->
-				<div class="min-w-max">
-					<button
+				<div class="min-w-max text-sm place-self-center">
+					<!-- <button
 						class="text-sm underline decoration-secondary-500"
 						on:click={() => {
 							if (tagArray) {
 								OpenNoteJson(note, tagArray);
 							}
 						}}
-						>{new Date(note.created_at * 1000).toLocaleString([], {
-							year: 'numeric',
-							month: '2-digit',
-							day: '2-digit',
-							hour: '2-digit',
-							minute: '2-digit'
-						})}</button
-					>
+						> -->{new Date(
+						note.created_at * 1000
+					).toLocaleString([], {
+						year: 'numeric',
+						month: '2-digit',
+						day: '2-digit',
+						hour: '2-digit',
+						minute: '2-digit'
+					})}<!--</button
+					>-->
 				</div>
 			{:else}
 				<!--name-->
@@ -218,22 +210,25 @@
 				<!--display_name-->
 				<div />
 				<!--time-->
-				<div class="min-w-max">
-					<button
+				<div class="min-w-max text-sm place-self-center">
+					<!-- <button
 						class="text-sm underline decoration-secondary-500"
 						on:click={() => {
 							if (tagArray) {
 								OpenNoteJson(note, tagArray);
 							}
 						}}
-						>{new Date(note.created_at * 1000).toLocaleString([], {
-							year: 'numeric',
-							month: '2-digit',
-							day: '2-digit',
-							hour: '2-digit',
-							minute: '2-digit'
-						})}</button
-					>
+						>-->{new Date(
+						note.created_at * 1000
+					).toLocaleString([], {
+						year: 'numeric',
+						month: '2-digit',
+						day: '2-digit',
+						hour: '2-digit',
+						minute: '2-digit'
+					})}
+					<!-- </button
+					>-->
 				</div>
 			{/if}
 		</div>

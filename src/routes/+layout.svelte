@@ -26,7 +26,7 @@
 	import { backButton, send_pubhex } from '$lib/stores/settings';
 	import { afterNavigate } from '$app/navigation';
 	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
-	import { init as initNostrLogin } from 'nostr-login';
+	//import { init as initNostrLogin } from 'nostr-login';
 	import { page } from '$app/stores';
 
 	export let data: import('./$types').LayoutServerData;
@@ -40,9 +40,9 @@
 
 	onMount(() => {
 		mounted = true;
-		initNostrLogin({
-			/*options*/
-		});
+		// initNostrLogin({
+		// 	/*options*/
+		// });
 		const backBtn = localStorage.getItem('back');
 		//console.log('backButton', backBtn);
 		if (backBtn) {

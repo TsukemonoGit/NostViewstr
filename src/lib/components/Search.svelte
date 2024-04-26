@@ -251,7 +251,6 @@
 				{JSON.stringify($modalStore[0].value.filter, null, 2)}
 			{/if}
 		</article>
-		<!-- Enable for debugging: -->
 		<div class="break-all text-sm grid grid-cols-[0.5fr_0.5fr]">
 			{#each relays as relay, index}
 				<div class="card m-0 p-0 text-sm bg-grey">
@@ -284,13 +283,22 @@
 			</div>
 		{/if}
 		<label class="label break-all whitespace-pre-wrap">
-			<!-- prettier-ignore -->
 			<footer class="modal-footer {parent.regionFooter}">
-        <button class="btn {parent.buttonNeutral}" on:click={()=>{ if(subscription && !subscription.closed){subscription.unsubscribe();}webSockets.forEach((ws) => {
-     if(ws.OPEN){ ws.close();}
-    }); parent.onClose()}}>{parent.buttonTextCancel}</button>
-        
-        </footer>
+				<button
+					class="btn {parent.buttonNeutral}"
+					on:click={() => {
+						if (subscription && !subscription.closed) {
+							subscription.unsubscribe();
+						}
+						webSockets.forEach((ws) => {
+							if (ws.OPEN) {
+								ws.close();
+							}
+						});
+						parent.onClose();
+					}}>{parent.buttonTextCancel}</button
+				>
+			</footer>
 		</label>
 	</div>
 {/if}

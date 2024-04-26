@@ -8,11 +8,6 @@
 	import shareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import lightningIcon from '@material-design-icons/svg/round/bolt.svg?raw';
 
-	import ArrowCircleRight from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
-	import Delete from '@material-design-icons/svg/round/delete.svg?raw';
-	import OpenInBrowser from '@material-design-icons/svg/round/open_in_browser.svg?raw';
-	import LeftIcon from '@material-design-icons/svg/round/west.svg?raw';
-	import RightIcon from '@material-design-icons/svg/round/east.svg?raw';
 	import HomeIcon from '@material-design-icons/svg/round/home.svg?raw';
 	import LocationHomeIcon from '@material-design-icons/svg/round/person.svg?raw';
 	import ViewIcon from '@material-design-icons/svg/round/expand_less.svg?raw';
@@ -158,21 +153,36 @@
 		<!-- </div>  -->
 
 		<!-- Enable for debugging: -->
-		<div class="flex gap-2">{$_('modal.info.light_switch')}<LightSwitch /></div>
+		<div class="flex gap-2">
+			{$_('modal.info.light_switch')}<LightSwitch />
+		</div>
 
 		<!--ログインの許可のやつ全スキップした人のためとか-->
 
 		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-2">
-			{$_('modal.info.urlandIconOff')}
-			<SlideToggle size="sm" name="slide" bind:checked={toggleValue} />
-			{$_('modal.info.urlandIconOn')}
+			{$_('modal.info.data')}<SlideToggle
+				border="border-solid border-2 border-indigo-600"
+				active="bg-secondary-600-300-token"
+				size="sm"
+				name="slide"
+				bind:checked={toggleValue}
+				>{toggleValue
+					? $_('modal.info.urlandIconOn')
+					: $_('modal.info.urlandIconOff')}</SlideToggle
+			>
 		</div>
 
 		<!--iconとかURLとかの表示切替-->
 		<div class="flex gap-2">
 			{$_('modal.info.contentwarning')}
-			<SlideToggle size="sm" name="slide" bind:checked={warningToggle} />
+			<SlideToggle
+				border="border-solid border-2 border-indigo-600"
+				active="bg-secondary-600-300-token"
+				size="sm"
+				name="slide"
+				bind:checked={warningToggle}>{warningToggle ? 'ON' : 'OFF'}</SlideToggle
+			>
 		</div>
 
 		<div class="space-y-2">
@@ -339,7 +349,7 @@
 				{$_('popup.prv')}
 			</div>
 		</div>
-		<div class="flex flex-wrap">
+		<!-- <div class="flex flex-wrap">
 			<div class="flex gap-1 pr-3">
 				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
 					{@html shareIcon}
@@ -364,7 +374,7 @@
 				</div>
 				{$_('popup.delete')}
 			</div>
-		</div>
+		</div> -->
 		<hr />
 		<div class="flex gap-3">
 			<a

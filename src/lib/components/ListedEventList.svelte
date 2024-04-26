@@ -225,11 +225,14 @@
 		slot: '<p>Skeleton</p>'
 	};
 
-	async function DeleteNote(e: CustomEvent<any>) {
+	async function DeleteNote(e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) {
 		if ($nowProgress) {
 			return;
 		}
 		console.log('DeleteNote');
+		console.log(e.detail);
 		const number: number = e.detail.number + $pageNum * $amount;
 		const listNumber = $listNum;
 		console.log(number);
@@ -331,7 +334,9 @@
 		// Pass a reference to your custom component
 		ref: ModalMove
 	};
-	function MoveNote(e: CustomEvent<any>): void {
+	function MoveNote(e: {
+		detail: { number: number; event: any; tagArray: any };
+	}): void {
 		if ($nowProgress) {
 			return;
 		}
@@ -377,7 +382,9 @@
 		modalStore.trigger(modal);
 	}
 
-	function CheckNote(e: CustomEvent<any>): void {
+	function CheckNote(e: {
+		detail: { number: number; event: any; tagArray: any };
+	}): void {
 		console.log(e);
 		console.log('CheckNote');
 		const number: number = e.detail.number + $pageNum * $amount;
@@ -960,7 +967,7 @@
 				<main
 					class="flex-1 {isNaddr
 						? ''
-						: 'md:ml-[12em]'} overflow-y-auto h-fit overflow-x-hidden pb-[2em]"
+						: 'md:ml-[12em]'} overflow-y-auto overflow-x-hidden pb-[2em] min-h-[80vh]"
 				>
 					<!-- Add ml-64 to push main to the right -->
 

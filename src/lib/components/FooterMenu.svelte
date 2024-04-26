@@ -14,11 +14,13 @@
 	import lastIcon from '@material-design-icons/svg/round/last_page.svg?raw';
 	import backIcon from '@material-design-icons/svg/round/chevron_left.svg?raw';
 	import nextIcon from '@material-design-icons/svg/round/chevron_right.svg?raw';
-	import multiIcon from '@material-design-icons/svg/round/checklist_rtl.svg?raw';
+	import multiIcon from '@material-design-icons/svg/round/done_all.svg?raw';
 	import menuIcon from '@material-design-icons/svg/round/menu.svg?raw';
 	import LeftIcon from '@material-design-icons/svg/round/west.svg?raw';
 	import HomeIcon from '@material-design-icons/svg/round/home.svg?raw';
 	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
+	import checkIcon from '@material-design-icons/svg/outlined/toc.svg?raw';
+	import multiMenuIcon from '@material-design-icons/svg/round/checklist_rtl.svg?raw';
 	import ModalTagList from '$lib/components/modals/ModalTagList.svelte';
 	import ModalInfo from '$lib/components/modals/ModalInfo.svelte';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
@@ -37,9 +39,13 @@
 		identifierListsMap
 	} from '$lib/stores/bookmarkEvents';
 	import {
+		ListBox,
+		ListBoxItem,
 		ProgressRadial,
+		popup,
 		type ModalComponent,
 		type ModalSettings,
+		type PopupSettings,
 		type ToastSettings
 	} from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
@@ -48,6 +54,7 @@
 	import { get } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { createEventDispatcher } from 'svelte';
+	import { decode, naddrEncode } from '$lib/nip19';
 
 	export let pubkey: string;
 	export let kind: number;
@@ -475,31 +482,47 @@
 		modalStore.close();
 		//	}
 	}
+	const multimenuValueSet = ['normal', 'multi', 'sort'];
+	let multimenuValue: string = multimenuValueSet[0];
+	const popupMultiMenu: PopupSettings = {
+		event: 'click',
+		target: 'popupMultiMenu',
+		placement: 'top',
+		closeQuery: '.listbox-item',
+		state: (test) => {
+			console.log(test);
+
+			if (test.state) {
+				multimenuValue = multimenuValueSet[$isMulti];
+			}
+		}
+	};
 </script>
 
-<div
-	class=" fixed bottom-0 z-10 w-full inline-flex flex-row space-x-0 overflow-x-hidden h-10"
->
+<div class=" fixed">
 	<div
-		class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token; variant-filled-primary justify-center rounded-none sm:gap-5 gap-0"
+		class=" fixed bottom-0 z-10 w-full inline-flex flex-row space-x-0 overflow-x-hidden h-10"
 	>
-		{#if $nowProgress}
-			<!----><ProgressRadial
-				class="btn btn-sm "
-				meter="stroke-primary-300"
-				track="stroke-primary-300/30"
-				width={'w-14'}
-				stroke={60}
-			/>
-		{:else}
-			{#if $backButton}
-				<button
-					class="btn-icon variant-filled-primary fill-white"
-					disabled={!(history.length > 1)}
-					on:click={handleBackClick}>{@html LeftIcon}</button
-				>
-			{/if}
-			<!-- <button
+		<div
+			class="container max-w-[1024px] mx-auto flex overflow-hidden rounded-token; variant-filled-primary justify-center rounded-none sm:gap-5 gap-0"
+		>
+			{#if $nowProgress}
+				<!----><ProgressRadial
+					class="btn btn-sm "
+					meter="stroke-primary-300"
+					track="stroke-primary-300/30"
+					width={'w-14'}
+					stroke={60}
+				/>
+			{:else}
+				{#if $backButton}
+					<button
+						class="btn-icon variant-filled-primary fill-white"
+						disabled={!(history.length > 1)}
+						on:click={handleBackClick}>{@html LeftIcon}</button
+					>
+				{/if}
+				<!-- <button
 				class="btn-icon variant-filled-surface fill-white"
 				disabled={!(history.length > 1)}
 				on:mousedown={handleBackLongPressStart}
@@ -516,66 +539,123 @@
 				on:click={handleBackClick}>{@html LeftIcon}</button
 			> -->
 
-			{#if !naddr}
-				<button
-					class={buttonClass}
-					on:click={openLists}
-					disabled={!(kind >= 30000 && kind < 40000) || disabled}
-					>{@html menuIcon}</button
-				>
-			{/if}
+				{#if !naddr}
+					<button
+						class={buttonClass}
+						on:click={openLists}
+						disabled={!(kind >= 30000 && kind < 40000) || disabled}
+						>{@html menuIcon}</button
+					>
+				{/if}
 
-			<!-- <div class="grid grid-rows-[auto_auto] gap-0"> -->
-			<div class="flex">
-				<button
-					class={buttonClass}
-					on:click={firstPage}
-					disabled={$pageNum === 0 ? true : false}>{@html firstIcon}</button
-				>
-				<button
-					class={buttonClass}
-					on:click={back}
-					disabled={$pageNum === 0 ? true : false}>{@html backIcon}</button
-				>
+				<!-- <div class="grid grid-rows-[auto_auto] gap-0"> -->
+				<div class="flex">
+					<button
+						class={buttonClass}
+						on:click={firstPage}
+						disabled={$pageNum === 0 ? true : false}>{@html firstIcon}</button
+					>
+					<button
+						class={buttonClass}
+						on:click={back}
+						disabled={$pageNum === 0 ? true : false}>{@html backIcon}</button
+					>
 
-				<button
-					class={buttonClass}
-					on:click={next}
-					disabled={$pageNum === last ? true : false}>{@html nextIcon}</button
-				>
-				<button
-					class={buttonClass}
-					on:click={lastPage}
-					disabled={$pageNum === last ? true : false}>{@html lastIcon}</button
-				>
-			</div>
-			<!-- <div class="flex justify-center items-center m-0 p-0 text-xs">
+					<button
+						class={buttonClass}
+						on:click={next}
+						disabled={$pageNum === last ? true : false}>{@html nextIcon}</button
+					>
+					<button
+						class={buttonClass}
+						on:click={lastPage}
+						disabled={$pageNum === last ? true : false}>{@html lastIcon}</button
+					>
+				</div>
+				<!-- <div class="flex justify-center items-center m-0 p-0 text-xs">
 						{`${$amount * $pageNum} - ${Math.min(
 							($pageNum + 1) * $amount,
 							$listSize
 						)} / ${$listSize}`}
 					</div>
 				</div> -->
-
-			<button
+				<!--ボタン押したときに説明的なやつをとーすとてきなやつでそれかポップアップメニューでやる-->
+				<!-- <button
 				class="btn btn-icon pageIcon {multiButtonClass}"
 				disabled={pubkey !== $pubkey_viewer || disabled}
 				on:click={onClickMulti}
 				>{@html $isMulti === MultiMenu.Sort ? swap : multiIcon}</button
-			>
+			> -->
+				<button
+					class="btn btn-icon pageIcon"
+					disabled={pubkey !== $pubkey_viewer || disabled}
+					use:popup={popupMultiMenu}>{@html multiMenuIcon}</button
+				>
+				<!-- {#if multimenuValue === 'multiIcon'}{@html multiIcon}{:else if multimenuValue === 'swap'}{@html swap}{:else}{@html checkIcon}{/if} -->
+				<!-- <button class={buttonClass}>{@html updateIcon}</button> -->
 
-			<!-- <button class={buttonClass}>{@html updateIcon}</button> -->
-
-			<button class={buttonClass} on:click={onClickInfo}>{@html Setting}</button
-			>
-			<!-- <button
+				<button class={buttonClass} on:click={onClickInfo}
+					>{@html Setting}</button
+				>
+				<!-- <button
 				class="btn-icon variant-filled-surface pageIcon"
 				on:click={() => {
 					goto('/');
 					modalStore.close();
 				}}>{@html HomeIcon}</button
 			> -->
-		{/if}
+			{/if}
+		</div>
+	</div>
+
+	<div
+		class="absolute card w-48 shadow-xl py-2 border border-primary-400-500-token"
+		data-popup="popupMultiMenu"
+	>
+		<ListBox active="variant-filled-primary" rounded="rounded-full" class="p-1">
+			<ListBoxItem
+				name="medium"
+				value={multimenuValueSet[0]}
+				bind:group={multimenuValue}
+				class={multimenuValue === multimenuValueSet[0]
+					? 'dark:fill-black fill-white'
+					: 'dark:fill-white fill-black'}
+				on:click={() => {
+					//atodekaku
+					$isMulti = MultiMenu.None;
+				}}
+				><svelte:fragment slot="lead">{@html checkIcon}</svelte:fragment
+				>Normal</ListBoxItem
+			>
+			<ListBoxItem
+				value={multimenuValueSet[1]}
+				bind:group={multimenuValue}
+				name="medium"
+				on:click={() => {
+					$isMulti = MultiMenu.Multi;
+				}}
+				class={multimenuValue === multimenuValueSet[1]
+					? 'dark:fill-black fill-white'
+					: 'dark:fill-white fill-black'}
+				><svelte:fragment slot="lead">{@html multiIcon}</svelte:fragment>Multi
+				Select Mode
+			</ListBoxItem>
+			<ListBoxItem
+				name="medium"
+				value={multimenuValueSet[2]}
+				class={multimenuValue === multimenuValueSet[2]
+					? 'dark:fill-black fill-white'
+					: 'dark:fill-white fill-black'}
+				bind:group={multimenuValue}
+				on:click={() => {
+					dispatch('SortReset');
+					$isMulti = MultiMenu.Sort;
+				}}
+				><svelte:fragment slot="lead">{@html swap}</svelte:fragment>Sort Mode</ListBoxItem
+			>
+		</ListBox>
+		<div class="arrow bg-primary-400-500-token" />
+		<!-- <div class="arrow bg-surface-100-800-token border" /> -->
 	</div>
 </div>
 

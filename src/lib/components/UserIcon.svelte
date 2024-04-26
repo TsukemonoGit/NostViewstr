@@ -5,7 +5,6 @@
 
 	import LocationHomeIcon from '@material-design-icons/svg/round/person.svg?raw';
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
-	import { nip19 } from 'nostr-tools';
 	import { Metadata, Nostr } from 'nosvelte';
 
 	export let pubkey: string;
