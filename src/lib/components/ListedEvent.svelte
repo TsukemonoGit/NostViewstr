@@ -8,7 +8,7 @@
 	import OpenIcon from '@material-design-icons/svg/round/open_in_browser.svg?raw';
 	import ShareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
-
+	import { page } from '$app/stores';
 	import { nip19, type Event as NostrEvent } from 'nostr-tools';
 	import {
 		getIdByTag,
@@ -55,6 +55,14 @@
 	export let noEdit: boolean = false;
 	export let pubkey: string;
 	export let isNaddr: boolean;
+	//moveができるのはparamsがnpub/kindのときだけ
+	//deleteができるのはparamsがnpub/kindかnaddr
+	//deleteができないものはeditもできない
+	// console.log($page.params.hasOwnProperty('npub'));
+	// console.log(
+	// 	$page.params.hasOwnProperty('npub') || $page.params.hasOwnProperty('naddr')
+	// );
+
 	let selectedIndex: SelectIndex = {
 		detail: {
 			number: 0,
@@ -335,6 +343,8 @@
 			{#if selectedIndex?.detail?.editable}<ListBoxItem
 					name="medium"
 					value="edit"
+					disabled={!$page.params.hasOwnProperty('npub') &&
+						!$page.params.hasOwnProperty('naddr')}
 					bind:group={comboboxValue}
 					on:click={() => {
 						comboboxValue = '';
@@ -348,7 +358,8 @@
 					>Edit</ListBoxItem
 				>{/if}
 			<ListBoxItem
-				disabled={!isOwner ||
+				disabled={!$page.params.hasOwnProperty('npub') ||
+					!isOwner ||
 					!listEvent?.kind ||
 					listEvent?.kind < 30000 ||
 					listEvent?.kind >= 40000 ||
@@ -363,7 +374,9 @@
 				><svelte:fragment slot="lead">{@html MoveIcon}</svelte:fragment>Move
 			</ListBoxItem>
 			<ListBoxItem
-				disabled={!isOwner}
+				disabled={(!$page.params.hasOwnProperty('npub') &&
+					!$page.params.hasOwnProperty('naddr')) ||
+					!isOwner}
 				name="medium"
 				value="Delete"
 				bind:group={comboboxValue}
