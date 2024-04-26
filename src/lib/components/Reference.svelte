@@ -9,9 +9,12 @@
 
 <!--ICON そのた-->
 <div class="pl-1 grid grid-rows-[auto_1fr] gap-1.5">
-	<div>{tagExp[tagArray[0]]}</div>
+	<!-- <div>{tagExp[tagArray[0]]}</div> -->
 	<div class="px-2">
 		{#if tagArray.length > 1 && tagArray[1].startsWith('http')}
+			{#if tagArray.length > 2}
+				<div class=" font-bold">{tagArray[2]}</div>
+			{/if}
 			{#if $URLPreview}
 				{#await loadOgp(tagArray[1])}<span class=" break-all"
 						><a class="anchor" href={tagArray[1]} target="_blank"
