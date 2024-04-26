@@ -339,7 +339,11 @@
 		class="absolute card w-48 shadow-xl py-2 border border-primary-400-500-token"
 		data-popup="popupCombobox"
 	>
-		<ListBox rounded="rounded-none" class="fill-black dark:fill-white ">
+		<ListBox
+			rounded="rounded-none"
+			class="fill-black dark:fill-white "
+			active="variant-filled-primary"
+		>
 			{#if selectedIndex?.detail?.editable}<ListBoxItem
 					name="medium"
 					value="edit"

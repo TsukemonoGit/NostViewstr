@@ -612,7 +612,7 @@
 		class="absolute card w-48 shadow-xl py-2 border border-primary-400-500-token"
 		data-popup="popupMultiMenu"
 	>
-		<ListBox rounded="rounded-none">
+		<ListBox active="variant-filled-primary" rounded="rounded-full" class="p-1">
 			<ListBoxItem
 				name="medium"
 				value={multimenuValueSet[0]}

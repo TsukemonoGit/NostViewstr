@@ -41,7 +41,7 @@
 
 {#if $isMulti === MultiMenu.None}
 	<button
-		class="fill-white btn btn-sm variant-filled-primary h-fit text-sm p-1"
+		class="fill-white btn btn-sm variant-filled-primary h-fit text-sm px-1 py-2 drop-shadow-md"
 		use:popup={popupCombobox}
 		on:click={() => {
 			selectedIndex = setSelectedIndex;
