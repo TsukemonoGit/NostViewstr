@@ -1,22 +1,12 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import EventCard from '$lib/components/EventCard.svelte';
-	import { MenuMode, ogpDescription } from '$lib/otherFunctions.js';
+	import { ogpDescription } from '$lib/otherFunctions.js';
 
-	import { Metadata, Nostr, NostrApp, Text, UniqueEventList } from 'nosvelte';
+	import { Metadata, Text, UniqueEventList } from 'nosvelte';
 	import { nip19, type Event as NostrEvent } from 'nostr-tools';
-	import {
-		getIdByTag,
-		nip04De,
-		parseNaddr,
-		windowOpen
-	} from '$lib/nostrFunctions';
+	import { parseNaddr } from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
-
-	import { MultiMenu, isMulti } from '$lib/stores/settings';
-	import MenuButtons from './MenuButtons.svelte';
-	//import MenuButtons2 from './MenuButtons2.svelte';
-	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
 
 	import ProfileCard from './ProfileCard.svelte';
 	import Emoji from './Emoji.svelte';

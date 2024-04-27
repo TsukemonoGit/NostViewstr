@@ -98,11 +98,11 @@
 
 	{@html webManifestLink}
 
-	<script
+	<!-- <script
 		data-goatcounter="https://mono.goatcounter.com/count"
 		async
 		src="//gc.zgo.at/count.js"
-	></script>
+	></script> -->
 </svelte:head>
 
 {#if mounted && pwaInfo}
