@@ -32,7 +32,7 @@
 				<div class="font-semibold">Latest Note</div>
 				<div class="text-sm">{formatDate(event.created_at)}</div>
 			</div>
-			<div class="text-sm">
+			<div class="text-sm break-all">
 				<Content
 					text={event.content}
 					tag={event.tags}
