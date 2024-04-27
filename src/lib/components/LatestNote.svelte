@@ -6,7 +6,7 @@
 	export let pubkey: string;
 
 	const latestNote = (events: Nostr.Event<number>[]): Nostr.Event<number> => {
-		console.log(events);
+		//console.log(events);
 		const sortedNote = events.sort((a, b) => b.created_at - a.created_at);
 		return sortedNote[0];
 	};
