@@ -95,7 +95,7 @@
 	<meta name="description" content="home" />
 </svelte:head>
 
-<div class="container h-full mx-auto flex justify-center items-center">
+<div class="container h-full mx-auto flex justify-center items-center p-4">
 	<div class="space-y-5">
 		<h1 class="h1">{$_('main.title')}</h1>
 
