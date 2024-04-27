@@ -16,7 +16,7 @@
 		// Matches the data-popup value on your popup element
 		target: 'popupSelect',
 		// Defines which side of your trigger the popup will appear
-		placement: 'bottom',
+		placement: 'left',
 		closeQuery: '.listbox-item'
 	};
 </script>
