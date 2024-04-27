@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Settings from '$lib/components/Settings.svelte';
-
+	import KindSelect from '$lib/components/KindSelect.svelte';
 	import { nsec, pubkey_viewer } from '$lib/stores/settings';
 	import { getPublicKey, nip19 } from 'nostr-tools';
 	import { goto } from '$app/navigation';
@@ -9,9 +9,10 @@
 	import { _ } from 'svelte-i18n';
 	import { kinds } from '$lib/kind';
 	import { toastStore } from '$lib/stores/store';
-
-	let kind: number = Number(Object.keys(kinds)[0]); // Use Object.keys to get the first key
-	console.log();
+	// let selectValue: string;
+	$: kind = Number(Object.keys(kinds)[0]);
+	// $: kind = Number(selectValue); // Use Object.keys to get the first key
+	$: console.log(kind);
 	//let name: string;
 	let inputValue: string;
 	//console.log(sortedKinds);
@@ -70,12 +71,12 @@
 			console.log('failed to get pubkey');
 		}
 	}
-	let selectValue: any;
+
 	//console.log(selectValue);
-	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
-		kind = Number(event.currentTarget.value);
-		console.log(kind);
-	}
+	// function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
+	// 	kind = Number(event.currentTarget.value);
+	// 	console.log(kind);
+	// }
 
 	// async function onSignupClick() {
 	// 	// launch signup screen
@@ -170,8 +171,8 @@
 			</div> -->
 			<div class="mt-10">
 				<h5 class="h5">{`kind`}</h5>
-
-				<select
+				<KindSelect bind:selectValue={kind} />
+				<!-- <select
 					class="select"
 					bind:value={selectValue}
 					on:change={handleKindChange}
@@ -179,7 +180,7 @@
 					{#each Object.keys(kinds) as value (value)}
 						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
 					{/each}
-				</select>
+				</select> -->
 			</div>
 			<div class="mt-10 flex gap-2">
 				<h5 class="h5 self-center">{`view from json →`}</h5>

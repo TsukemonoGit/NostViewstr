@@ -5,7 +5,7 @@
 
 	import { kinds } from '$lib/kind';
 	import { goto } from '$app/navigation';
-
+	import KindSelect from '$lib/components/KindSelect.svelte';
 	//export let data: PageData;
 	let settings: boolean = false;
 	function settingFunc() {
@@ -13,13 +13,7 @@
 		goto(`${window.location.pathname}/${kind}`);
 	}
 
-	let kind: number = Number(Object.keys(kinds)[0]);
-	let selectValue = Object.keys(kinds)[0];
-	console.log(selectValue);
-	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
-		kind = Number(event.currentTarget.value);
-		console.log(kind);
-	}
+	$: kind = Number(Object.keys(kinds)[0]);
 </script>
 
 <svelte:head>
@@ -41,16 +35,7 @@
 			<div class="space-t-5 min-w-[80vw]">
 				<div class="mt-10">
 					<h5 class="h5">{`kind`}</h5>
-
-					<select
-						class="select"
-						bind:value={selectValue}
-						on:change={handleKindChange}
-					>
-						{#each Object.keys(kinds) as value (value)}
-							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-						{/each}
-					</select>
+					<KindSelect bind:selectValue={kind} />
 				</div>
 			</div>
 			<div class="space-t-5">
