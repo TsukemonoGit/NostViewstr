@@ -32,7 +32,7 @@
 		class="btn w-full variant-filled-primary fill-white"
 		use:popup={popupSelect}
 	>
-		{@html expandMoreIcon}
+		<div>{@html expandMoreIcon}</div>
 	</button>
 </div>
 <!-- 
