@@ -45,9 +45,15 @@
 	let pubkey: string = $JsonEventData.pubkey;
 
 	let isOnMount = false;
-	let DeleteNote: (e: CustomEvent<any>) => void;
-	let MoveNote: (e: CustomEvent<any>) => void;
-	let CheckNote: (e: CustomEvent<any>) => void;
+	let DeleteNote: (e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => void;
+	let MoveNote: (e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => void;
+	let CheckNote: (e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => void;
 	let isOwner: boolean;
 	$: isOwner = $pubkey_viewer === pubkey;
 	$: console.log(isOwner);
