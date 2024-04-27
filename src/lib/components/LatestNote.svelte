@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatRelativeDate } from '$lib/otherFunctions';
+	import { formatAbsoluteDate, formatRelativeDate } from '$lib/otherFunctions';
 	import { Nostr, UniqueEventList } from 'nosvelte';
 	import Content from './Content.svelte';
 	import { allView } from '$lib/stores/settings';
@@ -30,7 +30,7 @@
 			<hr class="!border-dashed my-1" />
 			<div class="flex gap-2 items-center text-center my-1">
 				<div class="font-semibold">Latest Note</div>
-				<div class="text-sm">{formatRelativeDate(event.created_at)}</div>
+				<div class="text-sm">{formatAbsoluteDate(event.created_at)}</div>
 			</div>
 			<div class="text-sm break-all max-h-60 overflow-y-auto">
 				<Content
