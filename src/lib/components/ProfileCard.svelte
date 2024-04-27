@@ -13,6 +13,8 @@
 	import { listNum, ogpStore } from '$lib/stores/bookmarkEvents';
 	import { relaySet } from '$lib/stores/relays';
 	import Content from './Content.svelte';
+	import LatestNote from './LatestNote.svelte';
+
 	export let metadata: Event;
 
 	//export let menuMode: MenuMode;
@@ -232,6 +234,8 @@
 							target="_blank">{content.website}</a
 						>{/if}
 				{/if}
+
+				<LatestNote pubkey={metadata.pubkey} />
 			</div>
 		</div>
 

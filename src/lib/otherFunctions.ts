@@ -207,3 +207,13 @@ export function ogpDescription(address: nip19.AddressPointer) {
 		address.pubkey
 	)}, id:${address.identifier}`;
 }
+
+export function formatDate(unixTime: number): string {
+	return new Date(unixTime * 1000).toLocaleString([], {
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+		hour: '2-digit',
+		minute: '2-digit'
+	});
+}
