@@ -53,6 +53,7 @@
 			content: res.content,
 			sig: ''
 		};
+
 		const response = await publishEventWithTimeout(
 			event,
 			$relaySet[$pubkey_viewer].postRelays

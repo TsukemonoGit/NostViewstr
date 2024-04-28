@@ -408,7 +408,10 @@
 							  );
 						const tags = res.share
 							? [['r', url]]
-							: ['a', `${kind}:${pubkey}:${address.identifier}`, ['r', url]];
+							: [
+									['a', `${kind}:${pubkey}:${address.identifier}`],
+									['r', url]
+							  ];
 						console.log(tags);
 						const modal: ModalSettings = {
 							type: 'component',
