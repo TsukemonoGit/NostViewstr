@@ -43,7 +43,7 @@
         "white": "書込用リレー"
       },
       "light_switch": "表示モード",
-      "share": "myListたち(閲覧中のURL)をnostrで共有",
+      "share": "Lists(閲覧中のURL)をnostrで共有",
       "urlandIcon": "アイコン、URLプレビューの表示・非表示",
       "urlandIconOff": "軽量",
       "urlandIconOn": "通常",

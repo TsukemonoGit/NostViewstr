@@ -37,6 +37,7 @@
 	let res: {
 		share: boolean;
 		shareNaddr: boolean;
+		shareNpub_kind_d: boolean;
 		openJson: boolean;
 		openMyJson: boolean;
 		goto: boolean;
@@ -45,6 +46,7 @@
 	} = {
 		share: false,
 		shareNaddr: false,
+		shareNpub_kind_d: false,
 		openJson: false,
 		openMyJson: false,
 		goto: false,
@@ -215,6 +217,13 @@
 				class="btn-icon btn-icon-sm m-0 p-0 variant-filled-primary fill-white"
 				on:click={() => {
 					res.shareNaddr = true;
+					onFormSubmit();
+				}}>{@html shareIcon}</button
+			>
+			<!--npub/kind/dで共有--><button
+				class="btn-icon btn-icon-sm m-0 p-0 variant-filled-primary fill-white"
+				on:click={() => {
+					res.shareNpub_kind_d = true;
 					onFormSubmit();
 				}}>{@html shareIcon}</button
 			>

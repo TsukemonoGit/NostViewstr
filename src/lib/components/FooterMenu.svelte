@@ -372,6 +372,7 @@
 			response: (res: {
 				share: boolean;
 				shareNaddr: boolean;
+				shareNpub_kind_d: boolean;
 				openJson: boolean;
 				openMyJson: boolean;
 				goto: boolean;
@@ -379,7 +380,7 @@
 				feedback: boolean;
 			}) => {
 				if (res) {
-					if (res.share || res.shareNaddr) {
+					if (res.share || res.shareNaddr || res.shareNpub_kind_d) {
 						const address: nip19.AddressPointer = {
 							identifier:
 								$identifierListsMap?.[pubkey]?.[kind].get(
@@ -392,7 +393,19 @@
 
 						const url = res.share
 							? window.location.href
-							: window.location.origin + '/' + nip19.naddrEncode(address);
+							: res.shareNaddr
+							? window.location.origin + '/' + nip19.naddrEncode(address)
+							: window.location.origin +
+							  '/' +
+							  nip19.npubEncode(pubkey) +
+							  '/' +
+							  kind +
+							  '/' +
+							  encodeURIComponent(
+									$identifierListsMap?.[pubkey]?.[kind].get(
+										$identifierKeysArray[$listNum]
+									)?.identifier ?? ''
+							  );
 						const tags = res.share
 							? [['r', url]]
 							: ['a', `${kind}:${pubkey}:${address.identifier}`, ['r', url]];
