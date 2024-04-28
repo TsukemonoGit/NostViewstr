@@ -160,7 +160,7 @@
 <!-- @component This example creates a simple form modal. -->
 
 {#if $modalStore[0]}
-	<div class="modal-example-form {cBase} max-h-[90%] overflow-y-auto">
+	<div class="modal-example-form {cBase} max-h-[90vh] overflow-y-auto">
 		<!-- {#if $modalStore[0].value.type === 'add'}{$_('ModalAddNote.add_note')}
 		{:else}
 		
