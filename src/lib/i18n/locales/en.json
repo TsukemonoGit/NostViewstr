@@ -41,12 +41,12 @@
         "title": "Relay in setting",
         "white": " write relays"
       },
-      "share": "Share myLists (URLs you are browsing) with nostr",
+      "share": "Share Lists (browsing URL) with nostr",
       "urlandIcon": "Show/hide icons and URL previews",
       "urlandIconOff": "Light",
       "urlandIconOn": "Normal",
       "backButton": "Show Back button",
-      "shareNaddr": "Share myList (Naddr) with nostr",
+      "shareNaddr": "Share List (Naddr) with nostr",
       "data": "Traffic"
     },
     "addNote_body": "Enter an ID starting with 'note' , 'nevent' , 'nostr:' or 'naddr'.",
