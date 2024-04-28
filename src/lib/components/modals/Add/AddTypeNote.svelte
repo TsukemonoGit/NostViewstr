@@ -35,7 +35,7 @@
 	class="input p-2 m-2"
 	type="text"
 	bind:value={input}
-	placeholder="nostr:note... or note... or nevent..."
+	placeholder="nostr:note... or nevent..."
 />
 
 <footer class=" gap-2 flex flex-wrap justify-end mt-2">
