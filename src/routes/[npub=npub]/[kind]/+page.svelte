@@ -34,12 +34,14 @@ pubkey:{nip19.npubEncode(data.pubkey)}"
 </svelte:head>
 
 {#if $URLPreview === undefined}
-	<div class="container h-full mx-auto flex justify-center items-center p-4">
+	<div
+		class="container max-w-[1024px] h-full mx-auto flex justify-center items-center p-4"
+	>
 		<div class="mt-5">
 			<h1 class="h1 mb-5">{$_('main.title')}</h1>
 
 			<div class="space-t-5">
-				kind:{data.kind}
+				<h5 class="h5">kind:{data.kind}</h5>
 				<Settings {settingFunc} />
 			</div>
 		</div>
