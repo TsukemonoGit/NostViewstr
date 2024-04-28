@@ -12,7 +12,7 @@
 	// let selectValue: string;
 	$: kind = Number(Object.keys(kinds)[0]);
 	// $: kind = Number(selectValue); // Use Object.keys to get the first key
-	$: console.log(kind);
+	//$: console.log(kind);
 	//let name: string;
 	let inputValue: string;
 	//console.log(sortedKinds);

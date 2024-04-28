@@ -57,7 +57,7 @@
 	class="card w-56 shadow-xl py-2 border border-primary-500-400-token"
 	data-popup="popupSelect"
 >
-	<ListBox class="h-56 max-h-[80%] overflow-y-auto"
+	<ListBox class="h-72 max-h-[80%] overflow-y-auto"
 		>{#each Object.keys(kinds) as value (value)}
 			<ListBoxItem bind:group={selectValue} name="medium" {value}
 				>{`${kinds[Number(value)]} (${value})`}</ListBoxItem
