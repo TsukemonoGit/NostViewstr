@@ -161,227 +161,94 @@
 
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase} max-h-[90%] overflow-y-auto">
-		<Accordion autocollapse>
-			<AccordionItem open>
-				<svelte:fragment slot="lead">🗒</svelte:fragment>
-				<svelte:fragment slot="summary">
-					{#if $modalStore[0].value.type === 'add'}{$_('ModalAddNote.add_note')}
-					{:else}
-						<!---->
-						{$_('modal.addNote.edit')}
-					{/if}
-				</svelte:fragment>
-				<svelte:fragment slot="content">
-					<div class="card p-4">
-						<header class={cHeader}>
-							{#if $modalStore[0].value.type === 'add'}
-								🗒 {$_('ModalAddNote.add_note_to1')}{$modalStore[0].title ??
-									'(title missing)'}{$_('ModalAddNote.add_note_to2')}
-							{:else}
-								<!---->
-							{/if}
-						</header>
-						{#if $modalStore[0].value.kind === 10002}
-							<hr class="!border-dashed mt-1" />
-							<AddType10002
-								{res}
-								{parent}
-								{onFormSubmit}
-								tag={$modalStore[0].value.tag}
-							/>
-						{/if}
-						{#if (tag === undefined && includesA && includesE) || (tag !== undefined && (tag[0] === 'a' || tag[0] === 'e'))}
-							<hr class="!border-dashed mt-1" />
-							<AddTypeNoteAndNaddr {res} {parent} {onFormSubmit} />
-						{:else if (tag === undefined && includesE) || (tag !== undefined && tag[0] === 'e')}
-							<hr class="!border-dashed mt-1" />
-							<AddTypeNote {res} {parent} {onFormSubmit} />
-						{:else if (tag === undefined && includesA) || (tag !== undefined && tag[0] === 'a')}
-							<hr class="!border-dashed mt-1" />
-							<AddTypeNaddr {res} {parent} {onFormSubmit} />
-						{/if}
+		<!-- {#if $modalStore[0].value.type === 'add'}{$_('ModalAddNote.add_note')}
+		{:else}
+		
+			{$_('modal.addNote.edit')}
+		{/if} -->
 
-						{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
-							<hr class="!border-dashed mt-1" />
-							<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
-						{#if (tag === undefined && includesEmoji) || (tag !== undefined && tag[0] === 'emoji')}
-							<hr class="!border-dashed mt-1" />
-							<AddTypeEmoji
-								{res}
-								{parent}
-								{onFormSubmit}
-								tag={$modalStore[0].value.tag}
-							/>
-						{/if}
-						{#if (tag === undefined && includesRelay) || (tag !== undefined && tag[0] === 'relay')}
-							<hr class="!border-dashed mt-1" />
-							<AddTypeRelay
-								{res}
-								{parent}
-								{onFormSubmit}
-								tag={$modalStore[0].value.tag}
-								number={$modalStore[0].value.number}
-								viewList={$modalStore[0].value.viewList}
-							/>
-						{/if}
-						{#if (tag === undefined && countCharacters?.length > 0) || (tag !== undefined && (tag[0] === 't' || tag[0] === 'word'))}
-							<hr class="!border-dashed mt-1" />
-							<AddTypeRandTandWord
-								{res}
-								{parent}
-								{onFormSubmit}
-								tag={$modalStore[0].value.tag}
-								{countCharacters}
-								{bkm}
-							/>
-						{/if}
-						{#if ($modalStore[0].value.kind !== 10002 && includesRefelence) || (tag !== undefined && tag[0] === 'r')}
-							<hr class="!border-dashed mt-1" />
-							<AddTypeRefelence
-								{res}
-								{parent}
-								{onFormSubmit}
-								tag={$modalStore[0].value.tag}
-								{bkm}
-							/>
-						{/if}
-						<!--編集であり知らんタグのとき（タグの中身だけ変更可にする）-->
-						{#if tag !== undefined && !uniqueArray().includes(tag[0])}
-							<hr class="!border-dashed mt-1" />
-							<EditTypeOther {res} {parent} {onFormSubmit} {tag} {bkm} />
-						{/if}
-						{#if tag === undefined && includesA}
-							<hr class="!border-dashed mt-1" />
-							<AddTypeAddressPointer {res} {parent} {onFormSubmit} {kind} />
-						{/if}
-					</div>
-				</svelte:fragment>
-			</AccordionItem>
-
-			<!--タグそれぞれの入力画面作ったし入れれるタグ制限してるしタグから追加モードいらないかも-->
-			<!--
-			{#if tag === undefined}
-			
-
-				<AccordionItem>
-					<svelte:fragment slot="lead">🗒</svelte:fragment>
-					<svelte:fragment slot="summary">
-						{#if $modalStore[0].value.type === 'add'}
-							{$_('ModalAddNote.add_note')}
-							{$_('ModalAddNote.add_note_tag')}
-						{:else}
-						
-							{$_('modal.addNote.edit')}
-							{$_('ModalAddNote.add_note_tag')}
-						{/if}
-					</svelte:fragment>
-					<svelte:fragment slot="content">
-						<div class="card p-4">
-							<header class={cHeader}>
-								{#if $modalStore[0].value.type === 'add'}🗒 {$_(
-										'ModalAddNote.add_note_to1'
-									)}{$modalStore[0].title ?? '(title missing)'}{$_(
-										'ModalAddNote.add_note_to2'
-									)}
-									{$_('ModalAddNote.add_note_tag')}
-								{:else}
-							
-								{/if}
-							</header>
-							<article class="body break-all">
-								valid tag:
-								{#each kindsValidTag[$modalStore[0].value.kind] as tag, index}
-									{tag},
-								{/each}
-							</article>
-						
-
-							<input
-								class="input p-2 m-2"
-								type="text"
-								bind:value={input}
-								placeholder="[”e”,”1234”]"
-							/>
-
-							<footer class=" rid grid-cols-3 gap-2 flex justify-end mt-2">
-								<button
-									class="btn variant-filled-warning {parent.buttonPositive}"
-									on:click={() => {
-										res.btn = 'prv';
-										onTagkara();
-										//onFormSubmit();
-									}}>Private</button
-								>
-								<button
-									class="btn {parent.buttonPositive}"
-									on:click={() => {
-										res.btn = 'pub';
-										onTagkara();
-										//onFormSubmit();
-									}}>Public</button
-								>
-							</footer>
-						</div>
-					</svelte:fragment>
-				</AccordionItem>
+		<div class="p-4">
+			<header class={cHeader}>
+				{#if $modalStore[0].value.type === 'add'}
+					🗒 {$_('ModalAddNote.add_note_to1')}{$modalStore[0].title ??
+						'(title missing)'}{$_('ModalAddNote.add_note_to2')}
+				{:else}
+					{$_('modal.addNote.edit')}
+				{/if}
+			</header>
+			{#if $modalStore[0].value.kind === 10002}
+				<hr class="!border-dashed my-1" />
+				<AddType10002
+					{res}
+					{parent}
+					{onFormSubmit}
+					tag={$modalStore[0].value.tag}
+				/>
+			{/if}
+			{#if (tag === undefined && includesA && includesE) || (tag !== undefined && (tag[0] === 'a' || tag[0] === 'e'))}
+				<hr class="!border-dashed my-1" />
+				<AddTypeNoteAndNaddr {res} {parent} {onFormSubmit} />
+			{:else if (tag === undefined && includesE) || (tag !== undefined && tag[0] === 'e')}
+				<hr class="!border-dashed my-1" />
+				<AddTypeNote {res} {parent} {onFormSubmit} />
+			{:else if (tag === undefined && includesA) || (tag !== undefined && tag[0] === 'a')}
+				<hr class="!border-dashed my-1" />
+				<AddTypeNaddr {res} {parent} {onFormSubmit} />
 			{/if}
 
-			-->
-			{#if tag === undefined && ($modalStore[0].value.kind === 30003 || $modalStore[0].value.kind === 10003)}
-				<AccordionItem>
-					<svelte:fragment slot="lead">🖊</svelte:fragment>
-					<svelte:fragment slot="summary"
-						>{$_('ModalAddNote.create')}
-					</svelte:fragment>
-					<svelte:fragment slot="content">
-						<div class="card p-4">
-							<header class={cHeader}>
-								🖊 {$_('ModalAddNote.create_to1')}{$modalStore[0].title ??
-									'(title missing)'}{$_('ModalAddNote.create_to2')}
-							</header>
-							<article class="body">{$_('ModalAddNote.create_body')}</article>
-							<!-- Enable for debugging: -->
-
-							<textarea
-								class="textarea p-2 m-2"
-								rows="4"
-								bind:value={content}
-								placeholder="memo..."
-							/>
-
-							<footer class=" rid grid-cols-3 gap-2 flex justify-end mt-2">
-								<button
-									class="btn variant-filled-warning {parent.buttonPositive}"
-									on:click={() => {
-										if (content == '') {
-											return;
-										}
-										res.btn = 'prv';
-										onClickCreate();
-									}}
-									disabled={$nowProgress}>Private</button
-								>
-								<button
-									class="btn {parent.buttonPositive}"
-									on:click={() => {
-										if (content == '') {
-											return;
-										}
-										res.btn = 'pub';
-										onClickCreate();
-									}}
-									disabled={$nowProgress}>Public</button
-								>
-							</footer>
-						</div>
-					</svelte:fragment>
-				</AccordionItem>
+			{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
+				<hr class="!border-dashed my-1" />
+				<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
+			{#if (tag === undefined && includesEmoji) || (tag !== undefined && tag[0] === 'emoji')}
+				<hr class="!border-dashed my-1" />
+				<AddTypeEmoji
+					{res}
+					{parent}
+					{onFormSubmit}
+					tag={$modalStore[0].value.tag}
+				/>
 			{/if}
-		</Accordion>
-		<footer class=" flex justify-end mt-2 mr-5">
-			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>
-				{parent.buttonTextCancel}
-			</button>
-		</footer>
+			{#if (tag === undefined && includesRelay) || (tag !== undefined && tag[0] === 'relay')}
+				<hr class="!border-dashed my-1" />
+				<AddTypeRelay
+					{res}
+					{parent}
+					{onFormSubmit}
+					tag={$modalStore[0].value.tag}
+					number={$modalStore[0].value.number}
+					viewList={$modalStore[0].value.viewList}
+				/>
+			{/if}
+			{#if (tag === undefined && countCharacters?.length > 0) || (tag !== undefined && (tag[0] === 't' || tag[0] === 'word'))}
+				<hr class="!border-dashed my-1" />
+				<AddTypeRandTandWord
+					{res}
+					{parent}
+					{onFormSubmit}
+					tag={$modalStore[0].value.tag}
+					{countCharacters}
+					{bkm}
+				/>
+			{/if}
+			{#if ($modalStore[0].value.kind !== 10002 && includesRefelence) || (tag !== undefined && tag[0] === 'r')}
+				<hr class="!border-dashed my-1" />
+				<AddTypeRefelence
+					{res}
+					{parent}
+					{onFormSubmit}
+					tag={$modalStore[0].value.tag}
+					{bkm}
+				/>
+			{/if}
+			<!--編集であり知らんタグのとき（タグの中身だけ変更可にする）-->
+			{#if tag !== undefined && !uniqueArray().includes(tag[0])}
+				<hr class="!border-dashed my-1" />
+				<EditTypeOther {res} {parent} {onFormSubmit} {tag} {bkm} />
+			{/if}
+			{#if tag === undefined && includesA}
+				<hr class="!border-dashed my-1" />
+				<AddTypeAddressPointer {res} {parent} {onFormSubmit} {kind} />
+			{/if}
+		</div>
 	</div>
 {/if}

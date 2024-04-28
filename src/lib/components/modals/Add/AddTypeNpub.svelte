@@ -49,7 +49,7 @@
 </script>
 
 <article class="body">
-	{`nostr:npub1... or npub1... or nprofile...`}
+	<span class="dot" /><span class="px-1 font-bold">User</span>
 </article>
 <!-- Enable for debugging: -->
 
@@ -57,7 +57,7 @@
 	class="input p-2 m-2"
 	type="text"
 	bind:value={input}
-	placeholder="npub..."
+	placeholder="nostr:npub... or npub... or nprofile..."
 />
 
 <footer class=" gap-2 flex flex-wrap justify-end mt-2">

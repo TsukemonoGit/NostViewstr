@@ -4,7 +4,7 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
 	import { nowProgress } from '$lib/stores/settings';
-
+	import dotIcon from '@material-design-icons/svg/round/circle.svg?raw';
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
 	export let onFormSubmit: any;
@@ -30,7 +30,7 @@
 
 <!---->
 <article class="body">
-	{`nostr:naddr... or naddr...`}
+	<span class="dot" /><span class="px-1 font-bold">Naddr</span>
 </article>
 <!-- Enable for debugging: -->
 
@@ -38,7 +38,7 @@
 	class="input p-2 m-2"
 	type="text"
 	bind:value={input}
-	placeholder="naddr..."
+	placeholder="nostr:naddr... or naddr..."
 />
 
 <footer class=" gap-2 flex flex-wrap justify-end mt-2">

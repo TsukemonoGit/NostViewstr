@@ -28,7 +28,7 @@
 
 <!-- Enable for debugging: -->
 <article class="body">
-	{#each countCharacters as value (value)}
+	<span class="dot" />{#each countCharacters as value (value)}
 		<span class="px-1 font-bold">{tagExp[value]} </span>
 	{/each}
 </article>

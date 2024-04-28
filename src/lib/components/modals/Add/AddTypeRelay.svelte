@@ -63,7 +63,7 @@
 </script>
 
 <article class="body">
-	{`input relay URL`}
+	<span class="dot" /><span class="px-1 font-bold">Relay</span>
 </article>
 <!-- Enable for debugging: -->
 

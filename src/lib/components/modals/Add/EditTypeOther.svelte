@@ -24,8 +24,9 @@
 </script>
 
 <!-- Enable for debugging: -->
-<article class="body" />
-
+<article class="body">
+	<span class="dot" /><span class="px-1 font-bold">{tag[0]}</span>
+</article>
 <div class="input-group input-group-divider grid-cols-[auto_1fr] m-2">
 	<div class="my-2">{tag[0]}</div>
 

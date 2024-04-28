@@ -26,7 +26,7 @@
 
 <!-- Enable for debugging: -->
 <article class="body">
-	<span class="px-1 font-bold">Reference</span>
+	<span class="dot" /><span class="px-1 font-bold">Reference</span>
 </article>
 
 <div class="input1-group input1-group-divider grid-cols-[auto_1fr] m-2">
