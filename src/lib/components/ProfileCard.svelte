@@ -6,7 +6,11 @@
 	import { nip19, type Event, nip05 } from 'nostr-tools';
 
 	import { _ } from 'svelte-i18n';
-	import { loadOgp, type MenuMode } from '$lib/otherFunctions.js';
+	import {
+		formatAbsoluteDate,
+		loadOgp,
+		type MenuMode
+	} from '$lib/otherFunctions.js';
 	import OGP from './OGP.svelte';
 	import { URLPreview, allView, iconView } from '$lib/stores/settings';
 	import { goto } from '$app/navigation';
@@ -174,16 +178,9 @@
 									OpenNoteJson(metadata, tagArray);
 								}
 							}}
-							>-->{new Date(
-							metadata.created_at * 1000
-						).toLocaleString([], {
-							year: 'numeric',
-							month: '2-digit',
-							day: '2-digit',
-							hour: '2-digit',
-							minute: '2-digit'
-						})}<!-- </button
-						>-->
+							>-->{formatAbsoluteDate(
+							metadata.created_at
+						)}
 					</div>
 				</div>
 

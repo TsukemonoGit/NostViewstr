@@ -28,6 +28,7 @@
 	import { kinds } from '$lib/kind';
 	import { nip19 } from 'nostr-tools';
 	import type { Nostr } from 'nosvelte';
+	import { formatAbsoluteDate } from '$lib/otherFunctions';
 
 	export let parent: any;
 
@@ -214,6 +215,7 @@
 		<div class="flex gap-2">
 			{$_('modal.info.shareNaddr')}
 			<button
+				title="naddr"
 				class="btn-icon btn-icon-sm m-0 p-0 variant-filled-primary fill-white"
 				on:click={() => {
 					res.shareNaddr = true;
@@ -221,6 +223,7 @@
 				}}>{@html shareIcon}</button
 			>
 			<!--npub/kind/dで共有--><button
+				title="npub/kind/d"
 				class="btn-icon btn-icon-sm m-0 p-0 variant-filled-primary fill-white"
 				on:click={() => {
 					res.shareNpub_kind_d = true;
@@ -265,13 +268,7 @@
 									res.openMyJson = true;
 									onFormSubmit();
 								}}
-								>{new Date(eventTime.created_at * 1000).toLocaleString([], {
-									year: 'numeric',
-									month: '2-digit',
-									day: '2-digit',
-									hour: '2-digit',
-									minute: '2-digit'
-								})}
+								>{formatAbsoluteDate(eventTime.created_at)}
 							</button>
 						</p>
 						{#if $relaySet?.[$pubkey_viewer]?.postRelays}
@@ -299,16 +296,9 @@
 											res.openJson = true;
 											onFormSubmit();
 										}}
-										>{new Date(
-											$modalStore[0].value.relaySet?.relayEvent?.created_at *
-												1000
-										).toLocaleString([], {
-											year: 'numeric',
-											month: '2-digit',
-											day: '2-digit',
-											hour: '2-digit',
-											minute: '2-digit'
-										})}
+										>{formatAbsoluteDate(
+											$modalStore[0].value.relaySet?.relayEvent?.created_at
+										)}
 									</button>
 								{/if}
 							</p>

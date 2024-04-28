@@ -5,7 +5,12 @@
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { nip19, type Event } from 'nostr-tools';
 
-	import { setComOgps, setLFCOgps, uniqueTags } from '$lib/otherFunctions.js';
+	import {
+		formatAbsoluteDate,
+		setComOgps,
+		setLFCOgps,
+		uniqueTags
+	} from '$lib/otherFunctions.js';
 	import { _ } from 'svelte-i18n';
 	import EventTag from './EventTag.svelte';
 
@@ -183,15 +188,9 @@
 								OpenNoteJson(note, tagArray);
 							}
 						}}
-						> -->{new Date(
-						note.created_at * 1000
-					).toLocaleString([], {
-						year: 'numeric',
-						month: '2-digit',
-						day: '2-digit',
-						hour: '2-digit',
-						minute: '2-digit'
-					})}<!--</button
+						> -->{formatAbsoluteDate(
+						note.created_at
+					)}<!--</button
 					>-->
 				</div>
 			{:else}
@@ -218,15 +217,9 @@
 								OpenNoteJson(note, tagArray);
 							}
 						}}
-						>-->{new Date(
-						note.created_at * 1000
-					).toLocaleString([], {
-						year: 'numeric',
-						month: '2-digit',
-						day: '2-digit',
-						hour: '2-digit',
-						minute: '2-digit'
-					})}
+						>-->{formatAbsoluteDate(
+						note.created_at
+					)}
 					<!-- </button
 					>-->
 				</div>

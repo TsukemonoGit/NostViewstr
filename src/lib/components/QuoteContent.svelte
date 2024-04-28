@@ -6,7 +6,7 @@
 	import { Metadata, Nostr, Text } from 'nosvelte';
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
 	import { fetchFilteredEvents } from '$lib/nostrFunctions';
-	import { uniqueTags } from '$lib/otherFunctions.js';
+	import { formatAbsoluteDate, uniqueTags } from '$lib/otherFunctions.js';
 	import { naddrStore } from '$lib/stores/bookmarkEvents';
 	import { allView, iconView } from '$lib/stores/settings';
 	import { relaySet } from '$lib/stores/relays';
@@ -212,14 +212,7 @@
 								class="text-xs underline decoration-secondary-500"
 								on:click={() => {
 									handleClickDate(text, toArray(nip19.decode(encodedId)));
-								}}
-								>{new Date(text.created_at * 1000).toLocaleString([], {
-									year: 'numeric',
-									month: '2-digit',
-									day: '2-digit',
-									hour: '2-digit',
-									minute: '2-digit'
-								})}</button
+								}}>{formatAbsoluteDate(text.created_at)}</button
 							>
 							{#if text.kind === 31990}
 								<Ogp
@@ -254,14 +247,7 @@
 								class="text-xs underline decoration-secondary-500"
 								on:click={() => {
 									handleClickDate(text, toArray(nip19.decode(encodedId)));
-								}}
-								>{new Date(text.created_at * 1000).toLocaleString([], {
-									year: 'numeric',
-									month: '2-digit',
-									day: '2-digit',
-									hour: '2-digit',
-									minute: '2-digit'
-								})}</button
+								}}>{formatAbsoluteDate(text.created_at)}</button
 							>
 						</div>
 						<div
@@ -356,14 +342,7 @@
 								class="text-xs underline decoration-secondary-500"
 								on:click={() => {
 									handleClickDate(text, toArray(nip19.decode(encodedId)));
-								}}
-								>{new Date(text.created_at * 1000).toLocaleString([], {
-									year: 'numeric',
-									month: '2-digit',
-									day: '2-digit',
-									hour: '2-digit',
-									minute: '2-digit'
-								})}</button
+								}}>{formatAbsoluteDate(text.created_at)}</button
 							>
 						</div>
 					</div>
@@ -531,14 +510,7 @@
 					class="-mt-0.5 ml-2 text-xs underline decoration-secondary-500"
 					on:click={() => {
 						handleClickDate(text, toArray(nip19.decode(encodedId)));
-					}}
-					>{new Date(text.created_at * 1000).toLocaleString([], {
-						year: 'numeric',
-						month: '2-digit',
-						day: '2-digit',
-						hour: '2-digit',
-						minute: '2-digit'
-					})}</button
+					}}>{formatAbsoluteDate(text.created_at)}</button
 				>
 
 				<div class="w-full grid grid-rows-[auto_auto] gap-0 h-fix">

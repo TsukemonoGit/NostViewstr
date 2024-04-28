@@ -15,7 +15,6 @@
 	// import PubBkm from './Button/PubBkm.svelte';
 	import { prvIcon } from '$lib/components/icons';
 	import { pubIcon } from '$lib/components/icons';
-	import LocationHomeIcon from '@material-design-icons/svg/round/person.svg?raw';
 	import RelayIcon from '@material-design-icons/svg/outlined/hub.svg?raw';
 	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
 	import { relaySet } from '$lib/stores/relays';
@@ -35,10 +34,9 @@
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import { kinds } from '$lib/kind';
 	import { goto } from '$app/navigation';
-	import { get } from 'svelte/store';
-	import { afterUpdate } from 'svelte';
 	import RelayStateIcon from './RelayStateIcon.svelte';
 	import UserIcon from './UserIcon.svelte';
+	import { formatAbsoluteDate } from '$lib/otherFunctions';
 
 	export let bkm: string;
 	export let kind: number;
@@ -407,6 +405,7 @@
 		</div>
 		<div class="grid grid-cols-[auto_auto] py-1 h-[4em]">
 			<button
+				title="Public List (tags)"
 				class={bkm === 'pub' ? borderClassActive : borderClass}
 				disabled={bkm === 'pub'}
 				on:click={() => {
@@ -418,6 +417,7 @@
 			</button>
 			{#if viewEvent && viewEvent.content !== ''}
 				<button
+					title="Private List (content)"
 					class={bkm === 'prv' ? borderClassActive : borderClass}
 					disabled={bkm === 'prv'}
 					on:click={() => {
@@ -447,13 +447,7 @@
 					}}
 				>
 					<div class="break-all truncate h6">
-						{new Date(viewEvent.created_at * 1000).toLocaleDateString([], {
-							year: 'numeric',
-							month: '2-digit',
-							day: '2-digit',
-							hour: '2-digit',
-							minute: '2-digit'
-						})}
+						{formatAbsoluteDate(viewEvent.created_at)}
 					</div></button
 				>
 			</div>
