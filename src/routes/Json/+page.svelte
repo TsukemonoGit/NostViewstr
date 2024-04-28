@@ -98,11 +98,13 @@
 
 <!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
 
-<div class="container h-full mx-auto flex justify-center items-center p-4">
+<div
+	class="container max-w-[1024px] h-full mx-auto flex justify-center items-center p-4"
+>
 	<div class="space-y-5">
 		<h1 class="h1">{$_('main.title')}</h1>
 
-		<div class="space-t-5 min-w-[80vw]">
+		<div class="space-t-5">
 			<div class="mt-10">
 				<h5 class="h5">{`view from json`}</h5>
 
@@ -125,7 +127,7 @@
 			{/if}
 		</div>
 
-		<div class="mt-10">
+		<div class="mt-16">
 			<h5 class="h5">📶{$_('mode.viewMode')}*</h5>
 			<div class="flex gap-4 mt-1">
 				<div>

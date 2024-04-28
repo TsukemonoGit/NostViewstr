@@ -95,71 +95,71 @@
 	<meta name="description" content="home" />
 </svelte:head>
 
-<div class="container h-full mx-auto flex justify-center items-center p-4">
-	<div class="space-y-5">
-		<h1 class="h1">{$_('main.title')}</h1>
+<div
+	class="container max-w-[1024px] h-full mx-auto flex-row justify-center items-center p-4"
+>
+	<h1 class="h1">{$_('main.title')}</h1>
 
-		<div class="space-t-5 min-w-[80vw]">
-			<h5 class="h5">{$_('main.input_public_key')}</h5>
+	<h5 class="h5 mt-8">{$_('main.input_public_key')}</h5>
 
-			<div class="mt-1 input-group input-group-divider grid-cols-[auto_1fr]">
-				<!--	<button
+	<div class="mt-1 input-group input-group-divider grid-cols-[auto_1fr]">
+		<!--	<button
 					class="p-0 input-group-shim btn variant-filled-secondary"
 					on:click={onSignupClick}>NIP-46<br />Connect</button
 				>
 				 <span class="flex items-center">or</span> -->
-				<button
-					class="p-0 input-group-shim btn variant-filled-secondary"
-					on:click={onClickExtension}>use NIP-07<br />or NIP-46</button
-				>
+		<button
+			class="p-0 input-group-shim btn variant-filled-secondary"
+			on:click={onClickExtension}>use NIP-07<br />or NIP-46</button
+		>
 
-				<input
-					class="input p-1 truncate"
-					type="text"
-					placeholder="npub... or nsec..."
-					bind:value={inputValue}
-				/>
-			</div>
+		<input
+			class="input p-1 truncate"
+			type="text"
+			placeholder="npub... or nsec..."
+			bind:value={inputValue}
+		/>
+	</div>
 
-			<div class="ml-2 mt-1 text-sm break-all">
-				<p>
-					- <a
-						class="anchor"
-						rel="external noreferrer"
-						target="_blank"
-						href="https://github.com/nostr-protocol/nips/blob/master/07.md"
-						>NIP-07</a
-					>
-					<span
-						>(e.g. <a
-							class="anchor"
-							rel="external noreferrer"
-							target="_blank"
-							href="https://chromewebstore.google.com/detail/nos2x/kpgefcfmnafjgpblomihpgmejjdanjjp"
-							>nos2x</a
-						>)</span
-					>
-				</p>
+	<div class="ml-2 mt-1 text-sm break-all">
+		<p>
+			- <a
+				class="anchor"
+				rel="external noreferrer"
+				target="_blank"
+				href="https://github.com/nostr-protocol/nips/blob/master/07.md"
+				>NIP-07</a
+			>
+			<span
+				>(e.g. <a
+					class="anchor"
+					rel="external noreferrer"
+					target="_blank"
+					href="https://chromewebstore.google.com/detail/nos2x/kpgefcfmnafjgpblomihpgmejjdanjjp"
+					>nos2x</a
+				>)</span
+			>
+		</p>
 
-				<p>
-					- <a
-						class="anchor"
-						rel="external noreferrer"
-						target="_blank"
-						href="https://github.com/nostr-protocol/nips/blob/master/46.md"
-						>NIP-46</a
-					>
-					<span
-						>(e.g. <a
-							class="anchor"
-							rel="external noreferrer"
-							target="_blank"
-							href="https://nsec.app/">nsec.app</a
-						>)</span
-					>
-				</p>
-			</div>
-			<!-- <div class="mt-10">
+		<p>
+			- <a
+				class="anchor"
+				rel="external noreferrer"
+				target="_blank"
+				href="https://github.com/nostr-protocol/nips/blob/master/46.md"
+				>NIP-46</a
+			>
+			<span
+				>(e.g. <a
+					class="anchor"
+					rel="external noreferrer"
+					target="_blank"
+					href="https://nsec.app/">nsec.app</a
+				>)</span
+			>
+		</p>
+
+		<!-- <div class="mt-10">
 			
 
 				<button class=" btn variant-filled-secondary" on:click={onSignupClick}
@@ -169,10 +169,10 @@
 					{$_('main.Nip46_login')}
 				</div>
 			</div> -->
-			<div class="mt-10">
-				<h5 class="h5">{`kind`}</h5>
-				<KindSelect bind:selectValue={kind} />
-				<!-- <select
+		<div class="mt-10">
+			<h5 class="h5">{`kind`}</h5>
+			<KindSelect bind:selectValue={kind} />
+			<!-- <select
 					class="select"
 					bind:value={selectValue}
 					on:change={handleKindChange}
@@ -181,19 +181,19 @@
 						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
 					{/each}
 				</select> -->
-			</div>
-			<div class="mt-10 flex gap-2">
-				<h5 class="h5 self-center">{`view from json →`}</h5>
-				<button
-					class="btn variant-filled-primary"
-					on:click={() => {
-						goto(`/Json`);
-					}}
-				>
-					Click
-				</button>
-			</div>
-			<!-- <div class="flex gap-4 mt-1">
+		</div>
+		<div class="mt-10 flex gap-2">
+			<h5 class="h5 self-center">{`view from json →`}</h5>
+			<button
+				class="btn variant-filled-primary"
+				on:click={() => {
+					goto(`/Json`);
+				}}
+			>
+				Click
+			</button>
+		</div>
+		<!-- <div class="flex gap-4 mt-1">
 					<div>
 						<FileButton bind:files on:change={handleFileChange} name="files" />
 					</div>
@@ -210,8 +210,8 @@
 			{#if fileData}
 				{fileData.name}
 			{/if} -->
-		</div>
-		<!-- <label class="label space-t-5 ">
+	</div>
+	<!-- <label class="label space-t-5 ">
 			<span> {$_('main.input_public_key')}</span>
 			<input
 				class="input p-1"
@@ -220,8 +220,7 @@
 				bind:value={inputValue}
 			/>
 		</label> -->
-		<div class="space-t-5">
-			<Settings {settingFunc} />
-		</div>
+	<div class="space-t-5">
+		<Settings {settingFunc} />
 	</div>
 </div>

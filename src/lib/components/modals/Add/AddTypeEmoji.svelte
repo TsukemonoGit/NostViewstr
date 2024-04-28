@@ -39,7 +39,7 @@
 
 <!-- Enable for debugging: -->
 <article class="body">
-	{`emoji`}
+	<span class="dot" /><span class="px-1 font-bold">Emoji</span>
 </article>
 <div
 	class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"

@@ -97,7 +97,7 @@
 
 <!-- Enable for debugging: -->
 <article class="body">
-	{`input relay url and select type `}
+	<span class="dot" /><span class="px-1 font-bold">Relay</span>
 </article>
 <div
 	class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"

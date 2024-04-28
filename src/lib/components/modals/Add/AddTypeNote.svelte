@@ -27,7 +27,7 @@
 </script>
 
 <article class="body">
-	{`nostr:note... or note... or nevent...`}
+	<span class="dot" /><span class="px-1 font-bold">Event</span>
 </article>
 <!-- Enable for debugging: -->
 
@@ -35,7 +35,7 @@
 	class="input p-2 m-2"
 	type="text"
 	bind:value={input}
-	placeholder="note..."
+	placeholder="nostr:note... or nevent..."
 />
 
 <footer class=" gap-2 flex flex-wrap justify-end mt-2">
