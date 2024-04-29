@@ -296,7 +296,7 @@
 			on:finalize={handleDndFinalize}
 			class={dadClass}
 			on:touchmove|nonpassive={(e) => {
-				console.log(e);
+				//console.log(e);
 				$isMulti === MultiMenu.Sort ? e.preventDefault() : '';
 			}}
 		>
