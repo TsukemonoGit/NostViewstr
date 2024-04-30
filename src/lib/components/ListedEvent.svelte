@@ -215,17 +215,13 @@
 
 			if (!test.state) {
 				comboboxValue = '';
+				popupElement.style.display = 'none';
+				popupElement.style.top = '0';
+				popupElement.style.left = '0';
 			}
 		}
 	};
 
-	afterUpdate(() => {
-		if (popupElement?.style.opacity == '0') {
-			popupElement.style.display = 'none';
-			popupElement.style.top = '0';
-			popupElement.style.left = '0';
-		}
-	});
 	//-----------------------------------------------引用ポスト
 	const postNoteModalComponent: ModalComponent = {
 		ref: ModalPostNote
