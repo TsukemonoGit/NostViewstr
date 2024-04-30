@@ -48,7 +48,7 @@
 			}
 		);
 
-		parent.onClose();
+		//	parent.onClose();
 	}
 	function copyEncodedID(tag: string[]) {
 		console.log(tag);
@@ -144,24 +144,39 @@
 			{$modalStore[0].title ?? '(title missing)'}
 		</header>
 		{#if $modalStore[0].meta.tagArray && $modalStore[0].meta.tagArray.length > 0}
-			<div class="mt-2"><b>List tag</b></div>
+			<div class="grid grid-cols-[1fr_auto]">
+				<div class="mt-2 font-bold">List tag</div>
+				{#if $modalStore[0].meta.tagArray[0] === 'a' || $modalStore[0].meta.tagArray[0] === 'p'}<button
+						class="anchor h-fit self-end"
+						on:click={() => copyEncodedID($modalStore[0].meta.tagArray)}
+						>copy {$modalStore[0].meta.tagArray[0] === 'a'
+							? 'Naddr'
+							: 'Pubkey'}</button
+					>{/if}
+			</div>
 			<div class="grid grid-cols-[1fr_auto] max-w-[768px]">
 				<div
 					class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto p-1"
 				>
 					{JSON.stringify($modalStore[0].meta.tagArray)}
 				</div>
-				{#if $modalStore[0].meta.tagArray[0] === 'a' || $modalStore[0].meta.tagArray[0] === 'p'}
+				<!-- {#if $modalStore[0].meta.tagArray[0] === 'a' || $modalStore[0].meta.tagArray[0] === 'p'}
 					<button
 						class="btn-icon h-full dark:fill-white"
 						on:click={() => copyEncodedID($modalStore[0].meta.tagArray)}
 						>{@html copyIcon}</button
 					>
-				{/if}
+				{/if} -->
 			</div>
 		{/if}
 
-		{#if event}<div class="mt-2"><b>Event</b></div>
+		{#if event}<div class="grid grid-cols-[1fr_auto]">
+				<div class="mt-2 font-bold">Event</div>
+				<button
+					class="anchor h-fit self-end"
+					on:click={() => onClickButton('note')}>copy noteID</button
+				>
+			</div>
 			<div
 				class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto break-all max-w-[768px] p-1"
 			>
@@ -188,11 +203,11 @@
 						on:click={onClickBroadcast}>Broadcast</button
 					>
 
-					<button
+					<!-- <button
 						type="button"
 						class="btn variant-filled-secondary p-1"
 						on:click={() => onClickButton('note')}>copy noteID</button
-					>
+					> -->
 				{/if}
 				<!-- <button
 					type="button"

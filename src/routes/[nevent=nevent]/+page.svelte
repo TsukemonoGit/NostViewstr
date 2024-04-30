@@ -234,7 +234,6 @@
 							{CheckNote}
 							bind:bkm
 							{isOwner}
-							noEdit={true}
 							isNaddr={false}
 						/>
 					</main>
