@@ -427,7 +427,7 @@
 			>
 			<hr class="!border-dashed" />
 			<!--naddrがあったらnaddrボタンだけ表示にする？（ノートIDは詳細表示からもコピーできるので）-->
-			{#if selectedIndex.detail.tagArray[0] === '0' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000)}
+			{#if selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000)}
 				<ListBoxItem
 					name="medium"
 					value="copyNaddr"
