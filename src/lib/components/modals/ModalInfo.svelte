@@ -74,8 +74,9 @@
 			if (res !== '') {
 				$pubkey_viewer = res;
 				$relaySet[$pubkey_viewer] = initRelaySet;
-
+				$nowProgress = true;
 				await getRelays($pubkey_viewer);
+				$nowProgress = false;
 			}
 		} catch (error) {
 			console.log('failed to login');
