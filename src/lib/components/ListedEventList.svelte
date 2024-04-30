@@ -165,7 +165,11 @@
 			await getRelays(pub);
 			toastStore.close(getRelaysToast);
 		}
-		if (pub !== $pubkey_viewer && !$relaySet[$pubkey_viewer]) {
+		if (
+			$pubkey_viewer &&
+			pub !== $pubkey_viewer &&
+			!$relaySet[$pubkey_viewer]
+		) {
 			$relaySet[$pubkey_viewer] = initRelaySet;
 
 			await getRelays($pubkey_viewer);

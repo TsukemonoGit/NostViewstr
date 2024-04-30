@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { relaySet, type RelayConfig } from '$lib/stores/relays';
+	import { initRelaySet, relaySet, type RelayConfig } from '$lib/stores/relays';
 	import { _ } from 'svelte-i18n';
 	import { modalStore } from '$lib/stores/store';
 	import { LightSwitch, SlideToggle } from '@skeletonlabs/skeleton';
@@ -13,13 +13,14 @@
 	import ViewIcon from '@material-design-icons/svg/round/expand_less.svg?raw';
 	import HideIcon from '@material-design-icons/svg/round/expand_more.svg?raw';
 	import FeedbackIcon from '@material-design-icons/svg/round/announcement.svg?raw';
-	import { getPub } from '$lib/nostrFunctions';
+	import { getPub, getRelays } from '$lib/nostrFunctions';
 	import {
 		URLPreview,
 		allView,
 		backButton,
 		iconView,
-		pubkey_viewer
+		pubkey_viewer,
+		nowProgress
 	} from '$lib/stores/settings';
 
 	import githubIconWhite from '$lib/assets/github-mark-white.png';
@@ -72,6 +73,9 @@
 			const res = await getPub(true); //ログインボタン押したときはちゃんと全部チェック
 			if (res !== '') {
 				$pubkey_viewer = res;
+				$relaySet[$pubkey_viewer] = initRelaySet;
+
+				await getRelays($pubkey_viewer);
 			}
 		} catch (error) {
 			console.log('failed to login');
