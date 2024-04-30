@@ -8,6 +8,7 @@
 	import OpenIcon from '@material-design-icons/svg/round/open_in_browser.svg?raw';
 	import ShareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
+	import CopyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
 	import { page } from '$app/stores';
 	import { nip19, type Event as NostrEvent } from 'nostr-tools';
 	import {
@@ -25,7 +26,7 @@
 
 	import { afterUpdate, createEventDispatcher } from 'svelte';
 
-	import { modalStore } from '$lib/stores/store';
+	import { modalStore, toastStore } from '$lib/stores/store';
 	import { dndzone } from 'svelte-dnd-action';
 	import {
 		ListBox,
@@ -37,7 +38,8 @@
 	} from '@skeletonlabs/skeleton';
 	import EventandButtons from './EventandButtons.svelte';
 	import type { Nostr } from 'nosvelte';
-	import type { SelectIndex } from '$lib/otherFunctions';
+	import { copyNaddr, copyNoteId, type SelectIndex } from '$lib/otherFunctions';
+	import { hide } from '@floating-ui/dom';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
@@ -52,7 +54,7 @@
 	export let listEvent: NostrEvent | undefined;
 	export let bkm = 'pub'; //'pub'|'prv'
 	export let isOwner: boolean;
-	export let noEdit: boolean = false;
+	//export let noEdit: boolean = false;
 	export let pubkey: string;
 	export let isNaddr: boolean;
 	//moveができるのはparamsがnpub/kindのときだけ
@@ -202,21 +204,24 @@
 		target: 'popupCombobox',
 		placement: 'bottom',
 		closeQuery: '.listbox-item',
+		middleware: {
+			hide: hide((state) => ({
+				padding: state.rects.reference.width
+			}))
+		},
+
 		state: (test) => {
 			console.log(test);
 
 			if (!test.state) {
 				comboboxValue = '';
+				popupElement.style.display = 'none';
+				popupElement.style.top = '0';
+				popupElement.style.left = '0';
 			}
 		}
 	};
 
-	afterUpdate(() => {
-		if (popupElement?.style.opacity == '0') {
-			popupElement.style.top = '0';
-			popupElement.style.left = '0';
-		}
-	});
 	//-----------------------------------------------引用ポスト
 	const postNoteModalComponent: ModalComponent = {
 		ref: ModalPostNote
@@ -321,7 +326,6 @@
 								{filter}
 								bind:selectedIndex
 								{kind}
-								handleClick={handleClickEdit}
 								{CheckNote}
 							/>
 						{/if}
@@ -391,6 +395,7 @@
 				><svelte:fragment slot="lead">{@html DeleteIcon}</svelte:fragment
 				>Delete</ListBoxItem
 			>
+			<hr class="!border-dashed" />
 			<ListBoxItem
 				name="medium"
 				value="Share"
@@ -424,6 +429,53 @@
 				><svelte:fragment slot="lead">{@html OpenIcon}</svelte:fragment>Open in
 				njump</ListBoxItem
 			>
+			<hr class="!border-dashed" />
+			<!--naddrがあったらnaddrボタンだけ表示にする？（ノートIDは詳細表示からもコピーできるので）-->
+			{#if selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000)}
+				<ListBoxItem
+					name="medium"
+					value="copyNaddr"
+					bind:group={comboboxValue}
+					on:click={async () => {
+						comboboxValue = '';
+						const res = await copyNaddr(selectedIndex);
+						const toast = res
+							? {
+									message: `copied`,
+									timeout: 3000
+							  }
+							: {
+									message: `failed`,
+									timeout: 3000,
+									background: 'bg-orange-500 text-white width-filled '
+							  };
+						toastStore.trigger(toast);
+					}}
+					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
+					Naddr</ListBoxItem
+				>{:else if selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a'}
+				<ListBoxItem
+					name="medium"
+					value="copyNote"
+					bind:group={comboboxValue}
+					on:click={async () => {
+						comboboxValue = '';
+						const res = await copyNoteId(selectedIndex);
+						const toast = res
+							? {
+									message: `copied`,
+									timeout: 3000
+							  }
+							: {
+									message: `failed`,
+									timeout: 3000,
+									background: 'bg-orange-500 text-white width-filled '
+							  };
+						toastStore.trigger(toast);
+					}}
+					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
+					NoteID</ListBoxItem
+				>{/if}
 			<ListBoxItem
 				name="medium"
 				value="detail"

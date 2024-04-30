@@ -31,7 +31,7 @@
 	export let pubkey: string;
 	export let selectedIndex: SelectIndex;
 	export let kind: number | undefined;
-	export let handleClick: any;
+	//export let handleClick: any;
 	export let CheckNote: (e: SelectIndex) => void;
 	const uniqueEvent = (eventList: NostrEvent[]): NostrEvent => {
 		//console.log(eventList);

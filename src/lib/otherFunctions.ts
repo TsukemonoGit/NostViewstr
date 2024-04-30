@@ -5,6 +5,8 @@ import { type Event as NostrEvent, nip19 } from 'nostr-tools';
 
 import { fetchFilteredEvents, parseNaddr } from './nostrFunctions';
 import type { Nostr } from 'nosvelte';
+import { naddrEncode, noteEncode, type AddressPointer } from './nip19';
+import { relaySet } from './stores/relays';
 export enum MenuMode {
 	Multi, //複数選択モード
 	Owner, //追加削除ボタン込み
@@ -22,7 +24,6 @@ export interface SelectIndex {
 	};
 }
 
-// サーバーサイドでのOGP情報取得は不要なので、クライアントサイド用の関数を追加する
 interface Ogp {
 	title: string;
 	image: string;
@@ -241,4 +242,57 @@ export function formatRelativeDate(unixTime: number) {
 		const diffYears = Math.floor(diffSeconds / 31536000);
 		return `${diffYears} years ago`;
 	}
+}
+
+export async function copyNoteId(selectedIndex: SelectIndex): Promise<boolean> {
+	const id = selectedIndex.detail.event
+		? selectedIndex.detail.event.id
+		: selectedIndex.detail.tagArray[0] === 'e'
+		? selectedIndex.detail.tagArray[1]
+		: '';
+	if (id === '') {
+		return Promise.resolve(false);
+	}
+	const text = noteEncode(id);
+
+	return navigator.clipboard.writeText(text).then(
+		() => {
+			// コピーに成功したときの処理
+			return true;
+		},
+		() => {
+			// コピーに失敗したときの処理
+			return false;
+		}
+	);
+}
+export async function copyNaddr(selectedIndex: SelectIndex): Promise<boolean> {
+	const naddrpointer: AddressPointer | undefined =
+		selectedIndex.detail.tagArray[0] === 'a'
+			? parseNaddr(selectedIndex.detail.tagArray)
+			: selectedIndex.detail.event
+			? {
+					identifier:
+						selectedIndex.detail.event.tags.find(
+							(item) => item[0] === 'd'
+						)?.[1] ?? '',
+					pubkey: selectedIndex.detail.event.pubkey,
+					kind: selectedIndex.detail.event.kind
+					// relays: get(relaySet)?.[selectedIndex.detail.event.pubkey] ?? []
+			  }
+			: undefined;
+	if (!naddrpointer) {
+		return Promise.resolve(false);
+	}
+	const text = naddrEncode(naddrpointer);
+	return navigator.clipboard.writeText(text).then(
+		() => {
+			// コピーに成功したときの処理
+			return true;
+		},
+		() => {
+			// コピーに失敗したときの処理
+			return false;
+		}
+	);
 }
