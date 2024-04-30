@@ -39,6 +39,7 @@
 	import EventandButtons from './EventandButtons.svelte';
 	import type { Nostr } from 'nosvelte';
 	import { copyNaddr, copyNoteId, type SelectIndex } from '$lib/otherFunctions';
+	import { hide } from '@floating-ui/dom';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
@@ -203,6 +204,12 @@
 		target: 'popupCombobox',
 		placement: 'bottom',
 		closeQuery: '.listbox-item',
+		middleware: {
+			hide: hide((state) => ({
+				padding: state.rects.reference.width
+			}))
+		},
+
 		state: (test) => {
 			console.log(test);
 
@@ -214,6 +221,7 @@
 
 	afterUpdate(() => {
 		if (popupElement?.style.opacity == '0') {
+			popupElement.style.display = 'none';
 			popupElement.style.top = '0';
 			popupElement.style.left = '0';
 		}
