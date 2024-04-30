@@ -204,11 +204,6 @@
 		target: 'popupCombobox',
 		placement: 'bottom',
 		closeQuery: '.listbox-item',
-		middleware: {
-			hide: hide((state) => ({
-				padding: state.rects.reference.width
-			}))
-		},
 
 		state: (test) => {
 			console.log(test);
