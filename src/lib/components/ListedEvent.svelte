@@ -322,7 +322,6 @@
 								{filter}
 								bind:selectedIndex
 								{kind}
-								handleClick={handleClickEdit}
 								{CheckNote}
 							/>
 						{/if}
@@ -427,29 +426,7 @@
 				njump</ListBoxItem
 			>
 			<hr class="!border-dashed" />
-			{#if selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a'}
-				<ListBoxItem
-					name="medium"
-					value="copyNote"
-					bind:group={comboboxValue}
-					on:click={async () => {
-						comboboxValue = '';
-						const res = await copyNoteId(selectedIndex);
-						const toast = res
-							? {
-									message: `copied`,
-									timeout: 3000
-							  }
-							: {
-									message: `failed`,
-									timeout: 3000,
-									background: 'bg-orange-500 text-white width-filled '
-							  };
-						toastStore.trigger(toast);
-					}}
-					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
-					NoteID</ListBoxItem
-				>{/if}
+			<!--naddrがあったらnaddrボタンだけ表示にする？（ノートIDは詳細表示からもコピーできるので）-->
 			{#if selectedIndex.detail.tagArray[0] === '0' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000)}
 				<ListBoxItem
 					name="medium"
@@ -472,6 +449,28 @@
 					}}
 					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
 					Naddr</ListBoxItem
+				>{:else if selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a'}
+				<ListBoxItem
+					name="medium"
+					value="copyNote"
+					bind:group={comboboxValue}
+					on:click={async () => {
+						comboboxValue = '';
+						const res = await copyNoteId(selectedIndex);
+						const toast = res
+							? {
+									message: `copied`,
+									timeout: 3000
+							  }
+							: {
+									message: `failed`,
+									timeout: 3000,
+									background: 'bg-orange-500 text-white width-filled '
+							  };
+						toastStore.trigger(toast);
+					}}
+					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
+					NoteID</ListBoxItem
 				>{/if}
 			<ListBoxItem
 				name="medium"
