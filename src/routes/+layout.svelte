@@ -43,6 +43,7 @@
 		// initNostrLogin({
 		// 	/*options*/
 		// });
+		document.dispatchEvent(new CustomEvent('nlLaunch', { detail: 'welcome' }));
 		const backBtn = localStorage.getItem('back');
 		//console.log('backButton', backBtn);
 		if (backBtn) {
