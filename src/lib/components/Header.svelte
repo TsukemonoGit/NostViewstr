@@ -83,9 +83,9 @@
 		  ]
 		: [];
 
-	const borderDefault = `rounded-tl-container-token rounded-tr-container-token break-keep place-items-end h6 bkm flex  sm:px-4 py-2 px-0.5 h-fit align-bottom place-self-end`;
-	const borderClassActive = `bg-primary-200-700-token fill-black  dark:fill-white ${borderDefault}`;
-	const borderClass = `fill-white ${borderDefault}    `;
+	const borderDefault = ` rounded-tl-lg rounded-tr-lg  break-keep place-items-end h6 bkm flex  sm:px-3 sm:py-2 py-1 px-0.5 h-fit align-bottom place-self-end `;
+	const borderClassActive = `bg-surface-200-700-token fill-black  dark:fill-white sm:py-3 py-2 ${borderDefault}`;
+	const borderClass = `fill-white bg-primary-400  ${borderDefault}    `;
 
 	//-------------------------------------------------------edit tag
 	const listInfoModalComponent: ModalComponent = {
@@ -445,14 +445,14 @@
 				</div>
 
 				<button
-					class="flex text-right text-sm underline decoration-secondary-200 overflow-hidden"
+					class="flex text-right text-sm underline decoration-secondary-200 overflow-hidden sm:w-fit w-20"
 					on:click={() => {
 						if (viewEvent !== undefined) {
 							OpenNoteJson(viewEvent, listNaddr);
 						}
 					}}
 				>
-					<div class="break-all truncate h6">
+					<div class="break-all h6">
 						{formatAbsoluteDate(viewEvent.created_at)}
 					</div></button
 				>
