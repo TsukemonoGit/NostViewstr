@@ -10,6 +10,16 @@
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
 	export let onFormSubmit: any;
+
+	export let selectBoxItem: string[];
+	export let selectItem: string;
+
+	const myValue = 'Event';
+
+	if (!selectBoxItem.includes(myValue)) {
+		selectBoxItem.push(myValue);
+	}
+
 	let input: string;
 	async function onClickNaddr() {
 		const check = await checkInputNaddr(input);
@@ -30,34 +40,33 @@
 	}
 </script>
 
-<!---->
-<article class="body">
-	<span class="dot" /><span class="px-1 font-bold">Naddr</span>
-</article>
-<!-- Enable for debugging: -->
-
-<input
-	class="input p-2 m-2"
-	type="text"
-	bind:value={input}
-	placeholder="nostr:naddr... or naddr..."
-/>
-
-<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	<PublicButton
-		handleClickPub={() => {
-			res.btn = 'pub';
-			onClickNaddr();
-		}}
-		{parent}
-	/>
-	<PrivateButton
-		handleClickPrv={() => {
-			res.btn = 'prv';
-			onClickNaddr();
-		}}
-		{parent}
-	/>
-</footer>
-
-<!---->
+{#if selectItem === myValue}
+	<article class="body">
+		<span class="dot" /><span class="px-1 font-bold">Naddr</span>
+	</article>
+	<!-- Enable for debugging: -->
+	<div class="p-2">
+		<input
+			class="input p-2"
+			type="text"
+			bind:value={input}
+			placeholder="nostr:naddr... or naddr..."
+		/>
+	</div>
+	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
+		<PublicButton
+			handleClickPub={() => {
+				res.btn = 'pub';
+				onClickNaddr();
+			}}
+			{parent}
+		/>
+		<PrivateButton
+			handleClickPrv={() => {
+				res.btn = 'prv';
+				onClickNaddr();
+			}}
+			{parent}
+		/>
+	</footer>
+{/if}

@@ -13,6 +13,16 @@
 	//export let viewList: string[][];
 	export let tag: string[];
 	export let bkm: undefined | string;
+
+	export let selectBoxItem: string[];
+	export let selectItem: string;
+
+	const myValue = 'Other';
+
+	if (!selectBoxItem.includes(myValue)) {
+		selectBoxItem.push(myValue);
+	}
+
 	let input: string = tag ? tag[1] : '';
 
 	async function onClickCheck() {
@@ -26,43 +36,44 @@
 	}
 </script>
 
-<!-- Enable for debugging: -->
-<article class="body">
-	<span class="dot" /><span class="px-1 font-bold">{tag[0]}</span>
-</article>
-<div class="input-group input-group-divider grid-cols-[auto_1fr] m-2">
-	<div class="my-2">{tag[0]}</div>
+{#if selectItem === myValue}
+	<article class="body">
+		<span class="dot" /><span class="px-1 font-bold">{tag[0]}</span>
+	</article>
+	<div class="input-group input-group-divider grid-cols-[auto_1fr] m-2">
+		<div class="my-2">{tag[0]}</div>
 
-	<input class="input px-1" type="text" bind:value={input} />
-</div>
+		<input class="input px-1" type="text" bind:value={input} />
+	</div>
 
-<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	{#if bkm !== undefined}
-		<!--編集のとき-->
-		<Save
-			handleClickPub={() => {
-				if (bkm !== undefined) {
-					res.btn = bkm;
+	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
+		{#if bkm !== undefined}
+			<!--編集のとき-->
+			<Save
+				handleClickPub={() => {
+					if (bkm !== undefined) {
+						res.btn = bkm;
+						onClickCheck();
+					}
+				}}
+				{parent}
+			/>
+		{:else}
+			<!--新規追加のとき-->
+			<PublicButton
+				handleClickPub={() => {
+					res.btn = 'pub';
 					onClickCheck();
-				}
-			}}
-			{parent}
-		/>
-	{:else}
-		<!--新規追加のとき-->
-		<PublicButton
-			handleClickPub={() => {
-				res.btn = 'pub';
-				onClickCheck();
-			}}
-			{parent}
-		/>
-		<PrivateButton
-			handleClickPrv={() => {
-				res.btn = 'prv';
-				onClickCheck();
-			}}
-			{parent}
-		/>
-	{/if}
-</footer>
+				}}
+				{parent}
+			/>
+			<PrivateButton
+				handleClickPrv={() => {
+					res.btn = 'prv';
+					onClickCheck();
+				}}
+				{parent}
+			/>
+		{/if}
+	</footer>
+{/if}

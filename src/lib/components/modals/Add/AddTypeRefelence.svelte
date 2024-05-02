@@ -13,6 +13,15 @@
 	export let tag: string[];
 	export let bkm: string | undefined;
 
+	export let selectBoxItem: string[];
+	export let selectItem: string;
+
+	const myValue = 'Refelence';
+
+	if (!selectBoxItem.includes(myValue)) {
+		selectBoxItem.push(myValue);
+	}
+
 	let input1: string = tag?.length > 1 ? tag[1] : '';
 	let input2: string = tag?.length > 2 ? tag[2] : '';
 
@@ -27,39 +36,42 @@
 	}
 </script>
 
-<!-- Enable for debugging: -->
-<article class="body">
-	<span class="dot" /><span class="px-1 font-bold">Reference</span>
-</article>
+{#if selectItem === myValue}
+	<article class="body">
+		<span class="dot" /><span class="px-1 font-bold">Reference</span>
+	</article>
 
-<div class="m-2">
-	<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] my-1">
-		<div class="input-group-shim" style="padding-left: 4px;padding-right: 4px">
-			Name
+	<div class="m-2">
+		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] my-1">
+			<div
+				class="input-group-shim"
+				style="padding-left: 4px;padding-right: 4px"
+			>
+				Name
+			</div>
+			<input
+				class="input px-1 py-1"
+				type="text"
+				placeholder="link name"
+				bind:value={input2}
+			/>
 		</div>
-		<input
-			class="input px-1 py-1"
-			type="text"
-			placeholder="link name"
-			bind:value={input2}
-		/>
-	</div>
-	<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2">
-		<div
-			class="input-group-shim"
-			style="padding-left: 11px;padding-right: 11px"
-		>
-			URL
+		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2">
+			<div
+				class="input-group-shim"
+				style="padding-left: 11px;padding-right: 11px"
+			>
+				URL
+			</div>
+			<input
+				class="input px-1 py-1"
+				type="text"
+				placeholder="http://"
+				bind:value={input1}
+			/>
 		</div>
-		<input
-			class="input px-1 py-1"
-			type="text"
-			placeholder="http://"
-			bind:value={input1}
-		/>
 	</div>
-</div>
-<!-- <div class="input1-group input1-group-divider grid-cols-[auto_1fr] m-2">
+	<!-- <div class="input1-group input1-group-divider grid-cols-[auto_1fr] m-2">
 	<label class="label mt-1">
 		<span>Link Name (not required)</span>
 		<input
@@ -79,33 +91,34 @@
 		/></label
 	>
 </div> -->
-<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	{#if bkm !== undefined}
-		<!--編集のとき-->
-		<Save
-			handleClickPub={() => {
-				if (bkm !== undefined) {
-					res.btn = bkm;
+	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
+		{#if bkm !== undefined}
+			<!--編集のとき-->
+			<Save
+				handleClickPub={() => {
+					if (bkm !== undefined) {
+						res.btn = bkm;
+						onClickCheck();
+					}
+				}}
+				{parent}
+			/>
+		{:else}
+			<!--新規追加のとき-->
+			<PublicButton
+				handleClickPub={() => {
+					res.btn = 'pub';
 					onClickCheck();
-				}
-			}}
-			{parent}
-		/>
-	{:else}
-		<!--新規追加のとき-->
-		<PublicButton
-			handleClickPub={() => {
-				res.btn = 'pub';
-				onClickCheck();
-			}}
-			{parent}
-		/>
-		<PrivateButton
-			handleClickPrv={() => {
-				res.btn = 'prv';
-				onClickCheck();
-			}}
-			{parent}
-		/>
-	{/if}
-</footer>
+				}}
+				{parent}
+			/>
+			<PrivateButton
+				handleClickPrv={() => {
+					res.btn = 'prv';
+					onClickCheck();
+				}}
+				{parent}
+			/>
+		{/if}
+	</footer>
+{/if}
