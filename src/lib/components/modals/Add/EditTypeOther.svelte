@@ -3,6 +3,9 @@
 
 	import { tagExp } from '$lib/kind';
 	import { nowProgress } from '$lib/stores/settings';
+	import PublicButton from './PublicButton.svelte';
+	import PrivateButton from './PrivateButton.svelte';
+	import Save from './Save.svelte';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
 	export let parent: any;
@@ -36,33 +39,30 @@
 <footer class=" gap-2 flex flex-wrap justify-end mt-2">
 	{#if bkm !== undefined}
 		<!--編集のとき-->
-		<button
-			class="btn variant-filled-warning {parent.buttonPositive}"
-			on:click={() => {
+		<Save
+			handleClickPub={() => {
 				if (bkm !== undefined) {
 					res.btn = bkm;
 					onClickCheck();
 				}
 			}}
-			disabled={$nowProgress}>SAVE</button
-		>
+			{parent}
+		/>
 	{:else}
 		<!--新規追加のとき-->
-		<button
-			class="btn variant-filled-warning {parent.buttonPositive}"
-			on:click={() => {
-				res.btn = 'prv';
-				onClickCheck();
-			}}
-			disabled={$nowProgress}>Private</button
-		>
-		<button
-			class="btn {parent.buttonPositive}"
-			on:click={() => {
+		<PublicButton
+			handleClickPub={() => {
 				res.btn = 'pub';
 				onClickCheck();
 			}}
-			disabled={$nowProgress}>Public</button
-		>
+			{parent}
+		/>
+		<PrivateButton
+			handleClickPrv={() => {
+				res.btn = 'prv';
+				onClickCheck();
+			}}
+			{parent}
+		/>
 	{/if}
 </footer>

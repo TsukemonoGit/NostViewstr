@@ -5,6 +5,8 @@
 	import { nip19 } from 'nostr-tools';
 	import { naddrVaridKind } from '$lib/kind';
 	import { nowProgress } from '$lib/stores/settings';
+	import PublicButton from './PublicButton.svelte';
+	import PrivateButton from './PrivateButton.svelte';
 
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
@@ -80,38 +82,73 @@
 	</button>
 </article>
 {#if openaddr}
-	<div
-		class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"
-	>
-		<div class="input-group-shim">kind</div>
-		<input
-			class="input p-2 w-full"
-			type="text"
-			inputmode="numeric"
-			bind:value={inputKind}
-			{disabled}
-			on:input={() => (inputKind = inputKind.replace(/[^0-9]/g, ''))}
-			placeholder="number"
-		/>
-		<div class="input-group-shim">pubkey</div>
-		<input
-			class="input p-2"
-			type="text"
-			bind:value={inputPubkey}
-			placeholder="npub1..."
-		/>
+	<div>
+		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2">
+			<div
+				class="input-group-shim w-[2.5rem]"
+				style="padding-left: 4px;padding-right: 4px; justify-content: center;"
+			>
+				kind
+			</div>
+			<input
+				class="input p-1 w-full"
+				type="text"
+				inputmode="numeric"
+				bind:value={inputKind}
+				{disabled}
+				on:input={() => (inputKind = inputKind.replace(/[^0-9]/g, ''))}
+				placeholder="number"
+			/>
+		</div>
 
-		<div class="input-group-shim">identifier</div>
-		<input
-			class="input p-2"
-			type="text"
-			bind:value={inputId}
-			placeholder="..."
-		/><!--on:input={() => (inputId = inputId.replace(/[^a-zA-Z0-9-_]/g, ''))}-->
+		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2">
+			<div
+				class="input-group-shim w-[2.5rem]"
+				style="padding-left: 4px;padding-right: 4px; justify-content: center;"
+			>
+				pub
+			</div>
+			<input
+				class="input p-1"
+				type="text"
+				bind:value={inputPubkey}
+				placeholder="npub1..."
+			/>
+		</div>
+
+		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2">
+			<div
+				class="input-group-shim w-[2.5rem]"
+				style="padding-left: 4px;padding-right: 4px; justify-content: center;"
+			>
+				id
+			</div>
+			<input
+				class="input p-1"
+				type="text"
+				bind:value={inputId}
+				placeholder="..."
+			/>
+		</div>
 	</div>
 
 	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-		<button
+		<PublicButton
+			handleClickPub={() => {
+				res.btn = 'pub';
+				onClickCheck();
+			}}
+			{parent}
+		/>
+		<PrivateButton
+			handleClickPrv={() => {
+				res.btn = 'prv';
+				onClickCheck();
+			}}
+			{parent}
+		/>
+
+		<!-- <button
 			class="btn variant-filled-warning {parent.buttonPositive}"
 			on:click={() => {
 				res.btn = 'prv';
@@ -126,6 +163,6 @@
 				onClickCheck();
 			}}
 			disabled={$nowProgress}>Public</button
-		>
+		> -->
 	</footer>
 {/if}

@@ -230,7 +230,7 @@
 					{bkm}
 				/>
 			{/if}
-			{#if ($modalStore[0].value.kind !== 10002 && includesRefelence) || (tag !== undefined && tag[0] === 'r')}
+			{#if $modalStore[0].value.kind !== 10002 && (includesRefelence || (tag !== undefined && tag[0] === 'r'))}
 				<hr class="!border-dashed my-1" />
 				<AddTypeRefelence
 					{res}

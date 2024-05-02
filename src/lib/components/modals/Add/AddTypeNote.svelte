@@ -2,6 +2,8 @@
 	import { checkInputNote } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
+	import PrivateButton from './PrivateButton.svelte';
+	import PublicButton from './PublicButton.svelte';
 
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
@@ -39,18 +41,18 @@
 />
 
 <footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	<button
-		class="btn variant-filled-warning {parent.buttonPositive}"
-		on:click={() => {
-			res.btn = 'prv';
-			onClickCheck();
-		}}>Private</button
-	>
-	<button
-		class="btn {parent.buttonPositive}"
-		on:click={() => {
+	<PublicButton
+		handleClickPub={() => {
 			res.btn = 'pub';
 			onClickCheck();
-		}}>Public</button
-	>
+		}}
+		{parent}
+	/>
+	<PrivateButton
+		handleClickPrv={() => {
+			res.btn = 'prv';
+			onClickCheck();
+		}}
+		{parent}
+	/>
 </footer>

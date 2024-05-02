@@ -5,6 +5,8 @@
 	import { nip19 } from 'nostr-tools';
 	import { nowProgress } from '$lib/stores/settings';
 	import dotIcon from '@material-design-icons/svg/round/circle.svg?raw';
+	import PublicButton from './PublicButton.svelte';
+	import PrivateButton from './PrivateButton.svelte';
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
 	export let onFormSubmit: any;
@@ -42,22 +44,20 @@
 />
 
 <footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	<button
-		class="btn variant-filled-warning {parent.buttonPositive}"
-		on:click={() => {
-			res.btn = 'prv';
-			onClickNaddr();
-		}}
-		disabled={$nowProgress}>Private</button
-	>
-	<button
-		class="btn {parent.buttonPositive}"
-		on:click={() => {
+	<PublicButton
+		handleClickPub={() => {
 			res.btn = 'pub';
 			onClickNaddr();
 		}}
-		disabled={$nowProgress}>Public</button
-	>
+		{parent}
+	/>
+	<PrivateButton
+		handleClickPrv={() => {
+			res.btn = 'prv';
+			onClickNaddr();
+		}}
+		{parent}
+	/>
 </footer>
 
 <!---->

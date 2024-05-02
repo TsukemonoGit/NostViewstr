@@ -3,6 +3,7 @@
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import type { Nostr } from 'nosvelte';
+	import PublicButton from './PublicButton.svelte';
 
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
@@ -75,11 +76,11 @@
 />
 
 <footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	<button
-		class="btn {parent.buttonPositive}"
-		on:click={() => {
+	<PublicButton
+		handleClickPub={() => {
 			res.btn = 'pub';
 			onClickCheck();
-		}}>Add</button
-	>
+		}}
+		{parent}
+	/>
 </footer>
