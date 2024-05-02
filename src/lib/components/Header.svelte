@@ -84,8 +84,8 @@
 		: [];
 
 	const borderDefault = `rounded-tl-container-token rounded-tr-container-token break-keep place-items-end h6 bkm flex  sm:px-4 py-2 px-0.5 h-fit align-bottom place-self-end`;
-	const borderClassActive = `bg-primary-700    ${borderDefault}`;
-	const borderClass = `${borderDefault}    `;
+	const borderClassActive = `bg-primary-200-700-token fill-black  dark:fill-white ${borderDefault}`;
+	const borderClass = `fill-white ${borderDefault}    `;
 
 	//-------------------------------------------------------edit tag
 	const listInfoModalComponent: ModalComponent = {
