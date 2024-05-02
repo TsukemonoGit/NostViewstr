@@ -82,8 +82,10 @@
 				}`
 		  ]
 		: [];
-	const borderClassActive = `break-keep border-b-2 border-white place-items-end sm:m-1 sm:p-0.5 py-1 m-0 flex   h6 bkm`;
-	const borderClass = `break-keep  place-items-end sm:p-0.5 sm:m-1 py-1 m-0 flex  h6 bkm`;
+
+	const borderDefault = `rounded-tl-container-token rounded-tr-container-token break-keep place-items-end h6 bkm flex  sm:px-4 py-2 px-0.5 h-fit align-bottom place-self-end`;
+	const borderClassActive = `bg-primary-700    ${borderDefault}`;
+	const borderClass = `${borderDefault}    `;
 
 	//-------------------------------------------------------edit tag
 	const listInfoModalComponent: ModalComponent = {
@@ -403,37 +405,41 @@
 				</div>
 			{/if}
 		</div>
-		<div class="grid grid-cols-[auto_auto] py-1 h-[4em]">
-			<button
-				title="Public List (tags)"
-				class={bkm === 'pub' ? borderClassActive : borderClass}
-				disabled={bkm === 'pub'}
-				on:click={() => {
-					bkm = 'pub';
-					console.log(bkm);
-					$pageNum = 0;
-				}}
-				>{@html pubIcon}
-			</button>
-			{#if viewEvent && viewEvent.content !== ''}
+		<div class="grid grid-cols-[auto_auto] py-0 h-[4em]">
+			<div class="flex">
 				<button
-					title="Private List (content)"
-					class={bkm === 'prv' ? borderClassActive : borderClass}
-					disabled={bkm === 'prv'}
+					title="Public List (tags)"
+					class={bkm === 'pub' ? borderClassActive : borderClass}
+					disabled={bkm === 'pub'}
 					on:click={() => {
-						bkm = 'prv';
+						bkm = 'pub';
 						console.log(bkm);
 						$pageNum = 0;
 					}}
-				>
-					{@html prvIcon}
+					>{@html pubIcon}
 				</button>
+			</div>
+			{#if viewEvent && viewEvent.content !== ''}
+				<div class="flex">
+					<button
+						title="Private List (content)"
+						class={bkm === 'prv' ? borderClassActive : borderClass}
+						disabled={bkm === 'prv'}
+						on:click={() => {
+							bkm = 'prv';
+							console.log(bkm);
+							$pageNum = 0;
+						}}
+					>
+						{@html prvIcon}
+					</button>
+				</div>
 			{:else}
 				<div />
 			{/if}
 		</div>
 		{#if viewEvent !== undefined}
-			<div class=" grid grid-rows-[auto_auto] box-border h-[4em]">
+			<div class="ml-1 grid grid-rows-[auto_auto] box-border h-[4em]">
 				<div class=" place-self-end h6 truncate overflow-hidden">
 					{$_('created_at')}
 				</div>
