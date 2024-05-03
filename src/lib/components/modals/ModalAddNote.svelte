@@ -196,6 +196,8 @@
 				</select> -->
 			</header>
 			<TabGroup
+				border="border-b border-surface-400-500-token"
+				active="border-b-2 border-surface-900-50-token"
 				><div class="max-w-full overflow-x-auto flex">
 					{#each selectBoxItem as item}<Tab
 							bind:group={selectItem}
