@@ -196,13 +196,8 @@
 				</select> -->
 			</header>
 			<TabGroup
-				padding="px-3 py-1"
-				class=" mt-4 "
-				rounded="rounded-tl-md rounded-tr-md"
-				active="border border-surface-400-500-token bg-surface-400-500-token "
 				><div class="max-w-full overflow-x-auto flex">
 					{#each selectBoxItem as item}<Tab
-							class="text-surface-600-300-token font-semibold"
 							bind:group={selectItem}
 							name="tab1"
 							value={item}
