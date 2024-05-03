@@ -34,6 +34,10 @@
 		res.check = true;
 		onFormSubmit();
 	}
+	let inputElement: HTMLInputElement;
+	$: if (selectItem === myValue && inputElement) {
+		inputElement.focus();
+	}
 </script>
 
 {#if selectItem === myValue}
@@ -50,6 +54,7 @@
 				Name
 			</div>
 			<input
+				bind:this={inputElement}
 				class="input px-1 py-1"
 				type="text"
 				placeholder="link name"

@@ -100,6 +100,11 @@
 			onFormSubmit();
 		}
 	}
+
+	let inputElement: HTMLInputElement;
+	$: if (selectItem === myValue && inputElement) {
+		inputElement.focus();
+	}
 </script>
 
 {#if selectItem === myValue}
@@ -112,6 +117,7 @@
 	>
 		<div class="input-group-shim">relay url</div>
 		<input
+			bind:this={inputElement}
 			class="input p-2 my-2 w-full"
 			type="text"
 			bind:value={input}

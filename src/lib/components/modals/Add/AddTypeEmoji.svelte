@@ -45,6 +45,11 @@
 		res.check = true;
 		onFormSubmit();
 	}
+
+	let inputElement: HTMLInputElement;
+	$: if (selectItem === myValue && inputElement) {
+		inputElement.focus();
+	}
 </script>
 
 {#if selectItem === myValue}
@@ -58,6 +63,7 @@
 			emoji name (only alphanumeric characters and underscores)
 		</div>
 		<input
+			bind:this={inputElement}
 			class="input p-2 my-2 w-full"
 			type="text"
 			bind:value={emojiName}
