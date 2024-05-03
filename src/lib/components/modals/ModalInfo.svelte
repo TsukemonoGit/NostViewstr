@@ -5,6 +5,7 @@
 	import { LightSwitch, SlideToggle } from '@skeletonlabs/skeleton';
 
 	import loginIcon from '@material-design-icons/svg/round/login.svg?raw';
+	import logoutIcon from '@material-design-icons/svg/round/logout.svg?raw';
 	import shareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import lightningIcon from '@material-design-icons/svg/round/bolt.svg?raw';
 
@@ -72,11 +73,14 @@
 		try {
 			const res = await getPub(true); //ログインボタン押したときはちゃんと全部チェック
 			if (res !== '') {
+				const res = await getPub(true);
 				$pubkey_viewer = res;
-				$relaySet[$pubkey_viewer] = initRelaySet;
-				$nowProgress = true;
-				await getRelays($pubkey_viewer);
-				$nowProgress = false;
+				if (!$relaySet[$pubkey_viewer]) {
+					$relaySet[$pubkey_viewer] = initRelaySet;
+					$nowProgress = true;
+					await getRelays($pubkey_viewer);
+					$nowProgress = false;
+				}
 			}
 		} catch (error) {
 			console.log('failed to login');
@@ -138,25 +142,41 @@
 			{#if !$pubkey_viewer || $pubkey_viewer === ''}
 				<div class="flex items-center justify-start">
 					<button
-						class="mx-1 h-full btn variant-filled-surface fill-white"
+						class="px-2 mx-1 h-full btn variant-filled-surface fill-white"
 						on:click={onClickLogin}
 					>
 						Login{@html loginIcon}
 					</button>(use NIP-07 extension or NIP-46 connect)
 				</div>
-			{:else}<div class="flex">
-					<select class="select" bind:value={selectValue}>
-						{#each Object.keys(kinds) as value (value)}
-							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-						{/each}
-					</select><button
-						type="button"
-						class="mx-1 px-2 btn variant-filled-secondary history"
-						on:click={gotoMyList}>{@html LocationHomeIcon}My Page</button
+			{:else}
+				<div class="flex items-center justify-start">
+					<button
+						class="ml-2 px-2 h-full btn variant-filled-surface fill-white"
+						on:click={() => {
+							$pubkey_viewer = '';
+							document.dispatchEvent(new Event('nlLogout'));
+						}}
 					>
+						{@html logoutIcon}Logout
+					</button>
 				</div>
 			{/if}
 		</div>
+		{#if $pubkey_viewer && $pubkey_viewer !== ''}
+			<div class="flex">
+				<select class="select" bind:value={selectValue}>
+					{#each Object.keys(kinds) as value (value)}
+						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
+					{/each}
+				</select>
+				<button
+					type="button"
+					class="mx-1 px-2 btn variant-filled-secondary history"
+					on:click={gotoMyList}>{@html LocationHomeIcon}My Page</button
+				>
+			</div>
+		{/if}
+
 		<!-- </div> -->
 		<!-- </div>  -->
 
