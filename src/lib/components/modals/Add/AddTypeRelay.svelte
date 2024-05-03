@@ -13,6 +13,15 @@
 	export let number: number;
 	export let viewList: string[][];
 
+	export let selectBoxItem: string[];
+	export let selectItem: string;
+
+	const myValue = 'Relay';
+
+	if (!selectBoxItem.includes(myValue)) {
+		selectBoxItem.push(myValue);
+	}
+
 	let input: string = tag ? tag[1] : '';
 
 	async function onClickCheck() {
@@ -61,26 +70,34 @@
 			onFormSubmit();
 		}
 	}
+
+	let inputElement: HTMLInputElement;
+	$: if (selectItem === myValue && inputElement) {
+		inputElement.focus();
+	}
 </script>
 
-<article class="body">
-	<span class="dot" /><span class="px-1 font-bold">Relay</span>
-</article>
-<!-- Enable for debugging: -->
-
-<input
-	class="input p-2 m-2"
-	type="text"
-	bind:value={input}
-	placeholder="wss://..."
-/>
-
-<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	<PublicButton
-		handleClickPub={() => {
-			res.btn = 'pub';
-			onClickCheck();
-		}}
-		{parent}
-	/>
-</footer>
+{#if selectItem === myValue}
+	<article class="body">
+		<span class="dot" /><span class="px-1 font-bold">Relay</span>
+	</article>
+	<!-- Enable for debugging: -->
+	<div class="p-2">
+		<input
+			bind:this={inputElement}
+			class="input p-2"
+			type="text"
+			bind:value={input}
+			placeholder="wss://..."
+		/>
+	</div>
+	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
+		<PublicButton
+			handleClickPub={() => {
+				res.btn = 'pub';
+				onClickCheck();
+			}}
+			{parent}
+		/>
+	</footer>
+{/if}

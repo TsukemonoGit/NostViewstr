@@ -11,8 +11,14 @@
 	//export let event: Nostr.Event;
 	export let tag: string[]; //編集の場合はここに初期値が
 
-	//export let viewList: string[][];
-	console.log(tag);
+	export let selectBoxItem: string[];
+	export let selectItem: string;
+
+	const myValue = 'Relay';
+
+	if (!selectBoxItem.includes(myValue)) {
+		selectBoxItem.push(myValue);
+	}
 
 	let input: string = tag ? tag[1] : '';
 
@@ -94,36 +100,44 @@
 			onFormSubmit();
 		}
 	}
+
+	let inputElement: HTMLInputElement;
+	$: if (selectItem === myValue && inputElement) {
+		inputElement.focus();
+	}
 </script>
 
-<!-- Enable for debugging: -->
-<article class="body">
-	<span class="dot" /><span class="px-1 font-bold">Relay</span>
-</article>
-<div
-	class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"
->
-	<div class="input-group-shim">relay url</div>
-	<input
-		class="input p-2 my-2 w-full"
-		type="text"
-		bind:value={input}
-		placeholder="wss://..."
-	/>
-	<div class="input-group-shim">type</div>
-	<select class="select" bind:value={selectValue}
-		><option value="both">read/write</option>
-		<option value="write">write</option>
-		<option value="read">read</option>
-	</select>
-</div>
+{#if selectItem === myValue}
+	<!-- Enable for debugging: -->
+	<article class="body">
+		<span class="dot" /><span class="px-1 font-bold">Relay</span>
+	</article>
+	<div
+		class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"
+	>
+		<div class="input-group-shim">relay url</div>
+		<input
+			bind:this={inputElement}
+			class="input p-2 my-2 w-full"
+			type="text"
+			bind:value={input}
+			placeholder="wss://..."
+		/>
+		<div class="input-group-shim">type</div>
+		<select class="select" bind:value={selectValue}
+			><option value="both">read/write</option>
+			<option value="write">write</option>
+			<option value="read">read</option>
+		</select>
+	</div>
 
-<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	<PublicButton
-		handleClickPub={() => {
-			res.btn = 'pub';
-			onClickCheck();
-		}}
-		{parent}
-	/>
-</footer>
+	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
+		<PublicButton
+			handleClickPub={() => {
+				res.btn = 'pub';
+				onClickCheck();
+			}}
+			{parent}
+		/>
+	</footer>
+{/if}

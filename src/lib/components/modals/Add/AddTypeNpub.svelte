@@ -9,6 +9,15 @@
 	export let parent: any;
 	export let onFormSubmit: any;
 
+	export let selectBoxItem: string[];
+	export let selectItem: string;
+
+	const myValue = 'User';
+
+	if (!selectBoxItem.includes(myValue)) {
+		selectBoxItem.push(myValue);
+	}
+
 	//export let viewList: string[][]; //今見てるリスト（pub,prvもく別）重複チェック
 
 	let input: string;
@@ -48,33 +57,41 @@
 			onFormSubmit();
 		}
 	}
+	let inputElement: HTMLInputElement;
+	$: if (selectItem === myValue && inputElement) {
+		inputElement.focus();
+	}
 </script>
 
-<article class="body">
-	<span class="dot" /><span class="px-1 font-bold">User</span>
-</article>
-<!-- Enable for debugging: -->
+{#if selectItem === myValue}
+	<article class="body">
+		<span class="dot" /><span class="px-1 font-bold">User</span>
+	</article>
+	<!-- Enable for debugging: -->
+	<div class="p-2">
+		<input
+			bind:this={inputElement}
+			class="input p-2"
+			type="text"
+			bind:value={input}
+			placeholder="nostr:npub... or npub... or nprofile..."
+		/>
+	</div>
 
-<input
-	class="input p-2 m-2"
-	type="text"
-	bind:value={input}
-	placeholder="nostr:npub... or npub... or nprofile..."
-/>
-
-<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-	<PublicButton
-		handleClickPub={() => {
-			res.btn = 'pub';
-			onClickCheck();
-		}}
-		{parent}
-	/>
-	<PrivateButton
-		handleClickPrv={() => {
-			res.btn = 'prv';
-			onClickCheck();
-		}}
-		{parent}
-	/>
-</footer>
+	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
+		<PublicButton
+			handleClickPub={() => {
+				res.btn = 'pub';
+				onClickCheck();
+			}}
+			{parent}
+		/>
+		<PrivateButton
+			handleClickPrv={() => {
+				res.btn = 'prv';
+				onClickCheck();
+			}}
+			{parent}
+		/>
+	</footer>
+{/if}

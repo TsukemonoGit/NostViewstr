@@ -2,7 +2,12 @@
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 
-	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
+	import {
+		Accordion,
+		AccordionItem,
+		Tab,
+		TabGroup
+	} from '@skeletonlabs/skeleton';
 	import AddTypeNoteAndNaddr from './Add/AddTypeNoteAndNaddr.svelte';
 	import { isOneDimensionalArray } from '$lib/nostrFunctions';
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
@@ -54,15 +59,17 @@
 		kindsValidTag[$modalStore[0].value.kind]?.includes('emoji');
 	const includesRefelence =
 		kindsValidTag[$modalStore[0].value.kind]?.includes('r');
-	const charactersToCheck = ['t', 'word'];
-	let countCharacters = kindsValidTag[$modalStore[0].value.kind]?.filter(
-		(tag) => charactersToCheck.some((char) => tag.includes(char))
-	);
-	console.log(countCharacters);
-	if (countCharacters === undefined && $modalStore[0].value.tag) {
-		countCharacters = [$modalStore[0].value.tag[0]];
-	}
-	console.log(countCharacters);
+	const includesT = kindsValidTag[$modalStore[0].value.kind]?.includes('t');
+	const includesW = kindsValidTag[$modalStore[0].value.kind]?.includes('word');
+	// const charactersToCheck = ['t', 'word'];
+	// let countCharacters = kindsValidTag[$modalStore[0].value.kind]?.filter(
+	// 	(tag) => charactersToCheck.some((char) => tag.includes(char))
+	// );
+	// console.log(countCharacters);
+	// if (countCharacters === undefined && $modalStore[0].value.tag) {
+	// 	countCharacters = [$modalStore[0].value.tag[0]];
+	// }
+	// console.log(countCharacters);
 	// We've created a custom submit function to pass the response and close the modal.
 	function onFormSubmit(): void {
 		console.log(res);
@@ -155,6 +162,12 @@
 			}
 		}
 	}
+
+	let selectBoxItem: string[] = [];
+	let selectItem: string;
+	$: if (selectBoxItem.length > 0 && !selectItem) {
+		selectItem = selectBoxItem[0];
+	}
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -175,80 +188,172 @@
 				{:else}
 					{$_('modal.addNote.edit')}
 				{/if}
-			</header>
-			{#if $modalStore[0].value.kind === 10002}
-				<hr class="!border-dashed my-1" />
-				<AddType10002
-					{res}
-					{parent}
-					{onFormSubmit}
-					tag={$modalStore[0].value.tag}
-				/>
-			{/if}
-			{#if (tag === undefined && includesA && includesE) || (tag !== undefined && (tag[0] === 'a' || tag[0] === 'e'))}
-				<hr class="!border-dashed my-1" />
-				<AddTypeNoteAndNaddr {res} {parent} {onFormSubmit} />
-			{:else if (tag === undefined && includesE) || (tag !== undefined && tag[0] === 'e')}
-				<hr class="!border-dashed my-1" />
-				<AddTypeNote {res} {parent} {onFormSubmit} />
-			{:else if (tag === undefined && includesA) || (tag !== undefined && tag[0] === 'a')}
-				<hr class="!border-dashed my-1" />
-				<AddTypeNaddr {res} {parent} {onFormSubmit} />
-			{/if}
 
-			{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
-				<hr class="!border-dashed my-1" />
-				<AddTypeNpub {res} {parent} {onFormSubmit} />{/if}
-			{#if (tag === undefined && includesEmoji) || (tag !== undefined && tag[0] === 'emoji')}
-				<hr class="!border-dashed my-1" />
-				<AddTypeEmoji
-					{res}
-					{parent}
-					{onFormSubmit}
-					tag={$modalStore[0].value.tag}
-				/>
-			{/if}
-			{#if (tag === undefined && includesRelay) || (tag !== undefined && tag[0] === 'relay')}
-				<hr class="!border-dashed my-1" />
-				<AddTypeRelay
-					{res}
-					{parent}
-					{onFormSubmit}
-					tag={$modalStore[0].value.tag}
-					number={$modalStore[0].value.number}
-					viewList={$modalStore[0].value.viewList}
-				/>
-			{/if}
-			{#if (tag === undefined && countCharacters?.length > 0) || (tag !== undefined && (tag[0] === 't' || tag[0] === 'word'))}
-				<hr class="!border-dashed my-1" />
-				<AddTypeRandTandWord
-					{res}
-					{parent}
-					{onFormSubmit}
-					tag={$modalStore[0].value.tag}
-					{countCharacters}
-					{bkm}
-				/>
-			{/if}
-			{#if $modalStore[0].value.kind !== 10002 && (includesRefelence || (tag !== undefined && tag[0] === 'r'))}
-				<hr class="!border-dashed my-1" />
-				<AddTypeRefelence
-					{res}
-					{parent}
-					{onFormSubmit}
-					tag={$modalStore[0].value.tag}
-					{bkm}
-				/>
-			{/if}
-			<!--編集であり知らんタグのとき（タグの中身だけ変更可にする）-->
-			{#if tag !== undefined && !uniqueArray().includes(tag[0])}
-				<hr class="!border-dashed my-1" />
-				<EditTypeOther {res} {parent} {onFormSubmit} {tag} {bkm} />
-			{/if}
-			{#if tag === undefined && includesA}
-				<hr class="!border-dashed my-1" />
-				<AddTypeAddressPointer {res} {parent} {onFormSubmit} {kind} />
-			{/if}
+				<!-- <select class="select" bind:value={selectItem}>
+					{#each selectBoxItem as item}
+						<option value={item}>{item}</option>
+					{/each}
+				</select> -->
+			</header>
+			<TabGroup
+				><div class="max-w-full overflow-x-auto flex">
+					{#each selectBoxItem as item}<Tab
+							bind:group={selectItem}
+							name="tab1"
+							value={item}
+						>
+							<span>{item}</span>
+						</Tab>{/each}
+				</div>
+				<svelte:fragment slot="panel">
+					{#if $modalStore[0].value.kind === 10002}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddType10002
+							{res}
+							{parent}
+							{onFormSubmit}
+							tag={$modalStore[0].value.tag}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+					{#if (tag === undefined && includesA && includesE) || (tag !== undefined && (tag[0] === 'a' || tag[0] === 'e'))}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddTypeNoteAndNaddr
+							{res}
+							{parent}
+							{onFormSubmit}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{:else if (tag === undefined && includesE) || (tag !== undefined && tag[0] === 'e')}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddTypeNote
+							{res}
+							{parent}
+							{onFormSubmit}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{:else if (tag === undefined && includesA) || (tag !== undefined && tag[0] === 'a')}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddTypeNaddr
+							{res}
+							{parent}
+							{onFormSubmit}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+
+					{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddTypeNpub
+							{res}
+							{parent}
+							{onFormSubmit}
+							bind:selectBoxItem
+							bind:selectItem
+						/>{/if}
+					{#if (tag === undefined && includesEmoji) || (tag !== undefined && tag[0] === 'emoji')}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddTypeEmoji
+							{res}
+							{parent}
+							{onFormSubmit}
+							tag={$modalStore[0].value.tag}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+					{#if (tag === undefined && includesRelay) || (tag !== undefined && tag[0] === 'relay')}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddTypeRelay
+							{res}
+							{parent}
+							{onFormSubmit}
+							tag={$modalStore[0].value.tag}
+							number={$modalStore[0].value.number}
+							viewList={$modalStore[0].value.viewList}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+					<!-- {#if (tag === undefined && countCharacters?.length > 0) || (tag !== undefined && (tag[0] === 't' || tag[0] === 'word'))}
+						
+						<AddTypeRandTandWord
+							{res}
+							{parent}
+							{onFormSubmit}
+							tag={$modalStore[0].value.tag}
+							{countCharacters}
+							{bkm}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if} -->
+					{#if (tag === undefined && includesT) || (tag !== undefined && tag[0] === 't')}
+						<AddTypeRandTandWord
+							{res}
+							{parent}
+							{onFormSubmit}
+							tag={$modalStore[0].value.tag}
+							tagKind={'t'}
+							{bkm}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+					{#if (tag === undefined && includesT) || (tag !== undefined && tag[0] === 'word')}
+						<AddTypeRandTandWord
+							{res}
+							{parent}
+							{onFormSubmit}
+							tag={$modalStore[0].value.tag}
+							tagKind={'word'}
+							{bkm}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+					{#if $modalStore[0].value.kind !== 10002 && (includesRefelence || (tag !== undefined && tag[0] === 'r'))}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddTypeRefelence
+							{res}
+							{parent}
+							{onFormSubmit}
+							tag={$modalStore[0].value.tag}
+							{bkm}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+					<!--編集であり知らんタグのとき（タグの中身だけ変更可にする）-->
+					{#if tag !== undefined && !uniqueArray().includes(tag[0])}
+						<!--<hr class="!border-dashed my-1" />-->
+						<EditTypeOther
+							{res}
+							{parent}
+							{onFormSubmit}
+							{tag}
+							{bkm}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+					{#if tag === undefined && includesA}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddTypeAddressPointer
+							{res}
+							{parent}
+							{onFormSubmit}
+							{kind}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+				</svelte:fragment></TabGroup
+			>
 		</div>
 	</div>
 {/if}

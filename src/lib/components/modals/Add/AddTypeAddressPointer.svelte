@@ -13,6 +13,16 @@
 	export let onFormSubmit: any;
 	let input: string;
 	export let kind;
+
+	export let selectBoxItem: string[];
+	export let selectItem: string;
+
+	const myValue = 'Event';
+
+	if (!selectBoxItem.includes(myValue)) {
+		selectBoxItem.push(myValue);
+	}
+
 	async function onClickNaddr() {
 		const check = await checkInputNaddr(input);
 		if (check.error && check.message) {
@@ -76,79 +86,86 @@
 	let openaddr: boolean = false;
 </script>
 
-<article class="body pt-4">
-	<button on:click={() => (openaddr = !openaddr)}
-		>{openaddr ? '▼' : '▶'}{`add from kind,pubkey,identifier`}
-	</button>
-</article>
-{#if openaddr}
-	<div>
-		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2">
+{#if selectItem === myValue}
+	<article class="body pt-4">
+		<button on:click={() => (openaddr = !openaddr)}
+			>{openaddr ? '▼' : '▶'}{`add from kind,pubkey,identifier`}
+		</button>
+	</article>
+	{#if openaddr}
+		<div>
 			<div
-				class="input-group-shim w-[2.5rem]"
-				style="padding-left: 4px;padding-right: 4px; justify-content: center;"
+				class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2"
 			>
-				kind
+				<div
+					class="input-group-shim w-[2.5rem]"
+					style="padding-left: 4px;padding-right: 4px; justify-content: center;"
+				>
+					kind
+				</div>
+				<input
+					class="input p-1 w-full"
+					type="text"
+					inputmode="numeric"
+					bind:value={inputKind}
+					{disabled}
+					on:input={() => (inputKind = inputKind.replace(/[^0-9]/g, ''))}
+					placeholder="number"
+				/>
 			</div>
-			<input
-				class="input p-1 w-full"
-				type="text"
-				inputmode="numeric"
-				bind:value={inputKind}
-				{disabled}
-				on:input={() => (inputKind = inputKind.replace(/[^0-9]/g, ''))}
-				placeholder="number"
-			/>
+
+			<div
+				class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2"
+			>
+				<div
+					class="input-group-shim w-[2.5rem]"
+					style="padding-left: 4px;padding-right: 4px; justify-content: center;"
+				>
+					pub
+				</div>
+				<input
+					class="input p-1"
+					type="text"
+					bind:value={inputPubkey}
+					placeholder="npub1..."
+				/>
+			</div>
+
+			<div
+				class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2"
+			>
+				<div
+					class="input-group-shim w-[2.5rem]"
+					style="padding-left: 4px;padding-right: 4px; justify-content: center;"
+				>
+					id
+				</div>
+				<input
+					class="input p-1"
+					type="text"
+					bind:value={inputId}
+					placeholder="..."
+				/>
+			</div>
 		</div>
 
-		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2">
-			<div
-				class="input-group-shim w-[2.5rem]"
-				style="padding-left: 4px;padding-right: 4px; justify-content: center;"
-			>
-				pub
-			</div>
-			<input
-				class="input p-1"
-				type="text"
-				bind:value={inputPubkey}
-				placeholder="npub1..."
+		<footer class=" gap-2 flex flex-wrap justify-end mt-2">
+			<PublicButton
+				handleClickPub={() => {
+					res.btn = 'pub';
+					onClickCheck();
+				}}
+				{parent}
 			/>
-		</div>
-
-		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-2">
-			<div
-				class="input-group-shim w-[2.5rem]"
-				style="padding-left: 4px;padding-right: 4px; justify-content: center;"
-			>
-				id
-			</div>
-			<input
-				class="input p-1"
-				type="text"
-				bind:value={inputId}
-				placeholder="..."
+			<PrivateButton
+				handleClickPrv={() => {
+					res.btn = 'prv';
+					onClickCheck();
+				}}
+				{parent}
 			/>
-		</div>
-	</div>
 
-	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
-		<PublicButton
-			handleClickPub={() => {
-				res.btn = 'pub';
-				onClickCheck();
-			}}
-			{parent}
-		/>
-		<PrivateButton
-			handleClickPrv={() => {
-				res.btn = 'prv';
-				onClickCheck();
-			}}
-			{parent}
-		/>
-
-		<!-- <button
+			<!-- <button
 			class="btn variant-filled-warning {parent.buttonPositive}"
 			on:click={() => {
 				res.btn = 'prv';
@@ -164,5 +181,6 @@
 			}}
 			disabled={$nowProgress}>Public</button
 		> -->
-	</footer>
+		</footer>
+	{/if}
 {/if}
