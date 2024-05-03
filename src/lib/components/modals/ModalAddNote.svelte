@@ -200,6 +200,7 @@
 				active="border-b-2 border-surface-900-50-token"
 				><div class="max-w-full overflow-x-auto flex">
 					{#each selectBoxItem as item}<Tab
+							class=""
 							bind:group={selectItem}
 							name="tab1"
 							value={item}
