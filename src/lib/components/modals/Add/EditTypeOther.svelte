@@ -34,6 +34,11 @@
 		res.check = true;
 		onFormSubmit();
 	}
+
+	let inputElement: HTMLInputElement;
+	$: if (selectItem === myValue && inputElement) {
+		inputElement.focus();
+	}
 </script>
 
 {#if selectItem === myValue}
@@ -43,7 +48,12 @@
 	<div class="input-group input-group-divider grid-cols-[auto_1fr] m-2">
 		<div class="my-2">{tag[0]}</div>
 
-		<input class="input px-1" type="text" bind:value={input} />
+		<input
+			bind:this={inputElement}
+			class="input px-1"
+			type="text"
+			bind:value={input}
+		/>
 	</div>
 
 	<footer class=" gap-2 flex flex-wrap justify-end mt-2">

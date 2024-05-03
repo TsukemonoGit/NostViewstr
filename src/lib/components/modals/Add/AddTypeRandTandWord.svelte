@@ -38,6 +38,11 @@
 		res.check = true;
 		onFormSubmit();
 	}
+
+	let inputElement: HTMLInputElement;
+	$: if (selectItem === myValue && inputElement) {
+		inputElement.focus();
+	}
 </script>
 
 {#if selectItem === myValue}
@@ -46,6 +51,7 @@
 	</article>
 	<div class="p-2">
 		<input
+			bind:this={inputElement}
 			class="input p-2"
 			type="text"
 			placeholder={myValue}

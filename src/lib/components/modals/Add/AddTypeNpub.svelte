@@ -57,6 +57,10 @@
 			onFormSubmit();
 		}
 	}
+	let inputElement: HTMLInputElement;
+	$: if (selectItem === myValue && inputElement) {
+		inputElement.focus();
+	}
 </script>
 
 {#if selectItem === myValue}
@@ -66,6 +70,7 @@
 	<!-- Enable for debugging: -->
 	<div class="p-2">
 		<input
+			bind:this={inputElement}
 			class="input p-2"
 			type="text"
 			bind:value={input}
