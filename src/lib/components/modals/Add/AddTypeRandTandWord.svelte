@@ -19,7 +19,7 @@
 	export let selectBoxItem: string[];
 	export let selectItem: string;
 
-	const myValue = tagKind === 't' ? 'HasgTag' : 'Word';
+	const myValue = tagKind === 't' ? 'HashTag' : 'Word';
 
 	if (!selectBoxItem.includes(myValue)) {
 		selectBoxItem.push(myValue);
