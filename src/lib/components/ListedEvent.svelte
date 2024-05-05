@@ -426,7 +426,7 @@
 			>
 			<hr class="!border-dashed" />
 			<!--naddrがあったらnaddrボタンだけ表示にする？（ノートIDは詳細表示からもコピーできるので）-->
-			{#if selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000)}
+			{#if selectedIndex && (selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000))}
 				<ListBoxItem
 					name="medium"
 					value="copyNaddr"
@@ -448,7 +448,7 @@
 					}}
 					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
 					Naddr</ListBoxItem
-				>{:else if selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a'}
+				>{:else if selectedIndex && (selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a')}
 				<ListBoxItem
 					name="medium"
 					value="copyNote"
