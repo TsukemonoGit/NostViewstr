@@ -116,7 +116,7 @@
 		<input
 			class="input p-1 truncate"
 			type="text"
-			placeholder="npub... or nsec..."
+			placeholder="npub..."
 			bind:value={inputValue}
 		/>
 	</div>
