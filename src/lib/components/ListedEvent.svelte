@@ -221,6 +221,7 @@
 		ref: ModalPostNote
 	};
 	function shareNote(selectedIndex: SelectIndex) {
+		if (!selectedIndex.detail) return;
 		const tagArray = selectedIndex.detail.tagArray;
 		const note = selectedIndex.detail.event;
 		const tags = tagArray
@@ -264,6 +265,7 @@
 	};
 
 	const OpenNoteJson = (selected: SelectIndex) => {
+		if (!selected.detail) return;
 		const modal = {
 			type: 'component' as const,
 			title: 'Details',
@@ -404,18 +406,20 @@
 
 			<ListBoxItem
 				name="medium"
-				disabled={!selectedIndex.detail.event &&
-					selectedIndex.detail.tagArray.length > 0 &&
-					selectedIndex.detail.tagArray[1].length !== 64}
+				disabled={!selectedIndex.detail ||
+					(!selectedIndex.detail.event &&
+						selectedIndex.detail.tagArray.length > 0 &&
+						selectedIndex.detail.tagArray[1].length !== 64)}
 				value="Open"
 				bind:group={comboboxValue}
 				on:click={() => {
 					comboboxValue = '';
-					const id = selectedIndex.detail.event
-						? selectedIndex.detail.event.id
-						: selectedIndex.detail.tagArray[1].length === 64
-						? selectedIndex.detail.tagArray[1]
-						: '';
+					const id =
+						selectedIndex.detail && selectedIndex.detail.event
+							? selectedIndex.detail.event.id
+							: selectedIndex.detail.tagArray[1].length === 64
+							? selectedIndex.detail.tagArray[1]
+							: '';
 					if (id) {
 						windowOpen(id);
 					}
@@ -425,7 +429,7 @@
 			>
 			<hr class="!border-dashed" />
 			<!--naddrがあったらnaddrボタンだけ表示にする？（ノートIDは詳細表示からもコピーできるので）-->
-			{#if selectedIndex && (selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000))}
+			{#if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000))}
 				<ListBoxItem
 					name="medium"
 					value="copyNaddr"
@@ -447,7 +451,7 @@
 					}}
 					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
 					Naddr</ListBoxItem
-				>{:else if selectedIndex && (selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a')}
+				>{:else if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a')}
 				<ListBoxItem
 					name="medium"
 					value="copyNote"

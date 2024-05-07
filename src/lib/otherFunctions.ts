@@ -245,6 +245,7 @@ export function formatRelativeDate(unixTime: number) {
 }
 
 export async function copyNoteId(selectedIndex: SelectIndex): Promise<boolean> {
+	if (!selectedIndex.detail) return false;
 	const id = selectedIndex.detail.event
 		? selectedIndex.detail.event.id
 		: selectedIndex.detail.tagArray[0] === 'e'
@@ -267,6 +268,9 @@ export async function copyNoteId(selectedIndex: SelectIndex): Promise<boolean> {
 	);
 }
 export async function copyNaddr(selectedIndex: SelectIndex): Promise<boolean> {
+	if (!selectedIndex.detail) {
+		return false;
+	}
 	const naddrpointer: AddressPointer | undefined =
 		selectedIndex.detail.tagArray[0] === 'a'
 			? parseNaddr(selectedIndex.detail.tagArray)
