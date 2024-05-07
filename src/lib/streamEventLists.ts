@@ -1,9 +1,15 @@
 import { _ } from 'svelte-i18n';
 
-import type { Observer } from 'rxjs';
+import type { Observer, Observable } from 'rxjs';
 
-import { createRxNostr, uniq, verify, createRxForwardReq } from 'rx-nostr';
-import { get } from 'svelte/store';
+import {
+	createRxNostr,
+	uniq,
+	verify,
+	createRxForwardReq,
+	createRxBackwardReq
+} from 'rx-nostr';
+import { derived, get, readable, writable, type Readable } from 'svelte/store';
 import {
 	type Identifiers,
 	eventListsMap,
@@ -24,12 +30,27 @@ import {
 } from 'nostr-tools';
 import { nsec, pubkey_viewer } from './stores/settings';
 import { feedbackRelay, relaySet } from './stores/relays';
-import type { ConnectionState } from 'rx-nostr';
-import type { Nostr } from 'nosvelte';
+import type {
+	ConnectionState,
+	DefaultRelayConfig,
+	RxReq,
+	RxReqOverable,
+	RxReqPipeable
+} from 'rx-nostr';
+import type { ReqResult, ReqStatus, RxReqBase, UseReqOpts } from './types';
+import {
+	createQuery,
+	useQueryClient,
+	type QueryClient
+} from '@tanstack/svelte-query';
+import type Nostr from 'nostr-typedef';
+import type { Filter } from 'nostr-typedef';
+import type { RelayStatus } from 'rx-nostr/types/src/rx-nostr/interface';
 
 const reconnectableStates: ConnectionState[] = [
-	'reconnecting', //りこねくてぃんぐ表示から変化しないようにみえるから追加してみる
-	'not-started',
+	'connecting', //りこねくてぃんぐ表示から変化しないようにみえるから追加してみる
+	//'not-started',
+	'dormant', //休眠
 	'error',
 	//'rejected',
 	'terminated'
@@ -50,10 +71,10 @@ identifierListsMap.subscribe((value) => {
 
 const rxNostr = createRxNostr();
 rxNostr.createConnectionStateObservable().subscribe((packet) => {
-	let tmp: { [relayURL: string]: ConnectionState } = get(relayState);
+	let tmp: Map<string, ConnectionState> = get(relayState);
 
 	if (tmp) {
-		tmp[packet.from] = packet.state;
+		tmp.set(packet.from, packet.state);
 		relayState.set(tmp);
 	} else {
 		tmp = Object.assign({}, tmp, { [packet.from]: packet.state });
@@ -69,15 +90,15 @@ export async function ReconnectRelay(relay: string) {
 	rxNostr.reconnect(relay);
 }
 export async function GetRelayState(relay: string) {
-	return rxNostr.getRelayState(relay);
+	return (rxNostr.getRelayStatus(relay) as RelayStatus).connection;
 }
 
 export function GetAllRelayState() {
-	return rxNostr.getAllRelayState();
+	return rxNostr.getAllRelayStatus().connection;
 }
 
 export async function RelaysReconnectChallenge() {
-	const states = Object.entries(rxNostr.getAllRelayState());
+	const states = Object.entries(rxNostr.getAllRelayStatus().connection);
 	console.log('[relay states]', states);
 
 	const reconnectableCount = states.filter(([relayUrl, state]) =>
@@ -86,12 +107,13 @@ export async function RelaysReconnectChallenge() {
 	console.log(reconnectableCount, states.length);
 	if (reconnectableCount / states.length >= 2 / 3) {
 		//設定中のリレーの2/3以上が接続切れてたらセットし直してみる
-		const tmp = Object.fromEntries(
-			rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
-		);
+		// const tmp = Object.fromEntries(
+		// 	rxNostr.getDefaultRelays().map(({ url, read, write }) => [url, { read, write }])
+		// );
+		const tmp = rxNostr.getDefaultRelays();
 		//すでにセットされてる場合は何もおこらないっぽい？ので一度全部外す
-		rxNostr.switchRelays({});
-		rxNostr.switchRelays(tmp);
+		rxNostr.setDefaultRelays({});
+		rxNostr.setDefaultRelays(tmp);
 
 		// states.forEach(([relayUrl, state]) => {
 		//   if (reconnectableStates.includes(state)) {
@@ -146,8 +168,8 @@ export async function StoreFetchFilteredEvents(
 		storedIdentifiersData[pubkey][kind] = new Map<string, Identifiers>();
 	}
 
-	console.log('[get relays]', rxNostr.getRelays());
-	console.log('[get states]', rxNostr.getAllRelayState());
+	console.log('[get relays]', rxNostr.getDefaultRelays());
+	console.log('[get states]', rxNostr.getAllRelayStatus().connection);
 	//console.log(relays);
 
 	//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
@@ -157,14 +179,21 @@ export async function StoreFetchFilteredEvents(
 	console.log(data.relays);
 	console.log(viewerRelay);
 	//const merges = mergeRelays(viewerRelay, data.relays);
-	//if( Object.entries(rxNostr.getRelays())!==merges){
-	rxNostr.switchRelays(mergeRelays(viewerRelay, data.relays));
+	//if( Object.entries(rxNostr.getDefaultRelays())!==merges){
+	rxNostr.setDefaultRelays(mergeRelays(viewerRelay, data.relays));
 	//}
-	console.log('[get relays]', rxNostr.getRelays());
-	relayState.set(rxNostr.getAllRelayState());
+	const tmp = get(relayState);
+	console.log('[get relays]', rxNostr.getDefaultRelays());
+	Object.entries(rxNostr.getDefaultRelays()).forEach(([url, config]) => {
+		const relayStatus = rxNostr.getRelayStatus(url);
+		if (relayStatus !== undefined) {
+			tmp.set(url, relayStatus.connection);
+		}
+	});
+	console.log('[get states]', tmp);
+	relayState.set(tmp);
 
 	const rxReq = createRxForwardReq();
-	rxReq.emit(data.filters);
 
 	// データの購読
 	const observable = rxNostr.use(rxReq).pipe(uniq(), verify());
@@ -266,6 +295,7 @@ export async function StoreFetchFilteredEvents(
 
 	// 購読開始
 	const subscription = observable.subscribe(observer);
+	rxReq.emit(data.filters);
 }
 
 export async function publishEventWithTimeout(
@@ -317,14 +347,16 @@ export async function publishEventWithTimeout(
 		//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
 		//もし書き込みリレーがセットされてない場合のみこの設定を行う
 		//セットされてるリレーのWriteがtrueのものがなかったら設定する
-		const setting_relays = rxNostr.getRelays();
-		const hasWriteTrue = setting_relays.some((item) => item.write === true);
+		const setting_relays = rxNostr.getDefaultRelays();
+		const hasWriteTrue = Object.values(setting_relays).some(
+			(item) => item.write === true
+		);
 		if (!hasWriteTrue) {
 			//const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 
-			rxNostr.switchRelays(addsetRelays(relays));
+			rxNostr.setDefaultRelays(addsetRelays(relays));
 		}
-		console.log('[get relays]', rxNostr.getRelays());
+		console.log('[get relays]', rxNostr.getDefaultRelays());
 
 		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
 		//const sec = get(nsec);
@@ -454,17 +486,17 @@ function mergeRelays(
 function addsetRelays(relays: string[]): {
 	[url: string]: { read: boolean; write: boolean };
 } {
-	const tmp = Object.fromEntries(
-		rxNostr.getRelays().map(({ url, read, write }) => [url, { read, write }])
-	);
-
+	// const tmp = Object.fromEntries(
+	// 	rxNostr.getDefaultRelays().map(({ url, read, write }) => [url, { read, write }])
+	// );
+	const tmp: Record<string, DefaultRelayConfig> = rxNostr.getDefaultRelays();
 	relays.forEach((relay) => {
 		if (tmp[relay]) {
 			// tmpがrelay要素を持っていた場合
 			tmp[relay].write = true;
 		} else {
 			// tmpがrelay要素を持っていなかった場合
-			tmp[relay] = { read: false, write: true };
+			tmp[relay] = { url: relay, read: false, write: true };
 		}
 	});
 	return tmp;
@@ -507,4 +539,98 @@ export async function sendMessage(message: string, pubhex: string) {
 	//サイン無しでrxnostrでやれないから
 	await Promise.any(pool.publish(feedbackRelay, ev));
 	pool.close(feedbackRelay);
+}
+
+export function useReq<A>({
+	queryKey,
+	filters,
+	operator,
+	req,
+	initData
+}: UseReqOpts<A>): ReqResult<A> {
+	const queryClient: QueryClient = useQueryClient();
+	if (Object.keys(rxNostr.getDefaultRelays()).length === 0) {
+		queryClient.setQueryData(queryKey, initData);
+		return {
+			data: readable<A>(initData),
+			status: readable('success'),
+			error: readable()
+		};
+	}
+
+	let _req:
+		| RxReqBase
+		| (RxReq<'backward'> & {
+				emit(
+					filters: Filter | Filter[],
+					options?:
+						| {
+								relays: string[];
+						  }
+						| undefined
+				): void;
+		  } & RxReqOverable &
+				RxReqPipeable);
+
+	if (req) {
+		_req = req;
+	} else {
+		_req = createRxBackwardReq();
+	}
+
+	const status = writable<ReqStatus>('loading');
+	const error = writable<Error>();
+
+	const obs: Observable<A> = rxNostr.use(_req).pipe(operator);
+	const query = createQuery({
+		queryKey: queryKey,
+		queryFn: (): Promise<A> => {
+			return new Promise((resolve, reject) => {
+				let fulfilled = false;
+
+				obs.subscribe({
+					next: (v: A) => {
+						if (fulfilled) {
+							queryClient.setQueryData(queryKey, v);
+						} else {
+							resolve(v);
+							fulfilled = true;
+						}
+					},
+					complete: () => status.set('success'),
+					error: (e) => {
+						console.error(e);
+						status.set('error');
+						error.set(e);
+
+						if (!fulfilled) {
+							reject(e);
+							fulfilled = true;
+						}
+					}
+				});
+				_req.emit(filters);
+			});
+		}
+	});
+
+	return {
+		data: derived(query, ($query) => $query.data, initData),
+		status: derived([query, status], ([$query, $status]) => {
+			if ($query.isSuccess) {
+				return 'success';
+			} else if ($query.isError) {
+				return 'error';
+			} else {
+				return $status;
+			}
+		}),
+		error: derived([query, error], ([$query, $error]) => {
+			if ($query.isError) {
+				return $query.error;
+			} else {
+				return $error;
+			}
+		})
+	};
 }

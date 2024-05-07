@@ -37,9 +37,8 @@
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
 	import EventandButtons from './EventandButtons.svelte';
-	import type { Nostr } from 'nosvelte';
+
 	import { copyNaddr, copyNoteId, type SelectIndex } from '$lib/otherFunctions';
-	import { hide } from '@floating-ui/dom';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };

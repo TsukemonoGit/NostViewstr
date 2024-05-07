@@ -50,7 +50,7 @@
 	$: console.log(popupFeatured.state);
 	let pupupOpen: boolean = false;
 
-	$: console.log(pupupOpen);
+	$: console.log('readtrueRelay', readTrueArray);
 	$: readTrueArray = $connectingRelays
 		? Object.keys($connectingRelays).filter(
 				(item) => $connectingRelays[item].read === true
@@ -59,7 +59,8 @@
 
 	$: ongoingCount =
 		$relayState && readTrueArray.length > 0
-			? readTrueArray.filter((relay) => $relayState[relay] === 'ongoing').length
+			? readTrueArray.filter((relay) => $relayState.get(relay) === 'connected')
+					.length
 			: 0;
 
 	// afterUpdate(() => {

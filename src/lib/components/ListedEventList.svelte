@@ -9,7 +9,6 @@
 		eventListsMap,
 		checkedIndexList,
 		listNum,
-		type Identifiers,
 		keysArray,
 		identifierListsMap,
 		identifierKeysArray
@@ -19,13 +18,11 @@
 		deletePrivates,
 		deletePubs,
 		editPrivates,
-		fetchFilteredEvents,
 		getPub,
 		getRelays,
-		isOneDimensionalArray,
 		nip04En
 	} from '$lib/nostrFunctions';
-	import { afterUpdate, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';

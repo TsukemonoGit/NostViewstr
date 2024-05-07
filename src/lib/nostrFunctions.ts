@@ -734,7 +734,7 @@ export async function fetchFilteredEvents(
 	const rxNostr = createRxNostr();
 	//console.log(relays);
 
-	rxNostr.setRelays(relays);
+	rxNostr.setDefaultRelays(relays);
 
 	console.log('[rx-nostr getRelays]', rxNostr.getRelays());
 	const rxReq = createRxOneshotReq({ filters });
@@ -842,8 +842,8 @@ export async function fetchFilteredEvents(
 
 export async function getRelays(author: string) {
 	const rxNostr = createRxNostr();
-	rxNostr.setRelays(relaySearchRelays);
-	console.log(rxNostr.getRelays());
+	rxNostr.setDefaultRelays(relaySearchRelays);
+	console.log(rxNostr.getDefaultRelays());
 	const filters: Nostr.Filter[] = [{ authors: [author], kinds: [3, 10002] }];
 	console.log(filters);
 	const rxReq = createRxOneshotReq({ filters });
