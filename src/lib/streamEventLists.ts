@@ -7,7 +7,8 @@ import {
 	uniq,
 	verify,
 	createRxForwardReq,
-	createRxBackwardReq
+	createRxBackwardReq,
+	nip07Signer
 } from 'rx-nostr';
 import { derived, get, readable, writable, type Readable } from 'svelte/store';
 import {
@@ -44,7 +45,7 @@ import {
 	type QueryClient
 } from '@tanstack/svelte-query';
 import type Nostr from 'nostr-typedef';
-import type { Filter } from 'nostr-typedef';
+import type { EventParameters, Filter } from 'nostr-typedef';
 import type { RelayStatus } from 'rx-nostr/types/src/rx-nostr/interface';
 
 const reconnectableStates: ConnectionState[] = [
@@ -343,12 +344,26 @@ export async function publishEventWithTimeout(
 		// 	message: `publishing ...`
 		// };
 		// const publishingToast = toastStore.trigger(t);
-		const event = obj;
+		let event = obj;
 		if (event?.id == undefined || event?.id == '') {
 			event.id = getEventHash(event);
 		}
+		if (!event.sig || event.sig === '') {
+			//event.sigが""でもサインしてくれないみたいなので
+			const tmpEvent: EventParameters<number> = {
+				id: event.id,
+				pubkey: event.pubkey,
+				content: event.content,
+				tags: event.tags,
+				created_at: event.created_at,
+				kind: event.kind
+			};
+			event = await nip07Signer().signEvent(tmpEvent);
+		}
 		console.log(event);
-
+		if (!event.sig || event.sig === '') {
+			return { isSuccess: false, msg: 'error' };
+		}
 		//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
 		//もし書き込みリレーがセットされてない場合のみこの設定を行う
 		//セットされてるリレーのWriteがtrueのものがなかったら設定する
