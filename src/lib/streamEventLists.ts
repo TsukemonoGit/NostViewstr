@@ -100,8 +100,7 @@ export function GetAllRelayState() {
 
 export async function RelaysReconnectChallenge() {
 	const allRelayStatus = rxNostr.getAllRelayStatus();
-	if (!allRelayStatus) {
-		// メソッドが null または undefined を返す場合の処理
+	if (!allRelayStatus || !allRelayStatus.connection) {
 		return;
 	}
 	const states = Object.entries(allRelayStatus.connection);
