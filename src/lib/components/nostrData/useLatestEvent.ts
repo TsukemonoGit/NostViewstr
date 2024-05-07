@@ -1,6 +1,7 @@
 /**
  * @license Apache-2.0
  * @copyright 2023 Akiomi Kamakura
+ * @license This code is a derivative work based on code licensed under the Apache License, Version 2.0.
  */
 
 import type { QueryKey } from '@tanstack/svelte-query';

@@ -123,7 +123,7 @@
 	$: logs = logs;
 	let nowLoading: boolean = false;
 	const rxNostr = createRxNostr();
-	rxNostr.setRelays(relays);
+	rxNostr.setDefaultRelays(relays);
 
 	function onClick() {
 		if (subscription && !subscription.closed) {

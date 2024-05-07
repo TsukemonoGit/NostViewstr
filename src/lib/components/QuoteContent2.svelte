@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { Metadata, Nostr, Text } from 'nosvelte';
+	import { Nostr, Text } from 'nosvelte';
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
 	import { uniqueTags } from '$lib/otherFunctions.js';
 	import { allView, iconView } from '$lib/stores/settings';
@@ -14,6 +14,7 @@
 	import EventTag from './EventTag.svelte';
 	import PubCha from './PubCha.svelte';
 	import SearchCard from './SearchCard.svelte';
+	import Metadata from './nostrData/Metadata.svelte';
 
 	export let id: string;
 	export let isPageOwner: boolean;

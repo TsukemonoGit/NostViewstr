@@ -5,8 +5,9 @@
 
 	import LocationHomeIcon from '@material-design-icons/svg/round/person.svg?raw';
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
-	import { Metadata, Nostr } from 'nosvelte';
 
+	import Metadata from './nostrData/Metadata.svelte';
+	import type Nostr from 'nostr-typedef';
 	export let pubkey: string;
 
 	const metadataContentCheck = async (metadata: Nostr.Event) => {
@@ -23,7 +24,8 @@
 		ref: ModalProfile
 	};
 
-	const OpenProfile = (metadata: { pubkey: string } | Event) => {
+	const OpenProfile = (metadata: { pubkey: string } | Nostr.Event) => {
+		//console.log(metadata);
 		const modal: ModalSettings = {
 			type: 'component',
 			backdropClasses: '!bg-surface-400/80',

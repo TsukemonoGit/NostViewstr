@@ -204,7 +204,7 @@ export async function extractTextParts(text: string, tags: string[][]) {
 
 		return parts;
 	} catch (error) {
-		console.log('Error in extractTextParts:', error);
+		console.log('Error in extractTextParts:', text, error);
 		return [{ content: text, type: TextPartType.Text }];
 	}
 }

@@ -3,7 +3,7 @@
 	import { Nostr, UniqueEventList } from 'nosvelte';
 	import Content from './Content.svelte';
 	import { allView } from '$lib/stores/settings';
-	import LatestEvent from './LatestEvent.svelte';
+	import LatestEvent from './nostrData/LatestEvent.svelte';
 	export let pubkey: string;
 
 	// const latestNote = (events: Nostr.Event<number>[]): Nostr.Event<number> => {

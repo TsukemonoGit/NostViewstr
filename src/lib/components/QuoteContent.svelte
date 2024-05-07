@@ -3,7 +3,7 @@
 	import { nip19 } from 'nostr-tools';
 	import { modalStore, toastStore } from '$lib/stores/store';
 
-	import { Metadata, Nostr, Text } from 'nosvelte';
+	import { Nostr, Text } from 'nosvelte';
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
 	import { fetchFilteredEvents } from '$lib/nostrFunctions';
 	import { formatAbsoluteDate, uniqueTags } from '$lib/otherFunctions.js';
@@ -17,6 +17,7 @@
 	import EventTag from './EventTag.svelte';
 	import PubCha from './PubCha.svelte';
 	import SearchCard from './SearchCard.svelte';
+	import Metadata from './nostrData/Metadata.svelte';
 
 	export let encodedId: string;
 

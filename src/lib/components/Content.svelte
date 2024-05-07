@@ -5,7 +5,6 @@
 	import ModalImage from '$lib/components/modals/ModalImage.svelte';
 	import { nip19 } from 'nostr-tools';
 
-	import { Metadata, Nostr, NostrApp, Text } from 'nosvelte';
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
 	import { encodedURL, getOgp, loadOgp } from '$lib/otherFunctions.js';
 	import OGP from './OGP.svelte';
@@ -14,7 +13,8 @@
 	import QuoteContent from './QuoteContent.svelte';
 	import QuoteContent2 from './QuoteContent2.svelte';
 	import { goto } from '$app/navigation';
-
+	import Metadata from './nostrData/Metadata.svelte';
+	import type { Event } from 'nostr-typedef';
 	export let id: string;
 	export let text: string;
 	export let tag: string[][];
@@ -109,7 +109,7 @@
 		slot: `<p>Skeleton</p>`
 	};
 
-	function handleClickPubkey(metadata: Nostr.Event<number>) {
+	function handleClickPubkey(metadata: Event<number>) {
 		console.log(metadata);
 
 		const modal = {
@@ -157,7 +157,7 @@
 		{text}
 	{:then viewContent}
 		{#each viewContent as item, index}
-			{#if item.content.length > 0}{#if item.type === 'emoji'}<button
+			{#if item.content?.length > 0}{#if item.type === 'emoji'}<button
 						on:click={() => handleClickImage(item.url)}
 						><img
 							class="align-bottom inline-flex h-[1.5em] max-w-full object-contain"
