@@ -898,17 +898,17 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 			const relayURL = item[1].endsWith('/') ? item[1] : item[1] + '/';
 
 			if (item[0] === 'r') {
-				const existRelay = await checkRelayExist(relayURL);
-				if (existRelay) {
-					if (item.length < 3) {
-						read.push(relayURL);
-						write.push(relayURL);
-					} else if (item[2] === 'read') {
-						read.push(relayURL);
-					} else if (item[2] === 'write') {
-						write.push(relayURL);
-					}
+				// const existRelay = await checkRelayExist(relayURL);
+				// if (existRelay) {
+				if (item.length < 3) {
+					read.push(relayURL);
+					write.push(relayURL);
+				} else if (item[2] === 'read') {
+					read.push(relayURL);
+				} else if (item[2] === 'write') {
+					write.push(relayURL);
 				}
+				//}
 			}
 
 			tmp_relay.relayEvent = kind10002;
@@ -919,15 +919,15 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 			for (const item of Object.keys(relays)) {
 				const relayURL = item.endsWith('/') ? item : item + '/';
 
-				const existRelay = await checkRelayExist(relayURL);
-				if (existRelay) {
-					if (relays[item].read) {
-						read.push(relayURL);
-					}
-					if (relays[item].write) {
-						write.push(relayURL);
-					}
+				// const existRelay = await checkRelayExist(relayURL);
+				// if (existRelay) {
+				if (relays[item].read) {
+					read.push(relayURL);
 				}
+				if (relays[item].write) {
+					write.push(relayURL);
+				}
+				//}
 			}
 
 			tmp_relay.relayEvent = kind3;
