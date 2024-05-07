@@ -11,7 +11,8 @@ import { useReplaceableEvent } from './useReplaceableEvent';
 export function useMetadata(
 	queryKey: QueryKey,
 	pubkey: string,
-	req?: RxReqBase | undefined
+	req?: RxReqBase | undefined,
+	relay?: string[] | undefined
 ): ReqResult<EventPacket> {
-	return useReplaceableEvent(queryKey, pubkey, 0, req);
+	return useReplaceableEvent(queryKey, pubkey, 0, req, relay);
 }

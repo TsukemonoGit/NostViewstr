@@ -15,7 +15,8 @@ export function useReplaceableEvent(
 	queryKey: QueryKey,
 	pubkey: string,
 	kind: number,
-	req?: RxReqBase | undefined
+	req?: RxReqBase | undefined,
+	relay?: string[] | undefined
 ): ReqResult<EventPacket> {
 	// TODO: Add npub support
 	const filters = [{ kinds: [kind], authors: [pubkey], limit: 1 }];
@@ -25,5 +26,5 @@ export function useReplaceableEvent(
 		verify(),
 		latest()
 	);
-	return useReq({ queryKey, filters, operator, req });
+	return useReq({ queryKey, filters, operator, req }, relay);
 }

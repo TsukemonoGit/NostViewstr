@@ -9,13 +9,14 @@
 	import type { QueryKey } from '@tanstack/svelte-query';
 	import type Nostr from 'nostr-typedef';
 	import { useMetadata } from './useMetadata';
+	import type { RelayConfig } from 'rx-nostr';
 
 	export let queryKey: QueryKey;
 	export let pubkey: string;
 	export let req: RxReqBase | undefined = undefined;
-
+	export let relay: string[] | undefined;
 	// TODO: Check if $app.rxNostr is defined
-	$: result = useMetadata(queryKey, pubkey, req);
+	$: result = useMetadata(queryKey, pubkey, req, relay);
 	$: data = result.data;
 	$: status = result.status;
 	$: error = result.error;

@@ -9,6 +9,7 @@
 	import Metadata from './nostrData/Metadata.svelte';
 	import type Nostr from 'nostr-typedef';
 	import { getRelays } from '$lib/nostrFunctions';
+	import { relaySet } from '$lib/stores/relays';
 	export let pubkey: string;
 	export let readTrueArray: string[];
 	//	console.log(readTrueArray.length);
@@ -61,8 +62,13 @@
 <div
 	class="w-8 h-8 rounded-full flex justify-center overflow-hidden bg-surface-400 mt-1 items-center truncate text-sm"
 >
-	{#if readTrueArray.length > 0}
-		<Metadata queryKey={['metadata', pubkey]} {pubkey} let:metadata>
+	{#if $relaySet[pubkey].searchRelays}
+		<Metadata
+			queryKey={['metadata', pubkey]}
+			{pubkey}
+			relay={$relaySet[pubkey].searchRelays}
+			let:metadata
+		>
 			<button
 				slot="loading"
 				on:click={() => {

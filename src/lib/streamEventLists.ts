@@ -567,13 +567,10 @@ export async function sendMessage(message: string, pubhex: string) {
  * @license This code is a derivative work based on code licensed under the Apache License, Version 2.0.
  */
 
-export function useReq<A>({
-	queryKey,
-	filters,
-	operator,
-	req,
-	initData
-}: UseReqOpts<A>): ReqResult<A> {
+export function useReq<A>(
+	{ queryKey, filters, operator, req, initData }: UseReqOpts<A>,
+	relay: string[] | undefined
+): ReqResult<A> {
 	const queryClient: QueryClient = useQueryClient();
 	if (Object.keys(rxNostr.getDefaultRelays()).length === 0) {
 		queryClient.setQueryData(queryKey, initData);
@@ -607,7 +604,9 @@ export function useReq<A>({
 	const status = writable<ReqStatus>('loading');
 	const error = writable<Error>();
 
-	const obs: Observable<A> = rxNostr.use(_req).pipe(operator);
+	const obs: Observable<A> = rxNostr
+		.use(_req, { relays: relay })
+		.pipe(operator);
 	const query = createQuery({
 		queryKey: queryKey,
 		queryFn: (): Promise<A> => {

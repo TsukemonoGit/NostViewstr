@@ -221,7 +221,7 @@
 		ref: ModalPostNote
 	};
 	function shareNote(selectedIndex: SelectIndex) {
-		if (!selectedIndex.detail) return;
+		if (!selectedIndex?.detail) return;
 		const tagArray = selectedIndex.detail.tagArray;
 		const note = selectedIndex.detail.event;
 		const tags = tagArray
@@ -406,7 +406,7 @@
 
 			<ListBoxItem
 				name="medium"
-				disabled={!selectedIndex.detail ||
+				disabled={!selectedIndex?.detail ||
 					(!selectedIndex.detail.event &&
 						selectedIndex.detail.tagArray.length > 0 &&
 						selectedIndex.detail.tagArray[1].length !== 64)}
@@ -415,7 +415,7 @@
 				on:click={() => {
 					comboboxValue = '';
 					const id =
-						selectedIndex.detail && selectedIndex.detail.event
+						selectedIndex?.detail && selectedIndex.detail.event
 							? selectedIndex.detail.event.id
 							: selectedIndex.detail.tagArray[1].length === 64
 							? selectedIndex.detail.tagArray[1]
