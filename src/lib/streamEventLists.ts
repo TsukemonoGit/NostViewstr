@@ -569,7 +569,7 @@ export async function sendMessage(message: string, pubhex: string) {
 
 export function useReq<A>(
 	{ queryKey, filters, operator, req, initData }: UseReqOpts<A>,
-	relay: string[] | undefined
+	relay: string[] | undefined = undefined
 ): ReqResult<A> {
 	const queryClient: QueryClient = useQueryClient();
 	if (Object.keys(rxNostr.getDefaultRelays()).length === 0) {
@@ -615,6 +615,7 @@ export function useReq<A>(
 
 				obs.subscribe({
 					next: (v: A) => {
+						console.log(v);
 						if (fulfilled) {
 							queryClient.setQueryData(queryKey, v);
 						} else {

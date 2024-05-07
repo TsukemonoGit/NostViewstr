@@ -14,13 +14,12 @@
 	export let queryKey: QueryKey;
 	export let pubkey: string;
 	export let req: RxReqBase | undefined = undefined;
-	export let relay: string[] | undefined;
+	export let relay: string[] | undefined = undefined;
 	// TODO: Check if $app.rxNostr is defined
 	$: result = useMetadata(queryKey, pubkey, req, relay);
 	$: data = result.data;
 	$: status = result.status;
 	$: error = result.error;
-
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface $$Slots {
 		default: { metadata: Nostr.Event; status: ReqStatus };

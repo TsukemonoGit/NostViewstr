@@ -11,7 +11,6 @@
 	import { getRelays } from '$lib/nostrFunctions';
 	import { relaySet } from '$lib/stores/relays';
 	export let pubkey: string;
-	export let readTrueArray: string[];
 	//	console.log(readTrueArray.length);
 	const metadataContentCheck = async (metadata: Nostr.Event) => {
 		try {
@@ -62,74 +61,72 @@
 <div
 	class="w-8 h-8 rounded-full flex justify-center overflow-hidden bg-surface-400 mt-1 items-center truncate text-sm"
 >
-	{#if $relaySet[pubkey].searchRelays}
-		<Metadata
-			queryKey={['metadata', pubkey]}
-			{pubkey}
-			relay={$relaySet[pubkey].searchRelays}
-			let:metadata
+	<Metadata
+		queryKey={['metadata', pubkey]}
+		{pubkey}
+		bind:relay={$relaySet[pubkey].searchRelays}
+		let:metadata
+	>
+		<button
+			slot="loading"
+			on:click={() => {
+				OpenProfile({ pubkey: pubkey });
+			}}
 		>
-			<button
-				slot="loading"
-				on:click={() => {
-					OpenProfile({ pubkey: pubkey });
-				}}
-			>
-				{#if pubkey === $pubkey_viewer}
-					<span class="fill-white">{@html LocationHomeIcon}</span>
-				{/if}
-			</button>
-			<button
-				slot="error"
-				on:click={() => {
-					OpenProfile({ pubkey: pubkey });
-				}}
-			>
-				{#if pubkey === $pubkey_viewer}
-					<span class="fill-white">{@html LocationHomeIcon}</span>
-				{/if}
-			</button>
-			<button
-				slot="nodata"
-				on:click={() => {
-					OpenProfile({ pubkey: pubkey });
-				}}
-			>
-				{#if pubkey === $pubkey_viewer}
-					<span class="fill-white">{@html LocationHomeIcon}</span>
-				{/if}
-			</button>
+			{#if pubkey === $pubkey_viewer}
+				<span class="fill-white">{@html LocationHomeIcon}</span>
+			{/if}
+		</button>
+		<button
+			slot="error"
+			on:click={() => {
+				OpenProfile({ pubkey: pubkey });
+			}}
+		>
+			{#if pubkey === $pubkey_viewer}
+				<span class="fill-white">{@html LocationHomeIcon}</span>
+			{/if}
+		</button>
+		<button
+			slot="nodata"
+			on:click={() => {
+				OpenProfile({ pubkey: pubkey });
+			}}
+		>
+			{#if pubkey === $pubkey_viewer}
+				<span class="fill-white">{@html LocationHomeIcon}</span>
+			{/if}
+		</button>
 
-			{#await metadataContentCheck(metadata)}
-				{#if pubkey === $pubkey_viewer}
-					<button
-						class="fill-white"
-						on:click={() => {
-							OpenProfile({ pubkey: pubkey });
-						}}>{@html LocationHomeIcon}</button
-					>
-				{/if}
-			{:then metadataContent}
+		{#await metadataContentCheck(metadata)}
+			{#if pubkey === $pubkey_viewer}
 				<button
+					class="fill-white"
 					on:click={() => {
-						OpenProfile(metadata);
-					}}
+						OpenProfile({ pubkey: pubkey });
+					}}>{@html LocationHomeIcon}</button
 				>
-					{#if $iconView && metadataContent.picture !== ''}
-						<img
-							class="max-w-8 max-h-8 object-contain justify-center"
-							src={metadataContent.picture}
-							alt="avatar"
-						/>
-					{:else if metadataContent.name !== ''}
-						{metadataContent.name}
-					{:else if pubkey === $pubkey_viewer}
-						<span class="fill-white">{@html LocationHomeIcon}</span>
-					{/if}
-				</button>
-			{/await}
-		</Metadata>
-	{/if}
+			{/if}
+		{:then metadataContent}
+			<button
+				on:click={() => {
+					OpenProfile(metadata);
+				}}
+			>
+				{#if $iconView && metadataContent.picture !== ''}
+					<img
+						class="max-w-8 max-h-8 object-contain justify-center"
+						src={metadataContent.picture}
+						alt="avatar"
+					/>
+				{:else if metadataContent.name !== ''}
+					{metadataContent.name}
+				{:else if pubkey === $pubkey_viewer}
+					<span class="fill-white">{@html LocationHomeIcon}</span>
+				{/if}
+			</button>
+		{/await}
+	</Metadata>
 </div>
 
 <!---->
