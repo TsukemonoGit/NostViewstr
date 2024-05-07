@@ -4,9 +4,9 @@ import { clientMap, ogpStore } from './stores/bookmarkEvents';
 import { type Event as NostrEvent, nip19 } from 'nostr-tools';
 
 import { fetchFilteredEvents, parseNaddr } from './nostrFunctions';
-import type { Nostr } from 'nosvelte';
+import type Nostr from 'nostr-typedef';
 import { naddrEncode, noteEncode, type AddressPointer } from './nip19';
-import { relaySet } from './stores/relays';
+
 export enum MenuMode {
 	Multi, //複数選択モード
 	Owner, //追加削除ボタン込み

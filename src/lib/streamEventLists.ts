@@ -98,7 +98,12 @@ export function GetAllRelayState() {
 }
 
 export async function RelaysReconnectChallenge() {
-	const states = Object.entries(rxNostr.getAllRelayStatus().connection);
+	const allRelayStatus = rxNostr.getAllRelayStatus();
+	if (!allRelayStatus) {
+		// メソッドが null または undefined を返す場合の処理
+		return;
+	}
+	const states = Object.entries(allRelayStatus.connection);
 	console.log('[relay states]', states);
 
 	const reconnectableCount = states.filter(([relayUrl, state]) =>

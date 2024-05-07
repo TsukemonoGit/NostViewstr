@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { allView } from '$lib/stores/settings';
 	import { nip19 } from 'nostr-tools';
-	import { Nostr, NostrApp, Text } from 'nosvelte';
 	import Metadata from './nostrData/Metadata.svelte';
-
+	import Text from './nostrData/Text.svelte';
 	export let tag: string[];
 	export let handleClickDate: Function;
 	export let handleClickPubkey: Function;

@@ -1,7 +1,7 @@
 <!--kind:40-->
 <script lang="ts">
 	import { nip19 } from 'nostr-tools';
-	import type { Nostr } from 'nosvelte';
+	import type Nostr from 'nostr-typedef';
 	import OpenInNewIcon from '@material-design-icons/svg/round/open_in_new.svg?raw';
 	export let event: Nostr.Event;
 	const dtag = event?.tags?.find((item) => item[0] === 'd');

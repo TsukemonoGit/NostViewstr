@@ -13,7 +13,7 @@
 	import { modalStore } from '$lib/stores/store';
 	import { _ } from 'svelte-i18n';
 	import ModalPostNote from '$lib/components/modals/ModalPostNote.svelte';
-	import type { Nostr } from 'nosvelte';
+	import type Nostr from 'nostr-typedef';
 
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';

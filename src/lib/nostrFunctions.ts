@@ -69,9 +69,7 @@ import {
 	type RelayConfig
 	//searchRelays
 } from './stores/relays';
-import type { ToastSettings } from '@skeletonlabs/skeleton';
-import { toastStore } from './stores/store';
-import type { Nostr } from 'nosvelte';
+import type Nostr from 'nostr-typedef';
 
 interface Kind3Relay {
 	[key: string]: {

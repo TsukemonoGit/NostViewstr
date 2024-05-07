@@ -2,7 +2,8 @@
 	import { checkInputNote, checkRelayExist } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import type { Nostr } from 'nosvelte';
+
+	import type Nostr from 'nostr-typedef';
 	import PublicButton from './PublicButton.svelte';
 
 	export let res: { btn: string; tag: string[] };

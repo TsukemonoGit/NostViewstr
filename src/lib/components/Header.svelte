@@ -26,7 +26,7 @@
 		type PopupSettings,
 		storePopup
 	} from '@skeletonlabs/skeleton';
-	import type { Nostr } from 'nosvelte';
+	import type Nostr from 'nostr-typedef';
 	import { _ } from 'svelte-i18n';
 	import ModalListInfo from './modals/ModalListInfo.svelte';
 	import ModalPostNote from './modals/ModalPostNote.svelte';
@@ -290,7 +290,7 @@
 		// Defines which side of your trigger the popup will appear
 		placement: 'bottom-end', //'bottom',
 		state: (test) => {
-			console.log(test);
+			//console.log(test);
 			pupupOpen = test.state;
 		}
 	};
@@ -304,7 +304,7 @@
 	>
 		<div class="flex h-full items-center ml-1">
 			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-				<UserIcon {pubkey} />
+				<UserIcon {pubkey} bind:readTrueArray />
 			{/if}
 		</div>
 		<div class="max-w-full overflow-hidden">

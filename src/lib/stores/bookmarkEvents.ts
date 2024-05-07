@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import type { Event } from 'nostr-tools';
-import type { Nostr } from 'nosvelte';
+
+import type Nostr from 'nostr-typedef';
 import type { TextPart } from '$lib/content';
 import type { ConnectionState } from 'rx-nostr';
 import type { RelayStatus } from 'rx-nostr/types/src/rx-nostr/interface';

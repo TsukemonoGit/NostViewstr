@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
-	import type { Nostr } from 'nosvelte';
+
+	import type Nostr from 'nostr-typedef';
 	import { MultiMenu, isMulti } from '$lib/stores/settings';
 	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
 	import { checkedIndexList } from '$lib/stores/bookmarkEvents';

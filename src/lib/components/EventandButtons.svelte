@@ -3,7 +3,6 @@
 	import EventCard from '$lib/components/EventCard.svelte';
 	import { ogpDescription } from '$lib/otherFunctions.js';
 
-	import { Text, UniqueEventList } from 'nosvelte';
 	import { nip19, type Event as NostrEvent } from 'nostr-tools';
 	import { parseNaddr } from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
@@ -21,6 +20,8 @@
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import type { SelectIndex } from '$lib/otherFunctions';
 	import Metadata from './nostrData/Metadata.svelte';
+	import Text from './nostrData/Text.svelte';
+	import UniqueEventList from './nostrData/UniqueEventList.svelte';
 	export let tag: {
 		id: number;
 		name: string[];

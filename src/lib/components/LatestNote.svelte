@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { formatAbsoluteDate, formatRelativeDate } from '$lib/otherFunctions';
-	import { Nostr, UniqueEventList } from 'nosvelte';
+
 	import Content from './Content.svelte';
 	import { allView } from '$lib/stores/settings';
 	import LatestEvent from './nostrData/LatestEvent.svelte';

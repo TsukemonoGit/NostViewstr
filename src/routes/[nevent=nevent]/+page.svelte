@@ -19,9 +19,9 @@
 	} from '$lib/stores/settings';
 	//import type { Event } from 'nostr-tools';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
+	import NostrApp from '$lib/components/nostrData/NostrApp.svelte';
 
-	import { NostrApp, type Nostr } from 'nosvelte';
-
+	import type Nostr from 'nostr-typedef';
 	import { afterNavigate } from '$app/navigation';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
@@ -213,7 +213,7 @@
 {:else}
 	<!-- {#await bkminit(pubkey) then bkminti} -->
 	{#if kind && typeof WebSocket !== 'undefined' && pubkey && $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-		<NostrApp relays={$relaySet[pubkey].searchRelays}>
+		<NostrApp>
 			<!--header-->
 			<Header {kind} bind:bkm {pubkey} bind:viewEvent nevent={true} />
 

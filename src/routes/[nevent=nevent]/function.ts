@@ -1,5 +1,6 @@
 import { SimplePool, relayInit, type Event as NostrEvent } from 'nostr-tools';
-import type { Nostr } from 'nosvelte';
+
+import type Nostr from 'nostr-typedef';
 
 export async function getViewEvent(
 	id: string,

@@ -2,8 +2,8 @@
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { nip19 } from 'nostr-tools';
 	import { modalStore, toastStore } from '$lib/stores/store';
+	import type Nostr from 'nostr-typedef';
 
-	import { Nostr, Text } from 'nosvelte';
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
 	import { fetchFilteredEvents } from '$lib/nostrFunctions';
 	import { formatAbsoluteDate, uniqueTags } from '$lib/otherFunctions.js';
@@ -18,7 +18,7 @@
 	import PubCha from './PubCha.svelte';
 	import SearchCard from './SearchCard.svelte';
 	import Metadata from './nostrData/Metadata.svelte';
-
+	import Text from './nostrData/Text.svelte';
 	export let encodedId: string;
 
 	export let isPageOwner: boolean;

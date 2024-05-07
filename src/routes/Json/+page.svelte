@@ -9,7 +9,8 @@
 
 	import { toastStore } from '$lib/stores/store';
 	import { JsonEventData } from '$lib/stores/bookmarkEvents';
-	import type { Nostr } from 'nosvelte';
+
+	import type Nostr from 'nostr-typedef';
 
 	let files: FileList | undefined;
 	let fileData: File | undefined;

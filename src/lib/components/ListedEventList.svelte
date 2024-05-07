@@ -57,8 +57,8 @@
 	import ModalDelete from '$lib/components/modals/ModalDelete.svelte';
 	import ModalMove from '$lib/components/modals/ModalMove.svelte';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { NostrApp, type Nostr } from 'nosvelte';
-
+	import NostrApp from '$lib/components/nostrData/NostrApp.svelte';
+	import type Nostr from 'nostr-typedef';
 	import { afterNavigate } from '$app/navigation';
 	import Header from './Header.svelte';
 
@@ -198,7 +198,7 @@
 			filters: filter
 		});
 		bkm = 'pub';
-		listedEventRef.viewUpdate(); //
+		listedEventRef?.viewUpdate(); //
 		toastStore.close(searchingEventsToast);
 	}
 
@@ -291,7 +291,7 @@
 					);
 					//   console.log(result);
 					if (result.isSuccess && $eventListsMap && result.event) {
-						listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+						listedEventRef?.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
 
 						//streamの方で購読してるから要らん
 						// $eventListsMap[pubkey][kind].set(
@@ -563,7 +563,7 @@
 			);
 
 			if (result.isSuccess) {
-				listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+				listedEventRef?.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
 
 				const toastMessage = result.isSuccess
 					? 'Add note<br>' + result.msg
@@ -709,7 +709,7 @@
 			}
 			const deleteRes = await deleteNotesfromLists(from.tag, indexes);
 			//		$nowProgress = false;
-			listedEventRef.viewUpdate();
+			listedEventRef?.viewUpdate();
 		}
 	}
 
@@ -820,10 +820,10 @@
 	}
 
 	function onClickCancelSort() {
-		listedEventRef.resetItems();
+		listedEventRef?.resetItems();
 	}
 	function SortReset() {
-		listedEventRef.resetItems();
+		listedEventRef?.resetItems();
 	}
 	async function onClickDoneSort() {
 		$nowProgress = true;
@@ -834,7 +834,7 @@
 				throw Error;
 			}
 
-			const tags = listedEventRef.getSortedTags();
+			const tags = listedEventRef?.getSortedTags();
 			console.log(tags);
 			const content = async (): Promise<string> => {
 				if (bkm === 'pub') {
@@ -863,7 +863,7 @@
 			);
 			//   console.log(result);
 			if (result.isSuccess && $eventListsMap && result.event) {
-				listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+				listedEventRef?.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
 
 				//streamの方で購読してるから要らん
 				// $eventListsMap[pubkey][kind].set(
@@ -903,7 +903,7 @@
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
 {#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-	<NostrApp relays={$relaySet[pubkey].searchRelays}>
+	<NostrApp>
 		<!--header-->
 		<Header {kind} bind:bkm {pubkey} bind:viewEvent />
 
