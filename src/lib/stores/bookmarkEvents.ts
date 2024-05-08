@@ -4,11 +4,7 @@ import type { Event } from 'nostr-tools';
 import type Nostr from 'nostr-typedef';
 import type { TextPart } from '$lib/content';
 import type { ConnectionState } from 'rx-nostr';
-import type {
-	DefaultRelayConfig,
-	RelayStatus,
-	RxNostr
-} from 'rx-nostr/types/src/rx-nostr/interface';
+import type { RxNostr } from 'rx-nostr/types/src/rx-nostr/interface';
 interface IdentifierList {
 	[pubkey: string]: {
 		[kind: number]: Identifiers[];
@@ -42,8 +38,8 @@ export const eventListsMap = writable<MapEventLists>({});
 export const keysArray = writable<string[]>([]);
 
 export const rx = writable<RxNostr>();
-//rxnostr.get~~はゲットしたときにしか得られないから（購読仕方わからないから別で）
-export const relayList = writable<Record<string, DefaultRelayConfig>>();
+
+//とりあえず監視してる分全部のrelayStateを保管しておいて表示させるやつ（$relaySet(pubkey).bookmarkRelays）とかのリレーごとにstateがどうか探しに来る感じで
 export const relayState = writable(new Map<string, ConnectionState>());
 
 //export const bookmarkEvents = writable<EventLists>({});

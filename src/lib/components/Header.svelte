@@ -6,8 +6,6 @@
 		identifierListsMap,
 		keysArray,
 		listNum,
-		rx,
-		relayList,
 		relayState
 	} from '$lib/stores/bookmarkEvents';
 	import { pageNum } from '$lib/stores/pagination';

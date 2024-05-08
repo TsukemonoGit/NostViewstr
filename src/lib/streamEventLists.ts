@@ -10,7 +10,7 @@ import {
 	createRxBackwardReq,
 	nip07Signer
 } from 'rx-nostr';
-import { derived, get, readable, writable, type Readable } from 'svelte/store';
+import { derived, get, writable } from 'svelte/store';
 import {
 	type Identifiers,
 	eventListsMap,
@@ -18,7 +18,6 @@ import {
 	identifierListsMap,
 	type MapIdentifierList,
 	rx,
-	relayList,
 	relayState
 } from './stores/bookmarkEvents';
 import { formatResults, getPub, setRelays, signEv } from './nostrFunctions';
@@ -368,16 +367,18 @@ export async function publishEventWithTimeout(
 			event.id = getEventHash(event);
 		}
 		if (!event.sig || event.sig === '') {
-			//event.sigが""でもサインしてくれないみたいなので
-			const tmpEvent: EventParameters<number> = {
-				id: event.id,
-				pubkey: event.pubkey,
-				content: event.content,
-				tags: event.tags,
-				created_at: event.created_at,
-				kind: event.kind
-			};
-			event = await nip07Signer().signEvent(tmpEvent);
+			// //event.sigが""でもサインしてくれないみたいなので
+			// const tmpEvent: EventParameters<number> = {
+			// 	id: event.id,
+			// 	pubkey: event.pubkey,
+			// 	content: event.content,
+			// 	tags: event.tags,
+			// 	created_at: event.created_at,
+			// 	kind: event.kind
+			// };
+
+			// event = await nip07Signer().signEvent(tmpEvent);
+			event = await signEv(event);
 		}
 		console.log(event);
 		if (!verifySignature(event)) {

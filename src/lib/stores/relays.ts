@@ -17,21 +17,23 @@ export const initRelaySet: RelayConfig = {
 	postRelays: [],
 	relayEvent: undefined
 };
-//参考 https://nostter.app/nevent1qqsy739r2nqh59p8w4ufwf7ujtp4qxdwjae3uexk5fhn3pf4ntreq8q77psv7
+
 export const relaySet = writable<{ [pubkey: string]: RelayConfig }>({});
+
 export const relaySearchRelays = [
 	//'wss://tes'
 	//'wss://relay.nostr.band'
 	//	'wss://nos.lol',
 	//'wss://relay.nostr.wirednet.jp'
 
+	//参考 https://nostter.app/nevent1qqsy739r2nqh59p8w4ufwf7ujtp4qxdwjae3uexk5fhn3pf4ntreq8q77psv7
 	//kind 0 (ユーザのプロフィール) と kind 10002 (利用中のリレーリスト) 特化
 	'wss://directory.yabu.me',
 	'wss://purplepag.es', //https://purplepag.es/what
 	'wss://relay.nostr.band',
-	'wss://nos.lol'
+	'wss://nos.lol',
 	//kind:3
-	//'wss://relayable.org',
+	'wss://relayable.org'
 ];
 
 export const defaultRelays = [
