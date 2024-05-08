@@ -68,6 +68,7 @@
 	} from '$lib/streamEventLists';
 	import FooterMenu from './FooterMenu.svelte';
 	import { kinds } from '$lib/kind';
+	import { page } from '$app/stores';
 	export let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> | undefined;
 	export let pubkey: string;
@@ -1021,10 +1022,18 @@
 					on:click={onClickAdd}>{@html addIcon}</button
 				>
 			{:else if $isMulti === MultiMenu.Multi}
+				<!-- {#if !(!$page.params.hasOwnProperty('npub') || !isOwner || !viewEvent?.kind || viewEvent?.kind < 30000 || viewEvent?.kind >= 40000 || isNaddr)} -->
 				<button
+					disabled={!$page.params.hasOwnProperty('npub') ||
+						!isOwner ||
+						!viewEvent?.kind ||
+						viewEvent?.kind < 30000 ||
+						viewEvent?.kind >= 40000 ||
+						isNaddr}
 					class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
 					on:click={onClickMultiMove}>{@html MoveIcon}</button
 				>
+				<!-- {/if} -->
 				<button
 					class="overflow-x-hidden addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
 					on:click={onClickMultiDelete}>{@html DeleteIcon}</button

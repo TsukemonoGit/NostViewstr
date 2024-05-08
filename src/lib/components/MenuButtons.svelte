@@ -22,6 +22,7 @@
 	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
 
 	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
+	import { nowProgress } from '$lib/stores/settings';
 	//import swap from '@material-design-icons/svg/round/drag_handle.svg?raw';
 	export let menuMode: MenuMode;
 	export let tagArray: string[] | undefined;
@@ -205,6 +206,7 @@
 {:else if menuMode === MenuMode.Multi}
 	<!--複数選択モード-->
 	<input
+		disabled={$nowProgress}
 		class="m-2 checkbox scale-125 w-fit"
 		type="checkbox"
 		checked={$checkedIndexList

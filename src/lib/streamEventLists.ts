@@ -27,7 +27,8 @@ import {
 	getPublicKey,
 	nip04,
 	SimplePool,
-	getSignature
+	getSignature,
+	verifySignature
 } from 'nostr-tools';
 import { nsec, pubkey_viewer } from './stores/settings';
 import { feedbackRelay, relaySet } from './stores/relays';
@@ -98,35 +99,35 @@ export function GetAllRelayState() {
 	return rxNostr.getAllRelayStatus().connection;
 }
 
-export async function RelaysReconnectChallenge() {
-	const allRelayStatus = rxNostr.getAllRelayStatus();
-	if (!allRelayStatus || !allRelayStatus.connection) {
-		return;
-	}
-	const states = Object.entries(allRelayStatus.connection);
-	console.log('[relay states]', states);
+// export async function RelaysReconnectChallenge() {
+// 	const allRelayStatus = rxNostr.getAllRelayStatus();
+// 	if (!allRelayStatus || !allRelayStatus.connection) {
+// 		return;
+// 	}
+// 	const states = Object.entries(allRelayStatus.connection);
+// 	console.log('[relay states]', states);
 
-	const reconnectableCount = states.filter(([relayUrl, state]) =>
-		reconnectableStates.includes(state)
-	).length;
-	console.log(reconnectableCount, states.length);
-	if (reconnectableCount / states.length >= 2 / 3) {
-		//設定中のリレーの2/3以上が接続切れてたらセットし直してみる
-		// const tmp = Object.fromEntries(
-		// 	rxNostr.getDefaultRelays().map(({ url, read, write }) => [url, { read, write }])
-		// );
-		const tmp = rxNostr.getDefaultRelays();
-		//すでにセットされてる場合は何もおこらないっぽい？ので一度全部外す
-		rxNostr.setDefaultRelays({});
-		rxNostr.setDefaultRelays(tmp);
+// 	const reconnectableCount = states.filter(([relayUrl, state]) =>
+// 		reconnectableStates.includes(state)
+// 	).length;
+// 	console.log(reconnectableCount, states.length);
+// 	if (reconnectableCount / states.length >= 2 / 3) {
+// 		//設定中のリレーの2/3以上が接続切れてたらセットし直してみる
+// 		// const tmp = Object.fromEntries(
+// 		// 	rxNostr.getDefaultRelays().map(({ url, read, write }) => [url, { read, write }])
+// 		// );
+// 		const tmp = rxNostr.getDefaultRelays();
+// 		//すでにセットされてる場合は何もおこらないっぽい？ので一度全部外す
+// 		rxNostr.setDefaultRelays({});
+// 		rxNostr.setDefaultRelays(tmp);
 
-		// states.forEach(([relayUrl, state]) => {
-		//   if (reconnectableStates.includes(state)) {
-		//     rxNostr.reconnect(relayUrl);
-		//   }
-		// });
-	}
-}
+// 		// states.forEach(([relayUrl, state]) => {
+// 		//   if (reconnectableStates.includes(state)) {
+// 		//     rxNostr.reconnect(relayUrl);
+// 		//   }
+// 		// });
+// 	}
+// }
 //export const eventListsMap = writable(new Map<string, Nostr.Event>());---------------------------------------------------------------
 export async function StoreFetchFilteredEvents(
 	pubkey: string,
@@ -360,7 +361,7 @@ export async function publishEventWithTimeout(
 			event = await nip07Signer().signEvent(tmpEvent);
 		}
 		console.log(event);
-		if (!event.sig || event.sig === '') {
+		if (!verifySignature(event)) {
 			return { isSuccess: false, msg: 'error' };
 		}
 		//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー

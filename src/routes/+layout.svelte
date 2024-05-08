@@ -25,7 +25,7 @@
 	import { onMount } from 'svelte';
 	import { backButton, send_pubhex } from '$lib/stores/settings';
 	import { afterNavigate } from '$app/navigation';
-	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
+	//import { RelaysReconnectChallenge } from '$lib/streamEventLists';
 	//import { init as initNostrLogin } from 'nostr-login';
 	import { page } from '$app/stores';
 
@@ -75,17 +75,17 @@
 		}
 	});
 
-	async function onVisibilityChange() {
-		console.log(document.visibilityState);
-		if (document.visibilityState === 'visible') {
-			await RelaysReconnectChallenge();
-		}
-	}
+	// async function onVisibilityChange() {
+	// 	console.log(document.visibilityState);
+	// 	if (document.visibilityState === 'visible') {
+	// 		await RelaysReconnectChallenge();
+	// 	}
+	// }
 </script>
 
 <title>{$_('main.title')}</title>
 
-<svelte:document on:visibilitychange={onVisibilityChange} />
+<!-- <svelte:document on:visibilitychange={onVisibilityChange} /> -->
 <svelte:head>
 	<title>NostViewstr</title>
 

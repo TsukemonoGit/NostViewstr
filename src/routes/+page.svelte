@@ -9,6 +9,7 @@
 	import { _ } from 'svelte-i18n';
 	import { kinds } from '$lib/kind';
 	import { toastStore } from '$lib/stores/store';
+
 	// let selectValue: string;
 	$: kind = Number(Object.keys(kinds)[0]);
 	// $: kind = Number(selectValue); // Use Object.keys to get the first key

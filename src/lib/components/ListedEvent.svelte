@@ -19,7 +19,7 @@
 	} from '$lib/nostrFunctions';
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { amount, pageNum, listSize } from '$lib/stores/pagination';
-	import { MultiMenu, isMulti } from '$lib/stores/settings';
+	import { MultiMenu, isMulti, nowProgress } from '$lib/stores/settings';
 	//import MenuButtons2 from './MenuButtons2.svelte';
 
 	// import Menu from '@material-design-icons/svg/round/more_vert.svg?raw';
@@ -288,7 +288,8 @@
 				items,
 				//flipDurationMs,
 				dropTargetStyle: {},
-				dragDisabled: $isMulti === MultiMenu.Sort ? false : true,
+				dragDisabled:
+					$isMulti === MultiMenu.Sort && !$nowProgress ? false : true,
 				morphDisabled: true,
 				dropFromOthersDisabled: true,
 				centreDraggedOnCursor: false
