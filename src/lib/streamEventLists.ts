@@ -308,7 +308,7 @@ export async function publishEventWithTimeout(
 	obj: Nostr.Event,
 	relays: string[],
 	userCheck: boolean = true,
-	timeout: number = 10000
+	timeout: number = 3000
 ): Promise<{
 	isSuccess: boolean;
 	event?: Nostr.Event;
@@ -573,14 +573,14 @@ export function useReq<A>(
 	relay: string[] | undefined = undefined
 ): ReqResult<A> {
 	const queryClient: QueryClient = useQueryClient();
-	if (Object.keys(rxNostr.getDefaultRelays()).length === 0) {
-		queryClient.setQueryData(queryKey, initData);
-		return {
-			data: readable<A>(initData),
-			status: readable('success'),
-			error: readable()
-		};
-	}
+	// if (Object.keys(rxNostr.getDefaultRelays()).length === 0) {
+	// 	queryClient.setQueryData(queryKey, initData);
+	// 	return {
+	// 		data: readable<A>(initData),
+	// 		status: readable('success'),
+	// 		error: readable()
+	// 	};
+	// }
 
 	let _req:
 		| RxReqBase

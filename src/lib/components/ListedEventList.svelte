@@ -459,7 +459,7 @@
 					res.check
 				);
 			} catch (error) {
-				console.log(error);
+				//console.log(error);
 				const t = {
 					message: $_('toast.invalidEmoji'),
 					timeout: 3000,

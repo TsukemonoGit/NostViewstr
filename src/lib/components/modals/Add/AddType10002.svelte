@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { checkInputNpub, checkRelayExist } from '$lib/nostrFunctions';
+	import { checkInputNpub } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 
 	import PublicButton from './PublicButton.svelte';
+	import { Nip11Registry } from 'rx-nostr';
+	import { nowProgress } from '$lib/stores/settings';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
 	export let parent: any;
@@ -78,9 +80,14 @@
 		// 	toastStore.trigger(t);
 		// 	return;
 		// }
+		$nowProgress = true;
+		const info = Nip11Registry.get(input);
 
-		const existRelay = await checkRelayExist(input);
-		if (!existRelay) {
+		const existRelay = !info ? await Nip11Registry.fetch(input) : info;
+
+		$nowProgress = false;
+		console.log(existRelay);
+		if (!existRelay.name) {
 			const t = {
 				message: `${$_('toast.checkRelay')}`,
 				timeout: 3000,

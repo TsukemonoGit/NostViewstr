@@ -43,35 +43,6 @@ export const defaultRelays = [
 	'wss://nostr.bitcoiner.social'
 ];
 
-export interface RelayInfo {
-	name: string;
-	description: string;
-	pubkey: string;
-	contact: string;
-	supported_nips: number[];
-	software: string;
-	version: string;
-	relay_countries?: string[];
-	icon?: string;
-	limitation?: {
-		max_message_length?: number;
-		max_subscriptions?: number;
-		max_filters?: number;
-		max_limit?: number;
-		max_subid_length?: number;
-		min_prefix?: number;
-		max_event_tags?: number;
-		max_content_length?: number;
-		min_pow_difficulty?: number;
-		auth_required?: boolean;
-		payment_required?: boolean;
-	};
-	payments_url?: string;
-	fees?: object;
-}
-
-export const relayStore = writable(new Map<string, RelayInfo>());
-
 //feedback送信用のリレー
 export const feedbackRelay = [
 	'wss://nos.lol',

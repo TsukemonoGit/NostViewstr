@@ -52,7 +52,7 @@
 		"nostr-login": "^1.0.17",
 		"nostr-tools": "^1.17.0",
 		"nostr-typedef": "^0.9.0",
-		"rx-nostr": "^2.7.2",
+		"rx-nostr": "^2.7.3",
 		"svelte-i18n": "^4.0.0",
 		"unfurl.js": "^6.4.0",
 		"vite-plugin-pwa": "^0.19.3"

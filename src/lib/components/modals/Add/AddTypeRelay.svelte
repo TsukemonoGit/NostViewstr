@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { checkInputNote, checkRelayExist } from '$lib/nostrFunctions';
+	import { checkInputNote } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 
 	import type Nostr from 'nostr-typedef';
 	import PublicButton from './PublicButton.svelte';
+	import { Nip11Registry } from 'rx-nostr';
 
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
@@ -54,7 +55,7 @@
 			return;
 		}
 
-		const existRelay = await checkRelayExist(input);
+		const existRelay = await Nip11Registry.fetch(input);
 		if (!existRelay) {
 			const t = {
 				message: `${$_('toast.checkRelay')}`,

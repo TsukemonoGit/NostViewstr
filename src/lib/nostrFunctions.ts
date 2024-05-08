@@ -65,7 +65,6 @@ import {
 	//relayEvent,
 	relaySearchRelays,
 	relaySet,
-	relayStore,
 	type RelayConfig
 	//searchRelays
 } from './stores/relays';
@@ -963,68 +962,68 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 	console.log(`complete set relsys`, get(relaySet));
 }
 
-// そのURLのリレーが存在するか確認 NIP11
-export async function checkRelayExist(relay: string, timeout: number = 1000) {
-	const relayStr = get(relayStore);
-	if (relayStr.has(relay)) {
-		console.log('すでにあるよ', relayStr.get(relay));
-		return true;
-	}
-	let urlstr, url; //protocol,
-	if (relay.startsWith('ws://')) {
-		// inputValueがws://から始まる場合
-		//protocol = 'ws';
-		urlstr = relay.slice(5); // ws://の部分を削除した残りの文字列を取得する
-		url = new URL('http://' + urlstr);
-	} else if (relay.startsWith('wss://')) {
-		// inputValueがwss://から始まる場合
-		//protocol = 'wss';
-		urlstr = relay.slice(6); // wss://の部分を削除した残りの文字列を取得する
-		url = new URL('https://' + urlstr);
-	} else {
-		// console.log('test');
-		return false;
-		// throw new Error('error');
-	}
+// // そのURLのリレーが存在するか確認 NIP11
+// export async function checkRelayExist(relay: string, timeout: number = 1000) {
+// 	const relayStr = get(relayStore);
+// 	if (relayStr.has(relay)) {
+// 		console.log('すでにあるよ', relayStr.get(relay));
+// 		return true;
+// 	}
+// 	let urlstr, url; //protocol,
+// 	if (relay.startsWith('ws://')) {
+// 		// inputValueがws://から始まる場合
+// 		//protocol = 'ws';
+// 		urlstr = relay.slice(5); // ws://の部分を削除した残りの文字列を取得する
+// 		url = new URL('http://' + urlstr);
+// 	} else if (relay.startsWith('wss://')) {
+// 		// inputValueがwss://から始まる場合
+// 		//protocol = 'wss';
+// 		urlstr = relay.slice(6); // wss://の部分を削除した残りの文字列を取得する
+// 		url = new URL('https://' + urlstr);
+// 	} else {
+// 		// console.log('test');
+// 		return false;
+// 		// throw new Error('error');
+// 	}
 
-	let header = new Headers();
-	header.set('Accept', 'application/nostr+json');
+// 	let header = new Headers();
+// 	header.set('Accept', 'application/nostr+json');
 
-	// AbortControllerを作成し、timeoutミリ秒後にabort()を呼び出す
-	const controller = new AbortController();
-	const timeoutId = setTimeout(() => controller.abort(), timeout);
+// 	// AbortControllerを作成し、timeoutミリ秒後にabort()を呼び出す
+// 	const controller = new AbortController();
+// 	const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-	try {
-		let response = await fetch(url, {
-			headers: header,
-			signal: controller.signal
-		});
-		console.log(response);
+// 	try {
+// 		let response = await fetch(url, {
+// 			headers: header,
+// 			signal: controller.signal
+// 		});
+// 		console.log(response);
 
-		//console.log(response.ok);
+// 		//console.log(response.ok);
 
-		// タイムアウトが発生した場合、response.okもfalseになります
-		if (response.ok) {
-			console.log('せっとするよ', relayStr.set(relay, await response.json()));
-			return true;
-		} else {
-			return false;
-		}
-	} catch (error) {
-		if (error instanceof Error) {
-			if (error.name === 'AbortError') {
-				console.log('Request timed out');
-			} else {
-				console.log(error);
-			}
-		}
-		return false;
-		// throw new Error('error');
-	} finally {
-		// クリーンアップ: タイムアウト用のタイマーをクリア
-		clearTimeout(timeoutId);
-	}
-}
+// 		// タイムアウトが発生した場合、response.okもfalseになります
+// 		if (response.ok) {
+// 			console.log('せっとするよ', relayStr.set(relay, await response.json()));
+// 			return true;
+// 		} else {
+// 			return false;
+// 		}
+// 	} catch (error) {
+// 		if (error instanceof Error) {
+// 			if (error.name === 'AbortError') {
+// 				console.log('Request timed out');
+// 			} else {
+// 				console.log(error);
+// 			}
+// 		}
+// 		return false;
+// 		// throw new Error('error');
+// 	} finally {
+// 		// クリーンアップ: タイムアウト用のタイマーをクリア
+// 		clearTimeout(timeoutId);
+// 	}
+// }
 
 export async function checkInputNpub(r: string): Promise<{
 	tag?: string[];

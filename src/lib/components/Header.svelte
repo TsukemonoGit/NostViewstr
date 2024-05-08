@@ -46,11 +46,11 @@
 	export let nevent: boolean = false;
 	let ongoingCount: number;
 
-	$: console.log($storePopup.popupFeatured);
-	$: console.log(popupFeatured.state);
+	//$: console.log($storePopup.popupFeatured);
+	//$: console.log(popupFeatured.state);
 	let pupupOpen: boolean = false;
 
-	$: console.log('readtrueRelay', readTrueArray);
+	//$: console.log('readtrueRelay', readTrueArray);
 	$: readTrueArray = $connectingRelays
 		? Object.keys($connectingRelays).filter(
 				(item) => $connectingRelays[item].read === true
@@ -62,16 +62,6 @@
 			? readTrueArray.filter((relay) => $relayState.get(relay) === 'connected')
 					.length
 			: 0;
-
-	// afterUpdate(() => {
-
-	// 	console.log('[relay state]', $relayState);
-	// 	ongoingCount =
-	// 		$relayState && Object.keys($relayState).length > 0
-	// 			? Object.values($relayState).filter((state) => state === 'ongoing')
-	// 					.length
-	// 			: 0;
-	// });
 
 	$: listNaddr = viewEvent
 		? [
@@ -303,7 +293,7 @@
 		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[auto_1fr_auto_auto_auto] sm:gap-2 gap-0.5 overflow-hidden rounded-b"
 	>
 		<div class="flex h-full items-center ml-1">
-			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0 && viewEvent}
+			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
 				<UserIcon {pubkey} />
 			{/if}
 		</div>

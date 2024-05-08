@@ -64,7 +64,7 @@
 	<Metadata
 		queryKey={['metadata', pubkey]}
 		{pubkey}
-		bind:relay={$relaySet[pubkey].searchRelays}
+		relay={$relaySet[pubkey].searchRelays}
 		let:metadata
 	>
 		<button

@@ -1,36 +1,31 @@
 <script lang="ts">
-	import { checkRelayExist } from '$lib/nostrFunctions';
-	import { relayStore } from '$lib/stores/relays';
 	import { iconView } from '$lib/stores/settings';
-
+	import type { Nip11 } from 'nostr-typedef';
+	import { Nip11Registry } from 'rx-nostr';
 	export let tagArray: string[];
 	const relayURL = tagArray[1].endsWith('/') ? tagArray[1] : tagArray[1] + '/';
-
-	$: relayInfo = $relayStore.has(relayURL)
-		? $relayStore.get(relayURL)
-		: undefined;
 
 	$: httpsUrl = relayURL.startsWith('wss://')
 		? relayURL.replace(/^wss:/, 'https:')
 		: relayURL.replace(/^ws:/, 'http:');
 
-	const relayInfoFun = async () => {
-		if ($relayStore.has(relayURL)) {
-			return $relayStore.get(relayURL);
+	const relayInfoFun = async (): Promise<Nip11.RelayInfo | undefined> => {
+		const relayInfo = Nip11Registry.get(relayURL);
+		if (relayInfo) {
+			console.log(relayInfo);
+			return relayInfo;
 		} else {
-			const res = await checkRelayExist(tagArray[1]);
-			if (res) {
-				relayInfo = $relayStore.get(relayURL);
-				return $relayStore.get(relayURL);
-			} else {
-				return undefined;
-			}
+			const fetchInfo = await Nip11Registry.fetch(relayURL);
+			console.log(fetchInfo);
+			return fetchInfo;
 		}
 	};
 	let imageLoaded = true;
 </script>
 
-{#await relayInfoFun() then tmp}
+{#await relayInfoFun()}
+	{JSON.stringify(tagArray)}
+{:then relayInfo}
 	{#if !relayInfo}
 		{JSON.stringify(tagArray)}
 	{:else}
@@ -52,7 +47,7 @@
 						class="w-12 h-12 rounded-full"
 						alt="relay favicon"
 					/>
-				{:else}
+				{:else if relayInfo.name}
 					{relayInfo.name[0]}
 				{/if}
 			</div>
@@ -89,19 +84,21 @@
 				<!--description-->
 				<div class="">
 					<div>{relayInfo.description}</div>
-					<div class="w-full">
-						NIPs:
-						{#each relayInfo.supported_nips as nip}
-							<a
-								class="px-1 whitespace-nowrap"
-								rel="external noreferrer"
-								target="_blank"
-								href={'https://github.com/nostr-protocol/nips/blob/master/' +
-									nip.toString().padStart(2, '0') +
-									'.md'}>{nip}</a
-							>
-						{/each}
-					</div>
+					{#if relayInfo.supported_nips}
+						<div class="w-full">
+							NIPs:
+							{#each relayInfo.supported_nips as nip}
+								<a
+									class="px-1 whitespace-nowrap"
+									rel="external noreferrer"
+									target="_blank"
+									href={'https://github.com/nostr-protocol/nips/blob/master/' +
+										nip.toString().padStart(2, '0') +
+										'.md'}>{nip}</a
+								>
+							{/each}
+						</div>
+					{/if}
 					{#if relayInfo.limitation?.max_content_length}
 						<div>
 							Max content length: <span class="break-keep"
