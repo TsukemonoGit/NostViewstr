@@ -4,7 +4,11 @@ import type { Event } from 'nostr-tools';
 import type Nostr from 'nostr-typedef';
 import type { TextPart } from '$lib/content';
 import type { ConnectionState } from 'rx-nostr';
-import type { RelayStatus } from 'rx-nostr/types/src/rx-nostr/interface';
+import type {
+	DefaultRelayConfig,
+	RelayStatus,
+	RxNostr
+} from 'rx-nostr/types/src/rx-nostr/interface';
 interface IdentifierList {
 	[pubkey: string]: {
 		[kind: number]: Identifiers[];
@@ -36,14 +40,10 @@ export const identifierListsMap = writable<MapIdentifierList>({});
 export const identifierKeysArray = writable<string[]>([]);
 export const eventListsMap = writable<MapEventLists>({});
 export const keysArray = writable<string[]>([]);
-//export const relayState = writable(new Map<string, ConnectionState>());
 
-export const connectingRelays = writable<{
-	[url: string]: {
-		read: boolean;
-		write: boolean;
-	};
-}>();
+export const rx = writable<RxNostr>();
+//rxnostr.get~~はゲットしたときにしか得られないから（購読仕方わからないから別で）
+export const relayList = writable<Record<string, DefaultRelayConfig>>();
 export const relayState = writable(new Map<string, ConnectionState>());
 //export const bookmarkEvents = writable<EventLists>({});
 //export const identifierList = writable<IdentifierList>({});

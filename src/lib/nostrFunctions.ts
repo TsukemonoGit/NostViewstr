@@ -69,6 +69,7 @@ import {
 	//searchRelays
 } from './stores/relays';
 import type Nostr from 'nostr-typedef';
+import { setDefaultRelays } from './streamEventLists';
 
 interface Kind3Relay {
 	[key: string]: {
@@ -960,6 +961,7 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 	console.log('pub, tmp_relay', pubkey, tmp_relay);
 	relaySet.set({ ...get(relaySet), [pubkey]: tmp_relay });
 	console.log(`complete set relsys`, get(relaySet));
+	setDefaultRelays(get(relaySet)[pubkey].bookmarkRelays);
 }
 
 // // そのURLのリレーが存在するか確認 NIP11

@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import {
-		connectingRelays,
 		eventListsMap,
 		identifierKeysArray,
 		identifierListsMap,
 		keysArray,
 		listNum,
+		rx,
+		relayList,
 		relayState
 	} from '$lib/stores/bookmarkEvents';
 	import { pageNum } from '$lib/stores/pagination';
@@ -37,6 +38,7 @@
 	import RelayStateIcon from './RelayStateIcon.svelte';
 	import UserIcon from './UserIcon.svelte';
 	import { formatAbsoluteDate } from '$lib/otherFunctions';
+	import type { ConnectionState } from 'rx-nostr';
 
 	export let bkm: string;
 	export let kind: number;
@@ -44,24 +46,19 @@
 	export let viewEvent: Nostr.Event<number> | undefined;
 	export let JSON: boolean = false;
 	export let nevent: boolean = false;
-	let ongoingCount: number;
+	let ongoingCount: ConnectionState[];
 
 	//$: console.log($storePopup.popupFeatured);
 	//$: console.log(popupFeatured.state);
 	let pupupOpen: boolean = false;
 
 	//$: console.log('readtrueRelay', readTrueArray);
-	$: readTrueArray = $connectingRelays
-		? Object.keys($connectingRelays).filter(
-				(item) => $connectingRelays[item].read === true
-		  )
-		: [];
-
-	$: ongoingCount =
-		$relayState && readTrueArray.length > 0
-			? readTrueArray.filter((relay) => $relayState.get(relay) === 'connected')
-					.length
-			: 0;
+	$: readTrueArray = Object.entries($relayList)
+		.filter(([key, item]) => item.read === true)
+		.map(([key, item]) => item);
+	$: ongoingCount = Array.from($relayState.values()).filter(
+		(state) => state === 'connected'
+	);
 
 	$: listNaddr = viewEvent
 		? [
@@ -454,7 +451,7 @@
 			use:popup={popupFeatured}
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
-			{ongoingCount}/
+			{ongoingCount.length}/
 			{readTrueArray?.length}
 		</button>
 
@@ -478,7 +475,7 @@
 			<div class="card p-4 w-72 shadow-xl z-[100]">
 				<div>
 					<p>relays state</p>
-					<RelayStateIcon bind:readTrueArray />
+					<RelayStateIcon {readTrueArray} />
 				</div>
 
 				<div class="arrow bg-surface-100-800-token" />

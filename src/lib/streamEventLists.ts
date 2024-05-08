@@ -17,10 +17,11 @@ import {
 	type MapEventLists,
 	identifierListsMap,
 	type MapIdentifierList,
-	relayState,
-	connectingRelays
+	rx,
+	relayList,
+	relayState
 } from './stores/bookmarkEvents';
-import { formatResults, getPub, signEv } from './nostrFunctions';
+import { formatResults, getPub, setRelays, signEv } from './nostrFunctions';
 import {
 	getEventHash,
 	generatePrivateKey,
@@ -35,6 +36,7 @@ import { feedbackRelay, relaySet } from './stores/relays';
 import type {
 	ConnectionState,
 	DefaultRelayConfig,
+	EventPacket,
 	RxReq,
 	RxReqOverable,
 	RxReqPipeable
@@ -72,25 +74,41 @@ identifierListsMap.subscribe((value) => {
 });
 
 const rxNostr = createRxNostr();
+rx.set(rxNostr);
+
 rxNostr.createConnectionStateObservable().subscribe((packet) => {
-	let tmp: Map<string, ConnectionState> = get(relayState);
-
-	if (tmp) {
-		tmp.set(packet.from, packet.state);
-		relayState.set(tmp);
-	} else {
-		tmp = Object.assign({}, tmp, { [packet.from]: packet.state });
-		relayState.set(tmp);
-	}
-
-	console.log(packet);
-	console.log(get(relayState));
+	relayState.update((map) => {
+		const updatedMap = new Map(map);
+		if (rxNostr.getDefaultRelays()[packet.from]) {
+			updatedMap.set(packet.from, packet.state);
+		}
+		return updatedMap;
+	});
 });
+
+export async function setDefaultRelays(relays: string[]) {
+	rxNostr.setDefaultRelays(relays);
+	relayList.set(rxNostr.getDefaultRelays());
+	// relayStateを初期化
+	const newRelayState = new Map<string, ConnectionState>();
+
+	// 各リレーのステータスを取得して、接続されているもののみを追加
+	Object.entries(rxNostr.getDefaultRelays()).forEach(([key, item]) => {
+		const status = rxNostr.getRelayStatus?.(item?.url);
+		if (status?.connection) {
+			newRelayState.set(item.url, status.connection);
+		}
+	});
+
+	// 更新されたrelayStateをセット
+	relayState.set(newRelayState);
+}
 
 export async function ReconnectRelay(relay: string) {
 	console.log('reconnecting');
 	rxNostr.reconnect(relay);
 }
+
 export async function GetRelayState(relay: string) {
 	return (rxNostr.getRelayStatus(relay) as RelayStatus).connection;
 }
@@ -181,23 +199,24 @@ export async function StoreFetchFilteredEvents(
 	//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
 	//この段階で閲覧者のリレー情報がわかってたらここでwriteリレー情報も入る
 	//なかったらとりあえずreadだけtrueのはず
-	const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
-	console.log(data.relays);
-	console.log(viewerRelay);
+	//書き込みは一時リレーでやるにする？
+	// const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
+	// console.log(data.relays);
+	// console.log(viewerRelay);
 	//const merges = mergeRelays(viewerRelay, data.relays);
 	//if( Object.entries(rxNostr.getDefaultRelays())!==merges){
-	rxNostr.setDefaultRelays(mergeRelays(viewerRelay, data.relays));
+	setDefaultRelays(data.relays);
 	//}
-	const tmp = get(relayState);
-	console.log('[get relays]', rxNostr.getDefaultRelays());
-	Object.entries(rxNostr.getDefaultRelays()).forEach(([url, config]) => {
-		const relayStatus = rxNostr.getRelayStatus(url);
-		if (relayStatus !== undefined) {
-			tmp.set(url, relayStatus.connection);
-		}
-	});
-	console.log('[get states]', tmp);
-	relayState.set(tmp);
+	// const tmp = get(relayState);
+	// console.log('[get relays]', rxNostr.getDefaultRelays());
+	// Object.entries(rxNostr.getDefaultRelays()).forEach(([url, config]) => {
+	// 	const relayStatus = rxNostr.getRelayStatus(url);
+	// 	if (relayStatus !== undefined) {
+	// 		tmp.set(url, relayStatus.connection);
+	// 	}
+	// });
+	// console.log('[get states]', tmp);
+	// relayState.set(tmp);
 
 	const rxReq = createRxForwardReq();
 
@@ -206,9 +225,12 @@ export async function StoreFetchFilteredEvents(
 
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
-		next: (packet: { event: Nostr.Event<number> }) => {
+		next: (packet: EventPacket) => {
 			console.log('[rx-nostr packet]', packet);
 
+			if (packet.event.kind === 10002) {
+				setRelayEvent(packet);
+			}
 			if (kind >= 30000 && kind < 40000) {
 				//30000代の場合のキー値はdタグのあたい
 				const key = packet.event.tags.find((item: string[]) => item[0] === 'd');
@@ -367,16 +389,16 @@ export async function publishEventWithTimeout(
 		//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
 		//もし書き込みリレーがセットされてない場合のみこの設定を行う
 		//セットされてるリレーのWriteがtrueのものがなかったら設定する
-		const setting_relays = rxNostr.getDefaultRelays();
-		const hasWriteTrue = Object.values(setting_relays).some(
-			(item) => item.write === true
-		);
-		if (!hasWriteTrue) {
-			//const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
+		// const setting_relays = rxNostr.getDefaultRelays();
+		// const hasWriteTrue = Object.values(setting_relays).some(
+		// 	(item) => item.write === true
+		// );
+		// if (!hasWriteTrue) {
+		// 	//const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 
-			rxNostr.setDefaultRelays(addsetRelays(relays));
-		}
-		console.log('[get relays]', rxNostr.getDefaultRelays());
+		// 	rxNostr.setDefaultRelays(addsetRelays(relays));
+		// }
+		// console.log('[get relays]', rxNostr.getDefaultRelays());
 
 		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
 		//const sec = get(nsec);
@@ -440,7 +462,7 @@ export async function publishEventWithTimeout(
 				msg: string;
 				event?: Nostr.Event;
 			}>((resolve) => {
-				const subscription = rxNostr.send(event).subscribe({
+				const subscription = rxNostr.send(event, { relays: relays }).subscribe({
 					next: (packet) => {
 						//	console.log('test', packet);タイムアウトまでに署名がすんでないとなぜかタイムアウト直前にokpacketがとんでくる。署名もしてないのに
 						msgObj[packet.from] = true;
@@ -485,24 +507,25 @@ export async function publishEventWithTimeout(
 	}
 }
 
-function mergeRelays(
-	writeRelays: string[],
-	readRelays: string[]
-): { [url: string]: { read: boolean; write: boolean } } {
-	const result: { [url: string]: { read: boolean; write: boolean } } = {};
+// function mergeRelays(
+// 	writeRelays: string[],
+// 	readRelays: string[]
+// ): { [url: string]: { read: boolean; write: boolean } } {
+// 	const result: { [url: string]: { read: boolean; write: boolean } } = {};
 
-	const uniqueRelays = Array.from(new Set([...writeRelays, ...readRelays]));
+// 	const uniqueRelays = Array.from(new Set([...writeRelays, ...readRelays]));
 
-	for (const url of uniqueRelays) {
-		result[url] = {
-			read: readRelays.includes(url),
-			write: writeRelays.includes(url)
-		};
-	}
-	connectingRelays.set(result);
-	console.log(result);
-	return result;
-}
+// 	for (const url of uniqueRelays) {
+// 		result[url] = {
+// 			read: readRelays.includes(url),
+// 			write: writeRelays.includes(url)
+// 		};
+// 	}
+// 	connectingRelays.set(result);
+// 	console.log(result);
+// 	return result;
+// }
+
 function addsetRelays(relays: string[]): {
 	[url: string]: { read: boolean; write: boolean };
 } {
@@ -660,4 +683,16 @@ export function useReq<A>(
 			}
 		})
 	};
+}
+
+function setRelayEvent(eventPacket: EventPacket) {
+	const pub = eventPacket.event.pubkey;
+	const tmp = get(relaySet)[pub];
+	if (
+		!tmp ||
+		(tmp.relayEvent && eventPacket.event.created_at > tmp.relayEvent.created_at)
+	) {
+		console.log('tesr');
+		setRelays(pub, [eventPacket.event]);
+	}
 }

@@ -6,7 +6,7 @@
 	import type { Event } from 'nostr-tools';
 
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
-	import { pubkey_viewer } from '$lib/stores/settings';
+	import { nowProgress, pubkey_viewer } from '$lib/stores/settings';
 	import postIcon from '@material-design-icons/svg/round/post_add.svg?raw';
 
 	export let parent: any;
@@ -53,11 +53,12 @@
 			content: res.content,
 			sig: ''
 		};
-
+		$nowProgress = true;
 		const response = await publishEventWithTimeout(
 			event,
 			$relaySet[$pubkey_viewer].postRelays
 		);
+		$nowProgress = false;
 		const toastSettings: ToastSettings = response.isSuccess
 			? {
 					message: `publish result<br>${response.msg}`,
