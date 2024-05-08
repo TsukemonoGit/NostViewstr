@@ -77,31 +77,28 @@ const rxNostr = createRxNostr();
 rx.set(rxNostr);
 
 rxNostr.createConnectionStateObservable().subscribe((packet) => {
-	relayState.update((map) => {
-		const updatedMap = new Map(map);
-		if (rxNostr.getDefaultRelays()[packet.from]) {
-			updatedMap.set(packet.from, packet.state);
-		}
-		return updatedMap;
-	});
+	let tmp = get(relayState);
+
+	tmp.set(packet.from, packet.state);
+	relayState.set(tmp);
 });
 
 export async function setDefaultRelays(relays: string[]) {
 	rxNostr.setDefaultRelays(relays);
-	relayList.set(rxNostr.getDefaultRelays());
-	// relayStateを初期化
-	const newRelayState = new Map<string, ConnectionState>();
+	// relayList.set(rxNostr.getDefaultRelays());
+	// // relayStateを初期化
+	// const newRelayState = new Map<string, ConnectionState>();
 
-	// 各リレーのステータスを取得して、接続されているもののみを追加
-	Object.entries(rxNostr.getDefaultRelays()).forEach(([key, item]) => {
-		const status = rxNostr.getRelayStatus?.(item?.url);
-		if (status?.connection) {
-			newRelayState.set(item.url, status.connection);
-		}
-	});
+	// // 各リレーのステータスを取得して、接続されているもののみを追加
+	// Object.entries(rxNostr.getDefaultRelays()).forEach(([key, item]) => {
+	// 	const status = rxNostr.getRelayStatus?.(item?.url);
+	// 	if (status?.connection) {
+	// 		newRelayState.set(item.url, status.connection);
+	// 	}
+	// });
 
-	// 更新されたrelayStateをセット
-	relayState.set(newRelayState);
+	// // 更新されたrelayStateをセット
+	// relayState.set(newRelayState);
 }
 
 export async function ReconnectRelay(relay: string) {

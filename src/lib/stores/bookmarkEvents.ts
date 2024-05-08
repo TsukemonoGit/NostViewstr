@@ -45,6 +45,7 @@ export const rx = writable<RxNostr>();
 //rxnostr.get~~はゲットしたときにしか得られないから（購読仕方わからないから別で）
 export const relayList = writable<Record<string, DefaultRelayConfig>>();
 export const relayState = writable(new Map<string, ConnectionState>());
+
 //export const bookmarkEvents = writable<EventLists>({});
 //export const identifierList = writable<IdentifierList>({});
 

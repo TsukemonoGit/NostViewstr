@@ -6,7 +6,7 @@
 	import { get, writable } from 'svelte/store';
 
 	//$: stateArray = Array.from($relayState.keys()).sort();
-	export let readTrueArray: DefaultRelayConfig[];
+	export let readTrueArray: string[];
 	//export let pubkey: string;
 	// ボタンの無効化を管理するストア
 	const disabledButtons = writable(new Set<string>());
@@ -51,18 +51,16 @@
 </script>
 
 {#each readTrueArray as relay, index}
-	{#if $relayState.get(relay.url) !== undefined}
+	{#if $relayState.get(relay) !== undefined}
 		<div class="flex items-center gap-1 break-all">
-			<div
-				class="h-4 w-4 rounded-full {dotColor($relayState.get(relay.url))} "
-			/>
-			{relay.url.length > 30 ? `${relay.url.slice(0, 28)}...` : relay.url}
+			<div class="h-4 w-4 rounded-full {dotColor($relayState.get(relay))} " />
+			{relay.length > 30 ? `${relay.slice(0, 28)}...` : relay}
 
 			<!-- {#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started' || $relayState[relay] === 'terminated') && !get(disabledButtons).has(relay)} -->
 
-			{#if $relayState.get(relay.url) === 'error' && !get(disabledButtons).has(relay.url)}
+			{#if $relayState.get(relay) === 'error' && !get(disabledButtons).has(relay)}
 				<button
-					on:click={() => handleClickReconnect(relay.url)}
+					on:click={() => handleClickReconnect(relay)}
 					class="btn p-1 fill-white ml-auto"
 				>
 					{@html UpdateIcon}

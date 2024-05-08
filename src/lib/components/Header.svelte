@@ -46,18 +46,18 @@
 	export let viewEvent: Nostr.Event<number> | undefined;
 	export let JSON: boolean = false;
 	export let nevent: boolean = false;
-	let ongoingCount: ConnectionState[];
+	let ongoingCount: string[];
 
 	//$: console.log($storePopup.popupFeatured);
 	//$: console.log(popupFeatured.state);
 	let pupupOpen: boolean = false;
 
 	//$: console.log('readtrueRelay', readTrueArray);
-	$: readTrueArray = Object.entries($relayList)
-		.filter(([key, item]) => item.read === true)
-		.map(([key, item]) => item);
-	$: ongoingCount = Array.from($relayState.values()).filter(
-		(state) => state === 'connected'
+	// $: readTrueArray = Object.entries($relayList)
+	// 	.filter(([key, item]) => item.read === true)
+	// 	.map(([key, item]) => item);
+	$: ongoingCount = $relaySet[pubkey]?.bookmarkRelays.filter(
+		(item) => $relayState.get(item) === 'connected'
 	);
 
 	$: listNaddr = viewEvent
@@ -452,7 +452,7 @@
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
 			{ongoingCount.length}/
-			{readTrueArray?.length}
+			{$relaySet[pubkey]?.bookmarkRelays?.length}
 		</button>
 
 		<!-- <button
@@ -475,7 +475,7 @@
 			<div class="card p-4 w-72 shadow-xl z-[100]">
 				<div>
 					<p>relays state</p>
-					<RelayStateIcon {readTrueArray} />
+					<RelayStateIcon readTrueArray={$relaySet[pubkey]?.bookmarkRelays} />
 				</div>
 
 				<div class="arrow bg-surface-100-800-token" />
