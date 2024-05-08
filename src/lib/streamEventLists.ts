@@ -193,7 +193,7 @@ export async function StoreFetchFilteredEvents(
 	}
 
 	console.log('[get relays]', rxNostr.getDefaultRelays());
-	console.log('[get states]', rxNostr.getAllRelayStatus().connection);
+
 	//console.log(relays);
 
 	//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
@@ -693,6 +693,6 @@ function setRelayEvent(eventPacket: EventPacket) {
 		(tmp.relayEvent && eventPacket.event.created_at > tmp.relayEvent.created_at)
 	) {
 		console.log('tesr');
-		setRelays(pub, [eventPacket.event]);
+		setRelays(pub, { 10002: eventPacket.event });
 	}
 }

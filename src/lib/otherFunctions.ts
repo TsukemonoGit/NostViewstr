@@ -3,7 +3,7 @@ import type { Metadata } from 'unfurl.js/dist/types';
 import { clientMap, ogpStore } from './stores/bookmarkEvents';
 import { type Event as NostrEvent, nip19 } from 'nostr-tools';
 
-import { fetchFilteredEvents, parseNaddr } from './nostrFunctions';
+import { parseNaddr } from './nostrFunctions';
 import type Nostr from 'nostr-typedef';
 import { naddrEncode, noteEncode, type AddressPointer } from './nip19';
 

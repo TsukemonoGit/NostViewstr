@@ -80,7 +80,7 @@
 	let listedEventRef: ListedEvent;
 
 	let isOwner: boolean;
-	$: console.log($relaySet);
+	//$: console.log($relaySet);
 	$: isOwner = $pubkey_viewer === pubkey;
 	let isOnMount = false;
 	// キーのイテレータを配列に変換してすべてのキーを取得
@@ -188,8 +188,8 @@
 							'#d': [identifier]
 						}
 				  ];
-		console.log(filter);
-		console.log(pubkey, $relaySet[pubkey].bookmarkRelays);
+		//console.log(filter);
+		//console.log(pubkey, $relaySet[pubkey].bookmarkRelays);
 		const t: ToastSettings = {
 			message: `${$_('toast.eventSearching')}`
 		};

@@ -71,7 +71,7 @@
 			tagArray: []
 		}
 	};
-	console.log(bkm);
+	//console.log(bkm);
 
 	const privateList = async (list: NostrEvent) => {
 		if (list.content !== '') {
@@ -103,12 +103,12 @@
 		viewList = [];
 		$listSize = 0;
 	}
-	$: console.log($listSize);
+	//$: console.log($listSize);
 	let message: string;
 
 	export async function viewUpdate() {
 		message = '';
-		console.log(bkm);
+		//	console.log(bkm);
 		if (!listEvent) {
 			$listSize = 0;
 			viewList = [];

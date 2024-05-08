@@ -12,11 +12,11 @@
 	const relayInfoFun = async (): Promise<Nip11.RelayInfo | undefined> => {
 		const relayInfo = Nip11Registry.get(relayURL);
 		if (relayInfo) {
-			console.log(relayInfo);
+			//	console.log(relayInfo);
 			return relayInfo;
 		} else {
 			const fetchInfo = await Nip11Registry.fetch(relayURL);
-			console.log(fetchInfo);
+			//	console.log(fetchInfo);
 			return fetchInfo;
 		}
 	};
