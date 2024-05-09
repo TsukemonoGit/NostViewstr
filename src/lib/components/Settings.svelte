@@ -73,6 +73,7 @@
 		>
 	</div>
 	<div class="rounded border border-primary-400-500-token p-4 m-2 mt-8">
+		Sample
 		<div class="grid sm:grid-cols-2 grid-cols-1">
 			<div class="mx-2">
 				<Samples light={true} />

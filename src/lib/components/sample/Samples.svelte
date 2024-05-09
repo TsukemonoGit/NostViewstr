@@ -31,8 +31,6 @@
 	};
 </script>
 
-<div
-	class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
->
+<div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
 	<SampleCard note={sampleNote} metadata={sampleMetadata} {light} />
 </div>

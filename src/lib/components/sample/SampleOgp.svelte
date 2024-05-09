@@ -11,7 +11,7 @@
 </script>
 
 <div
-	class="drop-shadow-md rounded-xl m-1 p-1 border border-primary-400 hover:drop-shadow-xl z-20 break-all bg-primary-200 dark:bg-primary-700 dark:hover:border-primary-400 dark:border-primary-500"
+	class="drop-shadow-md rounded-xl m-1 p-1 border border-primary-400 hover:drop-shadow-xl break-all bg-primary-200 dark:bg-primary-700 dark:hover:border-primary-400 dark:border-primary-500"
 >
 	<a class="" href={url} target="_blank">
 		<div class="grid grid-rows-[auto_1fr]">
@@ -25,7 +25,7 @@
 						alt=""
 					/>
 				</div>
-				<div class="p-0.5 grid grid-rows-[auto_1fr] z-10 w-full">
+				<div class="p-0.5 grid grid-rows-[auto_1fr] w-full">
 					<div
 						class="line-clamp-2 text-sm font-bold text-primary-700 dark:text-primary-100"
 					>
