@@ -94,10 +94,10 @@
   },
   "mode": {
     "light_switch": "Switch between Light and Dark Mode",
-    "light": "Light mode",
+    "light": "View List in Light mode",
     "light_exp": "【Light mode】",
     "light_exp2": "URL preview (OGP) and Profile icon are not displayed. (reduces the amount of traffic)",
-    "normal": "Normal mode",
+    "normal": "View List in Normal mode",
     "normal_exp": "【Normal mode】",
     "normal_exp2": "URL preview (OGP), Profile icon will be displayed.",
     "viewMode": "Please select a display mode"

@@ -72,20 +72,6 @@
 			console.log('failed to get pubkey');
 		}
 	}
-
-	//console.log(selectValue);
-	// function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
-	// 	kind = Number(event.currentTarget.value);
-	// 	console.log(kind);
-	// }
-
-	// async function onSignupClick() {
-	// 	// launch signup screen
-	// 	await launchNostrLoginDialog({
-	// 		startScreen: 'signup'
-	// 	});
-	// 	onClickExtension();
-	// }
 </script>
 
 <svelte:head>
@@ -110,7 +96,7 @@
 				>
 				 <span class="flex items-center">or</span> -->
 		<button
-			class="p-0 input-group-shim btn variant-filled-secondary"
+			class="p-0 input-group-shim btn variant-filled-primary"
 			on:click={onClickExtension}>use NIP-07<br />or NIP-46</button
 		>
 
@@ -183,17 +169,7 @@
 					{/each}
 				</select> -->
 		</div>
-		<div class="mt-10 flex gap-2">
-			<h5 class="h5 self-center">{`view from json →`}</h5>
-			<button
-				class="btn variant-filled-primary"
-				on:click={() => {
-					goto(`/Json`);
-				}}
-			>
-				Click
-			</button>
-		</div>
+
 		<!-- <div class="flex gap-4 mt-1">
 					<div>
 						<FileButton bind:files on:change={handleFileChange} name="files" />
@@ -223,5 +199,16 @@
 		</label> -->
 	<div class="space-t-5">
 		<Settings {settingFunc} />
+	</div>
+	<div class="mt-10 flex gap-2 mb-14">
+		<h5 class="h5 self-center">{`view from json →`}</h5>
+		<button
+			class="btn variant-filled-primary"
+			on:click={() => {
+				goto(`/Json`);
+			}}
+		>
+			Click
+		</button>
 	</div>
 </div>

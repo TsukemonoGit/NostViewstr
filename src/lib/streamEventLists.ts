@@ -188,7 +188,7 @@ export async function StoreFetchFilteredEvents(
 		storedIdentifiersData[pubkey][kind] = new Map<string, Identifiers>();
 	}
 
-	console.log('[get relays]', rxNostr.getDefaultRelays());
+	//console.log('[get relays]', rxNostr.getDefaultRelays());
 
 	//console.log(relays);
 
