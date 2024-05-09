@@ -96,7 +96,8 @@
 				>
 				 <span class="flex items-center">or</span> -->
 		<button
-			class="p-0 input-group-shim btn variant-filled-primary"
+			style="padding:0 0.5rem"
+			class=" input-group-shim btn variant-filled-primary"
 			on:click={onClickExtension}>use NIP-07<br />or NIP-46</button
 		>
 
