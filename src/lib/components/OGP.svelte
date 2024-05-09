@@ -16,17 +16,32 @@
 >
 	<a class="" href={url} target="_blank">
 		<div class="grid grid-rows-[auto_1fr]">
-			<div class="grid grid-cols-[auto_1fr] gap-0.5">
-				<div class="overflow-hidden relative rounded-xl max-h-[6rem]">
-					{#if $iconView && ogp.image}
+			{#if $iconView && ogp.image}
+				<div class="grid grid-cols-[0.5fr_1.5fr] gap-0.5">
+					<div
+						class="overflow-hidden relative rounded-xl max-h-[6rem] flex justify-center"
+					>
 						<img
-							class="object-contain max-h-[6rem] max-w-[6rem] sm:max-w-[10rem]"
+							class="object-contain max-h-[6rem] max-w-full"
 							src={ogp.image}
 							alt=""
 						/>
-					{/if}
+					</div>
+					<div class="p-0.5 grid grid-rows-[auto_1fr] z-10 w-full">
+						<div
+							class="line-clamp-2 text-sm font-bold text-primary-700 dark:text-primary-100"
+						>
+							{ogp.title}
+						</div>
+						<div
+							class="line-clamp-4 text-xs text-primary-500 dark:text-primary-300 max-w-full"
+							style="	white-space: pre-wrap; word-break: break-word;"
+						>
+							{ogp.description}
+						</div>
+					</div>
 				</div>
-				<div class="p-0.5 grid grid-rows-[auto_1fr] z-10 w-full">
+			{:else}<div class="p-0.5 grid grid-rows-[auto_1fr] z-10 w-full">
 					<div
 						class="line-clamp-2 text-sm font-bold text-primary-700 dark:text-primary-100"
 					>
@@ -38,9 +53,7 @@
 					>
 						{ogp.description}
 					</div>
-				</div>
-			</div>
-
+				</div>{/if}
 			<div class="flex flex-row-reverse ... -my-1">
 				{#if ogp.favicon !== ''}
 					<img
