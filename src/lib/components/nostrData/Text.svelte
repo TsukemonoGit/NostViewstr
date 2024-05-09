@@ -12,9 +12,9 @@
 	export let queryKey: QueryKey;
 	export let id: string;
 	export let req: RxReqBase | undefined = undefined;
-
+	export let relay: string[] | undefined = undefined;
 	// TODO: Check if $app.rxNostr is defined
-	$: result = useText(queryKey, id, req);
+	$: result = useText(queryKey, id, req, relay);
 	$: data = result.data;
 	$: status = result.status;
 	$: error = result.error;

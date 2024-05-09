@@ -263,7 +263,12 @@
 							class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50 box-border"
 						>
 							{#each tags as tag}
-								<EventTag {tag} {handleClickDate} {handleClickPubkey} />
+								<EventTag
+									{tag}
+									{handleClickDate}
+									{handleClickPubkey}
+									{pubkey}
+								/>
 							{/each}
 						</div>
 					{/if}

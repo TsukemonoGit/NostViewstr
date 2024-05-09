@@ -14,9 +14,10 @@ import { filterId } from './operator';
 export function useEvent(
 	queryKey: QueryKey,
 	id: string,
-	req?: RxReqBase | undefined
+	req?: RxReqBase | undefined,
+	relay?: string[] | undefined
 ): ReqResult<EventPacket> {
 	const filters = [{ ids: [id], limit: 1 }];
 	const operator = pipe(filterId(id), uniq(), verify());
-	return useReq({ queryKey, filters, operator, req });
+	return useReq({ queryKey, filters, operator, req }, relay);
 }

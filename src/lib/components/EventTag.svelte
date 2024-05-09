@@ -3,9 +3,11 @@
 	import { nip19 } from 'nostr-tools';
 	import Metadata from './nostrData/Metadata.svelte';
 	import Text from './nostrData/Text.svelte';
+	import { relaySet } from '$lib/stores/relays';
 	export let tag: string[];
 	export let handleClickDate: Function;
 	export let handleClickPubkey: Function;
+	export let pubkey: string;
 </script>
 
 <!-- {#if Relays()}
@@ -52,7 +54,14 @@
 		</div>
 	</Metadata>
 {:else if tag[0] === 'e' || tag[0] === 'q'}
-	<Text queryKey={[tag[1]]} id={tag[1]} let:text>
+	<Text
+		queryKey={[tag[1]]}
+		id={tag[1]}
+		let:text
+		relay={tag.length > 2 && tag[2] !== ''
+			? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag[2]])]
+			: undefined}
+	>
 		<div slot="loading">
 			<div class="-mt-0.5 px-2 opacity-70 text-sm overflow-x-hidden">
 				[{tag[0]}] {tag[1]}

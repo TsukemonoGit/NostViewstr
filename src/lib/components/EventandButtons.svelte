@@ -46,7 +46,14 @@
 {#if tag.name[0] === 'e'}
 	<!-- {#if $searchRelays && $searchRelays.length > 0}
 					<NostrApp relays={$searchRelays}> -->
-	<Text queryKey={[id]} {id} let:text>
+	<Text
+		queryKey={[id]}
+		{id}
+		let:text
+		relay={tag.name.length > 2 && tag.name[2] !== ''
+			? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
+			: undefined}
+	>
 		<div
 			slot="loading"
 			class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
@@ -118,7 +125,7 @@
 			queryKey={['metadata', text.pubkey]}
 			pubkey={text.pubkey}
 			let:metadata
-			relay={tag.name.length > 2
+			relay={tag.name.length > 2 && tag.name[2] !== ''
 				? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
 				: undefined}
 		>
@@ -374,7 +381,7 @@
 			queryKey={['metadata', uniqueEvent(events).pubkey]}
 			pubkey={uniqueEvent(events).pubkey}
 			let:metadata
-			relay={tag.name.length > 2
+			relay={tag.name.length > 2 && tag.name[2] !== ''
 				? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
 				: undefined}
 		>
@@ -478,7 +485,7 @@
 		queryKey={['metadata', tag.name[1]]}
 		pubkey={tag.name[1]}
 		let:metadata
-		relay={tag.name.length > 2
+		relay={tag.name.length > 2 && tag.name[2] !== ''
 			? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
 			: undefined}
 	>

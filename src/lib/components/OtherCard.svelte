@@ -289,6 +289,7 @@
 									{tag}
 									handleClickDate={OpenNoteJson}
 									handleClickPubkey={OpenProfile}
+									{pubkey}
 								/>
 							{/each}
 						</div>
