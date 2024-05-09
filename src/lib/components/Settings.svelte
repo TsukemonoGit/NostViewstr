@@ -31,13 +31,13 @@
 		<button
 			class="btn variant-filled-secondary fill-white break-words whitespace-pre-wrap"
 			on:click={clickDefault}
-			>{$_('mode.normal')}<span class="min-w-2"
-				><svg
+			><span
+				>{$_('mode.normal')}<svg
+					class="ml-1 min-w-2 inline-block"
 					xmlns="http://www.w3.org/2000/svg"
 					width="1em"
 					height="1em"
 					viewBox="0 0 24 24"
-					{...$$props}
 					><path
 						fill="none"
 						stroke="currentColor"
@@ -53,13 +53,13 @@
 		<button
 			class="btn variant-filled-secondary fill-white break-words whitespace-pre-wrap"
 			on:click={clickLight}
-			>{$_('mode.light')}<span class="min-w-2"
-				><svg
+			><span
+				>{$_('mode.light')}<svg
+					class="ml-1 min-w-2 inline-block"
 					xmlns="http://www.w3.org/2000/svg"
 					width="1em"
 					height="1em"
 					viewBox="0 0 24 24"
-					{...$$props}
 					><path
 						fill="none"
 						stroke="currentColor"
