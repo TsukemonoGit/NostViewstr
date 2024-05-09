@@ -11,7 +11,7 @@
 	import { JsonEventData } from '$lib/stores/bookmarkEvents';
 
 	import type Nostr from 'nostr-typedef';
-	import Samples from '$lib/components/Samples.svelte';
+	import Samples from '$lib/components/sample/Samples.svelte';
 
 	let files: FileList | undefined;
 	let fileData: File | undefined;

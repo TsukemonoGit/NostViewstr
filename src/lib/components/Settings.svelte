@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n';
 	import { iconView, URLPreview } from '$lib/stores/settings';
 	import FooterIcons from './FooterIcons.svelte';
-	import Samples from './Samples.svelte';
+	import Samples from '$lib/components/sample/Samples.svelte';
 	export let settingFunc: () => void;
 
 	const clickDefault = () => {

@@ -7,7 +7,7 @@
 	const sampleProfile = {
 		name: 'mono',
 		display_name: '₍ ･ᴗ･ ₎',
-		picture: './favicon.png'
+		picture: `${$page.url.origin}/favicon.png`
 	};
 	const sampleMetadata: Nostr.Event = {
 		content: JSON.stringify(sampleProfile),
@@ -21,7 +21,7 @@
 	const sampleNote: Nostr.Event = {
 		content: `  ${
 			light ? $_('modal.info.urlandIconOn') : $_('modal.info.urlandIconOff')
-		} sample note ${$page.url}`,
+		} sample note ${$page.url.origin}`,
 		tags: [],
 		pubkey: '',
 		sig: '',
