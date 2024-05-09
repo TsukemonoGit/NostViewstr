@@ -358,10 +358,6 @@ export async function publishEventWithTimeout(
 	}
 
 	try {
-		// const t: ToastSettings = {
-		// 	message: `publishing ...`
-		// };
-		// const publishingToast = toastStore.trigger(t);
 		let event = obj;
 		if (event?.id == undefined || event?.id == '') {
 			event.id = getEventHash(event);
@@ -384,76 +380,7 @@ export async function publishEventWithTimeout(
 		if (!verifySignature(event)) {
 			return { isSuccess: false, msg: 'error' };
 		}
-		//ブクマを読み込むりれーと書き込みリレー違う場合があるからーーーーー
-		//もし書き込みリレーがセットされてない場合のみこの設定を行う
-		//セットされてるリレーのWriteがtrueのものがなかったら設定する
-		// const setting_relays = rxNostr.getDefaultRelays();
-		// const hasWriteTrue = Object.values(setting_relays).some(
-		// 	(item) => item.write === true
-		// );
-		// if (!hasWriteTrue) {
-		// 	//const viewerRelay = get(relaySet)[get(pubkey_viewer)]?.postRelays ?? [];
 
-		// 	rxNostr.setDefaultRelays(addsetRelays(relays));
-		// }
-		// console.log('[get relays]', rxNostr.getDefaultRelays());
-
-		//await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
-		//const sec = get(nsec);
-		//console.log(sec);
-
-		// if (sec) {
-		// 	//
-		// 	//	return { isSuccess: false, msg: 'まだ書き込みできないよ' };
-
-		// 	const result = await Promise.race([
-		// 		new Promise<{
-		// 			isSuccess: boolean;
-		// 			msg: string;
-		// 			event?: Nostr.Event;
-		// 		}>((resolve) => {
-		// 			const subscription = rxNostr.send(event, sec).subscribe({
-		// 				next: (packet) => {
-		// 					console.log(packet);
-		// 					msgObj[packet.from] = true;
-		// 					isSuccess = true;
-		// 				},
-		// 				complete: () => {
-		// 					resolve({
-		// 						isSuccess,
-		// 						event: event,
-		// 						msg: formatResults(msgObj)
-		// 					});
-		// 				}
-		// 			});
-		// 		}),
-		// 		new Promise<{
-		// 			isSuccess: boolean;
-		// 			msg: string;
-		// 			event?: Nostr.Event;
-		// 		}>((resolve) => {
-		// 			setTimeout(() => {
-		// 				const hasTrue = Object.values(msgObj).some(
-		// 					(value) => value === true
-		// 				);
-		// 				console.log(
-		// 					'timeout',
-		// 					event,
-		// 					formatResults(msgObj),
-		// 					hasTrue,
-		// 					isSuccess
-		// 				);
-		// 				resolve({
-		// 					isSuccess: hasTrue,
-		// 					event: event,
-		// 					msg: formatResults(msgObj)
-		// 				});
-		// 			}, timeout);
-		// 		})
-		// 	]);
-		// 	//	toastStore.close(publishingToast);
-		// 	return result;
-		// } else {
 		const result = await Promise.race([
 			new Promise<{
 				isSuccess: boolean;
@@ -467,6 +394,13 @@ export async function publishEventWithTimeout(
 						isSuccess = true;
 					},
 					complete: () => {
+						resolve({
+							isSuccess,
+							event: event,
+							msg: formatResults(msgObj)
+						});
+					},
+					error: () => {
 						resolve({
 							isSuccess,
 							event: event,
@@ -637,7 +571,7 @@ export function useReq<A>(
 
 				obs.subscribe({
 					next: (v: A) => {
-						console.log(v);
+						//console.log(v);
 						if (fulfilled) {
 							queryClient.setQueryData(queryKey, v);
 						} else {
@@ -647,7 +581,7 @@ export function useReq<A>(
 					},
 					complete: () => status.set('success'),
 					error: (e) => {
-						console.error(e);
+						console.error('[rx-nostr]', e);
 						status.set('error');
 						error.set(e);
 

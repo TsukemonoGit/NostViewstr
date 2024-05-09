@@ -320,48 +320,34 @@ export function idlatestEach(): MonoTypeOperatorFunction<EventPacket> {
 }
 
 export async function getRelays(author: string) {
-	const rxNostr = createRxNostr();
-	// インデックスシグネチャを修正する
-	const rxReq = createRxBackwardReq();
 	const filters: Nostr.Filter[] = [
 		{ authors: [author], kinds: [3, 10002], until: now() }
 	];
-	const kekka = await getRelayEvents(
-		rxNostr,
-		rxReq,
-		filters,
-		relaySearchRelays
-	);
+	const kekka = await getRelayEvents(filters, relaySearchRelays);
 
 	//リレー用イベント取ってきたらそれをセットする
 	await setRelays(author, kekka);
 
 	//リレー設定変えてもっかい撮ってきてみる
 	const kekka2 = await getRelayEvents(
-		rxNostr,
-		rxReq,
 		filters,
 		get(relaySet)[author].bookmarkRelays
 	);
 
 	//リレー用イベント取ってきたらそれをセットする
 	await setRelays(author, kekka2);
-	rxReq.over();
+
 	return kekka2;
 }
 
 async function getRelayEvents(
-	rxNostr: RxNostr,
-	rxReq: RxReq<'backward'> & {
-		emit(
-			filters: LazyFilter | LazyFilter[],
-			options?: { relays: string[] } | undefined
-		): void;
-	} & RxReqOverable &
-		RxReqPipeable,
 	filters: Nostr.Filter[],
 	relays: string[]
 ): Promise<{ [key: number]: Nostr.Event | undefined }> {
+	const rxNostr = createRxNostr();
+	// インデックスシグネチャを修正する
+	const rxReq = createRxBackwardReq();
+
 	// データの購読
 	const observable = rxNostr.use(rxReq).pipe(
 		verify(),
@@ -389,12 +375,16 @@ async function getRelayEvents(
 		}
 	});
 	rxReq.emit(filters, { relays: relays });
+	rxReq.over();
 	// Observable の完了を待つ
 	await new Promise<void>((resolve) => {
 		subscription.add(() => {
 			resolve();
 		});
 	});
+
+	subscription.unsubscribe();
+	rxNostr.dispose();
 	console.log('kekka', kekka);
 	return kekka;
 }
