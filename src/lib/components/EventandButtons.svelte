@@ -22,6 +22,7 @@
 	import Metadata from './nostrData/Metadata.svelte';
 	import Text from './nostrData/Text.svelte';
 	import UniqueEventList from './nostrData/UniqueEventList.svelte';
+	import { relaySet } from '$lib/stores/relays';
 	export let tag: {
 		id: number;
 		name: string[];
@@ -117,6 +118,9 @@
 			queryKey={['metadata', text.pubkey]}
 			pubkey={text.pubkey}
 			let:metadata
+			relay={tag.name.length > 2
+				? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
+				: undefined}
 		>
 			<div
 				slot="loading"
@@ -370,6 +374,9 @@
 			queryKey={['metadata', uniqueEvent(events).pubkey]}
 			pubkey={uniqueEvent(events).pubkey}
 			let:metadata
+			relay={tag.name.length > 2
+				? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
+				: undefined}
 		>
 			<div
 				slot="loading"
@@ -471,6 +478,9 @@
 		queryKey={['metadata', tag.name[1]]}
 		pubkey={tag.name[1]}
 		let:metadata
+		relay={tag.name.length > 2
+			? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
+			: undefined}
 	>
 		<div
 			slot="loading"
