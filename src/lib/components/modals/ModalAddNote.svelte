@@ -308,7 +308,7 @@
 							bind:selectItem
 						/>
 					{/if}
-					{#if (tag === undefined && includesT) || (tag !== undefined && tag[0] === 'word')}
+					{#if (tag === undefined && includesW) || (tag !== undefined && tag[0] === 'word')}
 						<AddTypeRandTandWord
 							{res}
 							{parent}
