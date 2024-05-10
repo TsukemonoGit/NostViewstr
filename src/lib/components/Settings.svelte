@@ -24,7 +24,7 @@
 	};
 	export let saveCheck: boolean;
 	export let noSave: boolean = false;
-	console.log(saveCheck);
+	//$: console.log(saveCheck);
 </script>
 
 <div class="mt-10">

@@ -75,6 +75,8 @@
 							URLPreview: $URLPreview
 						})
 					);
+				} else {
+					localStorage.removeItem('info');
 				}
 				goto(`./${input}/${kind}`);
 			} else if (decode.type === 'nsec') {
@@ -83,7 +85,7 @@
 				const pub = getPublicKey(decode.data);
 				localStorage.setItem('npub', pub);
 				$pubkey_viewer = pub;
-
+				console.log(saveCheck);
 				if (saveCheck) {
 					const obj = {
 						pub: pub,
