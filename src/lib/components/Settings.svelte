@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { iconView, URLPreview } from '$lib/stores/settings';
+	import { iconView, saveObj, URLPreview } from '$lib/stores/settings';
 	import FooterIcons from './FooterIcons.svelte';
 	import Samples from '$lib/components/sample/Samples.svelte';
 	export let settingFunc: () => void;
@@ -22,6 +22,9 @@
 		//settings.set(true);
 		settingFunc();
 	};
+	export let saveCheck: boolean;
+	export let noSave: boolean = false;
+	console.log(saveCheck);
 </script>
 
 <div class="mt-10">
@@ -72,6 +75,11 @@
 			></button
 		>
 	</div>
+	{#if !noSave}
+		<label class="flex items-center space-x-2 mx-2">
+			<input class="checkbox" type="checkbox" bind:checked={saveCheck} />
+			<p>{$_('mode.save')}</p>
+		</label>{/if}
 	<div class="rounded border border-primary-400-500-token p-4 m-2 mt-8">
 		Sample
 		<div class="grid sm:grid-cols-2 grid-cols-1">

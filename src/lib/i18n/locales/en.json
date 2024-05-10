@@ -102,7 +102,8 @@
     "normal": "View List in Normal mode",
     "normal_exp": "【Normal mode】",
     "normal_exp2": "URL preview (OGP), Profile icon will be displayed.",
-    "viewMode": "Please select a display mode"
+    "viewMode": "Please select a display mode",
+    "save": "Save settings and skip next time"
   },
   "modalEditTag": {
     "list": {

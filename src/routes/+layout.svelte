@@ -23,7 +23,7 @@
 	import { setToastStore } from '$lib/stores/store';
 	import RegisterSw from '$lib/components/RegisterSW.svelte';
 	import { onMount } from 'svelte';
-	import { backButton, send_pubhex } from '$lib/stores/settings';
+	import { backButton, saveObj, send_pubhex } from '$lib/stores/settings';
 	import { afterNavigate } from '$app/navigation';
 	//import { RelaysReconnectChallenge } from '$lib/streamEventLists';
 	//import { init as initNostrLogin } from 'nostr-login';
@@ -48,6 +48,11 @@
 		//console.log('backButton', backBtn);
 		if (backBtn) {
 			backButton.set(backBtn === 'true' ?? false);
+		}
+		const saveInfo = localStorage.getItem('info');
+
+		if (saveInfo) {
+			saveObj.set(JSON.parse(saveInfo));
 		}
 	});
 

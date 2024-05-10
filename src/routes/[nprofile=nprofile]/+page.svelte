@@ -1,24 +1,54 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import ListedEventList from '$lib/components/ListedEventList.svelte';
 	import Settings from '$lib/components/Settings.svelte';
 	import { _ } from 'svelte-i18n';
 
 	let settings: boolean = false;
 	import type { PageData } from './$types';
 
-	import FooterMenu from '$lib/components/FooterMenu.svelte';
-
 	import { kinds } from '$lib/kind';
 	import { nip19 } from 'nostr-tools';
 	import { goto } from '$app/navigation';
+	import { URLPreview, iconView, saveObj } from '$lib/stores/settings';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
-
-	console.log('PageData', data.pubkey);
-
+	let saveCheck: boolean;
+	// 初回のみ saveCheck を true にする
+	let initialized = false;
+	$: {
+		if (!initialized && $saveObj !== null) {
+			saveCheck = true;
+			initialized = true;
+		}
+	}
+	onMount(() => {
+		try {
+			if (!$saveObj) {
+				const saveInfo = localStorage.getItem('info');
+				if (!saveInfo) {
+					return;
+				}
+				$saveObj = JSON.parse(saveInfo);
+			}
+			if ($saveObj) {
+				saveCheck = true;
+				$iconView = $saveObj.iconView;
+				$URLPreview = $saveObj.URLPreview;
+			}
+		} catch (error) {}
+	});
 	function settingFunc() {
 		settings = true;
+		if (saveCheck) {
+			const obj = {
+				pub: data.pubkey,
+				kind: kind,
+				iconView: $iconView,
+				URLPreview: $URLPreview
+			};
+			localStorage.setItem('info', JSON.stringify(obj));
+			$saveObj = obj;
+		}
 		goto('/' + nip19.npubEncode(data.pubkey) + '/' + kind);
 	}
 
@@ -64,7 +94,7 @@
 			</div>
 		</div>
 		<div class="space-t-5">
-			<Settings {settingFunc} />
+			<Settings {settingFunc} bind:saveCheck />
 		</div>
 	</div>
 </div>

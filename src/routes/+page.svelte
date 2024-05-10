@@ -1,7 +1,13 @@
 <script lang="ts">
 	import Settings from '$lib/components/Settings.svelte';
 	import KindSelect from '$lib/components/KindSelect.svelte';
-	import { nsec, pubkey_viewer } from '$lib/stores/settings';
+	import {
+		URLPreview,
+		iconView,
+		nsec,
+		pubkey_viewer,
+		saveObj
+	} from '$lib/stores/settings';
 	import { getPublicKey, nip19 } from 'nostr-tools';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
@@ -9,24 +15,47 @@
 	import { _ } from 'svelte-i18n';
 	import { kinds } from '$lib/kind';
 	import { toastStore } from '$lib/stores/store';
-
-	// let selectValue: string;
+	import { onMount } from 'svelte';
+	import { navigating } from '$app/stores';
+	let saveCheck: boolean;
+	// 初回のみ saveCheck を true にする
+	let initialized = false;
+	$: {
+		if (!initialized && $saveObj !== null) {
+			saveCheck = true;
+			initialized = true;
+		}
+	}
 	$: kind = Number(Object.keys(kinds)[0]);
-	// $: kind = Number(selectValue); // Use Object.keys to get the first key
-	//$: console.log(kind);
-	//let name: string;
+
 	let inputValue: string;
-	//console.log(sortedKinds);
-	//$settings = false;
+	onMount(() => {
+		console.log($navigating); //戻るボタン押してきたりとかしたときにnullじゃないやつ
+		//戻るとかgotoとかできてない場合（nabigating=null）のみページgotoする
+		if (!$navigating) {
+			try {
+				if (!$saveObj) {
+					const saveInfo = localStorage.getItem('info');
+					if (!saveInfo) {
+						return;
+					}
+					$saveObj = JSON.parse(saveInfo);
+				}
+				if ($saveObj) {
+					saveCheck = true;
+					$iconView = $saveObj.iconView;
+					$URLPreview = $saveObj.URLPreview;
+					goto(`./${nip19.npubEncode($saveObj.pub)}/${$saveObj.kind}`);
+				}
+			} catch (error) {}
+		}
+	});
+
 	const npub = browser ? localStorage.getItem('npub') : undefined;
 	if (npub) {
 		inputValue = nip19.npubEncode(npub);
 	}
-	//let presettings = false;
-	//$: console.log($settings);
 
-	//なんでかわからんけど無限ループしたからpresettingsをつけた応急処置
-	//$: if ($settings === true && !presettings) {
 	async function settingFunc() {
 		//presettings = true;
 		console.log('settings true');
@@ -36,7 +65,17 @@
 			const decode = nip19.decode(input);
 			if (decode.type === 'npub') {
 				localStorage.setItem('npub', decode.data);
-
+				if (saveCheck) {
+					localStorage.setItem(
+						'info',
+						JSON.stringify({
+							pub: decode.data,
+							kind: kind,
+							iconView: $iconView,
+							URLPreview: $URLPreview
+						})
+					);
+				}
 				goto(`./${input}/${kind}`);
 			} else if (decode.type === 'nsec') {
 				$nsec = decode.data;
@@ -44,7 +83,19 @@
 				const pub = getPublicKey(decode.data);
 				localStorage.setItem('npub', pub);
 				$pubkey_viewer = pub;
-				console.log(pub);
+
+				if (saveCheck) {
+					const obj = {
+						pub: pub,
+						kind: kind,
+						iconView: $iconView,
+						URLPreview: $URLPreview
+					};
+					localStorage.setItem('info', JSON.stringify(obj));
+					$saveObj = obj;
+				} else {
+					localStorage.removeItem('info');
+				}
 				goto(`./${nip19.npubEncode(pub)}/${kind}`);
 			}
 		} catch (error) {
@@ -90,11 +141,6 @@
 	<h5 class="h5 mt-8">{$_('main.input_public_key')}</h5>
 
 	<div class="mt-1 input-group input-group-divider grid-cols-[auto_1fr]">
-		<!--	<button
-					class="p-0 input-group-shim btn variant-filled-secondary"
-					on:click={onSignupClick}>NIP-46<br />Connect</button
-				>
-				 <span class="flex items-center">or</span> -->
 		<button
 			style="padding:0 0.5rem"
 			class=" input-group-shim btn variant-filled-primary"
@@ -147,16 +193,6 @@
 			>
 		</p>
 
-		<!-- <div class="mt-10">
-			
-
-				<button class=" btn variant-filled-secondary" on:click={onSignupClick}
-					>Login with NIP-46 Nostr Connect</button
-				>
-				<div class="ml-2 mt-1 text-sm whitespace-pre-wrap">
-					{$_('main.Nip46_login')}
-				</div>
-			</div> -->
 		<div class="mt-10">
 			<h5 class="h5">
 				<svg
@@ -185,46 +221,11 @@
 			</h5>
 
 			<KindSelect bind:selectValue={kind} />
-			<!-- <select
-					class="select"
-					bind:value={selectValue}
-					on:change={handleKindChange}
-				>
-					{#each Object.keys(kinds) as value (value)}
-						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-					{/each}
-				</select> -->
 		</div>
-
-		<!-- <div class="flex gap-4 mt-1">
-					<div>
-						<FileButton bind:files on:change={handleFileChange} name="files" />
-					</div>
-					<div>
-						<button
-							class="btn variant-filled-primary"
-							on:click={() => {
-								fileData = undefined;
-							}}>Reset</button
-						>
-					</div>
-				</div>
-			</div>
-			{#if fileData}
-				{fileData.name}
-			{/if} -->
 	</div>
-	<!-- <label class="label space-t-5 ">
-			<span> {$_('main.input_public_key')}</span>
-			<input
-				class="input p-1"
-				type="text"
-				placeholder="npub1..."
-				bind:value={inputValue}
-			/>
-		</label> -->
+
 	<div class="space-t-5">
-		<Settings {settingFunc} />
+		<Settings {settingFunc} bind:saveCheck />
 	</div>
 	<div class="mt-10 flex gap-2 mb-14">
 		<h5 class="h5 self-center">
