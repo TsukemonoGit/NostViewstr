@@ -51,15 +51,16 @@ import type { EventParameters, Filter } from 'nostr-typedef';
 import type { RelayStatus } from 'rx-nostr/types/src/rx-nostr/interface';
 
 const reconnectableStates: ConnectionState[] = [
-	'connecting', //りこねくてぃんぐ表示から変化しないようにみえるから追加してみる
-	//'not-started',
-	'dormant', //休眠
-	'error',
-	//'rejected',
-	'terminated'
-	//'waiting-for-retrying',
-	//'retrying',
-	//'dormant'
+	//https://penpenpng.github.io/rx-nostr/v2/monitoring-connections.html
+	//"initialized",  //初期状態,
+	//"connecting",  //自動再接続以外の理由で接続を試みている,
+	//"connected",  //接続状態,
+	//"retrying",  //再接続を試みている,
+	'waiting-for-retrying', //再接続待機中
+	'dormant', //休眠中,
+	//"error",  //エラー終了,
+	//"rejected",  //エラー終了,
+	'terminated' //終了状態,
 ];
 
 let storedEventsData: MapEventLists;
@@ -113,35 +114,26 @@ export function GetAllRelayState() {
 	return rxNostr.getAllRelayStatus().connection;
 }
 
-// export async function RelaysReconnectChallenge() {
-// 	const allRelayStatus = rxNostr.getAllRelayStatus();
-// 	if (!allRelayStatus || !allRelayStatus.connection) {
-// 		return;
-// 	}
-// 	const states = Object.entries(allRelayStatus.connection);
-// 	console.log('[relay states]', states);
+export async function RelaysReconnectChallenge() {
+	const allRelay = rxNostr.getDefaultRelays();
+	if (!allRelay) return;
+	const status = Object.entries(allRelay);
+	if (status.length <= 0) {
+		return;
+	}
+	//console.log(status);
 
-// 	const reconnectableCount = states.filter(([relayUrl, state]) =>
-// 		reconnectableStates.includes(state)
-// 	).length;
-// 	console.log(reconnectableCount, states.length);
-// 	if (reconnectableCount / states.length >= 2 / 3) {
-// 		//設定中のリレーの2/3以上が接続切れてたらセットし直してみる
-// 		// const tmp = Object.fromEntries(
-// 		// 	rxNostr.getDefaultRelays().map(({ url, read, write }) => [url, { read, write }])
-// 		// );
-// 		const tmp = rxNostr.getDefaultRelays();
-// 		//すでにセットされてる場合は何もおこらないっぽい？ので一度全部外す
-// 		rxNostr.setDefaultRelays({});
-// 		rxNostr.setDefaultRelays(tmp);
-
-// 		// states.forEach(([relayUrl, state]) => {
-// 		//   if (reconnectableStates.includes(state)) {
-// 		//     rxNostr.reconnect(relayUrl);
-// 		//   }
-// 		// });
-// 	}
-// }
+	status.forEach(([relayUrl, state]) => {
+		if (
+			rxNostr.getRelayStatus(relayUrl)?.connection === undefined ||
+			reconnectableStates.includes(
+				rxNostr.getRelayStatus(relayUrl)?.connection as ConnectionState
+			)
+		) {
+			rxNostr.reconnect(relayUrl);
+		}
+	});
+}
 //export const eventListsMap = writable(new Map<string, Nostr.Event>());---------------------------------------------------------------
 export async function StoreFetchFilteredEvents(
 	pubkey: string,
