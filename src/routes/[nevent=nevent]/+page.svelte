@@ -23,7 +23,7 @@
 	import NostrApp from '$lib/components/nostrData/NostrApp.svelte';
 
 	import type Nostr from 'nostr-typedef';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, goto } from '$app/navigation';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -151,7 +151,9 @@
 		class="container min-w-[80vw] h-full mx-auto flex justify-center items-center p-4"
 	>
 		<div class="mt-5">
-			<h1 class="h1 mb-5">{$_('main.title')}</h1>
+			<button class="mb-5" on:click={() => goto('/')}
+				><h1 class="h1">{$_('main.title')}</h1>
+			</button>
 
 			<div class="space-t-5">
 				kind:{data.kind}

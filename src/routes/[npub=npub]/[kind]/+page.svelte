@@ -8,6 +8,7 @@
 	import { URLPreview, iconView, saveObj } from '$lib/stores/settings';
 	import { nip19 } from 'nostr-tools';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 	let saveCheck: boolean;
@@ -76,7 +77,9 @@ pubkey:{nip19.npubEncode(data.pubkey)}"
 		class="container max-w-[1024px] h-full mx-auto flex justify-center items-center p-4"
 	>
 		<div class="mt-5">
-			<h1 class="h1 mb-5">{$_('main.title')}</h1>
+			<button class="mb-5" on:click={() => goto('/')}
+				><h1 class="h1">{$_('main.title')}</h1>
+			</button>
 
 			<div class="space-t-5">
 				<h5 class="h5">kind:{data.kind}</h5>

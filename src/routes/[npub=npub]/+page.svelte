@@ -72,7 +72,9 @@
 	class="container max-w-[1024px] h-full mx-auto flex justify-center items-center p-4"
 >
 	<div class="mt-5">
-		<h1 class="h1 mb-5">{$_('main.title')}</h1>
+		<button class="mb-5" on:click={() => goto('/')}
+			><h1 class="h1">{$_('main.title')}</h1>
+		</button>
 		<div class="space-t-5">
 			<div class="mt-10">
 				<h5 class="h5">{`kind`}</h5>
