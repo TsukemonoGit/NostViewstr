@@ -91,7 +91,8 @@
     "input_public_key": "🔑 public key",
     "publish": "Nsec is not saved in the browser.",
     "Nip46_login": "If you are directly inputting the private key, using the NIP07 extension, or only viewing, it is unnecessary.",
-    "input_kind": "Kind of Lists"
+    "input_kind": "Kind of Lists",
+    "Json": "Read the JSON file of the list"
   },
   "mode": {
     "light_switch": "Switch between Light and Dark Mode",

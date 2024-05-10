@@ -227,14 +227,43 @@
 		<Settings {settingFunc} />
 	</div>
 	<div class="mt-10 flex gap-2 mb-14">
-		<h5 class="h5 self-center">{`view from json →`}</h5>
+		<h5 class="h5 self-center">
+			<svg
+				class="inline-flex"
+				xmlns="http://www.w3.org/2000/svg"
+				width="24"
+				height="24"
+				viewBox="0 0 24 24"
+				><g
+					fill="none"
+					stroke="currentColor"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4" /><path
+						d="M14 2v4a2 2 0 0 0 2 2h4M4 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1a1 1 0 0 1 1 1v1a1 1 0 0 0 1 1m4 0a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1a1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1"
+					/></g
+				></svg
+			>{$_('main.Json')}
+		</h5>
 		<button
 			class="btn variant-filled-primary"
 			on:click={() => {
 				goto(`/Json`);
 			}}
 		>
-			JSON
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="16"
+				height="16"
+				viewBox="0 0 14 14"
+				><path
+					fill="currentColor"
+					fill-rule="evenodd"
+					d="M2.676.02a1.74 1.74 0 0 0-.845.218a1.64 1.64 0 0 0-.895 1.433v10.677a1.64 1.64 0 0 0 .895 1.433a1.74 1.74 0 0 0 1.718-.016l8.63-5.338a1.61 1.61 0 0 0-.001-2.876L3.548.253A1.74 1.74 0 0 0 2.676.02"
+					clip-rule="evenodd"
+				/></svg
+			>
 		</button>
 	</div>
 </div>

@@ -107,7 +107,8 @@
     "publish": "nsecはブラウザに保存されません",
     "Nip46_login": "nsecを直接入力するか、拡張機能を使う場合は不要です。",
     "nip07": "NIP-07",
-    "input_kind": "リストの種類"
+    "input_kind": "リストの種類",
+    "Json": "リストのJSONファイルを読み込む"
   },
   "mode": {
     "normal": "通常モードでリストをみる",
