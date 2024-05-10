@@ -77,6 +77,7 @@
 					);
 				} else {
 					localStorage.removeItem('info');
+					$saveObj = null;
 				}
 				goto(`./${input}/${kind}`);
 			} else if (decode.type === 'nsec') {
@@ -97,6 +98,7 @@
 					$saveObj = obj;
 				} else {
 					localStorage.removeItem('info');
+					$saveObj = null;
 				}
 				goto(`./${nip19.npubEncode(pub)}/${kind}`);
 			}

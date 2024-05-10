@@ -48,6 +48,7 @@
 			$saveObj = obj;
 		} else {
 			localStorage.removeItem('info');
+			$saveObj = null;
 		}
 		goto(`${window.location.pathname}/${kind}`);
 	}

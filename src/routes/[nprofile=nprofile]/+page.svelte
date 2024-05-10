@@ -48,6 +48,9 @@
 			};
 			localStorage.setItem('info', JSON.stringify(obj));
 			$saveObj = obj;
+		} else {
+			localStorage.removeItem('info');
+			$saveObj = null;
 		}
 		goto('/' + nip19.npubEncode(data.pubkey) + '/' + kind);
 	}

@@ -52,6 +52,7 @@
 			$saveObj = obj;
 		} else {
 			localStorage.removeItem('info');
+			$saveObj = null;
 		}
 	}
 </script>
