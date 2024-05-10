@@ -698,7 +698,10 @@ export async function addPrivates(
 		try {
 			const privateContent = await nip04De(pubkey, content);
 			const parsedContent: string[][] = JSON.parse(privateContent);
-			if (Array.isArray(parsedContent) && Array.isArray(parsedContent[0])) {
+			if (
+				(Array.isArray(parsedContent) && parsedContent.length <= 0) ||
+				(Array.isArray(parsedContent) && Array.isArray(parsedContent[0]))
+			) {
 				if (check) {
 					tags.map((tag) => {
 						const index = parsedContent.findIndex((item) => item[1] === tag[1]);
@@ -726,6 +729,7 @@ export async function addPrivates(
 			throw new Error('Encode error');
 		}
 	} else {
+		console.log('error');
 		throw new Error('error');
 	}
 }

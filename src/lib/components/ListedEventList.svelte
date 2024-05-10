@@ -461,7 +461,7 @@
 			} catch (error) {
 				//console.log(error);
 				const t = {
-					message: $_('toast.invalidEmoji'),
+					message: $_('toast.failed_publish'),
 					timeout: 3000,
 					background: 'bg-orange-500 text-white width-filled '
 				};
