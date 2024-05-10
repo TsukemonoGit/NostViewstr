@@ -23,9 +23,9 @@
 	import { setToastStore } from '$lib/stores/store';
 	import RegisterSw from '$lib/components/RegisterSW.svelte';
 	import { onMount } from 'svelte';
-	import { backButton, send_pubhex } from '$lib/stores/settings';
+	import { backButton, saveObj, send_pubhex } from '$lib/stores/settings';
 	import { afterNavigate } from '$app/navigation';
-	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
+	//import { RelaysReconnectChallenge } from '$lib/streamEventLists';
 	//import { init as initNostrLogin } from 'nostr-login';
 	import { page } from '$app/stores';
 
@@ -48,6 +48,11 @@
 		//console.log('backButton', backBtn);
 		if (backBtn) {
 			backButton.set(backBtn === 'true' ?? false);
+		}
+		const saveInfo = localStorage.getItem('info');
+
+		if (saveInfo) {
+			saveObj.set(JSON.parse(saveInfo));
 		}
 	});
 
@@ -75,17 +80,17 @@
 		}
 	});
 
-	async function onVisibilityChange() {
-		console.log(document.visibilityState);
-		if (document.visibilityState === 'visible') {
-			await RelaysReconnectChallenge();
-		}
-	}
+	// async function onVisibilityChange() {
+	// 	console.log(document.visibilityState);
+	// 	if (document.visibilityState === 'visible') {
+	// 		await RelaysReconnectChallenge();
+	// 	}
+	// }
 </script>
 
 <title>{$_('main.title')}</title>
 
-<svelte:document on:visibilitychange={onVisibilityChange} />
+<!-- <svelte:document on:visibilitychange={onVisibilityChange} /> -->
 <svelte:head>
 	<title>NostViewstr</title>
 

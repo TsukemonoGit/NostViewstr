@@ -19,7 +19,7 @@
 	} from '$lib/nostrFunctions';
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { amount, pageNum, listSize } from '$lib/stores/pagination';
-	import { MultiMenu, isMulti } from '$lib/stores/settings';
+	import { MultiMenu, isMulti, nowProgress } from '$lib/stores/settings';
 	//import MenuButtons2 from './MenuButtons2.svelte';
 
 	// import Menu from '@material-design-icons/svg/round/more_vert.svg?raw';
@@ -37,9 +37,8 @@
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
 	import EventandButtons from './EventandButtons.svelte';
-	import type { Nostr } from 'nosvelte';
+
 	import { copyNaddr, copyNoteId, type SelectIndex } from '$lib/otherFunctions';
-	import { hide } from '@floating-ui/dom';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
@@ -72,7 +71,7 @@
 			tagArray: []
 		}
 	};
-	console.log(bkm);
+	//console.log(bkm);
 
 	const privateList = async (list: NostrEvent) => {
 		if (list.content !== '') {
@@ -104,12 +103,12 @@
 		viewList = [];
 		$listSize = 0;
 	}
-	$: console.log($listSize);
+	//$: console.log($listSize);
 	let message: string;
 
 	export async function viewUpdate() {
 		message = '';
-		console.log(bkm);
+		//	console.log(bkm);
 		if (!listEvent) {
 			$listSize = 0;
 			viewList = [];
@@ -222,6 +221,7 @@
 		ref: ModalPostNote
 	};
 	function shareNote(selectedIndex: SelectIndex) {
+		if (!selectedIndex?.detail) return;
 		const tagArray = selectedIndex.detail.tagArray;
 		const note = selectedIndex.detail.event;
 		const tags = tagArray
@@ -265,6 +265,7 @@
 	};
 
 	const OpenNoteJson = (selected: SelectIndex) => {
+		if (!selected.detail) return;
 		const modal = {
 			type: 'component' as const,
 			title: 'Details',
@@ -287,7 +288,8 @@
 				items,
 				//flipDurationMs,
 				dropTargetStyle: {},
-				dragDisabled: $isMulti === MultiMenu.Sort ? false : true,
+				dragDisabled:
+					$isMulti === MultiMenu.Sort && !$nowProgress ? false : true,
 				morphDisabled: true,
 				dropFromOthersDisabled: true,
 				centreDraggedOnCursor: false
@@ -405,18 +407,20 @@
 
 			<ListBoxItem
 				name="medium"
-				disabled={!selectedIndex.detail.event &&
-					selectedIndex.detail.tagArray.length > 0 &&
-					selectedIndex.detail.tagArray[1].length !== 64}
+				disabled={!selectedIndex?.detail ||
+					(!selectedIndex.detail.event &&
+						selectedIndex.detail.tagArray.length > 0 &&
+						selectedIndex.detail.tagArray[1].length !== 64)}
 				value="Open"
 				bind:group={comboboxValue}
 				on:click={() => {
 					comboboxValue = '';
-					const id = selectedIndex.detail.event
-						? selectedIndex.detail.event.id
-						: selectedIndex.detail.tagArray[1].length === 64
-						? selectedIndex.detail.tagArray[1]
-						: '';
+					const id =
+						selectedIndex?.detail && selectedIndex.detail.event
+							? selectedIndex.detail.event.id
+							: selectedIndex.detail.tagArray[1].length === 64
+							? selectedIndex.detail.tagArray[1]
+							: '';
 					if (id) {
 						windowOpen(id);
 					}
@@ -426,7 +430,7 @@
 			>
 			<hr class="!border-dashed" />
 			<!--naddrがあったらnaddrボタンだけ表示にする？（ノートIDは詳細表示からもコピーできるので）-->
-			{#if selectedIndex && (selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000))}
+			{#if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000))}
 				<ListBoxItem
 					name="medium"
 					value="copyNaddr"
@@ -448,7 +452,7 @@
 					}}
 					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
 					Naddr</ListBoxItem
-				>{:else if selectedIndex && (selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a')}
+				>{:else if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a')}
 				<ListBoxItem
 					name="medium"
 					value="copyNote"

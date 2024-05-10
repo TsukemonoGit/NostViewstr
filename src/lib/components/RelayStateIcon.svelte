@@ -1,39 +1,32 @@
 <script lang="ts">
-	import type { ConnectionState } from 'rx-nostr';
-	import { connectingRelays, relayState } from '$lib/stores/bookmarkEvents';
+	import type { ConnectionState, DefaultRelayConfig } from 'rx-nostr';
+	import { rx, relayState } from '$lib/stores/bookmarkEvents';
 	import UpdateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import { GetRelayState, ReconnectRelay } from '$lib/streamEventLists';
 	import { get, writable } from 'svelte/store';
-	import { relaySet } from '$lib/stores/relays';
-	//$: stateArray = Array.from($relayState.keys()).sort();
 
+	//$: stateArray = Array.from($relayState.keys()).sort();
+	export let readTrueArray: string[];
 	//export let pubkey: string;
 	// ボタンの無効化を管理するストア
 	const disabledButtons = writable(new Set<string>());
-	export let readTrueArray: string[];
-	let stateColor = {
-		'not-started': 'bg-surface-500',
-		starting: 'bg-surface-500',
-		ongoing: 'bg-success-600', //接続中
-		reconnecting: 'bg-warning-600',
 
+	let stateColor = {
+		initialized: 'bg-surface-500',
+		connecting: 'bg-surface-500',
+		connected: 'bg-success-600', //接続中
+		retrying: 'bg-warning-600',
+		'waiting-for-retrying': 'bg-warning-600',
+		dormant: 'bg-warning-600',
 		error: 'bg-error-600',
 		rejected: 'bg-error-600',
 		terminated: 'bg-error-600'
 	};
 
-	let dotColor = (relay: string) => {
-		const relayStateValue = $relayState[relay];
-		// try {
-		// 	console.log(GetRelayState(relay));
-		// } catch (error) {
-		// 	console.log(error);
-		// }
-
+	let dotColor = (relay: ConnectionState | undefined) => {
+		const status = relay ?? 'error';
 		// 確認してからstateColorにアクセス
-		return relayStateValue !== undefined
-			? stateColor[relayStateValue]
-			: 'not-started';
+		return stateColor[status];
 	};
 
 	async function handleClickReconnect(relay: string) {
@@ -58,14 +51,14 @@
 </script>
 
 {#each readTrueArray as relay, index}
-	{#if $relayState.hasOwnProperty(relay)}
+	{#if $relayState.get(relay) !== undefined}
 		<div class="flex items-center gap-1 break-all">
-			<div class="h-4 w-4 rounded-full {dotColor(relay)} " />
+			<div class="h-4 w-4 rounded-full {dotColor($relayState.get(relay))} " />
 			{relay.length > 30 ? `${relay.slice(0, 28)}...` : relay}
 
 			<!-- {#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started' || $relayState[relay] === 'terminated') && !get(disabledButtons).has(relay)} -->
 
-			{#if $relayState[relay] === 'error' && !get(disabledButtons).has(relay)}
+			{#if $relayState.get(relay) === 'error' && !get(disabledButtons).has(relay)}
 				<button
 					on:click={() => handleClickReconnect(relay)}
 					class="btn p-1 fill-white ml-auto"

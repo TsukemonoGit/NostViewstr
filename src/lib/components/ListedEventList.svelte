@@ -9,7 +9,6 @@
 		eventListsMap,
 		checkedIndexList,
 		listNum,
-		type Identifiers,
 		keysArray,
 		identifierListsMap,
 		identifierKeysArray
@@ -19,13 +18,11 @@
 		deletePrivates,
 		deletePubs,
 		editPrivates,
-		fetchFilteredEvents,
 		getPub,
 		getRelays,
-		isOneDimensionalArray,
 		nip04En
 	} from '$lib/nostrFunctions';
-	import { afterUpdate, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
 	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
@@ -60,8 +57,8 @@
 	import ModalDelete from '$lib/components/modals/ModalDelete.svelte';
 	import ModalMove from '$lib/components/modals/ModalMove.svelte';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { NostrApp, type Nostr } from 'nosvelte';
-
+	import NostrApp from '$lib/components/nostrData/NostrApp.svelte';
+	import type Nostr from 'nostr-typedef';
 	import { afterNavigate } from '$app/navigation';
 	import Header from './Header.svelte';
 
@@ -71,6 +68,7 @@
 	} from '$lib/streamEventLists';
 	import FooterMenu from './FooterMenu.svelte';
 	import { kinds } from '$lib/kind';
+	import { page } from '$app/stores';
 	export let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> | undefined;
 	export let pubkey: string;
@@ -82,7 +80,7 @@
 	let listedEventRef: ListedEvent;
 
 	let isOwner: boolean;
-	$: console.log($relaySet);
+	//$: console.log($relaySet);
 	$: isOwner = $pubkey_viewer === pubkey;
 	let isOnMount = false;
 	// キーのイテレータを配列に変換してすべてのキーを取得
@@ -190,8 +188,8 @@
 							'#d': [identifier]
 						}
 				  ];
-		console.log(filter);
-		console.log(pubkey, $relaySet[pubkey].bookmarkRelays);
+		//console.log(filter);
+		//console.log(pubkey, $relaySet[pubkey].bookmarkRelays);
 		const t: ToastSettings = {
 			message: `${$_('toast.eventSearching')}`
 		};
@@ -201,7 +199,7 @@
 			filters: filter
 		});
 		bkm = 'pub';
-		listedEventRef.viewUpdate(); //
+		listedEventRef?.viewUpdate(); //
 		toastStore.close(searchingEventsToast);
 	}
 
@@ -294,7 +292,7 @@
 					);
 					//   console.log(result);
 					if (result.isSuccess && $eventListsMap && result.event) {
-						listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+						listedEventRef?.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
 
 						//streamの方で購読してるから要らん
 						// $eventListsMap[pubkey][kind].set(
@@ -461,7 +459,7 @@
 					res.check
 				);
 			} catch (error) {
-				console.log(error);
+				//console.log(error);
 				const t = {
 					message: $_('toast.invalidEmoji'),
 					timeout: 3000,
@@ -566,7 +564,7 @@
 			);
 
 			if (result.isSuccess) {
-				listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+				listedEventRef?.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
 
 				const toastMessage = result.isSuccess
 					? 'Add note<br>' + result.msg
@@ -712,7 +710,7 @@
 			}
 			const deleteRes = await deleteNotesfromLists(from.tag, indexes);
 			//		$nowProgress = false;
-			listedEventRef.viewUpdate();
+			listedEventRef?.viewUpdate();
 		}
 	}
 
@@ -823,10 +821,10 @@
 	}
 
 	function onClickCancelSort() {
-		listedEventRef.resetItems();
+		listedEventRef?.resetItems();
 	}
 	function SortReset() {
-		listedEventRef.resetItems();
+		listedEventRef?.resetItems();
 	}
 	async function onClickDoneSort() {
 		$nowProgress = true;
@@ -837,7 +835,7 @@
 				throw Error;
 			}
 
-			const tags = listedEventRef.getSortedTags();
+			const tags = listedEventRef?.getSortedTags();
 			console.log(tags);
 			const content = async (): Promise<string> => {
 				if (bkm === 'pub') {
@@ -866,7 +864,7 @@
 			);
 			//   console.log(result);
 			if (result.isSuccess && $eventListsMap && result.event) {
-				listedEventRef.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
+				listedEventRef?.viewUpdate(); //ListedEventのviewUpdate()を行う（prvだったときに表示の更新とか）
 
 				//streamの方で購読してるから要らん
 				// $eventListsMap[pubkey][kind].set(
@@ -906,7 +904,7 @@
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
 {#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-	<NostrApp relays={$relaySet[pubkey].searchRelays}>
+	<NostrApp>
 		<!--header-->
 		<Header {kind} bind:bkm {pubkey} bind:viewEvent />
 
@@ -1024,10 +1022,18 @@
 					on:click={onClickAdd}>{@html addIcon}</button
 				>
 			{:else if $isMulti === MultiMenu.Multi}
+				<!-- {#if !(!$page.params.hasOwnProperty('npub') || !isOwner || !viewEvent?.kind || viewEvent?.kind < 30000 || viewEvent?.kind >= 40000 || isNaddr)} -->
 				<button
+					disabled={!$page.params.hasOwnProperty('npub') ||
+						!isOwner ||
+						!viewEvent?.kind ||
+						viewEvent?.kind < 30000 ||
+						viewEvent?.kind >= 40000 ||
+						isNaddr}
 					class="addIcon btn-icon variant-filled-secondary fill-white hover:variant-ghost-secondary hover:stroke-secondary-500 overflow-x-hidden"
 					on:click={onClickMultiMove}>{@html MoveIcon}</button
 				>
+				<!-- {/if} -->
 				<button
 					class="overflow-x-hidden addIcon btn-icon variant-filled-warning fill-white mx-1 hover:variant-ghost-warning hover:stroke-warning-500"
 					on:click={onClickMultiDelete}>{@html DeleteIcon}</button

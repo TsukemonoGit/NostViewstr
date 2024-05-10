@@ -1,8 +1,10 @@
 import { writable } from 'svelte/store';
 import type { Event } from 'nostr-tools';
-import type { Nostr } from 'nosvelte';
+
+import type Nostr from 'nostr-typedef';
 import type { TextPart } from '$lib/content';
 import type { ConnectionState } from 'rx-nostr';
+import type { RxNostr } from 'rx-nostr/types/src/rx-nostr/interface';
 interface IdentifierList {
 	[pubkey: string]: {
 		[kind: number]: Identifiers[];
@@ -34,15 +36,12 @@ export const identifierListsMap = writable<MapIdentifierList>({});
 export const identifierKeysArray = writable<string[]>([]);
 export const eventListsMap = writable<MapEventLists>({});
 export const keysArray = writable<string[]>([]);
-//export const relayState = writable(new Map<string, ConnectionState>());
 
-export const connectingRelays = writable<{
-	[url: string]: {
-		read: boolean;
-		write: boolean;
-	};
-}>();
-export const relayState = writable<{ [relayURL: string]: ConnectionState }>();
+export const rx = writable<RxNostr>();
+
+//とりあえず監視してる分全部のrelayStateを保管しておいて表示させるやつ（$relaySet(pubkey).bookmarkRelays）とかのリレーごとにstateがどうか探しに来る感じで
+export const relayState = writable(new Map<string, ConnectionState>());
+
 //export const bookmarkEvents = writable<EventLists>({});
 //export const identifierList = writable<IdentifierList>({});
 
@@ -93,3 +92,5 @@ export const JsonEventData = writable<Nostr.Event>();
 
 export interface ClientInfo {}
 export const clientMap = writable(new Map<string[], ClientInfo>());
+
+export const nostrEvents = writable(new Map<string, Nostr.Event>());

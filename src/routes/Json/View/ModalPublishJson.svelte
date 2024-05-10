@@ -2,7 +2,8 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { validateEvent } from 'nostr-tools';
 	import { _ } from 'svelte-i18n';
-	import type { Nostr } from 'nosvelte';
+
+	import type Nostr from 'nostr-typedef';
 	import { pubkey_viewer } from '$lib/stores/settings';
 	import { onMount } from 'svelte';
 

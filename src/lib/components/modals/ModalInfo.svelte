@@ -29,7 +29,8 @@
 	import { goto } from '$app/navigation';
 	import { kinds } from '$lib/kind';
 	import { nip19 } from 'nostr-tools';
-	import type { Nostr } from 'nosvelte';
+
+	import type Nostr from 'nostr-typedef';
 	import { formatAbsoluteDate } from '$lib/otherFunctions';
 
 	export let parent: any;

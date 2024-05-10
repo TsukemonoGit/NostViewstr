@@ -2,7 +2,8 @@
 	//書き込めるところに書き込むということでwrite二設定しているリレーに複製します
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import type { Nostr } from 'nosvelte';
+
+	import type Nostr from 'nostr-typedef';
 	import {
 		createRxNostr,
 		createRxOneshotReq,
@@ -123,7 +124,7 @@
 	$: logs = logs;
 	let nowLoading: boolean = false;
 	const rxNostr = createRxNostr();
-	rxNostr.setRelays(relays);
+	rxNostr.setDefaultRelays(relays);
 
 	function onClick() {
 		if (subscription && !subscription.closed) {

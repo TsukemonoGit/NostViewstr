@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { Metadata, Nostr, Text } from 'nosvelte';
+
 	import ModalCopyPubkey from '$lib/components/modals/ModalProfile.svelte';
 	import { uniqueTags } from '$lib/otherFunctions.js';
 	import { allView, iconView } from '$lib/stores/settings';
-
+	import type Nostr from 'nostr-typedef';
 	import ModalEventJson from './modals/ModalEventJson.svelte';
 	import Content from './Content.svelte';
 
@@ -14,7 +14,8 @@
 	import EventTag from './EventTag.svelte';
 	import PubCha from './PubCha.svelte';
 	import SearchCard from './SearchCard.svelte';
-
+	import Metadata from './nostrData/Metadata.svelte';
+	import Text from './nostrData/Text.svelte';
 	export let id: string;
 	export let isPageOwner: boolean;
 	export let pubkey: string;
@@ -262,7 +263,12 @@
 							class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50 box-border"
 						>
 							{#each tags as tag}
-								<EventTag {tag} {handleClickDate} {handleClickPubkey} />
+								<EventTag
+									{tag}
+									{handleClickDate}
+									{handleClickPubkey}
+									{pubkey}
+								/>
 							{/each}
 						</div>
 					{/if}

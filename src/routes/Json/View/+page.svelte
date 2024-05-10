@@ -25,9 +25,9 @@
 	} from '$lib/stores/settings';
 	//import type { Event } from 'nostr-tools';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
+	import NostrApp from '$lib/components/nostrData/NostrApp.svelte';
 
-	import { NostrApp, type Nostr } from 'nosvelte';
-
+	import type Nostr from 'nostr-typedef';
 	import { afterNavigate } from '$app/navigation';
 	import PublishIcon from '@material-design-icons/svg/round/publish.svg?raw';
 
@@ -200,7 +200,7 @@
 <!-- {#await bkminit(pubkey) then bkminti} -->
 
 {#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-	<NostrApp relays={$relaySet[pubkey].searchRelays}>
+	<NostrApp>
 		<!--header-->
 		<Header
 			kind={$JsonEventData.kind}

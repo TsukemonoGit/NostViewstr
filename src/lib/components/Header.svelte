@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import {
-		connectingRelays,
 		eventListsMap,
 		identifierKeysArray,
 		identifierListsMap,
@@ -26,7 +25,7 @@
 		type PopupSettings,
 		storePopup
 	} from '@skeletonlabs/skeleton';
-	import type { Nostr } from 'nosvelte';
+	import type Nostr from 'nostr-typedef';
 	import { _ } from 'svelte-i18n';
 	import ModalListInfo from './modals/ModalListInfo.svelte';
 	import ModalPostNote from './modals/ModalPostNote.svelte';
@@ -37,6 +36,7 @@
 	import RelayStateIcon from './RelayStateIcon.svelte';
 	import UserIcon from './UserIcon.svelte';
 	import { formatAbsoluteDate } from '$lib/otherFunctions';
+	import type { ConnectionState } from 'rx-nostr';
 
 	export let bkm: string;
 	export let kind: number;
@@ -44,33 +44,19 @@
 	export let viewEvent: Nostr.Event<number> | undefined;
 	export let JSON: boolean = false;
 	export let nevent: boolean = false;
-	let ongoingCount: number;
+	let ongoingCount: string[];
 
-	$: console.log($storePopup.popupFeatured);
-	$: console.log(popupFeatured.state);
+	//$: console.log($storePopup.popupFeatured);
+	//$: console.log(popupFeatured.state);
 	let pupupOpen: boolean = false;
 
-	$: console.log(pupupOpen);
-	$: readTrueArray = $connectingRelays
-		? Object.keys($connectingRelays).filter(
-				(item) => $connectingRelays[item].read === true
-		  )
-		: [];
-
-	$: ongoingCount =
-		$relayState && readTrueArray.length > 0
-			? readTrueArray.filter((relay) => $relayState[relay] === 'ongoing').length
-			: 0;
-
-	// afterUpdate(() => {
-
-	// 	console.log('[relay state]', $relayState);
-	// 	ongoingCount =
-	// 		$relayState && Object.keys($relayState).length > 0
-	// 			? Object.values($relayState).filter((state) => state === 'ongoing')
-	// 					.length
-	// 			: 0;
-	// });
+	//$: console.log('readtrueRelay', readTrueArray);
+	// $: readTrueArray = Object.entries($relayList)
+	// 	.filter(([key, item]) => item.read === true)
+	// 	.map(([key, item]) => item);
+	$: ongoingCount = $relaySet[pubkey]?.bookmarkRelays.filter(
+		(item) => $relayState.get(item) === 'connected'
+	);
 
 	$: listNaddr = viewEvent
 		? [
@@ -289,7 +275,7 @@
 		// Defines which side of your trigger the popup will appear
 		placement: 'bottom-end', //'bottom',
 		state: (test) => {
-			console.log(test);
+			//console.log(test);
 			pupupOpen = test.state;
 		}
 	};
@@ -463,8 +449,8 @@
 			use:popup={popupFeatured}
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
-			{ongoingCount}/
-			{readTrueArray?.length}
+			{ongoingCount.length}/
+			{$relaySet[pubkey]?.bookmarkRelays?.length}
 		</button>
 
 		<!-- <button
@@ -487,7 +473,7 @@
 			<div class="card p-4 w-72 shadow-xl z-[100]">
 				<div>
 					<p>relays state</p>
-					<RelayStateIcon bind:readTrueArray />
+					<RelayStateIcon readTrueArray={$relaySet[pubkey]?.bookmarkRelays} />
 				</div>
 
 				<div class="arrow bg-surface-100-800-token" />

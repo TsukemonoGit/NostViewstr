@@ -3,10 +3,10 @@ import type { Metadata } from 'unfurl.js/dist/types';
 import { clientMap, ogpStore } from './stores/bookmarkEvents';
 import { type Event as NostrEvent, nip19 } from 'nostr-tools';
 
-import { fetchFilteredEvents, parseNaddr } from './nostrFunctions';
-import type { Nostr } from 'nosvelte';
+import { parseNaddr } from './nostrFunctions';
+import type Nostr from 'nostr-typedef';
 import { naddrEncode, noteEncode, type AddressPointer } from './nip19';
-import { relaySet } from './stores/relays';
+
 export enum MenuMode {
 	Multi, //複数選択モード
 	Owner, //追加削除ボタン込み
@@ -245,6 +245,7 @@ export function formatRelativeDate(unixTime: number) {
 }
 
 export async function copyNoteId(selectedIndex: SelectIndex): Promise<boolean> {
+	if (!selectedIndex.detail) return false;
 	const id = selectedIndex.detail.event
 		? selectedIndex.detail.event.id
 		: selectedIndex.detail.tagArray[0] === 'e'
@@ -267,6 +268,9 @@ export async function copyNoteId(selectedIndex: SelectIndex): Promise<boolean> {
 	);
 }
 export async function copyNaddr(selectedIndex: SelectIndex): Promise<boolean> {
+	if (!selectedIndex.detail) {
+		return false;
+	}
 	const naddrpointer: AddressPointer | undefined =
 		selectedIndex.detail.tagArray[0] === 'a'
 			? parseNaddr(selectedIndex.detail.tagArray)

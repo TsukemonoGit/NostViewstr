@@ -33,7 +33,13 @@ const hashtagRegex = /(\B#[^\s#.?:/。、　()（）]+)/gi;
 //hashtagRegex の中で(?:^|\s)と(?=\s|$)を追加したことです。これにより、ハッシュタグの前後に空白か行の先頭/末尾がある場合にのみマッチするようになります
 //()を含むと、それを含める結果が帰る// /(#\S+)/i;
 
-export async function extractTextParts(text: string, tags: string[][]) {
+export async function extractTextParts(
+	text: string,
+	tags: string[][]
+): Promise<TextPart[]> {
+	if (!text) {
+		return [{ content: '', type: TextPartType.Text }];
+	}
 	try {
 		//とりあえずタグに絵文字タグがある場合とない場合でわけておく（いらんかも
 		const emoji = tags.filter((item) => item[0] === 'emoji');
@@ -204,7 +210,7 @@ export async function extractTextParts(text: string, tags: string[][]) {
 
 		return parts;
 	} catch (error) {
-		console.log('Error in extractTextParts:', error);
+		console.log('Error in extractTextParts:', text, error);
 		return [{ content: text, type: TextPartType.Text }];
 	}
 }

@@ -21,3 +21,10 @@ export const backButton = writable<boolean>(false);
 export const nip46Check = writable<boolean>(true); //nip46ログインが拒否されたらfalse
 
 export const send_pubhex = writable<string>('');
+//localstrageのinfo情報
+export const saveObj = writable<{
+	pub: string;
+	kind: number;
+	iconView: boolean;
+	URLPreview: boolean;
+} | null>(null);

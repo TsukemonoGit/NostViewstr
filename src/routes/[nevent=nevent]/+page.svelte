@@ -15,14 +15,15 @@
 		isMulti,
 		nip46Check,
 		nowProgress,
-		pubkey_viewer
+		pubkey_viewer,
+		saveObj
 	} from '$lib/stores/settings';
 	//import type { Event } from 'nostr-tools';
 	import { amount, listSize, pageNum } from '$lib/stores/pagination';
+	import NostrApp from '$lib/components/nostrData/NostrApp.svelte';
 
-	import { NostrApp, type Nostr } from 'nosvelte';
-
-	import { afterNavigate } from '$app/navigation';
+	import type Nostr from 'nostr-typedef';
+	import { afterNavigate, goto } from '$app/navigation';
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -50,13 +51,28 @@
 	let isOwner: boolean = false;
 	$: isOwner = $pubkey_viewer === pubkey;
 	let settings: boolean = false;
+
 	function settingFunc() {
 		settings = true;
-		//goto(`${window.location.pathname}/${kind}`);
 	}
 	let relays: string[];
 	$: console.log('isOwner', isOwner);
 	onMount(async () => {
+		if ($iconView === undefined) {
+			try {
+				if (!$saveObj) {
+					const saveInfo = localStorage.getItem('info');
+					if (!saveInfo) {
+						return;
+					}
+					$saveObj = JSON.parse(saveInfo);
+				}
+				if ($saveObj) {
+					$iconView = $saveObj.iconView;
+					$URLPreview = $saveObj.URLPreview;
+				}
+			} catch (error) {}
+		}
 		if (!isOnMount) {
 			console.log('onMount');
 			isOnMount = true; // onMountが呼ばれたことを示すフラグを変更
@@ -75,25 +91,11 @@
 			isOnMount = false; // onMountが呼ばれたことを示すフラグを変更
 		}
 	});
-	//ぷぶきーがかわるごとにしょきか？
-	// $: if (pubkey) {
-	// 	init();
-	// }
 
 	const init = async () => {
 		$nowProgress = true;
 		console.log('onMount executed');
-		// if ($pubkey_viewer === '') {
-		// 	try {
-		// 		const res = await getPub();
-		// 		if (res !== '') {
-		// 			$pubkey_viewer = res;
-		// 		}
-		// 	} catch (error) {
-		// 		//			$nowProgress = false;
-		// 		console.log('failed to login');
-		// 	}
-		// }
+
 		const getSetRelay = async (): Promise<string[]> => {
 			if (data.relays) {
 				return data.relays;
@@ -140,59 +142,6 @@
 			window?.scrollTo({ top: 0 });
 		}
 	}
-
-	// //--------------------------------------Add note
-	// const publishJsonModalComponent: ModalComponent = {
-	// 	ref: ModalPublishJson
-	// };
-	// function onClickAddfromJson(
-	// 	event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }
-	// ) {
-	// 	let newEvent = Object.assign({}, viewEvent); //参照の問題を回避
-	// 	newEvent.created_at = '<generated>' as any; // 一時的にanyとしてキャストするか、正しい型に変更する
-	// 	newEvent.sig = '<generated>' as any;
-	// 	newEvent.pubkey = '<generated>' as any;
-	// 	newEvent.id = '<generated>' as any;
-
-	// 	const modal: ModalSettings = {
-	// 		type: 'component',
-	// 		component: publishJsonModalComponent,
-	// 		title: $_('modal.publishjson.title'),
-	// 		body: `${$_('modal.publishjson.body')}`,
-	// 		value: {
-	// 			event: newEvent
-	// 		},
-	// 		response: async (res) => {
-	// 			//console.log(res);
-	// 			if (res) {
-	// 				$nowProgress = true;
-	// 				console.log(res);
-	// 				//updateするやつ
-	// 				const result = await publishEventWithTimeout(
-	// 					res,
-	// 					$relaySet[$pubkey_viewer]?.bookmarkRelays || []
-	// 				);
-
-	// 				const toastMessage = result.isSuccess
-	// 					? 'Add note<br>' + result.msg
-	// 					: $_('toast.failed_publish');
-
-	// 				const t = {
-	// 					message: toastMessage,
-	// 					timeout: 3000,
-	// 					background: result.isSuccess
-	// 						? 'variant-filled-secondary width-filled'
-	// 						: 'bg-orange-500 text-white width-filled '
-	// 				};
-
-	// 				toastStore.trigger(t);
-
-	// 				$nowProgress = false;
-	// 			}
-	// 		}
-	// 	};
-	// 	modalStore.trigger(modal);
-	// }
 </script>
 
 {#if relays?.length <= 0}
@@ -202,18 +151,20 @@
 		class="container min-w-[80vw] h-full mx-auto flex justify-center items-center p-4"
 	>
 		<div class="mt-5">
-			<h1 class="h1 mb-5">{$_('main.title')}</h1>
+			<button class="mb-5" on:click={() => goto('/')}
+				><h1 class="h1">{$_('main.title')}</h1>
+			</button>
 
 			<div class="space-t-5">
 				kind:{data.kind}
-				<Settings {settingFunc} />
+				<Settings {settingFunc} saveCheck={false} noSave={true} />
 			</div>
 		</div>
 	</div>
 {:else}
 	<!-- {#await bkminit(pubkey) then bkminti} -->
 	{#if kind && typeof WebSocket !== 'undefined' && pubkey && $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
-		<NostrApp relays={$relaySet[pubkey].searchRelays}>
+		<NostrApp>
 			<!--header-->
 			<Header {kind} bind:bkm {pubkey} bind:viewEvent nevent={true} />
 

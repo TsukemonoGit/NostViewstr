@@ -90,17 +90,20 @@
     "title": "NostViewstr",
     "input_public_key": "🔑 public key",
     "publish": "Nsec is not saved in the browser.",
-    "Nip46_login": "If you are directly inputting the private key, using the NIP07 extension, or only viewing, it is unnecessary."
+    "Nip46_login": "If you are directly inputting the private key, using the NIP07 extension, or only viewing, it is unnecessary.",
+    "input_kind": "Kind of Lists",
+    "Json": "Read the JSON file of the list"
   },
   "mode": {
     "light_switch": "Switch between Light and Dark Mode",
-    "light": "Light mode",
+    "light": "View List in Light mode",
     "light_exp": "【Light mode】",
     "light_exp2": "URL preview (OGP) and Profile icon are not displayed. (reduces the amount of traffic)",
-    "normal": "Normal mode",
+    "normal": "View List in Normal mode",
     "normal_exp": "【Normal mode】",
     "normal_exp2": "URL preview (OGP), Profile icon will be displayed.",
-    "viewMode": "Please select a display mode"
+    "viewMode": "Please select a display mode",
+    "save": "Save settings and skip next time"
   },
   "modalEditTag": {
     "list": {

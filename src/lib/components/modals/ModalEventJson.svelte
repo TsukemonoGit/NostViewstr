@@ -5,7 +5,8 @@
 	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
 	import { _ } from 'svelte-i18n';
 	import { broadcast, parseNaddr } from '$lib/nostrFunctions';
-	import type { Nostr } from 'nosvelte';
+
+	import type Nostr from 'nostr-typedef';
 	import { relaySet } from '$lib/stores/relays';
 	import { nowProgress, pubkey_viewer } from '$lib/stores/settings';
 

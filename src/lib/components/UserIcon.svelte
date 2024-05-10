@@ -5,10 +5,13 @@
 
 	import LocationHomeIcon from '@material-design-icons/svg/round/person.svg?raw';
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
-	import { Metadata, Nostr } from 'nosvelte';
 
+	import Metadata from './nostrData/Metadata.svelte';
+	import type Nostr from 'nostr-typedef';
+	import { getRelays } from '$lib/nostrFunctions';
+	import { relaySet } from '$lib/stores/relays';
 	export let pubkey: string;
-
+	//	console.log(readTrueArray.length);
 	const metadataContentCheck = async (metadata: Nostr.Event) => {
 		try {
 			return JSON.parse(metadata.content);
@@ -23,7 +26,8 @@
 		ref: ModalProfile
 	};
 
-	const OpenProfile = (metadata: { pubkey: string } | Event) => {
+	const OpenProfile = (metadata: { pubkey: string } | Nostr.Event) => {
+		//console.log(metadata);
 		const modal: ModalSettings = {
 			type: 'component',
 			backdropClasses: '!bg-surface-400/80',
@@ -57,7 +61,12 @@
 <div
 	class="w-8 h-8 rounded-full flex justify-center overflow-hidden bg-surface-400 mt-1 items-center truncate text-sm"
 >
-	<Metadata queryKey={['metadata', pubkey]} {pubkey} let:metadata>
+	<Metadata
+		queryKey={['metadata', pubkey]}
+		{pubkey}
+		relay={$relaySet[pubkey].searchRelays}
+		let:metadata
+	>
 		<button
 			slot="loading"
 			on:click={() => {

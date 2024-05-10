@@ -12,7 +12,8 @@
 	import { isOneDimensionalArray } from '$lib/nostrFunctions';
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import { kindsValidTag, uniqueArray } from '$lib/kind';
-	import type { Nostr } from 'nosvelte';
+
+	import type Nostr from 'nostr-typedef';
 	import { relaySet } from '$lib/stores/relays';
 	import AddTypeNpub from './Add/AddTypeNpub.svelte';
 	import AddTypeNote from './Add/AddTypeNote.svelte';
@@ -307,7 +308,7 @@
 							bind:selectItem
 						/>
 					{/if}
-					{#if (tag === undefined && includesT) || (tag !== undefined && tag[0] === 'word')}
+					{#if (tag === undefined && includesW) || (tag !== undefined && tag[0] === 'word')}
 						<AddTypeRandTandWord
 							{res}
 							{parent}

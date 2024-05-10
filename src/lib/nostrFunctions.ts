@@ -12,10 +12,7 @@ import {
 	getPublicKey,
 	getSignature,
 	nip04,
-	nip19,
-	validateEvent,
-	verifiedSymbol,
-	verifySignature
+	nip19
 } from 'nostr-tools';
 import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 
@@ -26,18 +23,7 @@ import {
 	nowProgress,
 	nip46Check
 } from './stores/settings';
-import {
-	type Observer,
-	groupBy,
-	map,
-	mergeAll,
-	type MonoTypeOperatorFunction,
-	pipe,
-	scan,
-	Observable,
-	timer,
-	takeUntil
-} from 'rxjs';
+import { type Observer, type MonoTypeOperatorFunction, Observable } from 'rxjs';
 
 import {
 	createRxNostr,
@@ -47,16 +33,17 @@ import {
 	latest,
 	completeOnTimeout,
 	latestEach,
-	type EventPacket
+	type EventPacket,
+	type RxNostr,
+	createRxBackwardReq,
+	now,
+	type LazyFilter,
+	type RxReq,
+	type RxReqOverable,
+	type RxReqPipeable
 } from 'rx-nostr';
 import { get } from 'svelte/store';
-import {
-	//bookmarkEvents,
-	//identifierList,
-	naddrStore,
-	type Identifiers,
-	type NaddrStore
-} from './stores/bookmarkEvents';
+
 import {
 	//bookmarkRelays,
 	defaultRelays,
@@ -65,20 +52,11 @@ import {
 	//relayEvent,
 	relaySearchRelays,
 	relaySet,
-	relayStore,
 	type RelayConfig
 	//searchRelays
 } from './stores/relays';
-import type { ToastSettings } from '@skeletonlabs/skeleton';
-import { toastStore } from './stores/store';
-import type { Nostr } from 'nosvelte';
-
-interface Kind3Relay {
-	[key: string]: {
-		read: boolean;
-		write: boolean;
-	};
-}
+import type Nostr from 'nostr-typedef';
+import { setDefaultRelays } from './streamEventLists';
 
 export function parseNaddr(tag: string[]): AddressPointer {
 	const [, reference, relay] = tag; // 配列の2番目の要素を取り出す
@@ -138,65 +116,6 @@ export async function getIdByTag(
 	}
 }
 
-// let storeValue: NaddrStore;
-
-// // Storeの値を読み込む
-// naddrStore.subscribe((value) => {
-// 	storeValue = value;
-// });
-
-// let searchValue: string[];
-// searchRelays.subscribe((value) => {
-// 	searchValue = value;
-// });
-
-async function getEvent(naddr: {
-	kind: number;
-	pubkey: string;
-	identifier: string;
-	relays?: string[];
-}) {
-	const addressPointer = nip19.naddrEncode({
-		identifier: naddr.identifier,
-		pubkey: naddr.pubkey,
-		kind: naddr.kind
-	});
-	console.log(naddrStore);
-	// naddrStoreの内容を確認し、イベントが存在しない場合のみ取得と保存を行う
-	const naddrs = get(naddrStore);
-	const searchR = get(relaySet)[naddr.pubkey].searchRelays;
-	if (!(addressPointer in naddrs)) {
-		const relays = searchR && searchR.length > 0 ? searchR : defaultRelays;
-		// naddr.relays && naddr.relays.length > 0 ? naddr.relays : RelaysforSearch;
-		const filter =
-			naddr.identifier.trim() !== ''
-				? [
-						{
-							authors: [naddr.pubkey],
-							'#d': [naddr.identifier],
-							kinds: [naddr.kind]
-						}
-				  ]
-				: [
-						{
-							authors: [naddr.pubkey],
-							kinds: [naddr.kind]
-						}
-				  ];
-		const res = await fetchFilteredEvents(relays, filter);
-
-		if (res.length > 0) {
-			res.sort((a, b) => b.created_at - a.created_at);
-			// 取得したイベントをnaddrStoreに保存
-			naddrs[addressPointer] = res[0];
-			naddrStore.set(naddrs);
-			return res[0];
-		}
-	} else {
-		return naddrs[addressPointer];
-	}
-}
-
 export function windowOpen(str: string): void {
 	window.open(
 		// //nostr.bandはaタグでの検索ができない
@@ -211,159 +130,6 @@ export function windowOpen(str: string): void {
 	);
 }
 
-// ///
-// export async function publishEventWithTimeout(
-// 	obj: Event,
-// 	relays: string[],
-// 	timeout: number = 5000
-// ): Promise<{
-// 	isSuccess: boolean;
-// 	event?: Nostr.Event;
-// 	msg: string;
-// }> {
-// 	if (relays.length === 0) {
-// 		console.error('relay設定されてない');
-// 		return { isSuccess: false, msg: 'relayが設定されていません' };
-// 	}
-// 	let isSuccess = false;
-// 	const msgObj: { [relay: string]: boolean } = {};
-// 	relays.forEach((relay) => {
-// 		msgObj[relay] = false;
-// 	});
-// 	console.log(obj);
-
-// 	const pubkey = await getPub();
-// 	if (obj.pubkey === '') {
-// 		obj.pubkey = pubkey;
-// 	} else if (obj.pubkey !== pubkey) {
-// 		console.log('ログイン中のpubとsignEvのpubが違う');
-
-// 		return { isSuccess: false, msg: 'login error' };
-// 	}
-
-// 	try {
-// 		// const t: ToastSettings = {
-// 		// 	message: `publishing ...`
-// 		// };
-// 		// const publishingToast = toastStore.trigger(t);
-// 		const event = obj;
-// 		event.id = getEventHash(event);
-// 		console.log(event);
-// 		const rxNostr = createRxNostr();
-
-// 		await rxNostr.setRelays(relays); //[...relays, 'wss://test']);
-// 		const sec = get(nsec);
-// 		const result = await Promise.race([
-// 			new Promise<{
-// 				isSuccess: boolean;
-// 				msg: string;
-// 				event?: Nostr.Event;
-// 			}>((resolve) => {
-// 				const subscription = rxNostr.send(event, sec).subscribe({
-// 					next: (packet) => {
-// 						//	console.log(packet);
-// 						msgObj[packet.from] = true;
-// 						isSuccess = true;
-// 					},
-// 					complete: () => {
-// 						resolve({
-// 							isSuccess,
-// 							event: event,
-// 							msg: formatResults(msgObj)
-// 						});
-// 					}
-// 				});
-// 			}),
-// 			new Promise<{
-// 				isSuccess: boolean;
-// 				msg: string;
-// 				event?: Nostr.Event;
-// 			}>((resolve) => {
-// 				setTimeout(() => {
-// 					const hasTrue = Object.values(msgObj).some((value) => value === true);
-// 					console.log(
-// 						'timeout',
-// 						event,
-// 						formatResults(msgObj),
-// 						hasTrue,
-// 						isSuccess
-// 					);
-// 					resolve({
-// 						isSuccess: hasTrue,
-// 						event: event,
-// 						msg: formatResults(msgObj)
-// 					});
-// 				}, timeout);
-// 			})
-// 		]);
-// 		//	toastStore.close(publishingToast);
-// 		return result;
-// 	} catch (error) {
-// 		return { isSuccess: false, msg: 'まだ書き込みできないよ' };
-// 	}
-// }
-// try {
-// 	//const event = await signEv(obj);
-// 	const event = obj;
-// 	event.id = getEventHash(event);
-// 	console.log(event);
-// 	//console.log(validateEvent(event));
-// 	//console.log(verifySignature(event));
-// 	const rxNostr = createRxNostr();
-
-// 	await rxNostr.setRelays(relays);
-// 	const sec = get(nsec); //nsecでの書き込みはできません（たぶんrx-nostrのバージョン）
-// 	// Promiseを作成してObservableを待機
-// 	const result =
-// 		sec && sec !== ''
-// 			? await new Promise<{
-// 					isSuccess: boolean;
-// 					msg: string;
-// 					event?: Nostr.Event;
-// 			  }>((resolve) => {
-// 					rxNostr.send(event, sec).subscribe({
-// 						next: (packet) => {
-// 							console.log(packet);
-// 							msgObj[packet.from] = true;
-// 							isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
-// 						},
-// 						complete: () => {
-// 							resolve({
-// 								isSuccess,
-// 								event: event,
-// 								msg: formatResults(msgObj)
-// 							}); // complete時に結果を解決してresolve
-// 						}
-// 					});
-// 			  })
-// 			: await new Promise<{
-// 					isSuccess: boolean;
-// 					msg: string;
-// 					event?: Nostr.Event;
-// 			  }>((resolve) => {
-// 					rxNostr.send(event).subscribe({
-// 						next: (packet) => {
-// 							console.log(packet);
-// 							msgObj[packet.from] = true;
-// 							isSuccess = true; // packet.ok; // パケットの情報に基づいて isSuccess を設定
-// 						},
-// 						complete: () => {
-// 							resolve({
-// 								isSuccess,
-// 								event: event,
-// 								msg: formatResults(msgObj)
-// 							}); // complete時に結果を解決してresolve
-// 						}
-// 					});
-// 			  });
-// 	toastStore.close(publishingToast);
-// 	return result;
-// } catch (error) {
-// 	toastStore.close(publishingToast);
-// 	return { isSuccess: false, msg: 'まだ書き込みできないよ' };
-// }
-//}
-
 // リレーの結果を指定の形式に整形
 export function formatResults(msg: { [relay: string]: boolean }): string {
 	let resultString = '';
@@ -371,95 +137,6 @@ export function formatResults(msg: { [relay: string]: boolean }): string {
 		resultString += msg[relay] ? `OK ${relay}<br/>` : `failed ${relay}<br/>`;
 	}
 	return resultString;
-}
-// ErrorOptions型の定義
-type ErrorOptions = {
-	isSuccess: boolean;
-	event?: Nostr.Event;
-	msg: string;
-};
-
-///
-export async function publishEvent(
-	obj: Event,
-	relays: string[]
-): Promise<{ isSuccess: boolean; event?: Nostr.Event; msg: string }> {
-	if (relays.length === 0) {
-		console.error('relay設定されてない');
-		return { isSuccess: false, msg: 'relayが設定されていません' };
-	}
-	let isSuccess = false;
-	const msgObj: { [relay: string]: boolean } = {}; // リレーごとの結果を格納するオブジェクト
-	// すべてのリレーの結果を初期値として false に設定
-	relays.forEach((relay) => {
-		msgObj[relay] = false;
-	});
-	console.log(obj);
-	console.log(relays);
-	const pubkey = await getPub(true); //書き込みたいときには再度のNIP46チェックも含む
-	if (obj.pubkey === '') {
-		obj.pubkey = pubkey;
-	} else if (obj.pubkey !== pubkey) {
-		console.log('ログイン中のpubとsignEvのpubが違う');
-		//const message = `$_('msg.nanka')`;
-		return { isSuccess: false, msg: 'login error' };
-	}
-	try {
-		const event = await signEv(obj); // window.nostr.signEvent(obj);
-		event.id = getEventHash(event);
-
-		const pool = new SimplePool();
-		const pubs = pool.publish(relays, event);
-
-		// プロミスの競合タイムアウトを設定
-		const timeoutPromise = new Promise((_, reject) => {
-			setTimeout(() => {
-				reject({
-					errorOptions: {
-						isSuccess: isSuccess,
-						event: event,
-						msg: formatResults(msgObj)
-					}
-				});
-			}, 3000); // 1.5秒のタイムアウト
-		});
-
-		const result = await Promise.race([
-			Promise.allSettled(pubs),
-			timeoutPromise
-		]);
-
-		if (result instanceof Error) {
-			console.error('Timeout occurred');
-		}
-
-		const pubsResults: PromiseSettledResult<unknown>[] =
-			await Promise.allSettled(pubs);
-
-		pubsResults.forEach((result, index) => {
-			console.log(result);
-			if (result.status === 'fulfilled') {
-				console.log(`success ${relays[index]} `);
-				isSuccess = true;
-				msgObj[relays[index]] = true;
-			} else {
-				console.log(`failed ${relays[index]}: ${result.reason}`);
-			}
-		});
-
-		return { isSuccess: isSuccess, event: event, msg: formatResults(msgObj) };
-	} catch (error) {
-		if (error && typeof error === 'object' && 'errorOptions' in error) {
-			const { isSuccess, event, msg } = (
-				error as { errorOptions: ErrorOptions }
-			).errorOptions;
-			console.log('Timeout occurred');
-			return { isSuccess, event, msg };
-		} else {
-			console.log(error);
-			return { isSuccess: false, msg: `failed to publish` };
-		}
-	}
 }
 
 //--------------------------------------------------nip07かnsecかでやるやつ
@@ -642,224 +319,53 @@ export function idlatestEach(): MonoTypeOperatorFunction<EventPacket> {
 	};
 }
 
-//---------------------------------------------------------------
-// export async function StoreFetchFilteredEvents(
-// 	pubkey: string,
-// 	kind: number,
-// 	data: {
-// 		relays: string[];
-// 		filters: Nostr.Filter[];
-// 	}
-// ): Promise<void> {
-// 	nowProgress.set(true);
-// 	let eventsData = get(bookmarkEvents);
-// 	try {
-// 		const check = eventsData[pubkey][kind]; // すでにデータがあるか確認
-// 		if (check.length === 0) {
-// 			throw new Error();
-// 		}
-// 		// データがある場合は何もせず終了
-// 		nowProgress.set(false);
-// 		return;
-// 	} catch (error) {
-// 		// データがない場合にデータを取得する
-// 		if (!eventsData[pubkey]) {
-// 			eventsData = { ...eventsData, [pubkey]: {} };
-// 		}
+export async function getRelays(author: string) {
+	const filters: Nostr.Filter[] = [
+		{ authors: [author], kinds: [3, 10002], until: now() }
+	];
+	const kekka = await getRelayEvents(filters, relaySearchRelays);
 
-// 		try {
-// 			// 新しいイベントを作成してデータに追加
-// 			const newEvent: Nostr.Event[] = await fetchFilteredEvents(
-// 				data.relays,
-// 				data.filters
-// 			);
+	//リレー用イベント取ってきたらそれをセットする
+	await setRelays(author, kekka);
 
-// 			//so-tosite
-// 			if (newEvent.length > 1) {
-// 				newEvent.sort((a, b) => {
-// 					const tagID_A = a.tags[0]?.[1];
-// 					const tagID_B = b.tags[0]?.[1];
-// 					return tagID_A.localeCompare(tagID_B);
-// 				});
-// 			}
-// 			eventsData = {
-// 				...eventsData,
-// 				[pubkey]: { ...eventsData[pubkey], [kind]: newEvent }
-// 			};
-// 			console.log(eventsData);
-// 			// 更新したデータをストアにセット
-// 			bookmarkEvents.set(eventsData);
+	//リレー設定変えてもっかい撮ってきてみる
+	const kekka2 = await getRelayEvents(
+		filters,
+		get(relaySet)[author].bookmarkRelays
+	);
 
-// 			//IdentifierListも更新する
-// 			const identifierListData = get(identifierList);
-// 			const newIdentifierList: Identifiers[] =
-// 				newEvent.map((item) => {
-// 					const tag = item.tags.find((tag) => tag[0] === 'd');
-// 					const title = item.tags.find((tag) => tag[0] === 'title');
-// 					const image = item.tags.find((tag) => tag[0] === 'image');
-// 					const description = item.tags.find((tag) => tag[0] === 'description');
-// 					return {
-// 						identifier: tag ? tag[1] : undefined,
-// 						title: title ? title[1] : undefined,
-// 						image: image ? image[1] : undefined,
-// 						description: description ? description[1] : undefined
-// 					};
-// 				}) ?? [];
+	//リレー用イベント取ってきたらそれをセットする
+	await setRelays(author, kekka2);
 
-// 			identifierList.set({
-// 				...identifierListData,
-// 				[pubkey]: { ...identifierListData[pubkey], [kind]: newIdentifierList }
-// 			});
-// 		} catch (error) {
-// 			console.error('Failed to fetch filtered events:', error);
-// 			// エラー処理が必要な場合に追加
-// 		}
-
-// 		nowProgress.set(false);
-// 	}
-// }
-
-//----------------------------------------------------------------
-export async function fetchFilteredEvents(
-	relays: string[],
-	filters: Nostr.Filter[]
-): Promise<Nostr.Event[]> {
-	console.log(`fetchFilteredEvents ` + JSON.stringify(filters[0]));
-	if (relays.length === 0) {
-		console.error('relay設定されてない');
-		return [];
-	}
-	//console.log(filters);
-
-	const rxNostr = createRxNostr();
-	//console.log(relays);
-
-	rxNostr.setRelays(relays);
-
-	console.log('[rx-nostr getRelays]', rxNostr.getRelays());
-	const rxReq = createRxOneshotReq({ filters });
-	//	console.log(filters[0].kinds);
-	// データの購読
-	const observable =
-		filters[0].kinds &&
-		filters[0].kinds[0] >= 30000 &&
-		filters[0].kinds[0] < 40000
-			? rxNostr.use(rxReq).pipe(
-					completeOnTimeout(3000),
-					uniq(),
-					verify(),
-
-					idlatestEach()
-					//	(packet) => packet.event.tags[0][1] //.find((item) => item[0] === 'd')
-			  )
-			: rxNostr
-					.use(rxReq)
-					.pipe(uniq(), verify(), latest(), completeOnTimeout(3000));
-
-	let eventList: Nostr.Event<number>[] = [];
-	// オブザーバーオブジェクトの作成
-	const observer: Observer<any> = {
-		next: (packet: { event: Nostr.Event<number> }) => {
-			console.log('[rx-nostr packet]', packet);
-			//たぶんIDありのほうは終わりまで待ってから返してる多分からとりあえず
-			//それ以外の方をCreated_at新しいのだけにする。
-			if (
-				filters[0].kinds &&
-				(filters[0].kinds[0] < 30000 || filters[0].kinds[0] >= 40000)
-			) {
-				if (eventList.length === 0) {
-					eventList.push(packet.event);
-				} else if (packet.event.created_at > eventList[0].created_at) {
-					eventList[0] = packet.event;
-				}
-			} else {
-				eventList.push(packet.event);
-			}
-			// if (filters[0].kinds) {
-			// 	if (
-			// 		filters[0].kinds[0] >= 30000 &&
-			// 		filters[0].kinds[0] < 40000 &&
-			// 		packet.event.tags[0][0] === 'd'
-			// 	) {
-			// 		const tagID = packet.event.tags[0][1];
-			// 		const existingEvent = eventMap.get(tagID);
-			// 		if (
-			// 			!existingEvent ||
-			// 			packet.event.created_at > existingEvent.created_at
-			// 		) {
-			// 			eventMap.set(tagID, packet.event);
-			// 		}
-			// 	} else {
-			// 		if (
-			// 			returnEvent.id === '' ||
-			// 			packet.event.created_at > returnEvent.created_at
-			// 		) {
-			// 			returnEvent = packet.event;
-			// 		}
-			// 	}
-			// }
-		},
-		error: (error) => {
-			console.error('Error occurred:', error);
-		},
-		complete: () => {
-			console.log('Subscription completed');
-		}
-	};
-
-	// 購読開始
-	const subscription = observable.subscribe(observer);
-
-	// 5秒後に購読を停止
-	// setTimeout(() => {
-	// 	subscription.unsubscribe();
-	// }, 5 * 1000);
-
-	//Observable の完了を待つ
-	await new Promise<void>((resolve) => {
-		subscription.add(() => {
-			resolve();
-		});
-	});
-
-	console.log(`[fetchFilteredEvents]`);
-	console.log(eventList);
-	//nowProgress.set(false);
-	return eventList;
-	// if (returnEvent.id !== '') {
-	// 	return [returnEvent];
-	// } else if (eventMap.size > 0) {
-	// 	const eventArray: Nostr.Event[] = Array.from(eventMap.values());
-	// 	console.log(eventArray);
-
-	// 	return eventArray;
-	// } else {
-	// 	throw new Error(
-	// 		`${JSON.stringify(filters)}に一致するイベントが見つかりませんでした`
-	// 	);
-	// }
+	return kekka2;
 }
 
-export async function getRelays(author: string) {
+async function getRelayEvents(
+	filters: Nostr.Filter[],
+	relays: string[]
+): Promise<{ [key: number]: Nostr.Event | undefined }> {
 	const rxNostr = createRxNostr();
-	rxNostr.setRelays(relaySearchRelays);
-	console.log(rxNostr.getRelays());
-	const filters: Nostr.Filter[] = [{ authors: [author], kinds: [3, 10002] }];
-	console.log(filters);
-	const rxReq = createRxOneshotReq({ filters });
+	// インデックスシグネチャを修正する
+	const rxReq = createRxBackwardReq();
+
 	// データの購読
 	const observable = rxNostr.use(rxReq).pipe(
 		verify(),
 		uniq(),
 		latestEach((packet: { event: { kind: number } }) => packet.event.kind),
-		completeOnTimeout(2000)
-	); //verify()はなんかThe following error occurred during verify(): TypeError: Expected input type is Uint8Array (got object)エラーがテストだと出る（？）
-	const kekka: Nostr.Event<number>[] = [];
+		completeOnTimeout(3000)
+	);
+	const kekka: { [key: number]: Nostr.Event | undefined } = {};
 	// 購読開始
 	const subscription = observable.subscribe({
 		next: (packet) => {
 			console.log(packet);
-			kekka.push(packet.event);
+			if (
+				!kekka[packet.event.kind] ||
+				packet.event.created_at > (kekka[packet.event.kind]?.created_at ?? 0)
+			) {
+				kekka[packet.event.kind] = packet.event;
+			}
 		},
 		error: (error) => {
 			console.log(error);
@@ -868,7 +374,8 @@ export async function getRelays(author: string) {
 			console.log('owari');
 		}
 	});
-
+	rxReq.emit(filters, { relays: relays });
+	rxReq.over();
 	// Observable の完了を待つ
 	await new Promise<void>((resolve) => {
 		subscription.add(() => {
@@ -876,41 +383,59 @@ export async function getRelays(author: string) {
 		});
 	});
 
-	//リレー用イベント取ってきたらそれをセットする
-	await setRelays(author, kekka);
-
+	subscription.unsubscribe();
+	rxNostr.dispose();
+	console.log('kekka', kekka);
 	return kekka;
 }
 
-export async function setRelays(pubkey: string, events: NostrEvent[]) {
+export async function setRelays(
+	pubkey: string,
+	events: { [key: number]: Nostr.Event | undefined }
+) {
 	console.log(`setting relays...`);
 	let read: string[] = [];
 	let write: string[] = [];
-	const kind10002 = events.find((item) => item.kind === 10002);
-	const kind3 = events.find((item) => item.kind === 3);
-	//const tmp_relaySet = get(relaySet);
+	const kind10002 = events[10002];
+	const kind3 = events[3];
+	//まず今持ってる値を確認する
+	// const relaySetData = get(relaySet);
+	// if(relaySetData.hasOwnProperty(pubkey));
+	const tmp_relaySet = get(relaySet);
 	const tmp_relay: RelayConfig = { ...initRelaySet };
 	// もし pubKey が存在しなければ初期化
-	// if (!tmp_relaySet[pubkey]) {
-	// 	tmp_relaySet[pubkey] = { ...initRelaySet };
-	//}
+	if (tmp_relaySet[pubkey]?.relayEvent !== undefined) {
+		const tmp = tmp_relaySet[pubkey].relayEvent as Nostr.Event;
+		if (
+			tmp.kind === 3 &&
+			!kind10002 &&
+			((kind3 && tmp.created_at > kind3?.created_at) || !kind3)
+		) {
+			return;
+		} else if (
+			tmp.kind === 10002 &&
+			(!kind10002 || (kind10002 && tmp.created_at > kind10002.created_at))
+		) {
+			return;
+		}
+	}
 
 	if (kind10002 && kind10002.tags.length > 0) {
 		for (const item of kind10002.tags) {
 			const relayURL = item[1].endsWith('/') ? item[1] : item[1] + '/';
 
 			if (item[0] === 'r') {
-				const existRelay = await checkRelayExist(relayURL);
-				if (existRelay) {
-					if (item.length < 3) {
-						read.push(relayURL);
-						write.push(relayURL);
-					} else if (item[2] === 'read') {
-						read.push(relayURL);
-					} else if (item[2] === 'write') {
-						write.push(relayURL);
-					}
+				// const existRelay = await checkRelayExist(relayURL);
+				// if (existRelay) {
+				if (item.length < 3) {
+					read.push(relayURL);
+					write.push(relayURL);
+				} else if (item[2] === 'read') {
+					read.push(relayURL);
+				} else if (item[2] === 'write') {
+					write.push(relayURL);
 				}
+				//}
 			}
 
 			tmp_relay.relayEvent = kind10002;
@@ -921,15 +446,15 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 			for (const item of Object.keys(relays)) {
 				const relayURL = item.endsWith('/') ? item : item + '/';
 
-				const existRelay = await checkRelayExist(relayURL);
-				if (existRelay) {
-					if (relays[item].read) {
-						read.push(relayURL);
-					}
-					if (relays[item].write) {
-						write.push(relayURL);
-					}
+				// const existRelay = await checkRelayExist(relayURL);
+				// if (existRelay) {
+				if (relays[item].read) {
+					read.push(relayURL);
 				}
+				if (relays[item].write) {
+					write.push(relayURL);
+				}
+				//}
 			}
 
 			tmp_relay.relayEvent = kind3;
@@ -963,69 +488,7 @@ export async function setRelays(pubkey: string, events: NostrEvent[]) {
 	console.log('pub, tmp_relay', pubkey, tmp_relay);
 	relaySet.set({ ...get(relaySet), [pubkey]: tmp_relay });
 	console.log(`complete set relsys`, get(relaySet));
-}
-
-// そのURLのリレーが存在するか確認 NIP11
-export async function checkRelayExist(relay: string, timeout: number = 1000) {
-	const relayStr = get(relayStore);
-	if (relayStr.has(relay)) {
-		console.log('すでにあるよ', relayStr.get(relay));
-		return true;
-	}
-	let urlstr, url; //protocol,
-	if (relay.startsWith('ws://')) {
-		// inputValueがws://から始まる場合
-		//protocol = 'ws';
-		urlstr = relay.slice(5); // ws://の部分を削除した残りの文字列を取得する
-		url = new URL('http://' + urlstr);
-	} else if (relay.startsWith('wss://')) {
-		// inputValueがwss://から始まる場合
-		//protocol = 'wss';
-		urlstr = relay.slice(6); // wss://の部分を削除した残りの文字列を取得する
-		url = new URL('https://' + urlstr);
-	} else {
-		// console.log('test');
-		return false;
-		// throw new Error('error');
-	}
-
-	let header = new Headers();
-	header.set('Accept', 'application/nostr+json');
-
-	// AbortControllerを作成し、timeoutミリ秒後にabort()を呼び出す
-	const controller = new AbortController();
-	const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-	try {
-		let response = await fetch(url, {
-			headers: header,
-			signal: controller.signal
-		});
-		console.log(response);
-
-		//console.log(response.ok);
-
-		// タイムアウトが発生した場合、response.okもfalseになります
-		if (response.ok) {
-			console.log('せっとするよ', relayStr.set(relay, await response.json()));
-			return true;
-		} else {
-			return false;
-		}
-	} catch (error) {
-		if (error instanceof Error) {
-			if (error.name === 'AbortError') {
-				console.log('Request timed out');
-			} else {
-				console.log(error);
-			}
-		}
-		return false;
-		// throw new Error('error');
-	} finally {
-		// クリーンアップ: タイムアウト用のタイマーをクリア
-		clearTimeout(timeoutId);
-	}
+	setDefaultRelays(get(relaySet)[pubkey].bookmarkRelays);
 }
 
 export async function checkInputNpub(r: string): Promise<{
@@ -1212,82 +675,6 @@ async function validateNoteId(str: string): Promise<{
 	console.log(res);
 	return res;
 }
-
-// export async function updateBkmTag(pubkey: string, kind: number, num: number) {
-// 	console.log(`updateBkmTag[${get(identifierList)[num]}] updating...`);
-// 	const t: ToastSettings = {
-// 		message: `list updating ...`,
-// 		autohide: false
-// 	};
-// 	const updatingToast = toastStore.trigger(t);
-// 	const bkm = get(bookmarkEvents);
-
-// 	const relays = get(relaySet)[pubkey].bookmarkRelays;
-// 	if (
-// 		bkm[pubkey][kind] &&
-// 		bkm[pubkey][kind] !== undefined &&
-// 		bkm[pubkey][kind].length > num &&
-// 		relays.length > 0
-// 	) {
-// 		//すでにイベントが有る場合（更新の場合）
-// 		const dtag = bkm[pubkey][kind][num].tags.find((tag) => tag[0] === 'd');
-// 		const filter: Nostr.Filter =
-// 			dtag !== undefined
-// 				? {
-// 						kinds: [bkm[pubkey][kind][num].kind],
-// 						authors: [bkm[pubkey][kind][num].pubkey],
-// 						'#d': [dtag[1]]
-// 				  }
-// 				: {
-// 						kinds: [bkm[pubkey][kind][num].kind],
-// 						authors: [bkm[pubkey][kind][num].pubkey]
-// 				  };
-
-// 		const res = await fetchFilteredEvents(relays, [filter]);
-// 		if (
-// 			res.length > 0 &&
-// 			res[0].created_at >= bkm[pubkey][kind][num].created_at
-// 		) {
-// 			bkm[pubkey][kind][num] = res[0];
-// 			bookmarkEvents.set(bkm);
-
-// 			//IdentifierListも更新する
-// 			const identifierListData = get(identifierList);
-
-// 			const tag = bkm[pubkey][kind][num].tags.find((tag) => tag[0] === 'd');
-// 			const title = bkm[pubkey][kind][num].tags.find(
-// 				(tag) => tag[0] === 'title'
-// 			);
-// 			const image = bkm[pubkey][kind][num].tags.find(
-// 				(tag) => tag[0] === 'image'
-// 			);
-// 			const description = bkm[pubkey][kind][num].tags.find(
-// 				(tag) => tag[0] === 'description'
-// 			);
-// 			const newIdentifierList: Identifiers = {
-// 				identifier: tag ? tag[1] : undefined,
-// 				title: title ? title[1] : undefined,
-// 				image: image ? image[1] : undefined,
-// 				description: description ? description[1] : undefined
-// 			};
-
-// 			identifierListData[pubkey][kind][num] = newIdentifierList;
-// 			identifierList.set(identifierListData);
-
-// 			console.log(
-// 				`updateBkmTag[${get(identifierList)[pubkey][kind][num]}] updated`
-// 			);
-// 		}
-// 		//もともとあるでーたのcreated_atが新しい場合何もしない
-// 	} else {
-// 		//no dataのばあい最初に開いたときの処理と同じをする
-// 		await StoreFetchFilteredEvents(pubkey, kind, {
-// 			relays: relays,
-// 			filters: [{ kinds: [kind], authors: [pubkey] }]
-// 		});
-// 	}
-// 	toastStore.close(updatingToast);
-// }
 
 //タグごと追加の項目で入力された値が一次元配列かどうかを確認
 export function isOneDimensionalArray(arr: string[]) {

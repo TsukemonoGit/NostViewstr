@@ -2,7 +2,8 @@
 <script lang="ts">
 	import { iconView } from '$lib/stores/settings';
 	import { nip19 } from 'nostr-tools';
-	import type { Nostr } from 'nosvelte';
+
+	import type Nostr from 'nostr-typedef';
 	import Ogp from './OGP.svelte';
 	export let text: string;
 
