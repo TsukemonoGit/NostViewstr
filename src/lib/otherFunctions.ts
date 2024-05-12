@@ -300,3 +300,21 @@ export async function copyNaddr(selectedIndex: SelectIndex): Promise<boolean> {
 		}
 	);
 }
+
+//wssでもhttpでも
+export async function copyRelayURL(
+	selectedIndex: SelectIndex
+): Promise<boolean> {
+	const text = selectedIndex?.detail?.tagArray?.[1];
+	if (!text) return false;
+	return navigator.clipboard.writeText(text).then(
+		() => {
+			// コピーに成功したときの処理
+			return true;
+		},
+		() => {
+			// コピーに失敗したときの処理
+			return false;
+		}
+	);
+}

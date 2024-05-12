@@ -38,7 +38,12 @@
 	} from '@skeletonlabs/skeleton';
 	import EventandButtons from './EventandButtons.svelte';
 
-	import { copyNaddr, copyNoteId, type SelectIndex } from '$lib/otherFunctions';
+	import {
+		copyNaddr,
+		copyNoteId,
+		copyRelayURL,
+		type SelectIndex
+	} from '$lib/otherFunctions';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
@@ -357,7 +362,7 @@
 							selectedIndex.detail.number,
 							selectedIndex.detail.tagArray
 						);
-						//atodekaku
+						//atodekaku ←？
 					}}
 					><svelte:fragment slot="lead">{@html EditIcon}</svelte:fragment
 					>Edit</ListBoxItem
@@ -475,17 +480,31 @@
 					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
 					NoteID</ListBoxItem
 				>{/if}
-			<ListBoxItem
-				name="medium"
-				value="detail"
-				bind:group={comboboxValue}
-				on:click={() => {
-					comboboxValue = '';
-					OpenNoteJson(selectedIndex);
-				}}
-				><svelte:fragment slot="lead">{@html DescriptionIcon}</svelte:fragment
-				>View Detail</ListBoxItem
-			>
+
+			{#if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'r' || selectedIndex.detail.tagArray[0] === 'relay')}
+				<!--wssでもhttpでも-->
+				<ListBoxItem
+					name="medium"
+					value="relay"
+					bind:group={comboboxValue}
+					on:click={async () => {
+						comboboxValue = '';
+						const res = await copyRelayURL(selectedIndex);
+						const toast = res
+							? {
+									message: `copied`,
+									timeout: 3000
+							  }
+							: {
+									message: `failed`,
+									timeout: 3000,
+									background: 'bg-orange-500 text-white width-filled '
+							  };
+						toastStore.trigger(toast);
+					}}
+					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
+					URL</ListBoxItem
+				>{/if}
 		</ListBox>
 		<div class="arrow bg-primary-400-500-token" />
 		<!-- <div class="arrow bg-surface-100-800-token border" /> -->
