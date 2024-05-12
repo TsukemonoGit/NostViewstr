@@ -459,9 +459,10 @@
 					res.check
 				);
 			} catch (error) {
-				//console.log(error);
+				const errorMessage = (error as Error).message;
+
 				const t = {
-					message: $_('toast.failed_publish'),
+					message: errorMessage ?? $_('toast.failed_publish'),
 					timeout: 3000,
 					background: 'bg-orange-500 text-white width-filled '
 				};
@@ -505,7 +506,7 @@
 							);
 
 							if (index !== -1) {
-								throw Error(`$_('toast.invalidEmoji')`);
+								throw Error(`${$_('toast.invalidEmoji')}`);
 							}
 						});
 					}

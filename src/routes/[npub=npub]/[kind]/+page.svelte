@@ -12,14 +12,7 @@
 
 	export let data: PageData;
 	let saveCheck: boolean;
-	// 初回のみ saveCheck を true にする
-	let initialized = false;
-	$: {
-		if (!initialized && $saveObj !== null) {
-			saveCheck = true;
-			initialized = true;
-		}
-	}
+
 	onMount(() => {
 		if ($iconView === undefined) {
 			try {
@@ -31,7 +24,6 @@
 					$saveObj = JSON.parse(saveInfo);
 				}
 				if ($saveObj) {
-					saveCheck = true;
 					$iconView = $saveObj.iconView;
 					$URLPreview = $saveObj.URLPreview;
 				}
