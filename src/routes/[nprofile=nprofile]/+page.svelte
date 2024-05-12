@@ -13,14 +13,7 @@
 
 	export let data: PageData;
 	let saveCheck: boolean;
-	// 初回のみ saveCheck を true にする
-	let initialized = false;
-	$: {
-		if (!initialized && $saveObj !== null) {
-			saveCheck = true;
-			initialized = true;
-		}
-	}
+
 	onMount(() => {
 		try {
 			if (!$saveObj) {
@@ -31,11 +24,13 @@
 				$saveObj = JSON.parse(saveInfo);
 			}
 			if ($saveObj) {
-				saveCheck = true;
 				$iconView = $saveObj.iconView;
 				$URLPreview = $saveObj.URLPreview;
 			}
 		} catch (error) {}
+		if ($saveObj) {
+			saveCheck = true;
+		}
 	});
 	function settingFunc() {
 		settings = true;

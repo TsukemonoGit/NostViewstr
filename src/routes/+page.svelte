@@ -18,14 +18,7 @@
 	import { onMount } from 'svelte';
 	import { navigating } from '$app/stores';
 	let saveCheck: boolean;
-	// 初回のみ saveCheck を true にする
-	let initialized = false;
-	$: {
-		if (!initialized && $saveObj !== null) {
-			saveCheck = true;
-			initialized = true;
-		}
-	}
+
 	$: kind = Number(Object.keys(kinds)[0]);
 
 	let inputValue: string;
@@ -42,12 +35,14 @@
 					$saveObj = JSON.parse(saveInfo);
 				}
 				if ($saveObj) {
-					saveCheck = true;
 					$iconView = $saveObj.iconView;
 					$URLPreview = $saveObj.URLPreview;
 					goto(`./${nip19.npubEncode($saveObj.pub)}/${$saveObj.kind}`);
 				}
 			} catch (error) {}
+		}
+		if ($saveObj) {
+			saveCheck = true;
 		}
 	});
 

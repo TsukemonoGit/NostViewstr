@@ -14,14 +14,7 @@
 	export let data;
 	let settings: boolean = false;
 	let saveCheck: boolean;
-	// 初回のみ saveCheck を true にする
-	let initialized = false;
-	$: {
-		if (!initialized && $saveObj !== null) {
-			saveCheck = true;
-			initialized = true;
-		}
-	}
+
 	//わざわざこのページ経由する人はべつにgoto捺せ無くていいんじゃ？
 	onMount(() => {
 		try {
@@ -33,6 +26,9 @@
 				$saveObj = JSON.parse(saveInfo);
 			}
 		} catch (error) {}
+		if ($saveObj) {
+			saveCheck = true;
+		}
 	});
 	function settingFunc() {
 		settings = true;
