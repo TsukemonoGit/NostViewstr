@@ -17,7 +17,9 @@ export const kinds: { [name: number]: string } = {
 	10005: 'public chats',
 	10002: 'relays',
 	10007: 'search relays',
-	30002: 'relay sets'
+	30002: 'relay sets',
+	10101: 'good wiki authors',
+	10102: 'good wiki relays'
 };
 
 export let kindsValidTag: { [key: number]: string[] } = {
@@ -39,7 +41,9 @@ export let kindsValidTag: { [key: number]: string[] } = {
 	10005: ['e'], //kind40 (kind:40 channel definitions)
 	10002: ['r'],
 	10007: ['relay'],
-	30002: ['relay']
+	30002: ['relay'],
+	10101: ['p'],
+	10102: ['relay']
 };
 
 // 重複を排除して新しい配列を作成する
