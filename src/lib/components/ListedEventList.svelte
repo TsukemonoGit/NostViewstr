@@ -40,6 +40,7 @@
 		MultiMenu,
 		iconView,
 		isMulti,
+		login,
 		nip46Check,
 		nowProgress,
 		pubkey_viewer

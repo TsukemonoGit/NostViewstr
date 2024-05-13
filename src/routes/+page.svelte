@@ -18,11 +18,14 @@
 	import { onMount } from 'svelte';
 	import { navigating } from '$app/stores';
 	let saveCheck: boolean;
-
-	$: kind = Number(Object.keys(kinds)[0]);
+	let kind: number = Number(Object.keys(kinds)[0]);
 
 	let inputValue: string;
 	onMount(() => {
+		const strageKind = localStorage?.getItem('kind');
+		if (strageKind) {
+			kind = Number(strageKind);
+		}
 		console.log($navigating); //戻るボタン押してきたりとかしたときにnullじゃないやつ
 		//戻るとかgotoとかできてない場合（nabigating=null）のみページgotoする
 		if (!$navigating) {
@@ -58,8 +61,10 @@
 		try {
 			const input = inputValue;
 			const decode = nip19.decode(input);
+			localStorage.setItem('kind', kind.toString());
 			if (decode.type === 'npub') {
 				localStorage.setItem('npub', decode.data);
+
 				if (saveCheck) {
 					localStorage.setItem(
 						'info',

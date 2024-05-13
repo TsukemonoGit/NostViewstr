@@ -23,7 +23,12 @@
 	import { setToastStore } from '$lib/stores/store';
 	import RegisterSw from '$lib/components/RegisterSW.svelte';
 	import { onMount } from 'svelte';
-	import { backButton, saveObj, send_pubhex } from '$lib/stores/settings';
+	import {
+		backButton,
+		login,
+		saveObj,
+		send_pubhex
+	} from '$lib/stores/settings';
 	import { afterNavigate } from '$app/navigation';
 	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
 	//import { init as initNostrLogin } from 'nostr-login';
@@ -43,7 +48,12 @@
 		// initNostrLogin({
 		// 	/*options*/
 		// });
-		document.dispatchEvent(new CustomEvent('nlLaunch', { detail: 'welcome' }));
+		if (!$login) {
+			document.dispatchEvent(
+				new CustomEvent('nlLaunch', { detail: 'welcome' })
+			);
+			$login = true;
+		}
 		const backBtn = localStorage.getItem('back');
 		//console.log('backButton', backBtn);
 		if (backBtn) {

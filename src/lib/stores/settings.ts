@@ -28,3 +28,5 @@ export const saveObj = writable<{
 	iconView: boolean;
 	URLPreview: boolean;
 } | null>(null);
+
+export let login = writable<boolean>(false);
