@@ -504,7 +504,17 @@
 					}}
 					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
 					URL</ListBoxItem
-				>{/if}
+				>{/if}<ListBoxItem
+				name="medium"
+				value="detail"
+				bind:group={comboboxValue}
+				on:click={() => {
+					comboboxValue = '';
+					OpenNoteJson(selectedIndex);
+				}}
+				><svelte:fragment slot="lead">{@html DescriptionIcon}</svelte:fragment
+				>View Detail</ListBoxItem
+			>
 		</ListBox>
 		<div class="arrow bg-primary-400-500-token" />
 		<!-- <div class="arrow bg-surface-100-800-token border" /> -->

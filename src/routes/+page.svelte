@@ -22,9 +22,9 @@
 
 	let inputValue: string;
 	onMount(() => {
-		const strageKind = localStorage?.getItem('kind');
-		if (strageKind) {
-			kind = Number(strageKind);
+		const storageKind = localStorage?.getItem('kind');
+		if (storageKind) {
+			kind = Number(storageKind);
 		}
 		console.log($navigating); //戻るボタン押してきたりとかしたときにnullじゃないやつ
 		//戻るとかgotoとかできてない場合（nabigating=null）のみページgotoする
