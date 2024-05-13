@@ -130,12 +130,6 @@
 	// }
 
 	const init = async () => {
-		if (!$login) {
-			document.dispatchEvent(
-				new CustomEvent('nlLaunch', { detail: 'welcome' })
-			);
-			$login = true;
-		}
 		$nowProgress = true;
 		console.log('onMount executed');
 
