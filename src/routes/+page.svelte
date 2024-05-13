@@ -18,11 +18,12 @@
 	import { onMount } from 'svelte';
 	import { navigating } from '$app/stores';
 	let saveCheck: boolean;
-	let kind =
-		Number(localStorage.getItem('kind')) ?? Number(Object.keys(kinds)[0]);
+	let kind: number;
 
 	let inputValue: string;
 	onMount(() => {
+		kind =
+			Number(localStorage?.getItem('kind')) ?? Number(Object.keys(kinds)[0]);
 		console.log($navigating); //戻るボタン押してきたりとかしたときにnullじゃないやつ
 		//戻るとかgotoとかできてない場合（nabigating=null）のみページgotoする
 		if (!$navigating) {
