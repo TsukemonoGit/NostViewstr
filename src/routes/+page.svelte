@@ -22,8 +22,10 @@
 
 	let inputValue: string;
 	onMount(() => {
-		kind =
-			Number(localStorage?.getItem('kind')) ?? Number(Object.keys(kinds)[0]);
+		const strageKind = localStorage?.getItem('kind');
+		if (strageKind) {
+			kind = Number(strageKind);
+		}
 		console.log($navigating); //戻るボタン押してきたりとかしたときにnullじゃないやつ
 		//戻るとかgotoとかできてない場合（nabigating=null）のみページgotoする
 		if (!$navigating) {
