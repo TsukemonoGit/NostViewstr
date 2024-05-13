@@ -18,7 +18,7 @@
 	import { onMount } from 'svelte';
 	import { navigating } from '$app/stores';
 	let saveCheck: boolean;
-	let kind: number;
+	let kind: number = Number(Object.keys(kinds)[0]);
 
 	let inputValue: string;
 	onMount(() => {
