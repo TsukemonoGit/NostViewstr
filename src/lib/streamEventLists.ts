@@ -58,7 +58,7 @@ const reconnectableStates: ConnectionState[] = [
 	//"retrying",  //再接続を試みている,
 	'waiting-for-retrying', //再接続待機中
 	'dormant', //休眠中,
-	//"error",  //エラー終了,
+	'error', //エラー終了,
 	//"rejected",  //エラー終了,
 	'terminated' //終了状態,
 ];

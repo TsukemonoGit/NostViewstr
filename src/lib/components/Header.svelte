@@ -36,7 +36,7 @@
 	import RelayStateIcon from './RelayStateIcon.svelte';
 	import UserIcon from './UserIcon.svelte';
 	import { formatAbsoluteDate } from '$lib/otherFunctions';
-	import type { ConnectionState } from 'rx-nostr';
+	import SelectKindList from './SelectKindList.svelte';
 
 	export let bkm: string;
 	export let kind: number;
@@ -69,8 +69,8 @@
 		  ]
 		: [];
 
-	const borderDefault = ` rounded-tl-lg rounded-tr-lg  break-keep place-items-end h6 bkm flex  sm:px-3 sm:py-2 py-1 px-0.5 h-fit align-bottom place-self-end `;
-	const borderClassActive = `bg-surface-200-700-token fill-black  dark:fill-white sm:py-3 py-2 ${borderDefault}`;
+	const borderDefault = ` rounded-tl-lg rounded-tr-lg  break-keep place-items-end h6 bkm flex  sm:px-3  py-0.5 px-1 h-min align-bottom place-self-end `;
+	const borderClassActive = `bg-surface-200-700-token fill-black  dark:fill-white py-1.5  ${borderDefault}`;
 	const borderClass = `fill-white bg-primary-400  ${borderDefault}    `;
 
 	//-------------------------------------------------------edit tag
@@ -284,148 +284,164 @@
 <div
 	class="z-10 fixed h-[4em] top-0 space-x-0 w-full inline-flex flex-row overflow-x-hidden box-border"
 >
+	<!--icon/kindtoka/date/relay-->
 	<div
-		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[auto_1fr_auto_auto_auto] sm:gap-2 gap-0.5 overflow-hidden rounded-b"
+		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[auto_1fr_auto_auto] sm:gap-2 gap-0.5 overflow-hidden rounded-b"
 	>
 		<div class="flex h-full items-center ml-1">
 			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].mergeRelays && $relaySet[pubkey].mergeRelays.length > 0}
 				<UserIcon {pubkey} />
 			{/if}
 		</div>
-		<div class="max-w-full overflow-hidden">
+		<!--kind/title-->
+		<div class="max-w-full overflow-hidden grid grid-rows-[40%_60%] h-[4em]">
 			<!-- {#if JSON}【JSON MODE】 kind:{kind}
 				{#if kinds[kind]} ({kinds[kind]}) {/if} -->
-			{#if !JSON && !nevent}
-				<div class="flex max-w-full">
-					<select
-						class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"
-						bind:value={selectValue}
-						on:change={handleKindChange}
-						disabled={$nowProgress}
+			<div class="flex max-w-full overflow-x-hidden">
+				{#if !JSON && !nevent}
+					<SelectKindList
+						let:kindList
+						bind:selectValue
+						divClass="content-center"
 					>
-						{#each Object.keys(kinds) as value (value)}
-							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-						{/each}
-					</select>
-					<!-- {#if pubkey === $pubkey_viewer}
+						<select
+							class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"
+							bind:value={selectValue}
+							on:change={handleKindChange}
+							disabled={$nowProgress}
+						>
+							{#each Array.from(kindList) as [key, value]}
+								<option value={key.toString()}>{`${value} (${key})`}</option>
+							{/each}
+						</select>
+						<!-- {#if pubkey === $pubkey_viewer}
 						<span class="fill-white">{@html LocationHomeIcon}</span>
-					{/if} -->
-				</div>
-			{/if}
-
-			{#if $identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])?.identifier}
-				<div class="text-xs box-border break-all overflow-x-hidden ml-1">
-					{#if kind >= 30000 && kind < 40000 && !JSON}<!-- 30003-->
-						{#if !$identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title || $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title === ''}
-							<button
-								class=" flex items-center pt-1 overflow-hidden min-w-[7em] text-left"
-								disabled={!(kind >= 30000 && kind < 40000)}
-								on:click={listInfoModalOpen}
-							>
-								<div class=" btn-icon btn-icon-sm fill-white place-self-center">
-									{@html infoIcon}
-								</div>
-								<div class="h4">
-									{$identifierListsMap[pubkey][kind].get(
-										$identifierKeysArray[$listNum]
-									)?.identifier}
-								</div>
-							</button>
-						{:else}
-							<button
-								class="grid grid-cols-[auto_1fr] items-center min-w-[7em] pr-0.5 overflow-hidden truncate"
-								on:click={listInfoModalOpen}
-							>
-								{#if $iconView && $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.image}
-									<div class=" p-0 btn-icon btn-icon-sm m-0 mr-1 self-start">
-										<img
-											width={36}
-											class="min-w-[36px]"
-											alt=""
-											src={$identifierListsMap[pubkey][kind].get(
-												$identifierKeysArray[$listNum]
-											)?.image}
-										/>
-									</div>
-								{:else}
+					{/if} --></SelectKindList
+					>
+				{/if}
+			</div>
+			<div class="flex-1 max-w-full grid grid-cols-[1fr_auto]">
+				<div class="text-xs box-border w-full overflow-hidden ml-1">
+					{#if $identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])?.identifier}
+						{#if kind >= 30000 && kind < 40000 && !JSON}<!-- 30003-->
+							{#if !$identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title || $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.title === ''}
+								<button
+									class=" flex items-center overflow-hidden min-w-[7em] text-left"
+									disabled={!(kind >= 30000 && kind < 40000)}
+									on:click={listInfoModalOpen}
+									style="padding:0"
+								>
 									<div
 										class=" btn-icon btn-icon-sm fill-white place-self-center"
 									>
 										{@html infoIcon}
 									</div>
-								{/if}
-
-								<div class="grid grid-rows-[auto_1fr] truncate overflow-hidden">
-									<div class="place-self-start text-xs p-0">
+									<div class="h4 break-keep">
 										{$identifierListsMap[pubkey][kind].get(
 											$identifierKeysArray[$listNum]
 										)?.identifier}
 									</div>
+								</button>
+							{:else}
+								<button
+									class="grid grid-cols-[auto_1fr] items-center min-w-[7em] overflow-hidden truncate"
+									on:click={listInfoModalOpen}
+									style="padding:0"
+								>
+									{#if $iconView && $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.image}
+										<div class=" p-0 btn-icon btn-icon-sm m-0 mr-1 self-start">
+											<img
+												width={36}
+												class="min-w-[36px]"
+												alt=""
+												src={$identifierListsMap[pubkey][kind].get(
+													$identifierKeysArray[$listNum]
+												)?.image}
+											/>
+										</div>
+									{:else}
+										<div
+											class=" btn-icon btn-icon-sm fill-white place-self-center"
+										>
+											{@html infoIcon}
+										</div>
+									{/if}
 
-									<div class="h5 truncate place-self-start">
-										{$identifierListsMap[pubkey][kind].get(
-											$identifierKeysArray[$listNum]
-										)?.title}
+									<div class="grid grid-rows-[auto_1fr] overflow-hidden">
+										<div
+											class="place-self-start text-xs p-0 break-keep align-center"
+										>
+											{$identifierListsMap[pubkey][kind].get(
+												$identifierKeysArray[$listNum]
+											)?.identifier}
+										</div>
+
+										<div class="h5 place-self-start break-keep">
+											{$identifierListsMap[pubkey][kind].get(
+												$identifierKeysArray[$listNum]
+											)?.title}
+										</div>
 									</div>
-								</div>
-							</button>
+								</button>
 
-							<!-- {#if $identifierList[$listNum].description}
+								<!-- {#if $identifierList[$listNum].description}
 					{$identifierList[$listNum].description}
 				{/if} -->
+							{/if}
+						{:else}
+							<!---->
+							<div class="overflow-x-hidden h4 p-1 truncate">
+								{$identifierListsMap[pubkey][kind].get(
+									$identifierKeysArray[$listNum]
+								)?.identifier}
+							</div>
 						{/if}
 					{:else}
 						<!---->
-						<div class="overflow-x-hidden h4 p-1 truncate">
-							{$identifierListsMap[pubkey][kind].get(
-								$identifierKeysArray[$listNum]
-							)?.identifier}
+						<div class="h5 self-center w-fit ml-1 truncate">
+							{#if JSON}<div class="h6">【JSON MODE】</div> {/if}kind:{kind}
+							{#if kinds.has(kind)} ({kinds.get(kind)}) {/if}
 						</div>
 					{/if}
 				</div>
-			{:else}
-				<!---->
-				<div class="h5 self-center w-fit break-all ml-1">
-					{#if JSON}<div class="h6">【JSON MODE】</div> {/if}kind:{kind}
-					{#if kinds[kind]} ({kinds[kind]}) {/if}
+
+				<div class="grid grid-cols-[auto_auto]">
+					<div class="flex">
+						<button
+							title="Public List (tags)"
+							class={bkm === 'pub' ? borderClassActive : borderClass}
+							disabled={bkm === 'pub'}
+							on:click={() => {
+								bkm = 'pub';
+								console.log(bkm);
+								$pageNum = 0;
+							}}
+							>{@html pubIcon}
+						</button>
+					</div>
+					{#if viewEvent && viewEvent.content !== ''}
+						<div class="flex">
+							<button
+								title="Private List (content)"
+								class={bkm === 'prv' ? borderClassActive : borderClass}
+								disabled={bkm === 'prv'}
+								on:click={() => {
+									bkm = 'prv';
+									console.log(bkm);
+									$pageNum = 0;
+								}}
+							>
+								{@html prvIcon}
+							</button>
+						</div>
+					{:else}
+						<div />
+					{/if}
 				</div>
-			{/if}
-		</div>
-		<div class="grid grid-cols-[auto_auto] py-0 h-[4em]">
-			<div class="flex">
-				<button
-					title="Public List (tags)"
-					class={bkm === 'pub' ? borderClassActive : borderClass}
-					disabled={bkm === 'pub'}
-					on:click={() => {
-						bkm = 'pub';
-						console.log(bkm);
-						$pageNum = 0;
-					}}
-					>{@html pubIcon}
-				</button>
 			</div>
-			{#if viewEvent && viewEvent.content !== ''}
-				<div class="flex">
-					<button
-						title="Private List (content)"
-						class={bkm === 'prv' ? borderClassActive : borderClass}
-						disabled={bkm === 'prv'}
-						on:click={() => {
-							bkm = 'prv';
-							console.log(bkm);
-							$pageNum = 0;
-						}}
-					>
-						{@html prvIcon}
-					</button>
-				</div>
-			{:else}
-				<div />
-			{/if}
 		</div>
 		{#if viewEvent !== undefined}
-			<div class="ml-1 grid grid-rows-[auto_auto] box-border h-[4em]">
+			<div class=" grid grid-rows-[auto_auto] box-border h-[4em]">
 				<div class=" place-self-end h6 truncate overflow-hidden">
 					{$_('created_at')}
 				</div>
@@ -445,7 +461,7 @@
 			</div>
 		{/if}
 		<button
-			class="btn p-1 fill-white grid grid-rows-[auto_auto]"
+			class="btn p-0.5 pl-0 sm:pr-1 fill-white grid grid-rows-[auto_auto]"
 			use:popup={popupFeatured}
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>

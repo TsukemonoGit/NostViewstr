@@ -10,6 +10,7 @@
 	import { goto } from '$app/navigation';
 	import { URLPreview, iconView, saveObj } from '$lib/stores/settings';
 	import { onMount } from 'svelte';
+	import SelectKindList from '$lib/components/SelectKindList.svelte';
 
 	export let data: PageData;
 	let saveCheck: boolean;
@@ -50,9 +51,8 @@
 		goto('/' + nip19.npubEncode(data.pubkey) + '/' + kind);
 	}
 
-	let kind: number = Number(Object.keys(kinds)[0]);
-	let selectValue: any;
-	console.log(selectValue);
+	let kind: number = kinds.keys().next().value;
+	let selectValue: string;
 	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
 		kind = Number(event.currentTarget.value);
 		console.log(kind);
@@ -81,16 +81,17 @@
 		<div class="space-t-5">
 			<div class="mt-10">
 				<h5 class="h5">{`kind`}</h5>
-
-				<select
-					class="select"
-					bind:value={selectValue}
-					on:change={handleKindChange}
-				>
-					{#each Object.keys(kinds) as value (value)}
-						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-					{/each}
-				</select>
+				<SelectKindList let:kindList bind:selectValue>
+					<select
+						class="select"
+						bind:value={selectValue}
+						on:change={handleKindChange}
+					>
+						{#each Array.from(kindList) as [key, value]}
+							<option value={key}>{`${value} (${key})`}</option>
+						{/each}
+					</select>
+				</SelectKindList>
 			</div>
 		</div>
 		<div class="space-t-5">

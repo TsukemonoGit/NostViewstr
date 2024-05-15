@@ -6,6 +6,7 @@
 
 	import { kinds } from '$lib/kind';
 	import { goto } from '$app/navigation';
+	import SelectKindList from '../SelectKindList.svelte';
 
 	export let parent: any;
 	let selectValue: string = Object.keys(kinds)[0];
@@ -27,7 +28,7 @@
 
 	let res: { openList?: boolean; kind: number } = {
 		openList: false,
-		kind: Number(Object.keys(kinds)[0])
+		kind: Number(kinds.keys().next().value)
 	};
 	$: console.log(res);
 	function onFormSubmit(): void {
@@ -131,11 +132,13 @@
 		<div class="grid grid-cols-[auto_auto] gap-2">
 			<div class="grid grid-row-[auto_auto] gap-2">
 				<div class="flex">
-					<select class="input p-1" bind:value={selectValue}>
-						{#each Object.keys(kinds) as value (value)}
-							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-						{/each}
-					</select>
+					<SelectKindList let:kindList bind:selectValue>
+						<select class="input p-1" bind:value={selectValue}>
+							{#each Array.from(kindList) as [key, value]}
+								<option value={key}>{`${value} (${key})`}</option>
+							{/each}
+						</select></SelectKindList
+					>
 					<button
 						type="button"
 						class="btn variant-filled-secondary p-1"

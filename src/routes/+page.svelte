@@ -18,8 +18,8 @@
 	import { onMount } from 'svelte';
 	import { navigating } from '$app/stores';
 	let saveCheck: boolean;
-	let kind: number = Number(Object.keys(kinds)[0]);
-
+	let kind: number = Number(kinds.keys().next().value);
+	$: selectValue = kind.toString();
 	let inputValue: string;
 	onMount(() => {
 		const storageKind = localStorage?.getItem('kind');
@@ -224,7 +224,7 @@
 				{$_('main.input_kind')}
 			</h5>
 
-			<KindSelect bind:selectValue={kind} />
+			<KindSelect bind:selectValue />
 		</div>
 	</div>
 
