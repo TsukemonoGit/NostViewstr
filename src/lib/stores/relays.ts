@@ -1,20 +1,24 @@
 import type { Event as NostrEvent } from 'nostr-tools';
 import { writable } from 'svelte/store';
+//デフォルトリレーはブックマーク取得用のリレー（読みと書きのマージにする？）
+
+//書き込みは一時リレーを使う rxNostr.send(event,{ relays: relays });
+
 //search relay 各ノートの内容を取得するためのリレー
 //bookmark relay ブックマークの取得、書き込みに使うリレー
 //post relay 共有、引用ポスト用のリレー
 export interface RelayConfig {
-	searchRelays: string[];
-	bookmarkRelays: string[];
-	postRelays: string[];
+	readRelays: string[];
+	writeRelays: string[];
+	mergeRelays: string[];
 	relayEvent: NostrEvent | undefined;
 }
 
 //しょきか
 export const initRelaySet: RelayConfig = {
-	searchRelays: [],
-	bookmarkRelays: [],
-	postRelays: [],
+	readRelays: [],
+	writeRelays: [],
+	mergeRelays: [],
 	relayEvent: undefined
 };
 

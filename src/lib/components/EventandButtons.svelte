@@ -51,7 +51,7 @@
 		{id}
 		let:text
 		relay={tag.name.length > 2 && tag.name[2] !== ''
-			? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
+			? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
 			: undefined}
 	>
 		<div
@@ -126,7 +126,7 @@
 			pubkey={text.pubkey}
 			let:metadata
 			relay={tag.name.length > 2 && tag.name[2] !== ''
-				? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
+				? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
 				: undefined}
 		>
 			<div
@@ -382,7 +382,7 @@
 			pubkey={uniqueEvent(events).pubkey}
 			let:metadata
 			relay={tag.name.length > 2 && tag.name[2] !== ''
-				? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
+				? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
 				: undefined}
 		>
 			<div
@@ -486,7 +486,7 @@
 		pubkey={tag.name[1]}
 		let:metadata
 		relay={tag.name.length > 2 && tag.name[2] !== ''
-			? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag.name[2]])]
+			? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
 			: undefined}
 	>
 		<div

@@ -331,7 +331,7 @@ export async function getRelays(author: string) {
 	//リレー設定変えてもっかい撮ってきてみる
 	const kekka2 = await getRelayEvents(
 		filters,
-		get(relaySet)[author].bookmarkRelays
+		get(relaySet)[author].mergeRelays
 	);
 
 	//リレー用イベント取ってきたらそれをセットする
@@ -462,22 +462,21 @@ export async function setRelays(
 			console.error('JSON parse error:', error);
 		}
 	}
-
+	const merge = Array.from(new Set([...read, ...write])); //わざわざリードとライトで分けたあとまたまーじのほうつくるの？
 	if (read.length > 0) {
-		tmp_relay.searchRelays = read;
+		tmp_relay.readRelays = read;
+	} else {
+		tmp_relay.readRelays = defaultRelays;
 	}
 	if (write.length > 0) {
-		tmp_relay.bookmarkRelays = write;
-		tmp_relay.postRelays = write;
+		tmp_relay.writeRelays = write;
+	} else {
+		tmp_relay.writeRelays = defaultRelays;
 	}
-	if (tmp_relay.searchRelays.length === 0) {
-		tmp_relay.searchRelays = defaultRelays;
-	}
-	if (tmp_relay.bookmarkRelays.length === 0) {
-		tmp_relay.bookmarkRelays = defaultRelays;
-	}
-	if (tmp_relay.postRelays.length === 0) {
-		tmp_relay.postRelays = defaultRelays;
+	if (merge.length > 0) {
+		tmp_relay.mergeRelays = merge;
+	} else {
+		tmp_relay.mergeRelays = defaultRelays;
 	}
 
 	// // Subscribe を使って直接変更を検知し、それに基づいて更新
@@ -488,7 +487,7 @@ export async function setRelays(
 	console.log('pub, tmp_relay', pubkey, tmp_relay);
 	relaySet.set({ ...get(relaySet), [pubkey]: tmp_relay });
 	console.log(`complete set relsys`, get(relaySet));
-	setDefaultRelays(get(relaySet)[pubkey].bookmarkRelays);
+	setDefaultRelays(get(relaySet)[pubkey].mergeRelays);
 }
 
 export async function checkInputNpub(r: string): Promise<{

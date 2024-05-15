@@ -234,7 +234,7 @@
 		};
 		const res = await publishEventWithTimeout(
 			event,
-			$relaySet[$pubkey_viewer].bookmarkRelays
+			$relaySet[$pubkey_viewer].writeRelays
 		); // = { isSuccess: false, msg: '' }; //
 		console.log(res.msg);
 
@@ -298,7 +298,7 @@
 			  };
 		const res = await publishEventWithTimeout(
 			event,
-			$relaySet[$pubkey_viewer].bookmarkRelays
+			$relaySet[$pubkey_viewer].writeRelays
 		);
 		console.log(res.msg);
 
@@ -388,7 +388,7 @@
 								)?.identifier ?? '',
 							pubkey: pubkey,
 							kind: kind,
-							relays: $relaySet[pubkey]?.bookmarkRelays
+							relays: $relaySet[pubkey]?.mergeRelays
 						};
 
 						const url = res.share

@@ -53,7 +53,10 @@
 {#each readTrueArray as relay, index}
 	{#if $relayState.get(relay) !== undefined}
 		<div class="flex items-center gap-1 break-all">
-			<div class="h-4 w-4 rounded-full {dotColor($relayState.get(relay))} " />
+			<div
+				class="h-4 w-4 rounded-full {dotColor($relayState.get(relay))}"
+				title={$relayState.get(relay)}
+			/>
 			{relay.length > 30 ? `${relay.slice(0, 28)}...` : relay}
 
 			<!-- {#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started' || $relayState[relay] === 'terminated') && !get(disabledButtons).has(relay)} -->

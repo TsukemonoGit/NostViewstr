@@ -56,7 +56,7 @@
 		$nowProgress = true;
 		const response = await publishEventWithTimeout(
 			event,
-			$relaySet[$pubkey_viewer].postRelays
+			$relaySet[$pubkey_viewer].writeRelays
 		);
 		$nowProgress = false;
 		const toastSettings: ToastSettings = response.isSuccess
@@ -123,7 +123,7 @@
 			};
 			const response = await publishEventWithTimeout(
 				event,
-				$relaySet[$pubkey_viewer].postRelays
+				$relaySet[$pubkey_viewer].writeRelays
 			);
 			const toastSettings: ToastSettings = response.isSuccess
 				? {

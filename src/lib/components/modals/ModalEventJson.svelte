@@ -109,14 +109,14 @@
 	async function onClickBroadcast() {
 		console.log(event);
 
-		console.log($relaySet[$pubkey_viewer].postRelays);
-		if ($relaySet[$pubkey_viewer].postRelays.length > 0) {
+		console.log($relaySet[$pubkey_viewer].writeRelays);
+		if ($relaySet[$pubkey_viewer].writeRelays.length > 0) {
 			$nowProgress = true;
 			try {
 				//現バージョンのrx-nostrでは署名なしに送信できないので別で
 				const response = await broadcast(
 					event,
-					$relaySet[$pubkey_viewer].postRelays
+					$relaySet[$pubkey_viewer].writeRelays
 				);
 
 				const t = {

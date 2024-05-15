@@ -172,7 +172,7 @@
 					//updateするやつ
 					const result = await publishEventWithTimeout(
 						res,
-						$relaySet[$pubkey_viewer]?.bookmarkRelays || []
+						$relaySet[$pubkey_viewer]?.writeRelays || []
 					);
 
 					const toastMessage = result.isSuccess
@@ -199,7 +199,7 @@
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
 
-{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].mergeRelays && $relaySet[pubkey].mergeRelays.length > 0}
 	<NostrApp>
 		<!--header-->
 		<Header
