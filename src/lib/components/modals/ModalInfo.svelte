@@ -169,7 +169,7 @@
 				<SelectKindList let:kindList divClass=" self-center" bind:selectValue>
 					<select class="select" bind:value={selectValue}>
 						{#each Array.from(kindList) as [key, value]}
-							<option {value}>{`${value} (${key})`}</option>
+							<option value={key.toString()}>{`${value} (${key})`}</option>
 						{/each}
 					</select></SelectKindList
 				>
