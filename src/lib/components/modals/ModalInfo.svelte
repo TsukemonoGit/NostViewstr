@@ -167,6 +167,7 @@
 		{#if $pubkey_viewer && $pubkey_viewer !== ''}
 			<div class="flex">
 				<SelectKindList
+					visible={false}
 					let:kindList
 					divClass=" self-center"
 					bind:selectValue

@@ -303,6 +303,7 @@
 						let:kindList
 						bind:selectValue
 						divClass="content-center"
+						visible={false}
 					>
 						<select
 							class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"

@@ -132,7 +132,7 @@
 		<div class="grid grid-cols-[auto_auto] gap-2">
 			<div class="grid grid-row-[auto_auto] gap-2">
 				<div class="flex">
-					<SelectKindList let:kindList bind:selectValue>
+					<SelectKindList let:kindList bind:selectValue visible={false}>
 						<select class="input p-1" bind:value={selectValue}>
 							{#each Array.from(kindList) as [key, value]}
 								<option value={key}>{`${value} (${key})`}</option>
@@ -171,7 +171,7 @@
 						windowOpen(nip19.npubEncode($modalStore[0]?.meta.metadata.pubkey));
 
 						parent.onClose();
-					}}>Open in external app</button
+					}}>Open in Njump</button
 				>
 
 				<button
