@@ -1011,7 +1011,7 @@
 	</div>
 {/if}
 <!-------------------------------あど----->
-{#if !$nowProgress && $pubkey_viewer === pubkey && Object.keys(kinds).includes(kind.toString())}
+{#if !$nowProgress && $pubkey_viewer === pubkey && kinds.has(kind)}
 	<div
 		class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
 			? 'multi'
