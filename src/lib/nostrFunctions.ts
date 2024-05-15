@@ -331,7 +331,7 @@ export async function getRelays(author: string) {
 	//リレー設定変えてもっかい撮ってきてみる
 	const kekka2 = await getRelayEvents(
 		filters,
-		get(relaySet)[author].bookmarkRelays
+		get(relaySet)[author].mergeRelays
 	);
 
 	//リレー用イベント取ってきたらそれをセットする
@@ -396,6 +396,7 @@ export async function setRelays(
 	console.log(`setting relays...`);
 	let read: string[] = [];
 	let write: string[] = [];
+	let both: string[] = [];
 	const kind10002 = events[10002];
 	const kind3 = events[3];
 	//まず今持ってる値を確認する
@@ -435,6 +436,7 @@ export async function setRelays(
 				} else if (item[2] === 'write') {
 					write.push(relayURL);
 				}
+				both.push(relayURL);
 				//}
 			}
 
@@ -455,6 +457,7 @@ export async function setRelays(
 					write.push(relayURL);
 				}
 				//}
+				both.push(relayURL);
 			}
 
 			tmp_relay.relayEvent = kind3;
@@ -464,20 +467,19 @@ export async function setRelays(
 	}
 
 	if (read.length > 0) {
-		tmp_relay.searchRelays = read;
+		tmp_relay.readRelays = read.sort();
+	} else {
+		tmp_relay.readRelays = defaultRelays;
 	}
 	if (write.length > 0) {
-		tmp_relay.bookmarkRelays = write;
-		tmp_relay.postRelays = write;
+		tmp_relay.writeRelays = write.sort();
+	} else {
+		tmp_relay.writeRelays = defaultRelays;
 	}
-	if (tmp_relay.searchRelays.length === 0) {
-		tmp_relay.searchRelays = defaultRelays;
-	}
-	if (tmp_relay.bookmarkRelays.length === 0) {
-		tmp_relay.bookmarkRelays = defaultRelays;
-	}
-	if (tmp_relay.postRelays.length === 0) {
-		tmp_relay.postRelays = defaultRelays;
+	if (both.length > 0) {
+		tmp_relay.mergeRelays = both.sort();
+	} else {
+		tmp_relay.mergeRelays = defaultRelays;
 	}
 
 	// // Subscribe を使って直接変更を検知し、それに基づいて更新
@@ -488,7 +490,7 @@ export async function setRelays(
 	console.log('pub, tmp_relay', pubkey, tmp_relay);
 	relaySet.set({ ...get(relaySet), [pubkey]: tmp_relay });
 	console.log(`complete set relsys`, get(relaySet));
-	setDefaultRelays(get(relaySet)[pubkey].bookmarkRelays);
+	setDefaultRelays(get(relaySet)[pubkey].mergeRelays);
 }
 
 export async function checkInputNpub(r: string): Promise<{

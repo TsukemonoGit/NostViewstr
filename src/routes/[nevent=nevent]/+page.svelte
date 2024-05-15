@@ -104,7 +104,7 @@
 			if (data.pubkey) {
 				$relaySet[data.pubkey] = initRelaySet;
 				await getRelays(data.pubkey);
-				return $relaySet[data.pubkey].bookmarkRelays;
+				return $relaySet[data.pubkey].mergeRelays;
 			} else {
 				return [];
 			}
@@ -163,7 +163,7 @@
 	</div>
 {:else}
 	<!-- {#await bkminit(pubkey) then bkminti} -->
-	{#if kind && typeof WebSocket !== 'undefined' && pubkey && $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+	{#if kind && typeof WebSocket !== 'undefined' && pubkey && $relaySet && $relaySet[pubkey] && $relaySet[pubkey].mergeRelays && $relaySet[pubkey].mergeRelays.length > 0}
 		<NostrApp>
 			<!--header-->
 			<Header {kind} bind:bkm {pubkey} bind:viewEvent nevent={true} />

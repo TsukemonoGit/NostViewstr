@@ -131,11 +131,11 @@
 			content: content,
 			sig: ''
 		};
-		console.log($relaySet[$modalStore[0].value.pubkey].postRelays);
-		if ($relaySet[$modalStore[0].value.pubkey].postRelays.length > 0) {
+		console.log($relaySet[$modalStore[0].value.pubkey].writeRelays);
+		if ($relaySet[$modalStore[0].value.pubkey].writeRelays.length > 0) {
 			const response = await publishEventWithTimeout(
 				event,
-				$relaySet[$modalStore[0].value.pubkey].postRelays
+				$relaySet[$modalStore[0].value.pubkey].writeRelays
 			);
 			if (response.isSuccess) {
 				const t = {

@@ -193,11 +193,11 @@
 		if (!subscription.closed) {
 			subscription.unsubscribe();
 		}
-		for (let i = 0; i < $relaySet[$pubkey_viewer].postRelays.length; i++) {
-			const ws = new WebSocket($relaySet[$pubkey_viewer].postRelays[i]);
+		for (let i = 0; i < $relaySet[$pubkey_viewer].writeRelays.length; i++) {
+			const ws = new WebSocket($relaySet[$pubkey_viewer].writeRelays[i]);
 			webSockets.push(ws);
 			ws.onopen = () => {
-				logs.push(`Connected to ${$relaySet[$pubkey_viewer].postRelays[i]}`);
+				logs.push(`Connected to ${$relaySet[$pubkey_viewer].writeRelays[i]}`);
 				logs = logs;
 				ws.send(JSON.stringify(['EVENT', event]));
 			};
@@ -206,18 +206,18 @@
 				const msg = JSON.parse(e.data);
 
 				logs.push(
-					`message from ${$relaySet[$pubkey_viewer].postRelays[i]}: ${e.data}`
+					`message from ${$relaySet[$pubkey_viewer].writeRelays[i]}: ${e.data}`
 				);
 				logs = logs;
 				if (msg[2]) {
 					logs.push(
-						`<span class="font-bold">Success: ${$relaySet[$pubkey_viewer].postRelays[i]}</span>`
+						`<span class="font-bold">Success: ${$relaySet[$pubkey_viewer].writeRelays[i]}</span>`
 					);
 					logs = logs;
 					// isSuccess = true;
 				} else {
 					logs.push(
-						`<span class="font-bold">Failed: ${$relaySet[$pubkey_viewer].postRelays[i]}</span> (reason:  ${msg[3]})`
+						`<span class="font-bold">Failed: ${$relaySet[$pubkey_viewer].writeRelays[i]}</span> (reason:  ${msg[3]})`
 					);
 					logs = logs;
 				}

@@ -196,7 +196,7 @@
 		};
 		const searchingEventsToast = toastStore.trigger(t);
 		StoreFetchFilteredEvents(pubkey, kind, {
-			relays: $relaySet[pubkey].bookmarkRelays,
+			relays: $relaySet[pubkey].mergeRelays,
 			filters: filter
 		});
 		bkm = 'pub';
@@ -289,7 +289,7 @@
 					};
 					const result = await publishEventWithTimeout(
 						event,
-						$relaySet[$pubkey_viewer].bookmarkRelays
+						$relaySet[$pubkey_viewer].writeRelays
 					);
 					//   console.log(result);
 					if (result.isSuccess && $eventListsMap && result.event) {
@@ -562,7 +562,7 @@
 
 			const result = await publishEventWithTimeout(
 				event,
-				$relaySet[$pubkey_viewer]?.bookmarkRelays
+				$relaySet[$pubkey_viewer]?.writeRelays
 			);
 
 			if (result.isSuccess) {
@@ -794,7 +794,7 @@
 
 			const result = await publishEventWithTimeout(
 				event,
-				$relaySet[$pubkey_viewer]?.bookmarkRelays
+				$relaySet[$pubkey_viewer]?.writeRelays
 			);
 
 			if (result.isSuccess) {
@@ -862,7 +862,7 @@
 			};
 			const result = await publishEventWithTimeout(
 				event,
-				$relaySet[$pubkey_viewer].bookmarkRelays
+				$relaySet[$pubkey_viewer].writeRelays
 			);
 			//   console.log(result);
 			if (result.isSuccess && $eventListsMap && result.event) {
@@ -905,7 +905,7 @@
 </script>
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
-{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].mergeRelays && $relaySet[pubkey].mergeRelays.length > 0}
 	<NostrApp>
 		<!--header-->
 		<Header {kind} bind:bkm {pubkey} bind:viewEvent />

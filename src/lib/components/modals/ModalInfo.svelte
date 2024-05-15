@@ -297,11 +297,11 @@
 								>{formatAbsoluteDate(eventTime.created_at)}
 							</button>
 						</p>
-						{#if $relaySet?.[$pubkey_viewer]?.postRelays}
+						{#if $relaySet?.[$pubkey_viewer]?.writeRelays}
 							<ol
 								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
 							>
-								{#each $relaySet?.[$pubkey_viewer]?.postRelays as relay, index}
+								{#each $relaySet?.[$pubkey_viewer]?.writeRelays as relay, index}
 									<li>
 										<span>{index + 1}.</span><span class="break-all"
 											>{relay}</span

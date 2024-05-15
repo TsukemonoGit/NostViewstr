@@ -31,10 +31,11 @@ export const load: PageLoad<{
 			if (address.relays && address.relays.length > 0) {
 				const tmp_relaySet = get(relaySet);
 				tmp_relaySet[address.pubkey] = initRelaySet;
-				tmp_relaySet[address.pubkey].bookmarkRelays = address.relays;
-				tmp_relaySet[address.pubkey].postRelays = address.relays;
-				tmp_relaySet[address.pubkey].searchRelays = defaultRelays;
-				relaySet.set(tmp_relaySet);
+				tmp_relaySet[address.pubkey].writeRelays = address.relays;
+				tmp_relaySet[address.pubkey].readRelays = address.relays;
+				tmp_relaySet[address.pubkey].mergeRelays = Array.from(
+					new Set([...defaultRelays, ...address.relays])
+				);
 			}
 			console.log(get(relaySet));
 			return {

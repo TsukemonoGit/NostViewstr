@@ -36,9 +36,9 @@ export const load: PageLoad<{
 			if (nevent.author && nevent.relays && nevent.relays.length > 0) {
 				const tmp_relaySet = get(relaySet);
 				tmp_relaySet[nevent.author] = initRelaySet;
-				tmp_relaySet[nevent.author].bookmarkRelays = nevent.relays;
-				tmp_relaySet[nevent.author].postRelays = nevent.relays;
-				tmp_relaySet[nevent.author].searchRelays = Array.from(
+				tmp_relaySet[nevent.author].readRelays = nevent.relays;
+				tmp_relaySet[nevent.author].writeRelays = nevent.relays;
+				tmp_relaySet[nevent.author].mergeRelays = Array.from(
 					new Set([...defaultRelays, ...nevent.relays])
 				);
 				relaySet.set(tmp_relaySet);

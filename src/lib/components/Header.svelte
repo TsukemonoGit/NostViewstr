@@ -54,7 +54,7 @@
 	// $: readTrueArray = Object.entries($relayList)
 	// 	.filter(([key, item]) => item.read === true)
 	// 	.map(([key, item]) => item);
-	$: ongoingCount = $relaySet[pubkey]?.bookmarkRelays.filter(
+	$: ongoingCount = $relaySet[pubkey]?.mergeRelays.filter(
 		(item) => $relayState.get(item) === 'connected'
 	);
 
@@ -183,7 +183,7 @@
 			};
 			const result = await publishEventWithTimeout(
 				event,
-				$relaySet[pubkey].bookmarkRelays
+				$relaySet[pubkey].writeRelays
 			);
 			console.log(result);
 			if (result.isSuccess && $eventListsMap && result.event) {
@@ -216,7 +216,7 @@
 					?.identifier ?? '',
 			pubkey: pubkey,
 			kind: kind,
-			relays: $relaySet[pubkey].bookmarkRelays
+			relays: $relaySet[pubkey].mergeRelays
 		};
 
 		const url = window.location.origin + '/' + nip19.naddrEncode(address);
@@ -288,7 +288,7 @@
 		class=" h-[4em] bg-surface-500 text-white container max-w-[1024px] mx-auto grid grid-cols-[auto_1fr_auto_auto_auto] sm:gap-2 gap-0.5 overflow-hidden rounded-b"
 	>
 		<div class="flex h-full items-center ml-1">
-			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].searchRelays && $relaySet[pubkey].searchRelays.length > 0}
+			{#if $relaySet && $relaySet[pubkey] && $relaySet[pubkey].mergeRelays && $relaySet[pubkey].mergeRelays.length > 0}
 				<UserIcon {pubkey} />
 			{/if}
 		</div>
@@ -450,7 +450,7 @@
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
 			{ongoingCount.length}/
-			{$relaySet[pubkey]?.bookmarkRelays?.length}
+			{$relaySet[pubkey]?.mergeRelays?.length}
 		</button>
 
 		<!-- <button
@@ -470,10 +470,12 @@
 >
 	<div data-popup="popupFeatured" class="z-[100] sticky">
 		{#if pupupOpen}
-			<div class="card p-4 w-72 shadow-xl z-[100]">
-				<div>
-					<p>relays state</p>
-					<RelayStateIcon readTrueArray={$relaySet[pubkey]?.bookmarkRelays} />
+			<div
+				class="card p-4 w-[22rem] max-w-[95%] shadow-xl z-[100] border border-surface-400-500-token"
+			>
+				<div class=" overflow-y-auto max-h-[24rem]">
+					<p>relay state</p>
+					<RelayStateIcon readTrueArray={$relaySet[pubkey]?.mergeRelays} />
 				</div>
 
 				<div class="arrow bg-surface-100-800-token" />

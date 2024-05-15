@@ -63,7 +63,7 @@
 								class="h-fit border border-primary-400 break-keep text-xs font-bold w-8 text-center"
 							>
 								{#if tagArray.length <= 2}
-									R/W
+									RW
 								{:else if tagArray[2] === 'read'}
 									R
 								{:else}

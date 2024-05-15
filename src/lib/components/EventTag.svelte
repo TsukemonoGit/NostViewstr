@@ -59,7 +59,7 @@
 		id={tag[1]}
 		let:text
 		relay={tag.length > 2 && tag[2] !== ''
-			? [...new Set([...$relaySet[pubkey]?.bookmarkRelays, tag[2]])]
+			? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag[2]])]
 			: undefined}
 	>
 		<div slot="loading">

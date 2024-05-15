@@ -1,4 +1,3 @@
-import { nip19 } from 'nostr-tools';
 //import { pubkey } from '$lib/stores/settings';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
