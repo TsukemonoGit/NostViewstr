@@ -15,6 +15,7 @@
 <div class={divClass}>
 	<button
 		type="button"
+		title={$kindSortToggle ? 'Sort by kind' : 'Sort alphabetically'}
 		class="btn mx-1 p-0 w-[25px] h-[25px] rounded-full variant-ghost-tertiary {buttonClass}"
 		on:click={() => {
 			$kindSortToggle = !$kindSortToggle;
