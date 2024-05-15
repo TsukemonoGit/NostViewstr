@@ -51,7 +51,7 @@
 		goto('/' + nip19.npubEncode(data.pubkey) + '/' + kind);
 	}
 
-	let kind: number = Number(Object.keys(kinds)[0]);
+	let kind: number = kinds.keys().next().value;
 	let selectValue: string;
 	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
 		kind = Number(event.currentTarget.value);

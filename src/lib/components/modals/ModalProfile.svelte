@@ -28,7 +28,7 @@
 
 	let res: { openList?: boolean; kind: number } = {
 		openList: false,
-		kind: Number(Object.keys(kinds)[0])
+		kind: Number(kinds.keys().next().value)
 	};
 	$: console.log(res);
 	function onFormSubmit(): void {
