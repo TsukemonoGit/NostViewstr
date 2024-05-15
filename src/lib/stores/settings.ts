@@ -30,3 +30,5 @@ export const saveObj = writable<{
 } | null>(null);
 
 export let login = writable<boolean>(false);
+
+export let kindSortToggle = writable<boolean>(true);

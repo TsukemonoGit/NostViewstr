@@ -36,7 +36,7 @@
 	import RelayStateIcon from './RelayStateIcon.svelte';
 	import UserIcon from './UserIcon.svelte';
 	import { formatAbsoluteDate } from '$lib/otherFunctions';
-	import type { ConnectionState } from 'rx-nostr';
+	import SelectKindList from './SelectKindList.svelte';
 
 	export let bkm: string;
 	export let kind: number;
@@ -297,16 +297,18 @@
 				{#if kinds[kind]} ({kinds[kind]}) {/if} -->
 			{#if !JSON && !nevent}
 				<div class="flex max-w-full">
-					<select
-						class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"
-						bind:value={selectValue}
-						on:change={handleKindChange}
-						disabled={$nowProgress}
+					<SelectKindList let:kindList bind:selectValue>
+						<select
+							class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"
+							bind:value={selectValue}
+							on:change={handleKindChange}
+							disabled={$nowProgress}
+						>
+							{#each Array.from(kindList) as [key, value]}
+								<option value={key.toString()}>{`${value} (${key})`}</option>
+							{/each}
+						</select></SelectKindList
 					>
-						{#each Object.keys(kinds) as value (value)}
-							<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-						{/each}
-					</select>
 					<!-- {#if pubkey === $pubkey_viewer}
 						<span class="fill-white">{@html LocationHomeIcon}</span>
 					{/if} -->
@@ -387,7 +389,7 @@
 				<!---->
 				<div class="h5 self-center w-fit break-all ml-1">
 					{#if JSON}<div class="h6">【JSON MODE】</div> {/if}kind:{kind}
-					{#if kinds[kind]} ({kinds[kind]}) {/if}
+					{#if kinds.has(kind)} ({kinds.get(kind)}) {/if}
 				</div>
 			{/if}
 		</div>

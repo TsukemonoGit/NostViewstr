@@ -32,6 +32,7 @@
 
 	import type Nostr from 'nostr-typedef';
 	import { formatAbsoluteDate } from '$lib/otherFunctions';
+	import SelectKindList from '../SelectKindList.svelte';
 
 	export let parent: any;
 
@@ -165,11 +166,13 @@
 		</div>
 		{#if $pubkey_viewer && $pubkey_viewer !== ''}
 			<div class="flex">
-				<select class="select" bind:value={selectValue}>
-					{#each Object.keys(kinds) as value (value)}
-						<option {value}>{`${kinds[Number(value)]} (${value})`}</option>
-					{/each}
-				</select>
+				<SelectKindList let:kindList divClass=" self-center" bind:selectValue>
+					<select class="select" bind:value={selectValue}>
+						{#each Array.from(kindList) as [key, value]}
+							<option {value}>{`${value} (${key})`}</option>
+						{/each}
+					</select></SelectKindList
+				>
 				<button
 					type="button"
 					class="mx-1 px-2 btn variant-filled-secondary history"

@@ -6,8 +6,9 @@
 		popup,
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
+	import SelectKindList from './SelectKindList.svelte';
 
-	export let selectValue: number;
+	export let selectValue: string;
 
 	const popupSelect: PopupSettings = {
 		// Represents the type of event that opens/closed the popup
@@ -22,7 +23,7 @@
 
 <div class=" input-group w-full grid grid-cols-[auto_1fr_auto] box-border">
 	<div class="input-group-shim whitespace-pre">
-		{kinds[Number(selectValue)] ?? 'kind'}
+		{kinds.get(Number(selectValue)) ?? 'kind'}
 	</div>
 	<input
 		class="px-2"
@@ -69,13 +70,15 @@
 	class="z-10 card w-56 shadow-xl py-2 border border-primary-500-400-token"
 	data-popup="popupSelect"
 >
-	<ListBox class="h-72 max-h-[80%] overflow-y-auto"
-		>{#each Object.keys(kinds) as value (value)}
-			<ListBoxItem bind:group={selectValue} name="medium" {value}
-				>{`${kinds[Number(value)]} (${value})`}</ListBoxItem
-			>
-		{/each}
-	</ListBox>
+	<SelectKindList let:kindList divClass="w-full text-end" bind:selectValue>
+		<ListBox class="h-72 max-h-[80%] overflow-y-auto">
+			{#each Array.from(kindList) as [key, value]}
+				<ListBoxItem bind:group={selectValue} name="medium" value={key}
+					>{`${value} (${key})`}</ListBoxItem
+				>
+			{/each}
+		</ListBox></SelectKindList
+	>
 	<div
 		class="arrow bg-primary-500-400-token border border-primary-500-400-token"
 	/>
