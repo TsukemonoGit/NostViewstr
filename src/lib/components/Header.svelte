@@ -69,7 +69,7 @@
 		  ]
 		: [];
 
-	const borderDefault = ` rounded-tl-lg rounded-tr-lg  break-keep place-items-end h6 bkm flex  sm:px-3  py-0.5 px-1 h-min align-bottom place-self-end `;
+	const borderDefault = ` rounded-tl-lg rounded-tr-lg  break-keep place-items-end h6 bkm flex  sm:px-3  py-0.5 px-1.5 h-min align-bottom place-self-end `;
 	const borderClassActive = `bg-surface-200-700-token fill-black  dark:fill-white py-1.5  ${borderDefault}`;
 	const borderClass = `fill-white bg-primary-400  ${borderDefault}    `;
 
@@ -461,12 +461,13 @@
 			</div>
 		{/if}
 		<button
-			class="btn p-0.5 pl-0 sm:pr-1 fill-white grid grid-rows-[auto_auto]"
+			class="btn p-0.5 pl-0 sm:pr-1 fill-white grid grid-rows-[auto_auto] text-sm"
 			use:popup={popupFeatured}
 		>
-			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
-			{ongoingCount.length}/
-			{$relaySet[pubkey]?.mergeRelays?.length}
+			<div class="relayIcon flex justify-self-center text-base">
+				{@html RelayIcon}
+			</div>
+			{ongoingCount.length}/{$relaySet[pubkey]?.mergeRelays?.length}
 		</button>
 
 		<!-- <button

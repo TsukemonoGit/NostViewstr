@@ -6,7 +6,7 @@
 	$: selectedKinds = $kindSortToggle ? kinds : sortedKinds;
 	export let buttonClass: string = '';
 	export let divClass: string = '';
-
+	export let size: string = '25px';
 	export let selectValue: string;
 </script>
 
@@ -16,7 +16,8 @@
 	<button
 		type="button"
 		title={$kindSortToggle ? 'Sort by kind' : 'Sort alphabetically'}
-		class="btn mx-1 p-0 w-[25px] h-[25px] rounded-full variant-ghost-tertiary {buttonClass}"
+		class="btn mx-1 p-0 rounded-full variant-ghost-tertiary {buttonClass}"
+		style="width:{size} ; height:{size}"
 		on:click={() => {
 			$kindSortToggle = !$kindSortToggle;
 			//<selectのoptionのvalueにnumberいれたらselectに表示されないし、optionの部分だけvalueにしても↓のぶぶんがあかんくなるから

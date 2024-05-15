@@ -70,7 +70,12 @@
 	class="z-10 card w-56 shadow-xl py-2 border border-primary-500-400-token"
 	data-popup="popupSelect"
 >
-	<SelectKindList let:kindList divClass="w-full text-end" bind:selectValue>
+	<SelectKindList
+		let:kindList
+		divClass="w-full text-end px-2 py-1"
+		size="30px"
+		bind:selectValue
+	>
 		<ListBox class="h-72 max-h-[80%] overflow-y-auto">
 			{#each Array.from(kindList) as [key, value]}
 				<ListBoxItem bind:group={selectValue} name="medium" value={key}

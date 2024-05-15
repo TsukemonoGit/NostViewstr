@@ -166,7 +166,12 @@
 		</div>
 		{#if $pubkey_viewer && $pubkey_viewer !== ''}
 			<div class="flex">
-				<SelectKindList let:kindList divClass=" self-center" bind:selectValue>
+				<SelectKindList
+					let:kindList
+					divClass=" self-center"
+					bind:selectValue
+					size="30px"
+				>
 					<select class="select" bind:value={selectValue}>
 						{#each Array.from(kindList) as [key, value]}
 							<option value={key.toString()}>{`${value} (${key})`}</option>
