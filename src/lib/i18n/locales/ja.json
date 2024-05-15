@@ -82,7 +82,7 @@
       "add": "追加"
     }
   },
-  "created_at": "最終更新日時",
+  "created_at": "最終更新",
   "public": "公開",
   "private": "非公開",
   "ModalEditTag": {

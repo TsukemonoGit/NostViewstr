@@ -441,7 +441,7 @@
 			</div>
 		</div>
 		{#if viewEvent !== undefined}
-			<div class="ml-1 grid grid-rows-[auto_auto] box-border h-[4em]">
+			<div class=" grid grid-rows-[auto_auto] box-border h-[4em]">
 				<div class=" place-self-end h6 truncate overflow-hidden">
 					{$_('created_at')}
 				</div>
@@ -461,7 +461,7 @@
 			</div>
 		{/if}
 		<button
-			class="btn p-1 fill-white grid grid-rows-[auto_auto]"
+			class="btn p-0.5 pl-0 sm:pr-1 fill-white grid grid-rows-[auto_auto]"
 			use:popup={popupFeatured}
 		>
 			<div class="relayIcon flex justify-self-center">{@html RelayIcon}</div>
