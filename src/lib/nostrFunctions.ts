@@ -396,6 +396,7 @@ export async function setRelays(
 	console.log(`setting relays...`);
 	let read: string[] = [];
 	let write: string[] = [];
+	let both: string[] = [];
 	const kind10002 = events[10002];
 	const kind3 = events[3];
 	//まず今持ってる値を確認する
@@ -435,6 +436,7 @@ export async function setRelays(
 				} else if (item[2] === 'write') {
 					write.push(relayURL);
 				}
+				both.push(relayURL);
 				//}
 			}
 
@@ -455,6 +457,7 @@ export async function setRelays(
 					write.push(relayURL);
 				}
 				//}
+				both.push(relayURL);
 			}
 
 			tmp_relay.relayEvent = kind3;
@@ -462,19 +465,19 @@ export async function setRelays(
 			console.error('JSON parse error:', error);
 		}
 	}
-	const merge = Array.from(new Set([...read, ...write])); //わざわざリードとライトで分けたあとまたまーじのほうつくるの？
+
 	if (read.length > 0) {
-		tmp_relay.readRelays = read;
+		tmp_relay.readRelays = read.sort();
 	} else {
 		tmp_relay.readRelays = defaultRelays;
 	}
 	if (write.length > 0) {
-		tmp_relay.writeRelays = write;
+		tmp_relay.writeRelays = write.sort();
 	} else {
 		tmp_relay.writeRelays = defaultRelays;
 	}
-	if (merge.length > 0) {
-		tmp_relay.mergeRelays = merge;
+	if (both.length > 0) {
+		tmp_relay.mergeRelays = both.sort();
 	} else {
 		tmp_relay.mergeRelays = defaultRelays;
 	}
