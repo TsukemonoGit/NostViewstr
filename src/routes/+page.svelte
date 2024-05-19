@@ -18,13 +18,14 @@
 	import { onMount } from 'svelte';
 	import { navigating } from '$app/stores';
 	let saveCheck: boolean;
-	let kind: number = Number(kinds.keys().next().value);
-	$: selectValue = kind.toString();
+	//let kind: number = Number(kinds.keys().next().value);
+	let selectValue = kinds.keys().next().value.toString();
+	$: console.log(selectValue);
 	let inputValue: string;
 	onMount(() => {
 		const storageKind = localStorage?.getItem('kind');
 		if (storageKind) {
-			kind = Number(storageKind);
+			selectValue = storageKind;
 		}
 		console.log($navigating); //戻るボタン押してきたりとかしたときにnullじゃないやつ
 		//戻るとかgotoとかできてない場合（nabigating=null）のみページgotoする
@@ -61,7 +62,7 @@
 		try {
 			const input = inputValue;
 			const decode = nip19.decode(input);
-			localStorage.setItem('kind', kind.toString());
+			localStorage.setItem('kind', selectValue);
 			if (decode.type === 'npub') {
 				localStorage.setItem('npub', decode.data);
 
@@ -70,7 +71,7 @@
 						'info',
 						JSON.stringify({
 							pub: decode.data,
-							kind: kind,
+							kind: Number(selectValue),
 							iconView: $iconView,
 							URLPreview: $URLPreview
 						})
@@ -79,7 +80,7 @@
 					localStorage.removeItem('info');
 					$saveObj = null;
 				}
-				goto(`./${input}/${kind}`);
+				goto(`./${input}/${Number(selectValue)}`);
 			} else if (decode.type === 'nsec') {
 				$nsec = decode.data;
 
@@ -90,7 +91,7 @@
 				if (saveCheck) {
 					const obj = {
 						pub: pub,
-						kind: kind,
+						kind: Number(selectValue),
 						iconView: $iconView,
 						URLPreview: $URLPreview
 					};
@@ -100,7 +101,7 @@
 					localStorage.removeItem('info');
 					$saveObj = null;
 				}
-				goto(`./${nip19.npubEncode(pub)}/${kind}`);
+				goto(`./${nip19.npubEncode(pub)}/${selectValue}`);
 			}
 		} catch (error) {
 			const t = {
