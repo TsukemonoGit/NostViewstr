@@ -462,7 +462,7 @@
 			</div>
 		{/if}
 		<button
-			class="btn p-0.5 pl-0 sm:pr-1 fill-white grid grid-rows-[auto_auto] text-sm"
+			class="btn p-0.5 pl-0 sm:pr-1 fill-white grid grid-rows-[auto_auto] text-sm min-w-8"
 			use:popup={popupFeatured}
 		>
 			<div class="relayIcon flex justify-self-center text-base">
