@@ -134,13 +134,10 @@
 		}
 
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
-			console.log('test');
 			try {
 				$pubkey_viewer = await getPub($nip46Check);
-				$nowProgress = false;
 			} catch (error) {
 				console.log(error);
-				$nowProgress = false;
 			}
 		}
 		$nowProgress = false;
