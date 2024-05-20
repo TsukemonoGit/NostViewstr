@@ -279,6 +279,11 @@
 			pupupOpen = test.state;
 		}
 	};
+
+	const dtag = () => {
+		const darray = viewEvent?.tags.find((item) => item[0] === 'd');
+		return darray?.[1];
+	};
 </script>
 
 <div
@@ -294,33 +299,34 @@
 			{/if}
 		</div>
 		<!--kind/title-->
-		<div class="max-w-full overflow-hidden grid grid-rows-[40%_60%] h-[4em]">
-			<!-- {#if JSON}【JSON MODE】 kind:{kind}
-				{#if kinds[kind]} ({kinds[kind]}) {/if} -->
-			<div class="flex max-w-full overflow-x-hidden">
-				{#if !JSON && !nevent}
-					<SelectKindList
-						let:kindList
-						bind:selectValue
-						divClass="content-center"
-						visible={false}
+		<div
+			class="max-w-full overflow-hidden grid {!JSON && !nevent
+				? 'grid-rows-[40%_60%]'
+				: ''} h-[4em]"
+		>
+			{#if !JSON && !nevent}
+				<SelectKindList
+					let:kindList
+					bind:selectValue
+					divClass="content-center"
+					visible={false}
+				>
+					<select
+						class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"
+						bind:value={selectValue}
+						on:change={handleKindChange}
+						disabled={$nowProgress}
 					>
-						<select
-							class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"
-							bind:value={selectValue}
-							on:change={handleKindChange}
-							disabled={$nowProgress}
-						>
-							{#each Array.from(kindList) as [key, value]}
-								<option value={key.toString()}>{`${value} (${key})`}</option>
-							{/each}
-						</select>
-						<!-- {#if pubkey === $pubkey_viewer}
+						{#each Array.from(kindList) as [key, value]}
+							<option value={key.toString()}>{`${value} (${key})`}</option>
+						{/each}
+					</select>
+					<!-- {#if pubkey === $pubkey_viewer}
 						<span class="fill-white">{@html LocationHomeIcon}</span>
 					{/if} --></SelectKindList
-					>
-				{/if}
-			</div>
+				>
+			{/if}
+
 			<div class="flex-1 max-w-full grid grid-cols-[1fr_auto]">
 				<div class="text-xs box-border w-full overflow-hidden ml-1">
 					{#if $identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])?.identifier}
@@ -400,9 +406,14 @@
 					{:else}
 						<!---->
 						<div class="h5 self-center w-fit ml-1 truncate">
-							{#if JSON}<div class="h6 fixed top-1">【JSON MODE】</div>
-							{/if}kind:{kind}
-							{#if kinds.has(kind)} ({kinds.get(kind)}) {/if}
+							<div class="align-center">
+								{#if JSON}<div class="h6">【JSON MODE】</div>
+								{/if}kind:{kind}
+								{#if kinds.has(kind)} ({kinds.get(kind)}) {/if}
+								{#if nevent && kind >= 30000 && kind < 40000}
+									<div class="overflow-x-hidden h4 p-1 truncate">{dtag()}</div>
+								{/if}
+							</div>
 						</div>
 					{/if}
 				</div>
