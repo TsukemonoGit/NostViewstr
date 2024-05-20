@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n';
 
 	import ListedEvent from '$lib/components/ListedEvent.svelte';
-	import { checkedIndexList, listNum } from '$lib/stores/bookmarkEvents';
+	import { checkedIndexList, listNum, rx } from '$lib/stores/bookmarkEvents';
 	import { getPub, getRelays } from '$lib/nostrFunctions';
 	import { afterUpdate, onMount } from 'svelte';
 	import Header from '$lib/components/Header.svelte';
@@ -122,6 +122,7 @@
 			console.log(getRelaysToast);
 			return;
 		}
+		$rx.setDefaultRelays($relaySet[pubkey].mergeRelays);
 		viewEvent = await getViewEvent(data.id as string, relays);
 		if (!pubkey) {
 			pubkey = viewEvent.pubkey;
