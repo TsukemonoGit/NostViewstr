@@ -17,10 +17,10 @@
 		connected: 'bg-success-600', //接続中
 		retrying: 'bg-surface-600',
 		'waiting-for-retrying': 'bg-warning-600',
-		dormant: 'bg-warning-600',
+		dormant: 'bg-surface-600',
 		error: 'bg-error-600',
 		rejected: 'bg-error-600',
-		terminated: 'bg-error-600'
+		terminated: 'bg-surface-600'
 	};
 
 	let dotColor = (relay: ConnectionState | undefined) => {
@@ -61,7 +61,7 @@
 
 			<!-- {#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started' || $relayState[relay] === 'terminated') && !get(disabledButtons).has(relay)} -->
 
-			{#if ($relayState.get(relay) === 'error' || $relayState.get(relay) === 'waiting-for-retrying' || $relayState.get(relay) === 'dormant') && !get(disabledButtons).has(relay)}
+			{#if $relayState.get(relay) === 'error' && !get(disabledButtons).has(relay)}
 				<button
 					on:click={() => handleClickReconnect(relay)}
 					class="btn p-1 fill-white ml-auto"

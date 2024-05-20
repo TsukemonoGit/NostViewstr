@@ -400,7 +400,8 @@
 					{:else}
 						<!---->
 						<div class="h5 self-center w-fit ml-1 truncate">
-							{#if JSON}<div class="h6">【JSON MODE】</div> {/if}kind:{kind}
+							{#if JSON}<div class="h6 fixed top-1">【JSON MODE】</div>
+							{/if}kind:{kind}
 							{#if kinds.has(kind)} ({kinds.get(kind)}) {/if}
 						</div>
 					{/if}

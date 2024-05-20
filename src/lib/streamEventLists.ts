@@ -56,11 +56,11 @@ const reconnectableStates: ConnectionState[] = [
 	//"connecting",  //自動再接続以外の理由で接続を試みている,
 	//"connected",  //接続状態,
 	//"retrying",  //再接続を試みている,
-	'waiting-for-retrying', //再接続待機中
-	'dormant', //休眠中,
+	//'waiting-for-retrying', //再接続待機中
+	//'dormant', //休眠中,//BackwardReqが終わったあともこれになるっぽい？やることないなったとき？
 	'error', //エラー終了,
-	//"rejected",  //エラー終了,
-	'terminated' //終了状態,
+	'rejected' //エラー終了,
+	//'terminated' //終了状態,
 ];
 
 let storedEventsData: MapEventLists;

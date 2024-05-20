@@ -7,7 +7,8 @@
 		checkedIndexList,
 		listNum,
 		type Identifiers,
-		JsonEventData
+		JsonEventData,
+		rx
 	} from '$lib/stores/bookmarkEvents';
 	import { getPub, getRelays } from '$lib/nostrFunctions';
 	import { publishEventWithTimeout } from '$lib/streamEventLists';
@@ -121,6 +122,7 @@
 			$relaySet[pub] = initRelaySet;
 			await getRelays(pub);
 			toastStore.close(getRelaysToast);
+			$rx.setDefaultRelays($relaySet[pubkey].mergeRelays);
 			//$relayPubkey = pubkey;
 		}
 		if (pub !== $pubkey_viewer && !$relaySet[$pubkey_viewer]) {
