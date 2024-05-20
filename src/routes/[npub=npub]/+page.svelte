@@ -35,7 +35,7 @@
 		if (saveCheck) {
 			const obj = {
 				pub: data.pubkey,
-				kind: kind,
+				kind: Number(kind),
 				iconView: $iconView,
 				URLPreview: $URLPreview
 			};
@@ -49,7 +49,7 @@
 		goto(`${window.location.pathname}/${kind}`);
 	}
 
-	$: kind = Number(Object.keys(kinds)[0]);
+	$: kind = Object.keys(kinds)[0];
 </script>
 
 <svelte:head>

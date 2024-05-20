@@ -176,9 +176,15 @@ export async function getPub(nip46: boolean): Promise<string> {
 			if (nip46) {
 				try {
 					//nip07ログイン//nip46ログイン
-					pubkey_viewer.set(await window.nostr.getPublicKey());
+					const pub = await (window.nostr as Nostr.Nip07.Nostr).getPublicKey();
+					if (!pub) {
+						throw Error;
+					}
+					pubkey_viewer.set(pub);
+					console.log(pubkey_viewer);
 					return myPubkey;
 				} catch (error) {
+					console.log(error);
 					//nip46ログイン
 					nip46Check.set(false);
 				}

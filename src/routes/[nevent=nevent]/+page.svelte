@@ -13,6 +13,7 @@
 		URLPreview,
 		iconView,
 		isMulti,
+		login,
 		nip46Check,
 		nowProgress,
 		pubkey_viewer,
@@ -92,24 +93,23 @@
 			isOnMount = false; // onMountが呼ばれたことを示すフラグを変更
 		}
 	});
+	const getSetRelay = async (): Promise<string[]> => {
+		if (data.relays) {
+			return data.relays;
+		}
 
+		if (data.pubkey) {
+			$relaySet[data.pubkey] = initRelaySet;
+			await getRelays(data.pubkey);
+			return $relaySet[data.pubkey].mergeRelays;
+		} else {
+			return [];
+		}
+	};
 	const init = async () => {
 		$nowProgress = true;
 		console.log('onMount executed');
 
-		const getSetRelay = async (): Promise<string[]> => {
-			if (data.relays) {
-				return data.relays;
-			}
-
-			if (data.pubkey) {
-				$relaySet[data.pubkey] = initRelaySet;
-				await getRelays(data.pubkey);
-				return $relaySet[data.pubkey].mergeRelays;
-			} else {
-				return [];
-			}
-		};
 		relays = await getSetRelay();
 		console.log(relays);
 		if (relays.length <= 0) {
@@ -121,6 +121,7 @@
 			};
 			const getRelaysToast = toastStore.trigger(t);
 			console.log(getRelaysToast);
+			$nowProgress = false;
 			return;
 		}
 		$rx.setDefaultRelays($relaySet[pubkey].mergeRelays);
@@ -131,8 +132,13 @@
 		if (!kind) {
 			kind = viewEvent.kind;
 		}
+
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
-			$pubkey_viewer = await getPub($nip46Check);
+			try {
+				$pubkey_viewer = await getPub($nip46Check);
+			} catch (error) {
+				console.log(error);
+			}
 		}
 		$nowProgress = false;
 	};
