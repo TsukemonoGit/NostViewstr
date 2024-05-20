@@ -31,7 +31,7 @@
 	} from '$lib/stores/settings';
 	import { afterNavigate } from '$app/navigation';
 	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
-	//import { init as initNostrLogin } from 'nostr-login';
+
 	import { page } from '$app/stores';
 
 	export let data: import('./$types').LayoutServerData;
@@ -42,18 +42,21 @@
 	setModalStore();
 	setToastStore();
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
-
-	onMount(() => {
+	let NostrLogin;
+	onMount(async () => {
 		mounted = true;
-		// initNostrLogin({
-		// 	/*options*/
-		// });
-		if (!$login) {
-			document.dispatchEvent(
-				new CustomEvent('nlLaunch', { detail: 'welcome' })
-			);
-			$login = true;
-		}
+		NostrLogin = await import('nostr-login');
+		NostrLogin.init({
+			/*options*/
+			noBanner: true
+		});
+		// if (!$login) {
+		// 	document.dispatchEvent(
+		// 		new CustomEvent('nlLaunch', { detail: 'welcome' })
+		// 	);
+		// 	$login = true;
+		// 	console.log($login);
+		// }
 		const backBtn = localStorage.getItem('back');
 		//console.log('backButton', backBtn);
 		if (backBtn) {
@@ -91,8 +94,8 @@
 	});
 
 	async function onVisibilityChange() {
-		console.log(document.visibilityState);
-		if (document.visibilityState === 'visible') {
+		console.log(document?.visibilityState);
+		if (document?.visibilityState === 'visible') {
 			await RelaysReconnectChallenge();
 		}
 	}
