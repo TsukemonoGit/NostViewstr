@@ -32,6 +32,7 @@
 	import { getViewEvent } from './function';
 	import { createRxNostr } from 'rx-nostr';
 	import Settings from '$lib/components/Settings.svelte';
+	import { nip19 } from 'nostr-tools';
 	export let data: PageData;
 	let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number>;
@@ -144,6 +145,20 @@
 		}
 	}
 </script>
+
+<svelte:head>
+	<meta
+		name="description"
+		content="nostr kind:{data.kind}
+pubkey:{nip19.npubEncode(pubkey)}"
+	/>
+
+	<meta
+		property="og:description"
+		content="kind:{data.kind}
+pubkey:{nip19.npubEncode(pubkey)}"
+	/>
+</svelte:head>
 
 {#if relays?.length <= 0}
 	To display content, please specify relays or pubkey for the Nevent
