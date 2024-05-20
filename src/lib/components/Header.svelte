@@ -279,11 +279,11 @@
 			pupupOpen = test.state;
 		}
 	};
-
-	const dtag = () => {
+	let dtag: string | undefined;
+	$: if (nevent && kind >= 30000 && kind < 40000) {
 		const darray = viewEvent?.tags.find((item) => item[0] === 'd');
-		return darray?.[1];
-	};
+		dtag = darray?.[1];
+	}
 </script>
 
 <div
@@ -410,8 +410,8 @@
 								{#if JSON}<div class="h6">【JSON MODE】</div>
 								{/if}kind:{kind}
 								{#if kinds.has(kind)} ({kinds.get(kind)}) {/if}
-								{#if nevent && kind >= 30000 && kind < 40000}
-									<div class="overflow-x-hidden h4 p-1 truncate">{dtag()}</div>
+								{#if nevent && kind >= 30000 && kind < 40000 && dtag}
+									<div class="overflow-x-hidden h4 p-1 truncate">{dtag}</div>
 								{/if}
 							</div>
 						</div>
