@@ -33,7 +33,11 @@
 	import type Nostr from 'nostr-typedef';
 	import { formatAbsoluteDate } from '$lib/otherFunctions';
 	import SelectKindList from '../SelectKindList.svelte';
-
+	import {
+		modeOsPrefers,
+		modeUserPrefers,
+		modeCurrent
+	} from '@skeletonlabs/skeleton';
 	export let parent: any;
 
 	let viewRelays: boolean = false;
@@ -192,7 +196,12 @@
 
 		<!-- Enable for debugging: -->
 		<div class="flex gap-2">
-			{$_('modal.info.light_switch')}<LightSwitch />
+			{$_('modal.info.light_switch')}<LightSwitch
+				on:click={() => {
+					console.log($modeCurrent); //Light mode is represented by true, while dark mode is represented by false.
+					localStorage.setItem('theme', $modeCurrent ? 'light' : 'dark');
+				}}
+			/>
 		</div>
 
 		<!--ログインの許可のやつ全スキップした人のためとか-->
