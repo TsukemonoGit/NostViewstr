@@ -15,6 +15,7 @@
 		getIdByTag,
 		nip04De,
 		parseNaddr,
+		urlParam,
 		windowOpen
 	} from '$lib/nostrFunctions';
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
@@ -44,6 +45,8 @@
 		copyRelayURL,
 		type SelectIndex
 	} from '$lib/otherFunctions';
+	import { getRelaysById } from '$lib/streamEventLists';
+	import { nprofileEncode } from '$lib/nip19';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
@@ -210,7 +213,7 @@
 		closeQuery: '.listbox-item',
 
 		state: (test) => {
-			console.log(test);
+			//	console.log(test);
 
 			if (!test.state) {
 				comboboxValue = '';
@@ -420,14 +423,20 @@
 				bind:group={comboboxValue}
 				on:click={() => {
 					comboboxValue = '';
+					//atagでもイベント取得できてるときはそのイベントのIDをIDにセットしてる。見つかってないときだけtagArrayからつかってる
 					const id =
 						selectedIndex?.detail && selectedIndex.detail.event
 							? selectedIndex.detail.event.id
 							: selectedIndex.detail.tagArray[1].length === 64
 							? selectedIndex.detail.tagArray[1]
 							: '';
-					if (id) {
-						windowOpen(id);
+					const relays = getRelaysById(id);
+					//URLはaタグのときはnaddrにしてみる
+					const url = urlParam(selectedIndex.detail.tagArray, relays);
+					if (url) {
+						console.log(url);
+						console.log(relays);
+						windowOpen(url);
 					}
 				}}
 				><svelte:fragment slot="lead">{@html OpenIcon}</svelte:fragment>Open in

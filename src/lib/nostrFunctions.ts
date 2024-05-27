@@ -129,7 +129,21 @@ export function windowOpen(str: string): void {
 		'_blank'
 	);
 }
-
+export const urlParam = (
+	tag: string[],
+	relays: string[]
+): string | undefined => {
+	console.log(tag);
+	if (tag[0] === 'p') {
+		return nip19.nprofileEncode({ relays: relays, pubkey: tag[1] });
+	} else if (tag[0] === 'e') {
+		return nip19.neventEncode({ relays: relays, id: tag[1] });
+	} else if (tag[0] === 'a') {
+		const naddr = parseNaddr(tag);
+		naddr.relays = relays;
+		return nip19.naddrEncode(naddr);
+	}
+};
 // リレーの結果を指定の形式に整形
 export function formatResults(msg: { [relay: string]: boolean }): string {
 	let resultString = '';

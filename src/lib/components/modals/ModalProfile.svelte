@@ -7,6 +7,7 @@
 	import { kinds } from '$lib/kind';
 	import { goto } from '$app/navigation';
 	import SelectKindList from '../SelectKindList.svelte';
+	import { getRelaysById } from '$lib/streamEventLists';
 
 	export let parent: any;
 	let selectValue: string = Object.keys(kinds)[0];
@@ -168,9 +169,18 @@
 					type="button"
 					class="btn variant-filled-surface p-2"
 					on:click={() => {
-						windowOpen(nip19.npubEncode($modalStore[0]?.meta.metadata.pubkey));
+						const metadata = $modalStore[0]?.meta.metadata;
+						if (metadata) {
+							const relays = getRelaysById(metadata.id);
+							windowOpen(
+								nip19.nprofileEncode({
+									pubkey: metadata.pubkey,
+									relays: relays
+								})
+							);
 
-						parent.onClose();
+							parent.onClose();
+						}
 					}}>Open in Njump</button
 				>
 

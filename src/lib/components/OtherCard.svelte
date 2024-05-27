@@ -169,237 +169,163 @@
 <!--{#if $searchRelays}-->
 <!-- <NostrApp relays={$searchRelays}> -->
 <!-- ノート | ボタン群-->
-<div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1">
-	<!-- icon | その他-->
-	<div class="grid grid-cols-[auto_1fr] gap-1">
-		<!--icon-->
-		{#if $iconView && metadata}
-			<div
-				class="w-12 h-12 rounded-full flex justify-center overflow-hidden bg-surface-500/25 mt-1"
-			>
-				{#if JSON.parse(metadata.content).picture}
-					<img
-						class="w-12 object-contain justify-center"
-						src={JSON.parse(metadata.content).picture}
-						alt="avatar"
+<!-- <div class="card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"> -->
+<!-- icon | その他-->
+<div class="grid grid-cols-[auto_1fr] gap-1">
+	<!--icon-->
+	{#if $iconView && metadata}
+		<div
+			class="w-12 h-12 rounded-full flex justify-center overflow-hidden bg-surface-500/25 mt-1"
+		>
+			{#if JSON.parse(metadata.content).picture}
+				<img
+					class="w-12 object-contain justify-center"
+					src={JSON.parse(metadata.content).picture}
+					alt="avatar"
+				/>
+			{/if}
+		</div>
+	{:else}
+		<!--iconなし-->
+		<div />
+	{/if}
+
+	<!-- profile | note -->
+	<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
+		<!-- name | display_name | time -->
+		<div
+			class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix overflow-x-hidden"
+		>
+			<!--profile-->
+			{#if metadata}
+				<!--name-->
+				<div class="truncate wid justify-items-end">
+					<button
+						class="text-secondary-600 dark:text-blue-500"
+						on:click={() => {
+							if (metadata !== undefined) {
+								OpenProfile(metadata);
+							} else {
+								OpenProfile({ pubkey: note.pubkey });
+							}
+						}}
+						><u
+							>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
+									metadata.content
+								).name}
+							{:else}
+								{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19
+									.npubEncode(note.pubkey)
+									.slice(-4)}
+							{/if}
+						</u></button
+					>
+				</div>
+				<!--display_name-->
+				<div
+					class="text-left self-end text-sm h-fix wi truncate justify-items-end"
+				>
+					{#if JSON.parse(metadata.content).display_name}
+						{JSON.parse(metadata.content).display_name}
+					{/if}
+				</div>
+				<!--time-->
+				<div class="min-w-max text-sm place-self-center">
+					<!-- <button
+							class="text-sm underline decoration-secondary-500"
+							on:click={() => {
+								if (tagArray) {
+									OpenNoteJson(note, tagArray);
+								}
+							}}>-->{new Date(
+						note.created_at * 1000
+					).toLocaleString()}<!-- </button 
+						>-->
+				</div>
+			{:else}
+				<!--name-->
+				<button
+					class="w-fit text-secondary-600 dark:text-blue-500"
+					on:click={() => {
+						OpenProfile({ pubkey: note.pubkey });
+					}}
+					><u>
+						{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19
+							.npubEncode(note.pubkey)
+							.slice(-4)}
+					</u>
+				</button>
+				<!--display_name-->
+				<div />
+				<!--time-->
+				<div class="min-w-max text-sm place-self-center">
+					<!-- <button
+							class="text-sm underline decoration-secondary-500"
+							on:click={() => {
+								if (tagArray) {
+									OpenNoteJson(note, tagArray);
+								}
+							}}>-->{new Date(
+						note.created_at * 1000
+					).toLocaleString()}
+					<!-- </button 
+						>-->
+				</div>
+			{/if}
+		</div>
+
+		<!--note-->
+		<div
+			class="parent-container break-all whitespace-pre-wrap overflow-x-hidden"
+		>
+			<!--tag?-->
+			{#await uniqueTags(note.tags) then tags}
+				{#if tags.length > 0}
+					<div
+						class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50"
+					>
+						{#each tags as tag}
+							<EventTag
+								{tag}
+								handleClickDate={OpenNoteJson}
+								handleClickPubkey={OpenProfile}
+								{pubkey}
+							/>
+						{/each}
+					</div>
+				{/if}
+				<!--note-->
+				{#if note.kind === 31990}
+					{#await JsonCheck(note.content) then data}
+						{#if data !== ''}
+							<Ogp
+								ogp={{
+									title: data.name,
+									image: data.banner,
+									description: data.about,
+									favicon: data.picture
+								}}
+								url={data.website}
+							/>
+						{/if}
+					{/await}
+				{:else}
+					<!--{note.content}-->
+					<Content
+						text={note.content}
+						tag={note.tags}
+						id={note.id}
+						view={$allView}
+						{pubkey}
+						{isPageOwner}
 					/>
 				{/if}
-			</div>
-		{:else}
-			<!--iconなし-->
-			<div />
-		{/if}
-
-		<!-- profile | note -->
-		<div class="grid grid-rows-[auto_1fr] gap-0.5 w-full">
-			<!-- name | display_name | time -->
-			<div
-				class="w-full grid grid-cols-[auto_1fr_auto] gap-1 h-fix overflow-x-hidden"
-			>
-				<!--profile-->
-				{#if metadata}
-					<!--name-->
-					<div class="truncate wid justify-items-end">
-						<button
-							class="text-secondary-600 dark:text-blue-500"
-							on:click={() => {
-								if (metadata !== undefined) {
-									OpenProfile(metadata);
-								} else {
-									OpenProfile({ pubkey: note.pubkey });
-								}
-							}}
-							><u
-								>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
-										metadata.content
-									).name}
-								{:else}
-									{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19
-										.npubEncode(note.pubkey)
-										.slice(-4)}
-								{/if}
-							</u></button
-						>
-					</div>
-					<!--display_name-->
-					<div
-						class="text-left self-end text-sm h-fix wi truncate justify-items-end"
-					>
-						{#if JSON.parse(metadata.content).display_name}
-							{JSON.parse(metadata.content).display_name}
-						{/if}
-					</div>
-					<!--time-->
-					<div class="min-w-max text-sm place-self-center">
-						<!-- <button
-							class="text-sm underline decoration-secondary-500"
-							on:click={() => {
-								if (tagArray) {
-									OpenNoteJson(note, tagArray);
-								}
-							}}>-->{new Date(
-							note.created_at * 1000
-						).toLocaleString()}<!-- </button 
-						>-->
-					</div>
-				{:else}
-					<!--name-->
-					<button
-						class="w-fit text-secondary-600 dark:text-blue-500"
-						on:click={() => {
-							OpenProfile({ pubkey: note.pubkey });
-						}}
-						><u>
-							{nip19.npubEncode(note.pubkey).slice(0, 12)}:{nip19
-								.npubEncode(note.pubkey)
-								.slice(-4)}
-						</u>
-					</button>
-					<!--display_name-->
-					<div />
-					<!--time-->
-					<div class="min-w-max text-sm place-self-center">
-						<!-- <button
-							class="text-sm underline decoration-secondary-500"
-							on:click={() => {
-								if (tagArray) {
-									OpenNoteJson(note, tagArray);
-								}
-							}}>-->{new Date(
-							note.created_at * 1000
-						).toLocaleString()}
-						<!-- </button 
-						>-->
-					</div>
-				{/if}
-			</div>
-
-			<!--note-->
-			<div
-				class="parent-container break-all whitespace-pre-wrap overflow-x-hidden"
-			>
-				<!--tag?-->
-				{#await uniqueTags(note.tags) then tags}
-					{#if tags.length > 0}
-						<div
-							class="max-h-[6em] overflow-y-auto whitespace-nowrap border-s-4 border-s-surface-500/25 dark:border-s-surface-500/50"
-						>
-							{#each tags as tag}
-								<EventTag
-									{tag}
-									handleClickDate={OpenNoteJson}
-									handleClickPubkey={OpenProfile}
-									{pubkey}
-								/>
-							{/each}
-						</div>
-					{/if}
-					<!--note-->
-					{#if note.kind === 31990}
-						{#await JsonCheck(note.content) then data}
-							{#if data !== ''}
-								<Ogp
-									ogp={{
-										title: data.name,
-										image: data.banner,
-										description: data.about,
-										favicon: data.picture
-									}}
-									url={data.website}
-								/>
-							{/if}
-						{/await}
-					{:else}
-						<!--{note.content}-->
-						<Content
-							text={note.content}
-							tag={note.tags}
-							id={note.id}
-							view={$allView}
-							{pubkey}
-							{isPageOwner}
-						/>
-					{/if}
-				{/await}
-			</div>
+			{/await}
 		</div>
 	</div>
-
-	<!--ボタン群-->
-	{#if menuMode === MenuMode.Owner}
-		<div class="grid grid-rows-[auto_1fr] w-14">
-			<div>
-				<button
-					class="btn m-0 p-0 bg-surface-500 fill-white"
-					on:click={shareNote}>{@html ShareIcon}</button
-				>
-				<button
-					class="btn m-0 p-0 bg-surface-500 fill-white"
-					on:click={() => handleClick(State.Move)}>{@html MoveIcon}</button
-				>
-			</div>
-			<div>
-				<button
-					class="btn m-0 p-0 bg-surface-500 fill-white"
-					on:click={() => {
-						if (tagArray) {
-							windowOpen(note.id);
-						}
-					}}>{@html OpenIcon}</button
-				>
-				<button
-					class="btn m-0 p-0 bg-surface-500 fill-warning-400"
-					on:click={() => {
-						handleClick(State.Delete);
-					}}>{@html DeleteIcon}</button
-				>
-			</div>
-		</div>
-	{:else if menuMode === MenuMode.Viewer}
-		<!--修正ボタンなし-->
-		<div class="flex flex-col">
-			<button
-				class="btn m-0 p-0 mb-1 bg-surface-500 fill-white"
-				on:click={shareNote}>{@html ShareIcon}</button
-			>
-
-			<button
-				class="btn m-0 p-0 bg-surface-500 fill-white"
-				on:click={() => {
-					if (tagArray) {
-						windowOpen(note.id);
-					}
-				}}>{@html OpenIcon}</button
-			>
-		</div>
-	{:else if menuMode === MenuMode.Multi}
-		<!--複数選択モード-->
-		<input
-			class="m-2 checkbox scale-125"
-			type="checkbox"
-			checked={$checkedIndexList
-				.map((item) => item.index)
-				.includes(myIndex !== undefined ? myIndex : -1)}
-			on:change={() => {
-				handleClick(State.Check);
-			}}
-		/>
-	{:else}<!--修正だけ（シェアなし）-->
-
-		<div class="flex flex-col">
-			<button
-				class="btn m-0 p-0 mb-1 bg-surface-500 fill-white"
-				on:click={() => handleClick(State.Move)}>{@html MoveIcon}</button
-			>
-
-			<button
-				class="btn m-0 p-0 bg-surface-500 fill-warning-400"
-				on:click={() => {
-					handleClick(State.Delete);
-				}}>{@html DeleteIcon}</button
-			>
-		</div>
-	{/if}
 </div>
+
+<!--ボタン群-->
+
 <!-- </NostrApp> -->
 <!--{/if}-->

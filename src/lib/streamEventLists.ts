@@ -8,7 +8,8 @@ import {
 	verify,
 	createRxForwardReq,
 	createRxBackwardReq,
-	nip07Signer
+	nip07Signer,
+	createTie
 } from 'rx-nostr';
 import { derived, get, writable } from 'svelte/store';
 import {
@@ -82,7 +83,10 @@ rxNostr.createConnectionStateObservable().subscribe((packet) => {
 	tmp.set(packet.from, packet.state);
 	relayState.set(tmp);
 });
-
+const [tie, tieMap] = createTie();
+export function getRelaysById(id: string): string[] {
+	return Array.from(tieMap.get(id) || []);
+}
 export async function setDefaultRelays(relays: string[]) {
 	rxNostr.setDefaultRelays(relays);
 	// relayList.set(rxNostr.getDefaultRelays());
@@ -209,7 +213,7 @@ export async function StoreFetchFilteredEvents(
 	const rxReq = createRxForwardReq();
 
 	// データの購読
-	const observable = rxNostr.use(rxReq).pipe(uniq(), verify());
+	const observable = rxNostr.use(rxReq).pipe(tie, uniq(), verify());
 
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
@@ -515,10 +519,10 @@ export async function sendMessage(message: string, pubhex: string) {
  * @license This code is a derivative work based on code licensed under the Apache License, Version 2.0.
  */
 
-export function useReq<A>(
-	{ queryKey, filters, operator, req, initData }: UseReqOpts<A>,
+export function useReq(
+	{ queryKey, filters, operator, req, initData }: UseReqOpts<EventPacket>,
 	relay: string[] | undefined = undefined
-): ReqResult<A> {
+): ReqResult<EventPacket> {
 	const queryClient: QueryClient = useQueryClient();
 	// if (Object.keys(rxNostr.getDefaultRelays()).length === 0) {
 	// 	queryClient.setQueryData(queryKey, initData);
@@ -552,17 +556,17 @@ export function useReq<A>(
 	const status = writable<ReqStatus>('loading');
 	const error = writable<Error>();
 
-	const obs: Observable<A> = rxNostr
+	const obs: Observable<EventPacket> = rxNostr
 		.use(_req, { relays: relay })
-		.pipe(operator);
+		.pipe(tie, operator);
 	const query = createQuery({
 		queryKey: queryKey,
-		queryFn: (): Promise<A> => {
+		queryFn: (): Promise<EventPacket> => {
 			return new Promise((resolve, reject) => {
 				let fulfilled = false;
 
 				obs.subscribe({
-					next: (v: A) => {
+					next: (v: EventPacket) => {
 						//console.log(v);
 						if (fulfilled) {
 							queryClient.setQueryData(queryKey, v);
