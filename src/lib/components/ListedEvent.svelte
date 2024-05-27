@@ -223,7 +223,15 @@
 			}
 		}
 	};
-
+	const tagArrayAddRelay = (tagArray: string[]) => {
+		tagArray[0] === 'e' && tagArray.length < 3;
+		const relay = getRelaysById(tagArray[1]);
+		if (relay.length > 0) {
+			return [...tagArray, relay[0]];
+		} else {
+			return tagArray;
+		}
+	};
 	//-----------------------------------------------引用ポスト
 	const postNoteModalComponent: ModalComponent = {
 		ref: ModalPostNote
@@ -231,12 +239,13 @@
 	function shareNote(selectedIndex: SelectIndex) {
 		if (!selectedIndex?.detail) return;
 		const tagArray = selectedIndex.detail.tagArray;
+
 		const note = selectedIndex.detail.event;
 		const tags = tagArray
 			? tagArray[0] === 'e'
 				? note?.kind !== 1
-					? [[...tagArray, '', 'mention']]
-					: [['q', ...tagArray.slice(1)]]
+					? [[...tagArray, getRelaysById(tagArray[1])[0], 'mention']]
+					: [['q', ...tagArray.slice(1), getRelaysById(tagArray[1])[0]]]
 				: [tagArray]
 			: [];
 		const modal: ModalSettings = {
@@ -250,16 +259,14 @@
 					tagArray && tagArray[0] === 'a'
 						? `\r\nnostr:${nip19.naddrEncode(parseNaddr(tagArray))}`
 						: tagArray && tagArray[0] === 'e'
-						? note?.kind === 1
-							? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
-							: `\r\nnostr:${nip19.neventEncode({
-									id: tagArray[1],
-									relays: []
-							  })}`
+						? `\r\nnostr:${nip19.neventEncode({
+								id: tagArray[1],
+								relays: getRelaysById(tagArray[1])
+						  })}`
 						: ''
 				}`,
 				tags: tags,
-				tagArray: tagArray,
+				tagArray: tagArrayAddRelay(tagArray),
 				kind: note?.kind,
 				pubkey: note?.pubkey
 			}

@@ -103,6 +103,16 @@
 					{/if}
 				</div>
 			</div>
+			<div class="">
+				<span class="font-bold">name: </span>
+				{#if profileContent && profileContent.name}
+					<span
+						class="break-all whitespace-pre-wrap text-sm max-h-32 overflow-auto"
+					>
+						{profileContent.name}
+					</span>
+				{/if}
+			</div>
 			<div
 				class="rounded-sm border-4 border-dotted border-surface-300 p-1 bg-surface-100/80 dark:bg-surface-800/80"
 			>
@@ -121,7 +131,7 @@
 				<div class="font-bold">profileJSON</div>
 				{#if profileContent}
 					<div
-						class="break-all whitespace-pre-wrap text-sm max-h-24 overflow-auto"
+						class="break-all whitespace-pre-wrap text-sm max-h-20 overflow-auto"
 					>
 						{JSON.stringify(profileContent, undefined, 4)}
 					</div>

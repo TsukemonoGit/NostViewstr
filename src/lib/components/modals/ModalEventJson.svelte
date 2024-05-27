@@ -9,6 +9,7 @@
 	import type Nostr from 'nostr-typedef';
 	import { relaySet } from '$lib/stores/relays';
 	import { nowProgress, pubkey_viewer } from '$lib/stores/settings';
+	import { getRelaysById } from '$lib/streamEventLists';
 
 	export let parent: any;
 
@@ -179,7 +180,7 @@
 				>
 			</div>
 			<div
-				class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-60 overflow-auto break-all max-w-[768px] p-1"
+				class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-56 overflow-auto break-all max-w-[768px] p-1"
 			>
 				{JSON.stringify($modalStore[0].meta.note, undefined, 4)}
 			</div>
@@ -187,6 +188,17 @@
 				Content Length: {$modalStore[0].meta.note.content.length}, Tags Count: {$modalStore[0]
 					.meta.note.tags.length}
 			</div>
+			{#await getRelaysById($modalStore[0].meta.note.id) then relays}
+				{#if relays.length > 0}
+					<div class="mt-2 font-bold">Seen on</div>
+
+					<div
+						class="bg-surface-50-900-token break-words max-w-[768px] p-1 text-sm h-12 overflow-y-auto"
+					>
+						{relays.join(' , ')}
+					</div>
+				{/if}
+			{/await}
 		{/if}
 
 		<footer class="modal-footer {parent.regionFooter} mt-2">
