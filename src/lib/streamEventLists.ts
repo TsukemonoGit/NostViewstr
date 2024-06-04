@@ -520,9 +520,15 @@ export async function sendMessage(message: string, pubhex: string) {
  */
 
 export function useReq(
-	{ queryKey, filters, operator, req, initData }: UseReqOpts<EventPacket>,
+	{
+		queryKey,
+		filters,
+		operator,
+		req,
+		initData
+	}: UseReqOpts<EventPacket | EventPacket[]>,
 	relay: string[] | undefined = undefined
-): ReqResult<EventPacket> {
+): ReqResult<EventPacket | EventPacket[]> {
 	const queryClient: QueryClient = useQueryClient();
 	// if (Object.keys(rxNostr.getDefaultRelays()).length === 0) {
 	// 	queryClient.setQueryData(queryKey, initData);
@@ -556,17 +562,17 @@ export function useReq(
 	const status = writable<ReqStatus>('loading');
 	const error = writable<Error>();
 
-	const obs: Observable<EventPacket> = rxNostr
+	const obs: Observable<EventPacket | EventPacket[]> = rxNostr
 		.use(_req, { relays: relay })
 		.pipe(tie, operator);
 	const query = createQuery({
 		queryKey: queryKey,
-		queryFn: (): Promise<EventPacket> => {
+		queryFn: (): Promise<EventPacket | EventPacket[]> => {
 			return new Promise((resolve, reject) => {
 				let fulfilled = false;
 
 				obs.subscribe({
-					next: (v: EventPacket) => {
+					next: (v: EventPacket | EventPacket[]) => {
 						//console.log(v);
 						if (fulfilled) {
 							queryClient.setQueryData(queryKey, v);
@@ -575,6 +581,7 @@ export function useReq(
 							fulfilled = true;
 						}
 					},
+
 					complete: () => status.set('success'),
 					error: (e) => {
 						console.error('[rx-nostr]', e);

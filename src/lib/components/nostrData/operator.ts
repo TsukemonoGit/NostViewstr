@@ -56,7 +56,7 @@ export function latestEachNaddr(): OperatorFunction<EventPacket, EventPacket> {
 		({ event }) => `${event.kind}:${event.pubkey}:${event.tags[0][1]}`
 	);
 }
-
+//これでうけとったeventSocketたちを配列にする(EventSocket[])
 export function scanArray<A>(): OperatorFunction<A, A[]> {
 	return scan((acc: A[], a: A) => [...acc, a], []);
 }

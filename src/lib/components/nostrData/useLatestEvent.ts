@@ -18,5 +18,5 @@ export function useLatestEvent(
 	req?: RxReqBase | undefined
 ): ReqResult<EventPacket> {
 	const operator = pipe(verify(), latest());
-	return useReq({ queryKey, filters, operator, req });
+	return useReq({ queryKey, filters, operator, req }) as ReqResult<EventPacket>;
 }

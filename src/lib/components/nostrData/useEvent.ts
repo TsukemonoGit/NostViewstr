@@ -19,5 +19,8 @@ export function useEvent(
 ): ReqResult<EventPacket> {
 	const filters = [{ ids: [id], limit: 1 }];
 	const operator = pipe(filterId(id), uniq(), verify());
-	return useReq({ queryKey, filters, operator, req }, relay);
+	return useReq(
+		{ queryKey, filters, operator, req },
+		relay
+	) as ReqResult<EventPacket>;
 }

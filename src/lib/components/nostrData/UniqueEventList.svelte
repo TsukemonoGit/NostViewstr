@@ -21,7 +21,7 @@
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface $$Slots {
-		default: { events: Nostr.Event; status: ReqStatus };
+		default: { events: Nostr.Event[]; status: ReqStatus };
 		loading: Record<never, never>;
 		error: { error: Error };
 		nodata: Record<never, never>;
@@ -30,8 +30,8 @@
 
 {#if $error}
 	<slot name="error" error={$error} />
-{:else if $data !== undefined}
-	<slot events={$data.event} status={$status} />
+{:else if $data !== undefined && $data?.length > 0}
+	<slot events={$data?.map(({ event }) => event)} status={$status} />
 {:else if $status === 'loading'}
 	<slot name="loading" />
 {:else}
