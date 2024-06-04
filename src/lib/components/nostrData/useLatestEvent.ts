@@ -7,7 +7,7 @@
 import type { QueryKey } from '@tanstack/svelte-query';
 import type Nostr from 'nostr-typedef';
 import type { EventPacket, RxNostr } from 'rx-nostr';
-import { latest, verify } from 'rx-nostr';
+import { latest, uniq, verify } from 'rx-nostr';
 import { pipe } from 'rxjs';
 
 import { useReq } from '$lib/streamEventLists.js';
@@ -17,6 +17,6 @@ export function useLatestEvent(
 	filters: Nostr.Filter[],
 	req?: RxReqBase | undefined
 ): ReqResult<EventPacket> {
-	const operator = pipe(verify(), latest());
+	const operator = pipe(uniq(), verify(), latest());
 	return useReq({ queryKey, filters, operator, req }) as ReqResult<EventPacket>;
 }
