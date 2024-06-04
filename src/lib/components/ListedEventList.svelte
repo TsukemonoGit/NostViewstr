@@ -972,7 +972,7 @@
 				<main
 					class="flex-1 {isNaddr
 						? ''
-						: 'md:ml-[12em]'} overflow-y-auto overflow-x-hidden pb-[2em] min-h-[80vh]"
+						: 'md:ml-[12em]'} overflow-y-auto overflow-x-hidden pb-[2em] min-h-[75vh]"
 				>
 					<!-- Add ml-64 to push main to the right -->
 

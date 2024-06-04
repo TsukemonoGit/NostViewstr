@@ -26,5 +26,8 @@ export function useReplaceableEvent(
 		verify(),
 		latest()
 	);
-	return useReq({ queryKey, filters, operator, req }, relay);
+	return useReq(
+		{ queryKey, filters, operator, req },
+		relay
+	) as ReqResult<EventPacket>;
 }

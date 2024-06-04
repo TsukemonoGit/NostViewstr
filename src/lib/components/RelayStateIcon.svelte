@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ConnectionState, DefaultRelayConfig } from 'rx-nostr';
-	import { rx, relayState } from '$lib/stores/bookmarkEvents';
+	import { relayState } from '$lib/stores/bookmarkEvents';
 	import UpdateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import { GetRelayState, ReconnectRelay } from '$lib/streamEventLists';
 	import { get, writable } from 'svelte/store';

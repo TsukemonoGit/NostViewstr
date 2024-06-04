@@ -19,7 +19,8 @@ import {
 	identifierListsMap,
 	type MapIdentifierList,
 	rx,
-	relayState
+	relayState,
+	queryClient
 } from './stores/bookmarkEvents';
 import { formatResults, getPub, setRelays, signEv } from './nostrFunctions';
 import {
@@ -43,9 +44,10 @@ import type {
 } from 'rx-nostr';
 import type { ReqResult, ReqStatus, RxReqBase, UseReqOpts } from './types';
 import {
+	QueryClient,
 	createQuery,
 	useQueryClient,
-	type QueryClient
+	type QueryKey
 } from '@tanstack/svelte-query';
 import type Nostr from 'nostr-typedef';
 import type { EventParameters, Filter } from 'nostr-typedef';
@@ -74,6 +76,7 @@ identifierListsMap.subscribe((value) => {
 	storedIdentifiersData = value;
 });
 
+//EventList用のrxNostr(個々のイベント取得用のと同じにしたら、個々のイベントにEventListのイベントがあったり逆だったりしたときにイベントが取得されないので個々のイベント取得用とrxNostrを分けてみる)
 const rxNostr = createRxNostr();
 rx.set(rxNostr);
 
@@ -303,6 +306,7 @@ export async function StoreFetchFilteredEvents(
 					eventListsMap.set(storedEventsData);
 				}
 			}
+			saveQuery(pubkey, kind, storedEventsData[pubkey][kind]);
 			//console.log(storedEventsData, get(eventListsMap));
 		},
 		error: (error) => {
@@ -317,7 +321,40 @@ export async function StoreFetchFilteredEvents(
 	const subscription = observable.subscribe(observer);
 	rxReq.emit(data.filters);
 }
-
+export function saveQuery(
+	pubkey: string,
+	kind: number,
+	events: Map<string, Nostr.Event<number>>
+) {
+	if (!get(queryClient)) {
+		const defaultQueryClientConfig = {
+			defaultOptions: {
+				queries: {
+					staleTime: 1000 * 60,
+					refetchInterval: Infinity
+				}
+			}
+		};
+		queryClient.set(new QueryClient(defaultQueryClientConfig));
+	}
+	const client = get(queryClient);
+	console.log('saveQuery');
+	if (!events) return;
+	Array.from(events.entries()).map(([key, event]) => {
+		const queryKey: QueryKey = [`${kind}:${pubkey}:${key}`];
+		console.log('queryKey:', queryKey);
+		const eventPacket: EventPacket = {
+			event: event,
+			subId: '',
+			rootPubkey: '',
+			from: '',
+			type: 'EVENT',
+			message: ['EVENT', 'ok', event]
+		};
+		client.setQueryData(queryKey, eventPacket);
+		console.log(client.getQueryData(queryKey));
+	});
+}
 export async function publishEventWithTimeout(
 	obj: Nostr.Event,
 	relays: string[],
@@ -513,6 +550,8 @@ export async function sendMessage(message: string, pubhex: string) {
 }
 
 //------------------------------------------------------------------------------------------------------------------------以下
+//EventList用のrxNostr(個々のイベント取得用のと同じにしたら、個々のイベントにEventListのイベントがあったり逆だったりしたときにイベントが取得されないので個々のイベント取得用とrxNostrを分けてみる)
+const rxNostr2 = createRxNostr();
 /**
  * @license Apache-2.0
  * @copyright 2023 Akiomi Kamakura
@@ -520,10 +559,17 @@ export async function sendMessage(message: string, pubhex: string) {
  */
 
 export function useReq(
-	{ queryKey, filters, operator, req, initData }: UseReqOpts<EventPacket>,
+	{
+		queryKey,
+		filters,
+		operator,
+		req,
+		initData
+	}: UseReqOpts<EventPacket | EventPacket[]>,
 	relay: string[] | undefined = undefined
-): ReqResult<EventPacket> {
-	const queryClient: QueryClient = useQueryClient();
+): ReqResult<EventPacket | EventPacket[]> {
+	const queryClient = useQueryClient();
+	rxNostr2.setDefaultRelays(rxNostr.getDefaultRelays());
 	// if (Object.keys(rxNostr.getDefaultRelays()).length === 0) {
 	// 	queryClient.setQueryData(queryKey, initData);
 	// 	return {
@@ -556,17 +602,17 @@ export function useReq(
 	const status = writable<ReqStatus>('loading');
 	const error = writable<Error>();
 
-	const obs: Observable<EventPacket> = rxNostr
+	const obs: Observable<EventPacket | EventPacket[]> = rxNostr2
 		.use(_req, { relays: relay })
 		.pipe(tie, operator);
 	const query = createQuery({
 		queryKey: queryKey,
-		queryFn: (): Promise<EventPacket> => {
+		queryFn: (): Promise<EventPacket | EventPacket[]> => {
 			return new Promise((resolve, reject) => {
 				let fulfilled = false;
 
 				obs.subscribe({
-					next: (v: EventPacket) => {
+					next: (v: EventPacket | EventPacket[]) => {
 						//console.log(v);
 						if (fulfilled) {
 							queryClient.setQueryData(queryKey, v);
@@ -575,6 +621,7 @@ export function useReq(
 							fulfilled = true;
 						}
 					},
+
 					complete: () => status.set('success'),
 					error: (e) => {
 						console.error('[rx-nostr]', e);

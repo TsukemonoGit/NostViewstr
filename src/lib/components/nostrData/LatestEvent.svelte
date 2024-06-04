@@ -13,7 +13,7 @@
 	export let queryKey: QueryKey;
 	export let filters: Nostr.Filter[];
 	export let req: RxReqBase | undefined = undefined;
-
+	console.log('query', queryKey);
 	// TODO: Check if $app.rxNostr is defined
 	$: result = useLatestEvent(queryKey, filters, req);
 	$: data = result.data;

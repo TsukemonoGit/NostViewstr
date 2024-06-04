@@ -5,6 +5,7 @@ import type Nostr from 'nostr-typedef';
 import type { TextPart } from '$lib/content';
 import type { ConnectionState } from 'rx-nostr';
 import type { RxNostr } from 'rx-nostr/types/src/rx-nostr/interface';
+import type { QueryClient } from '@tanstack/svelte-query';
 interface IdentifierList {
 	[pubkey: string]: {
 		[kind: number]: Identifiers[];
@@ -38,7 +39,7 @@ export const eventListsMap = writable<MapEventLists>({});
 export const keysArray = writable<string[]>([]);
 
 export const rx = writable<RxNostr>();
-
+export const queryClient = writable<QueryClient>();
 //とりあえず監視してる分全部のrelayStateを保管しておいて表示させるやつ（$relaySet(pubkey).bookmarkRelays）とかのリレーごとにstateがどうか探しに来る感じで
 export const relayState = writable(new Map<string, ConnectionState>());
 

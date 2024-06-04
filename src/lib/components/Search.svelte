@@ -13,6 +13,8 @@
 	import { relaySet } from '$lib/stores/relays';
 	import type { Observer, Subscription } from 'rxjs';
 	import { pubkey_viewer } from '$lib/stores/settings';
+	import type { QueryKey } from '@tanstack/svelte-query';
+	import { queryClient } from '$lib/stores/bookmarkEvents';
 
 	export let parent: any;
 	//export let pubkey: string;
@@ -189,6 +191,9 @@
 	let webSockets: WebSocket[] = [];
 
 	async function onClickDup() {
+		// const queryKey: QueryKey = $modalStore[0].value.queryKey;
+
+		// $queryClient.removeQueries({ queryKey: queryKey });
 		nowLoading = true;
 		if (!subscription.closed) {
 			subscription.unsubscribe();

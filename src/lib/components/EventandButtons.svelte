@@ -21,7 +21,7 @@
 	import type { SelectIndex } from '$lib/otherFunctions';
 	import Metadata from './nostrData/Metadata.svelte';
 	import Text from './nostrData/Text.svelte';
-	import UniqueEventList from './nostrData/UniqueEventList.svelte';
+	import LatestEvent from './nostrData/LatestEvent.svelte';
 	import { relaySet } from '$lib/stores/relays';
 	export let tag: {
 		id: number;
@@ -36,11 +36,6 @@
 	export let kind: number | undefined;
 	//export let handleClick: any;
 	export let CheckNote: (e: SelectIndex) => void;
-	const uniqueEvent = (eventList: NostrEvent[]): NostrEvent => {
-		//console.log(eventList);
-		eventList.sort((a, b) => b.created_at - a.created_at);
-		return eventList[0];
-	};
 </script>
 
 {#if tag.name[0] === 'e'}
@@ -62,6 +57,7 @@
 				{filter}
 				message={`loading [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={[id]}
 			/>
 			<MenuByType
 				setSelectedIndex={{
@@ -84,6 +80,7 @@
 				{filter}
 				message={`error [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={[id]}
 			/>
 			<MenuByType
 				setSelectedIndex={{
@@ -106,6 +103,7 @@
 				{filter}
 				message={`not found [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={[id]}
 			/>
 			<MenuByType
 				setSelectedIndex={{
@@ -229,7 +227,7 @@
 {:else if tag.name[0] === 'a'}
 	<!-- {#if $searchRelays && $searchRelays.length > 0}
 					<NostrApp relays={$searchRelays}> -->
-	<UniqueEventList queryKey={tag.name} filters={[filter]} let:events>
+	<LatestEvent queryKey={[tag.name[1]]} filters={[filter]} let:events>
 		<div
 			slot="loading"
 			class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
@@ -263,6 +261,7 @@
 					{filter}
 					message={`loading [${tag.name}]`}
 					isPageOwner={isOwner}
+					queryKey={tag.name}
 				/>
 			{/if}
 			<MenuByType
@@ -312,6 +311,7 @@
 					{filter}
 					message={`error [${tag.name}]`}
 					isPageOwner={isOwner}
+					queryKey={tag.name}
 				/>
 			{/if}
 			<MenuByType
@@ -361,6 +361,7 @@
 					{filter}
 					message={`not found [${tag.name}]`}
 					isPageOwner={isOwner}
+					queryKey={tag.name}
 				/>
 			{/if}
 			<MenuByType
@@ -378,8 +379,8 @@
 		</div>
 
 		<Metadata
-			queryKey={['metadata', uniqueEvent(events).pubkey]}
-			pubkey={uniqueEvent(events).pubkey}
+			queryKey={['metadata', events.pubkey]}
+			pubkey={events.pubkey}
 			let:metadata
 			relay={tag.name.length > 2 && tag.name[2] !== ''
 				? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
@@ -392,7 +393,7 @@
 				<EventCard
 					isPageOwner={isOwner}
 					tagArray={tag.name}
-					note={uniqueEvent(events)}
+					note={events}
 					metadata={undefined}
 					{pubkey}
 				/>
@@ -400,7 +401,7 @@
 					setSelectedIndex={{
 						detail: {
 							number: tag.id,
-							event: uniqueEvent(events),
+							event: events,
 							tagArray: tag.name
 						}
 					}}
@@ -416,14 +417,14 @@
 				<EventCard
 					isPageOwner={isOwner}
 					tagArray={tag.name}
-					note={uniqueEvent(events)}
+					note={events}
 					metadata={undefined}
 					{pubkey}
 				/><MenuByType
 					setSelectedIndex={{
 						detail: {
 							number: tag.id,
-							event: uniqueEvent(events),
+							event: events,
 							tagArray: tag.name
 						}
 					}}
@@ -439,14 +440,14 @@
 				<EventCard
 					isPageOwner={isOwner}
 					tagArray={tag.name}
-					note={uniqueEvent(events)}
+					note={events}
 					metadata={undefined}
 					{pubkey}
 				/><MenuByType
 					setSelectedIndex={{
 						detail: {
 							number: tag.id,
-							event: uniqueEvent(events),
+							event: events,
 							tagArray: tag.name
 						}
 					}}
@@ -461,7 +462,7 @@
 				<EventCard
 					isPageOwner={isOwner}
 					tagArray={tag.name}
-					note={uniqueEvent(events)}
+					note={events}
 					{metadata}
 					{pubkey}
 				/>
@@ -469,7 +470,7 @@
 					setSelectedIndex={{
 						detail: {
 							number: tag.id,
-							event: uniqueEvent(events),
+							event: events,
 							tagArray: tag.name
 						}
 					}}
@@ -479,7 +480,7 @@
 				/>
 			</div>
 		</Metadata>
-	</UniqueEventList>
+	</LatestEvent>
 {:else if tag.name[0] === 'p'}
 	<Metadata
 		queryKey={['metadata', tag.name[1]]}
@@ -497,6 +498,7 @@
 				{filter}
 				message={`loading [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={['metadata', tag.name[1]]}
 			/>
 
 			<!-- loading ... {JSON.stringify(tag.name)} -->
@@ -521,6 +523,7 @@
 				{filter}
 				message={`not found [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={['metadata', tag.name[1]]}
 			/>
 			<MenuByType
 				setSelectedIndex={{
@@ -543,6 +546,7 @@
 				{filter}
 				message={`not found [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={['metadata', tag.name[1]]}
 			/>
 			<MenuByType
 				setSelectedIndex={{

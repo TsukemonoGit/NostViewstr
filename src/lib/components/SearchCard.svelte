@@ -8,11 +8,13 @@
 	import Search from '$lib/components/Search.svelte';
 
 	import { _ } from 'svelte-i18n';
+	import type { QueryKey } from '@tanstack/svelte-query';
 
 	export let isPageOwner: boolean;
 	export let filter: {};
 	export let message: string;
 	export let textSize: string = '';
+	export let queryKey: QueryKey;
 
 	//export let menuMode: MenuMode;
 
@@ -65,7 +67,8 @@
 			body: ``,
 			value: {
 				filter: filter,
-				isPageOwner: isPageOwner
+				isPageOwner: isPageOwner,
+				queryKey: queryKey
 			},
 			response: async (res) => {
 				//  console.log(res);
