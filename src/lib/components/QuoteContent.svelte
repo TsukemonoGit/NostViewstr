@@ -132,6 +132,7 @@
 						filter={{ ids: [noteId(encodedId)] }}
 						message={`Loading note... (${noteId(encodedId)})`}
 						textSize="text-sm"
+						queryKey={[noteId(encodedId)]}
 					/>
 				</div>
 				<div slot="error">
@@ -140,6 +141,7 @@
 						filter={{ ids: [noteId(encodedId)] }}
 						message={`Not found (${noteId(encodedId)})`}
 						textSize="text-sm"
+						queryKey={[noteId(encodedId)]}
 					/>
 				</div>
 
@@ -149,6 +151,7 @@
 						filter={{ ids: [noteId(encodedId)] }}
 						message={`Not found (${noteId(encodedId)})`}
 						textSize="text-sm"
+						queryKey={[noteId(encodedId)]}
 					/>
 				</div>
 				<Metadata

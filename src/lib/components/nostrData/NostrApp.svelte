@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { queryClient } from '$lib/stores/bookmarkEvents';
 	/**
 	 * @license Apache-2.0
 	 * @copyright 2023 Akiomi Kamakura
@@ -31,7 +32,7 @@
 		...defaultQueryClientConfig,
 		...queryClientConfig
 	};
-	$: queryClient = new QueryClient(mergedQueryClientConfig);
+	$: $queryClient = new QueryClient(mergedQueryClientConfig);
 
 	// $: {
 	//   rxNostr.setDefaultRelays(relays);
@@ -48,6 +49,6 @@
 	// }
 </script>
 
-<QueryClientProvider client={queryClient}>
+<QueryClientProvider client={$queryClient}>
 	<slot />
 </QueryClientProvider>

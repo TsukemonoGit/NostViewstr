@@ -84,6 +84,7 @@
 					filter={{ ids: [id] }}
 					message={`Loading note... (${id})`}
 					textSize="text-sm"
+					queryKey={[id]}
 				/>
 			</div>
 			<div slot="error">
@@ -92,6 +93,7 @@
 					filter={{ ids: [id] }}
 					message={`Not found (${id})`}
 					textSize="text-sm"
+					queryKey={[id]}
 				/>
 			</div>
 
@@ -101,6 +103,7 @@
 					filter={{ ids: [id] }}
 					message={`Not found (${id})`}
 					textSize="text-sm"
+					queryKey={[id]}
 				/>
 			</div>
 			<Metadata

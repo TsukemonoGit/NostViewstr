@@ -57,6 +57,7 @@
 				{filter}
 				message={`loading [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={[id]}
 			/>
 			<MenuByType
 				setSelectedIndex={{
@@ -79,6 +80,7 @@
 				{filter}
 				message={`error [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={[id]}
 			/>
 			<MenuByType
 				setSelectedIndex={{
@@ -101,6 +103,7 @@
 				{filter}
 				message={`not found [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={[id]}
 			/>
 			<MenuByType
 				setSelectedIndex={{
@@ -224,7 +227,7 @@
 {:else if tag.name[0] === 'a'}
 	<!-- {#if $searchRelays && $searchRelays.length > 0}
 					<NostrApp relays={$searchRelays}> -->
-	<LatestEvent queryKey={tag.name} filters={[filter]} let:events>
+	<LatestEvent queryKey={[tag.name[1]]} filters={[filter]} let:events>
 		<div
 			slot="loading"
 			class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
@@ -258,6 +261,7 @@
 					{filter}
 					message={`loading [${tag.name}]`}
 					isPageOwner={isOwner}
+					queryKey={tag.name}
 				/>
 			{/if}
 			<MenuByType
@@ -307,6 +311,7 @@
 					{filter}
 					message={`error [${tag.name}]`}
 					isPageOwner={isOwner}
+					queryKey={tag.name}
 				/>
 			{/if}
 			<MenuByType
@@ -356,6 +361,7 @@
 					{filter}
 					message={`not found [${tag.name}]`}
 					isPageOwner={isOwner}
+					queryKey={tag.name}
 				/>
 			{/if}
 			<MenuByType
@@ -492,6 +498,7 @@
 				{filter}
 				message={`loading [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={['metadata', tag.name[1]]}
 			/>
 
 			<!-- loading ... {JSON.stringify(tag.name)} -->
@@ -516,6 +523,7 @@
 				{filter}
 				message={`not found [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={['metadata', tag.name[1]]}
 			/>
 			<MenuByType
 				setSelectedIndex={{
@@ -538,6 +546,7 @@
 				{filter}
 				message={`not found [${tag.name}]`}
 				isPageOwner={isOwner}
+				queryKey={['metadata', tag.name[1]]}
 			/>
 			<MenuByType
 				setSelectedIndex={{
