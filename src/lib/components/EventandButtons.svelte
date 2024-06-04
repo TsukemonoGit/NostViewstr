@@ -378,8 +378,8 @@
 		</div>
 
 		<Metadata
-			queryKey={['metadata', uniqueEvent(events).pubkey]}
-			pubkey={uniqueEvent(events).pubkey}
+			queryKey={['metadata', events.pubkey]}
+			pubkey={events.pubkey}
 			let:metadata
 			relay={tag.name.length > 2 && tag.name[2] !== ''
 				? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
@@ -392,7 +392,7 @@
 				<EventCard
 					isPageOwner={isOwner}
 					tagArray={tag.name}
-					note={uniqueEvent(events)}
+					note={events}
 					metadata={undefined}
 					{pubkey}
 				/>
@@ -400,7 +400,7 @@
 					setSelectedIndex={{
 						detail: {
 							number: tag.id,
-							event: uniqueEvent(events),
+							event: events,
 							tagArray: tag.name
 						}
 					}}
@@ -416,14 +416,14 @@
 				<EventCard
 					isPageOwner={isOwner}
 					tagArray={tag.name}
-					note={uniqueEvent(events)}
+					note={events}
 					metadata={undefined}
 					{pubkey}
 				/><MenuByType
 					setSelectedIndex={{
 						detail: {
 							number: tag.id,
-							event: uniqueEvent(events),
+							event: events,
 							tagArray: tag.name
 						}
 					}}
@@ -439,14 +439,14 @@
 				<EventCard
 					isPageOwner={isOwner}
 					tagArray={tag.name}
-					note={uniqueEvent(events)}
+					note={events}
 					metadata={undefined}
 					{pubkey}
 				/><MenuByType
 					setSelectedIndex={{
 						detail: {
 							number: tag.id,
-							event: uniqueEvent(events),
+							event: events,
 							tagArray: tag.name
 						}
 					}}
@@ -461,7 +461,7 @@
 				<EventCard
 					isPageOwner={isOwner}
 					tagArray={tag.name}
-					note={uniqueEvent(events)}
+					note={events}
 					{metadata}
 					{pubkey}
 				/>
@@ -469,7 +469,7 @@
 					setSelectedIndex={{
 						detail: {
 							number: tag.id,
-							event: uniqueEvent(events),
+							event: events,
 							tagArray: tag.name
 						}
 					}}
