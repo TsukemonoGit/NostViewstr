@@ -10,6 +10,8 @@
 	import { relaySet } from '$lib/stores/relays';
 	import { nowProgress, pubkey_viewer } from '$lib/stores/settings';
 	import { getRelaysById } from '$lib/streamEventLists';
+	import Relay from '../Relay.svelte';
+	import { Nip11Registry } from 'rx-nostr';
 
 	export let parent: any;
 
@@ -137,6 +139,16 @@
 		}
 		$nowProgress = false;
 	}
+	$: isRelay = (): string | undefined => {
+		if (
+			$modalStore?.[0].meta?.tagArray &&
+			($modalStore[0].meta.tagArray[0] === 'r' ||
+				$modalStore[0].meta.tagArray[0] === 'relay') &&
+			($modalStore[0].meta.tagArray[1] as string).startsWith('ws')
+		) {
+			return $modalStore[0].meta.tagArray[1] as string;
+		}
+	};
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -196,6 +208,17 @@
 						class="bg-surface-50-900-token break-words max-w-[768px] p-1 text-sm h-12 overflow-y-auto"
 					>
 						{relays.join(' , ')}
+					</div>
+				{/if}
+			{/await}
+		{:else}
+			{#await isRelay() then relayURL}
+				{#if relayURL}
+					<div class="mt-2 font-bold">Relay Info</div>
+					<div
+						class="bg-surface-50-900-token break-words whitespace-pre-wrap max-h-56 overflow-auto break-all max-w-[768px] p-1"
+					>
+						{JSON.stringify(Nip11Registry.get(relayURL), null, 2)}
 					</div>
 				{/if}
 			{/await}
