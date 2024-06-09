@@ -68,7 +68,7 @@
 		<!--profile-->
 
 		<div class="grid grid-row-[auto_auto_auto] gap-1 max-w-md">
-			<div class="grid grid-cols-[auto_1fr] gap-2 max-w-md max-h-40">
+			<div class="grid grid-cols-[auto_1fr] gap-2 max-w-md max-h-24">
 				<div
 					class="w-16 h-16 rounded-lg flex justify-center overflow-hidden bg-surface-500/25"
 				>
@@ -91,7 +91,7 @@
 				<span class="font-bold">name: </span>
 				{#if profileContent && profileContent.name}
 					<span
-						class="break-all whitespace-pre-wrap text-sm max-h-32 overflow-auto"
+						class="break-all whitespace-pre-wrap text-sm max-h-32 overflow-auto bg-surface-100/80 dark:bg-surface-800/80"
 					>
 						{profileContent.name}
 					</span>

@@ -142,5 +142,5 @@
 
 <slot />
 
-<Modal />
+<Modal class="top-0" />
 <Toast class="z-[9999]" />
