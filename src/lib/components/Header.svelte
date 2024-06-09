@@ -112,7 +112,7 @@
 			},
 			// Returns the updated response value
 			response: async (res) => {
-				console.log(res);
+				//console.log(res);
 				if (res) {
 					if (res.update) {
 						$nowProgress = true;
@@ -133,7 +133,7 @@
 		image: string;
 		description: string;
 	}) {
-		console.log(res);
+		//console.log(res);
 		const listNumber = $listNum;
 		const eventTag = $eventListsMap[pubkey][kind].get(
 			$keysArray[listNumber]
@@ -169,7 +169,7 @@
 				// "title" タグが存在しない場合、配列の二番目（dタグの後ろ）に挿入
 				eventTag.splice(imageIndex + 1, 0, ['description', res.description]);
 			}
-			console.log(eventTag);
+			//	console.log(eventTag);
 			const event: Nostr.Event = {
 				id: '',
 				kind: kind,
@@ -185,7 +185,7 @@
 				event,
 				$relaySet[pubkey].writeRelays
 			);
-			console.log(result);
+			//	console.log(result);
 			if (result.isSuccess && $eventListsMap && result.event) {
 				$eventListsMap[pubkey][kind].set($keysArray[listNumber], result.event);
 				viewEvent = result.event;
@@ -221,7 +221,7 @@
 
 		const url = window.location.origin + '/' + nip19.naddrEncode(address);
 		const tags = [listNaddr, ['r', url]];
-		console.log(tags);
+		//	console.log(tags);
 		const modal: ModalSettings = {
 			type: 'component',
 			component: postNoteModalComponent,
@@ -232,7 +232,7 @@
 				tags: tags
 			},
 			response: async (res) => {
-				console.log(res);
+				//	console.log(res);
 				//postNoteまでmodalでやるらしい
 			}
 		};
@@ -261,8 +261,8 @@
 
 	$: selectValue = kind.toString();
 	function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
-		console.log(Number(event.currentTarget.value));
-		console.log(window.location);
+		//	console.log(Number(event.currentTarget.value));
+		//	console.log(window.location);
 		bkm = 'pub';
 		goto(`/${nip19.npubEncode(pubkey)}/${selectValue}`);
 	}
@@ -358,6 +358,7 @@
 									{#if $iconView && $identifierListsMap[pubkey][kind].get($identifierKeysArray[$listNum])?.image}
 										<div class=" p-0 btn-icon btn-icon-sm m-0 mr-1 self-start">
 											<img
+												loading="lazy"
 												width={36}
 												class="min-w-[36px]"
 												alt=""
@@ -426,7 +427,7 @@
 							disabled={bkm === 'pub'}
 							on:click={() => {
 								bkm = 'pub';
-								console.log(bkm);
+								//	console.log(bkm);
 								$pageNum = 0;
 							}}
 							>{@html pubIcon}
@@ -440,7 +441,7 @@
 								disabled={bkm === 'prv'}
 								on:click={() => {
 									bkm = 'prv';
-									console.log(bkm);
+									//	console.log(bkm);
 									$pageNum = 0;
 								}}
 							>

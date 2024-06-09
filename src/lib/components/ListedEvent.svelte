@@ -46,7 +46,6 @@
 		type SelectIndex
 	} from '$lib/otherFunctions';
 	import { getRelaysById } from '$lib/streamEventLists';
-	import { nprofileEncode } from '$lib/nip19';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };

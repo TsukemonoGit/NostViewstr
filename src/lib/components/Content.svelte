@@ -50,28 +50,6 @@
 		}
 	}
 
-	// // URLが存在する場合はストアの値を使用し、ない場合はOGP情報を取得してストアを更新する
-	// export async function loadOgp(url: string) {
-	// 	if (!$ogpStore[url] || $ogpStore[url].title === '') {
-	// 		try {
-	// 			const ogp = await getOgp(url); // OGP情報を取得
-	// 			ogpStore.update((store) => {
-	// 				// 取得したOGP情報をストアに追加
-	// 				return {
-	// 					...store,
-	// 					[url]: ogp
-	// 				};
-	// 			});
-	// 		} catch (error) {
-	// 			console.log(error);
-	// 			$ogpStore[url].title = '';
-	// 			$ogpStore[url].image = '';
-	// 			$ogpStore[url].description = '';
-	// 			$ogpStore[url].favicon = '';
-	// 		}
-	// 	}
-	// }
-
 	const pathname = (urlstr: string) => {
 		const url = new URL(urlstr);
 
@@ -164,6 +142,7 @@
 							src={item.url}
 							height="6"
 							alt={item.content}
+							loading="lazy"
 						/></button
 					>{:else if item.type === 'url'}{#if $URLPreview}{#if new URL(item.content).hostname.endsWith('twitter.com')}
 							<div class="max-w-full overflow-auto break-all">

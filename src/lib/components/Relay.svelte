@@ -36,12 +36,14 @@
 			>
 				{#if $iconView && relayInfo.icon}
 					<img
+						loading="lazy"
 						src={relayInfo.icon}
 						class="w-12 h-12 rounded-full"
 						alt="relay Icon"
 					/>
 				{:else if $iconView && imageLoaded}
 					<img
+						loading="lazy"
 						src={httpsUrl + 'favicon.ico'}
 						on:error={() => (imageLoaded = false)}
 						class="w-12 h-12 rounded-full"

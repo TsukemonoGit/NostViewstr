@@ -42,6 +42,7 @@
 	>
 		{#if metadataContent && light && metadataContent.picture}
 			<img
+				loading="lazy"
 				class="max-w-12 max-h-12 object-contain justify-center"
 				src={metadataContent.picture}
 				alt="avatar"

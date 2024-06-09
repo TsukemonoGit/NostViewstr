@@ -3,17 +3,10 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import infoIcon from '@material-design-icons/svg/round/info.svg?raw';
 	import shareIcon from '@material-design-icons/svg/round/chat.svg?raw'; //'@material-design-icons/svg/round/share.svg?raw';
-	import {
-		identifierKeysArray,
-		identifierListsMap,
-		listNum
-	} from '$lib/stores/bookmarkEvents';
+	import { identifierKeysArray, listNum } from '$lib/stores/bookmarkEvents';
 	import { pubkey_viewer } from '$lib/stores/settings';
 
 	export let parent: any;
-
-	$: pubkey = $modalStore[0]?.value?.pubkey;
-	$: kind = $modalStore[0]?.value?.kind;
 
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(res);
@@ -21,18 +14,6 @@
 		modalStore.close();
 	}
 
-	$: console.log($identifierListsMap);
-	$: console.log(pubkey);
-	$: console.log(kind);
-	$: console.log($identifierKeysArray[$listNum]);
-	$: console.log(
-		$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
-	);
-	$: console.log(
-		$identifierListsMap?.[pubkey]?.[kind]?.get($identifierKeysArray[$listNum])
-			?.title
-	);
-	// Form Data
 	let res: {
 		title?: string;
 		image?: string;
@@ -94,7 +75,7 @@
 					placeholder=""
 				/>
 			</label>
-			<img class="max-h-24 m-2" src={res.image} alt="" />
+			<img loading="lazy" class="max-h-24 m-2" src={res.image} alt="" />
 			<label class="label mt-2">
 				<span class="font-bold">description</span>
 				{$_('modal.listInfo.ex.summary')}

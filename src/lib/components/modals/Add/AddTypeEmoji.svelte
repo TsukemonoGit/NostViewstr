@@ -76,7 +76,7 @@
 			placeholder="https://.....png"
 		/>
 	</div>
-	<img src={emojiUrl} alt="emojiUrl" width="64px" />
+	<img loading="lazy" src={emojiUrl} alt="emojiUrl" width="64px" />
 
 	<footer class=" gap-2 flex flex-wrap justify-end mt-2">
 		<PublicButton

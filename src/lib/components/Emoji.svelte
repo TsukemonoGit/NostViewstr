@@ -8,6 +8,7 @@
 	<div class="m-2">
 		{#if $iconView}
 			<img
+				loading="lazy"
 				class="max-w-16 max-h-16 h-16 object-contain justify-center"
 				src={tagArray[2]}
 				alt={tagArray[1]}

@@ -13,8 +13,7 @@
 	let name: string;
 	let picture: string;
 	let about: string;
-	$: console.log($iconView);
-	$: console.log(picture);
+
 	$: if (text) {
 		try {
 			const parseText = JSON.parse(text);

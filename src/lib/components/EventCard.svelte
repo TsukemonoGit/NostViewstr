@@ -136,6 +136,7 @@
 				class="max-w-12 max-h-12 object-contain justify-center"
 				src={metadataContent.picture}
 				alt="avatar"
+				loading="lazy"
 			/>
 		{:else if metadataContent && metadataContent.name}
 			{metadataContent.name}

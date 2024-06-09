@@ -62,16 +62,7 @@
 		kindsValidTag[$modalStore[0].value.kind]?.includes('r');
 	const includesT = kindsValidTag[$modalStore[0].value.kind]?.includes('t');
 	const includesW = kindsValidTag[$modalStore[0].value.kind]?.includes('word');
-	// const charactersToCheck = ['t', 'word'];
-	// let countCharacters = kindsValidTag[$modalStore[0].value.kind]?.filter(
-	// 	(tag) => charactersToCheck.some((char) => tag.includes(char))
-	// );
-	// console.log(countCharacters);
-	// if (countCharacters === undefined && $modalStore[0].value.tag) {
-	// 	countCharacters = [$modalStore[0].value.tag[0]];
-	// }
-	// console.log(countCharacters);
-	// We've created a custom submit function to pass the response and close the modal.
+
 	function onFormSubmit(): void {
 		console.log(res);
 		if ($modalStore[0].response) $modalStore[0].response(res);

@@ -27,7 +27,6 @@
 
 	export let metadata: Event | undefined;
 
-	export let menuMode: MenuMode;
 	export let myIndex: number | undefined;
 	export let tagArray: string[] | undefined;
 	export let pubkey: string;
@@ -179,6 +178,7 @@
 		>
 			{#if JSON.parse(metadata.content).picture}
 				<img
+					loading="lazy"
 					class="w-12 object-contain justify-center"
 					src={JSON.parse(metadata.content).picture}
 					alt="avatar"

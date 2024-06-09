@@ -27,18 +27,6 @@
 		}
 	}
 
-	let res: { openList?: boolean; kind: number } = {
-		openList: false,
-		kind: Number(kinds.keys().next().value)
-	};
-	$: console.log(res);
-	function onFormSubmit(): void {
-		console.log(res.kind);
-		if ($modalStore[0].response) $modalStore[0].response(res);
-
-		modalStore.close();
-	}
-
 	//$modalStore[0]?.meta.hexKey
 	function onClickButton(str: string) {
 		const text =
@@ -72,11 +60,6 @@
 
 		parent.onClose();
 	}
-
-	// function handleKindChange(event: { currentTarget: HTMLSelectElement }) {
-	// 	kind = Number(event.currentTarget.value);
-	// 	console.log(kind);
-	// }
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -91,6 +74,7 @@
 				>
 					{#if profileContent && profileContent.picture}
 						<img
+							loading="lazy"
 							class="w-16 object-contain justify-center"
 							src={profileContent.picture}
 							alt="avatar"
@@ -99,7 +83,7 @@
 				</div>
 				<div>
 					{#if profileContent && profileContent.banner}
-						<img class="" src={profileContent.banner} alt="" />
+						<img loading="lazy" class="" src={profileContent.banner} alt="" />
 					{/if}
 				</div>
 			</div>
@@ -154,10 +138,6 @@
 						type="button"
 						class="btn variant-filled-secondary p-1"
 						on:click={() => {
-							//res.openList = true;
-							//res.kind = Number(selectValue);
-							// if (res && res.openList) {
-
 							goto(
 								`${window.location.origin}/${nip19.npubEncode(
 									$modalStore[0]?.meta.metadata.pubkey

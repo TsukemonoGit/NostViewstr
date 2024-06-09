@@ -222,6 +222,7 @@
 						{#if $iconView}
 							{#if JSON.parse(metadata.content).picture}
 								<img
+									loading="lazy"
 									class="h-5 object-contain justify-center"
 									src={JSON.parse(metadata.content).picture}
 									alt="avatar"

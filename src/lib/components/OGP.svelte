@@ -22,6 +22,7 @@
 						class="overflow-hidden relative rounded-xl max-h-[6rem] flex justify-center"
 					>
 						<img
+							loading="lazy"
 							class="object-contain max-h-[6rem] max-w-full"
 							src={ogp.image}
 							alt=""
@@ -57,6 +58,7 @@
 			<div class="flex flex-row-reverse ... -my-1">
 				{#if ogp.favicon !== ''}
 					<img
+						loading="lazy"
 						class="object-contain w-5 pl-0.5 pr-0.5"
 						src={ogp.favicon}
 						alt=""

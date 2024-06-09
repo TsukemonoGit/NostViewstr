@@ -33,11 +33,7 @@
 	import type Nostr from 'nostr-typedef';
 	import { formatAbsoluteDate } from '$lib/otherFunctions';
 	import SelectKindList from '../SelectKindList.svelte';
-	import {
-		modeOsPrefers,
-		modeUserPrefers,
-		modeCurrent
-	} from '@skeletonlabs/skeleton';
+	import { modeCurrent } from '@skeletonlabs/skeleton';
 	export let parent: any;
 
 	let viewRelays: boolean = false;
@@ -122,20 +118,9 @@
 
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase} ">
-		<!-- <div class="grid grid-cols-[1fr_auto]"> -->
 		<header class={cHeader}>
 			{$modalStore[0].title ?? '(title missing)'}
 		</header>
-		<!-- <div class="history">
-				<button
-					class="btn-icon variant-filled-surface"
-					disabled={!(history.length > 1)}
-					on:click={() => {
-						history.back();
-						modalStore.close();
-					}}>{@html LeftIcon}</button
-				>
--->
 
 		<div class="flex gap-4">
 			<button
@@ -190,9 +175,6 @@
 				>
 			</div>
 		{/if}
-
-		<!-- </div> -->
-		<!-- </div>  -->
 
 		<!-- Enable for debugging: -->
 		<div class="flex gap-2">
@@ -276,17 +258,6 @@
 			>
 		</div>
 
-		<!--きょうゆう-->
-		<!-- <div>
-			list name: {$identifierList[$listNum].identifier}
-			<button
-				use:clipboard={copyData}
-				class="btn variant-filled"
-				disabled={copied}
-				on:click={onClickHandler}>{copied ? 'Copied 👍' : 'Copy'}</button
-			>
-		</div> -->
-		<!--リレーの情報たち-->
 		{#if $modalStore[0].value?.relaySet}
 			<div>
 				<div class="flex-1 gap-3">
@@ -346,31 +317,6 @@
 									</button>
 								{/if}
 							</p>
-							<!-- <p class="pt-1">List</p>
-							<ol
-								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto overflow-x-hidden px-2"
-							>
-								{#each $modalStore[0].value.relaySet.bookmarkRelays as relay, index}
-									<li>
-										<span>{index + 1}.</span><span class="break-all"
-											>{relay}</span
-										>
-									</li>
-								{/each}
-							</ol>
-
-							<p class="pt-1">Note</p>
-							<ol
-								class="bg-surface-50-900-token card max-h-[6em] list overflow-y-auto px-2"
-							>
-								{#each $modalStore[0].value.relaySet.searchRelays as relay, index}
-									<li>
-										<span>{index + 1}.</span><span class="break-all"
-											>{relay}</span
-										>
-									</li>
-								{/each}
-							</ol> -->
 						</div>
 					</div>
 				{/if}
@@ -392,32 +338,7 @@
 				{$_('popup.prv')}
 			</div>
 		</div>
-		<!-- <div class="flex flex-wrap">
-			<div class="flex gap-1 pr-3">
-				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
-					{@html shareIcon}
-				</div>
-				{$_('popup.Share')}
-			</div>
-			<div class="flex gap-1 pr-3">
-				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
-					{@html OpenInBrowser}
-				</div>
-				{$_('popup.open')}
-			</div>
-			<div class="flex gap-1 pr-3">
-				<div class="fill-white btn m-0 p-0 mb-1 bg-surface-500 h-fit">
-					{@html ArrowCircleRight}
-				</div>
-				{$_('popup.move')}
-			</div>
-			<div class="flex gap-1">
-				<div class="fill-warning-400 btn m-0 p-0 mb-1 bg-surface-500 h-fit">
-					{@html Delete}
-				</div>
-				{$_('popup.delete')}
-			</div>
-		</div> -->
+
 		<hr />
 		<div class="flex gap-3">
 			<a
@@ -427,6 +348,7 @@
 				href="https://github.com/TsukemonoGit/nostviewstr"
 			>
 				<img
+					loading="lazy"
 					src={githubIconWhite}
 					class=" w-[18px] h-[18px]"
 					alt="githubLink"

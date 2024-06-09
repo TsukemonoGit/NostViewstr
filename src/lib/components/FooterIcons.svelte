@@ -33,7 +33,12 @@
 		target="_blank"
 		href="https://github.com/TsukemonoGit/nostviewstr"
 	>
-		<img src={githubIconWhite} class=" w-[18px] h-[18px]" alt="githubLink" />
+		<img
+			loading="lazy"
+			src={githubIconWhite}
+			class=" w-[18px] h-[18px]"
+			alt="githubLink"
+		/>
 	</a>
 
 	<a

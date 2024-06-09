@@ -115,6 +115,7 @@
 			>
 				{#if $iconView && metadataContent.picture !== ''}
 					<img
+						loading="lazy"
 						class="max-w-8 max-h-8 object-contain justify-center"
 						src={metadataContent.picture}
 						alt="avatar"

@@ -221,7 +221,7 @@ export async function StoreFetchFilteredEvents(
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
 		next: (packet: EventPacket) => {
-			console.log('[rx-nostr packet]', packet);
+			//	console.log('[rx-nostr packet]', packet);
 
 			if (packet.event.kind === 10002) {
 				setRelayEvent(packet);
@@ -290,7 +290,7 @@ export async function StoreFetchFilteredEvents(
 					}
 				}
 			} else {
-				console.log(kind);
+				//	console.log(kind);
 				const check = storedEventsData[pubkey]?.[kind]?.get(
 					kind.toString()
 				)?.created_at;
@@ -338,11 +338,11 @@ export function saveQuery(
 		queryClient.set(new QueryClient(defaultQueryClientConfig));
 	}
 	const client = get(queryClient);
-	console.log('saveQuery');
+	//	console.log('saveQuery');
 	if (!events) return;
 	Array.from(events.entries()).map(([key, event]) => {
 		const queryKey: QueryKey = [`${kind}:${pubkey}:${key}`];
-		console.log('queryKey:', queryKey);
+		//	console.log('queryKey:', queryKey);
 		const eventPacket: EventPacket = {
 			event: event,
 			subId: '',
@@ -352,7 +352,7 @@ export function saveQuery(
 			message: ['EVENT', 'ok', event]
 		};
 		client.setQueryData(queryKey, eventPacket);
-		console.log(client.getQueryData(queryKey));
+		//	console.log(client.getQueryData(queryKey));
 	});
 }
 export async function publishEventWithTimeout(
@@ -378,7 +378,7 @@ export async function publishEventWithTimeout(
 	relays.forEach((relay) => {
 		msgObj[relay] = false;
 	});
-	console.log(obj);
+	//	console.log(obj);
 	if (userCheck) {
 		const pubkey = await getPub(true); //書き込みたいときには再度のNIP46チェックも含む
 		if (obj.pubkey === '') {
@@ -667,7 +667,7 @@ function setRelayEvent(eventPacket: EventPacket) {
 		!tmp ||
 		(tmp.relayEvent && eventPacket.event.created_at > tmp.relayEvent.created_at)
 	) {
-		console.log('tesr');
+		//	console.log('tesr');
 		setRelays(pub, { 10002: eventPacket.event });
 	}
 }

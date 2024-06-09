@@ -2,7 +2,7 @@
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
 	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
 	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
-	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
+	//import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { nip19, type Event, nip05 } from 'nostr-tools';
 
 	import { _ } from 'svelte-i18n';
@@ -15,7 +15,7 @@
 	import { URLPreview, allView, iconView } from '$lib/stores/settings';
 	import { goto } from '$app/navigation';
 	import { listNum, ogpStore } from '$lib/stores/bookmarkEvents';
-	import { relaySet } from '$lib/stores/relays';
+
 	import Content from './Content.svelte';
 	import LatestNote from './LatestNote.svelte';
 
@@ -86,25 +86,25 @@
 		modalStore.trigger(modal);
 	};
 
-	//-------------------------------イベントJSON表示
-	const jsonModalComponent: ModalComponent = {
-		ref: ModalEventJson
-	};
+	// //-------------------------------イベントJSON表示
+	// const jsonModalComponent: ModalComponent = {
+	// 	ref: ModalEventJson
+	// };
 
-	const OpenNoteJson = (text: Event, tag: string[]) => {
-		const modal = {
-			type: 'component' as const,
-			title: 'Event Json',
-			backdropClasses: '!bg-surface-400/80',
-			meta: {
-				note: text,
-				tagArray: tag
-			},
+	// const OpenNoteJson = (text: Event, tag: string[]) => {
+	// 	const modal = {
+	// 		type: 'component' as const,
+	// 		title: 'Event Json',
+	// 		backdropClasses: '!bg-surface-400/80',
+	// 		meta: {
+	// 			note: text,
+	// 			tagArray: tag
+	// 		},
 
-			component: jsonModalComponent
-		};
-		modalStore.trigger(modal);
-	};
+	// 		component: jsonModalComponent
+	// 	};
+	// 	modalStore.trigger(modal);
+	// };
 </script>
 
 <!--{#if $searchRelays}-->
@@ -127,6 +127,7 @@
 			>
 				{#if $iconView && content.picture}
 					<img
+						loading="lazy"
 						class="max-w-12 max-h-12 object-contain justify-center"
 						src={content.picture}
 						alt="avatar"

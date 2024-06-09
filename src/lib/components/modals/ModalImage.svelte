@@ -13,7 +13,12 @@
 	<div class="modal-example-form {cBase}">
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-		<img src={$modalStore[0]?.image} alt="" on:click={handleClickImage} />
+		<img
+			loading="lazy"
+			src={$modalStore[0]?.image}
+			alt=""
+			on:click={handleClickImage}
+		/>
 
 		<footer class="modal-footer {parent.regionFooter}">
 			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}

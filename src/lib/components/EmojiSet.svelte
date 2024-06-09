@@ -22,6 +22,7 @@
 		{#each event?.tags as list, index}
 			{#if list[0] === 'emoji'}
 				<img
+					loading="lazy"
 					src={list[2]}
 					alt={list[1]}
 					title={list[1]}

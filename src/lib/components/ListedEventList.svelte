@@ -391,7 +391,7 @@
 	}): void {
 		console.log(e);
 		console.log('CheckNote');
-		const number: number = e.detail.number + $pageNum * $amount;
+		//const number: number = e.detail.number + $pageNum * $amount;
 		//console.log(e.detail.checked, number);
 		console.log($checkedIndexList);
 	}

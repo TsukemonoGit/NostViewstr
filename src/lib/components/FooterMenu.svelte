@@ -54,7 +54,6 @@
 	import { get } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { createEventDispatcher } from 'svelte';
-	import { decode, naddrEncode } from '$lib/nip19';
 
 	export let pubkey: string;
 	export let kind: number;
