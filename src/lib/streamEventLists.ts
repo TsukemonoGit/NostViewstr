@@ -1,6 +1,6 @@
 import { _ } from 'svelte-i18n';
 
-import type { Observer, Observable } from 'rxjs';
+import type { Observer, Observable, Subscription } from 'rxjs';
 
 import {
 	createRxNostr,
@@ -150,6 +150,9 @@ export async function StoreFetchFilteredEvents(
 		filters: Nostr.Filter[];
 	}
 ) {
+	if (subscription) {
+		subscription.unsubscribe();
+	}
 	// relayStateのすべてのキーに対して処理
 	// for (const relayKey of get(relayState).keys()) {
 	// 	if (!data.relays.includes(relayKey)) {
@@ -311,15 +314,21 @@ export async function StoreFetchFilteredEvents(
 		},
 		error: (error) => {
 			console.log('Error occurred:', error);
+			subscription.unsubscribe();
 		},
 		complete: () => {
 			console.log('Subscription completed');
+			subscription.unsubscribe();
 		}
 	};
 
 	// 購読開始
-	const subscription = observable.subscribe(observer);
+	subscription = observable.subscribe(observer);
 	rxReq.emit(data.filters);
+}
+let subscription: Subscription;
+export function unsubscribeStored() {
+	subscription?.unsubscribe();
 }
 export function saveQuery(
 	pubkey: string,
@@ -569,8 +578,9 @@ export function useReq(
 	relay: string[] | undefined = undefined
 ): ReqResult<EventPacket | EventPacket[]> {
 	const queryClient = useQueryClient();
-	rxNostr2.setDefaultRelays(rxNostr.getDefaultRelays());
-	// if (Object.keys(rxNostr.getDefaultRelays()).length === 0) {
+	if (Object.keys(rxNostr2.getDefaultRelays()).length === 0) {
+		rxNostr2.setDefaultRelays(rxNostr.getDefaultRelays());
+	}
 	// 	queryClient.setQueryData(queryKey, initData);
 	// 	return {
 	// 		data: readable<A>(initData),
@@ -611,7 +621,7 @@ export function useReq(
 			return new Promise((resolve, reject) => {
 				let fulfilled = false;
 
-				obs.subscribe({
+				const subscribe = obs.subscribe({
 					next: (v: EventPacket | EventPacket[]) => {
 						//console.log(v);
 						if (fulfilled) {
@@ -622,7 +632,10 @@ export function useReq(
 						}
 					},
 
-					complete: () => status.set('success'),
+					complete: () => {
+						status.set('success');
+						subscribe.unsubscribe();
+					},
 					error: (e) => {
 						console.error('[rx-nostr]', e);
 						status.set('error');
@@ -632,6 +645,7 @@ export function useReq(
 							reject(e);
 							fulfilled = true;
 						}
+						subscribe.unsubscribe();
 					}
 				});
 				_req.emit(filters);

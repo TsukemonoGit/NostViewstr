@@ -150,7 +150,7 @@
 		// オブザーバーオブジェクトの作成
 		const observer: Observer<any> = {
 			next: (packet: EventPacket) => {
-				console.log(packet);
+				//	console.log(packet);
 				relaysState[packet.from] = RelayState.Exist;
 				if (event.sig === '' || packet.event.created_at > event.created_at) {
 					event = packet.event;

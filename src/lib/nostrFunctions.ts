@@ -195,7 +195,7 @@ export async function getPub(nip46: boolean): Promise<string> {
 						throw Error;
 					}
 					pubkey_viewer.set(pub);
-					console.log(pubkey_viewer);
+					//console.log(pubkey_viewer);
 					return myPubkey;
 				} catch (error) {
 					console.log(error);
@@ -307,7 +307,7 @@ export function idlatestEach(): MonoTypeOperatorFunction<EventPacket> {
 
 				source.subscribe({
 					next(packet) {
-						console.log(packet);
+						//	console.log(packet);
 						const id = packet.event.tags.find(
 							(item: string[]) => item[0] === 'd'
 						); //一応一個目にdがない場合も考慮
@@ -379,7 +379,7 @@ async function getRelayEvents(
 	// 購読開始
 	const subscription = observable.subscribe({
 		next: (packet) => {
-			console.log(packet);
+			//	console.log(packet);
 			if (
 				!kekka[packet.event.kind] ||
 				packet.event.created_at > (kekka[packet.event.kind]?.created_at ?? 0)
