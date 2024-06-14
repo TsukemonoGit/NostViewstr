@@ -68,7 +68,7 @@
 		publishEventWithTimeout
 	} from '$lib/streamEventLists';
 	import FooterMenu from './FooterMenu.svelte';
-	import { kinds } from '$lib/kind';
+	import { kinds, kindsValidTag } from '$lib/kind';
 	import { page } from '$app/stores';
 	export let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> | undefined;
@@ -1011,7 +1011,7 @@
 	</div>
 {/if}
 <!-------------------------------あど----->
-{#if !$nowProgress && $pubkey_viewer === pubkey && kinds.has(kind)}
+{#if !$nowProgress && $pubkey_viewer === pubkey && kindsValidTag.hasOwnProperty(kind)}
 	<div
 		class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
 			? 'multi'

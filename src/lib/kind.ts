@@ -57,7 +57,8 @@ export let kindsValidTag: { [key: number]: string[] } = {
 	10007: ['relay'],
 	30002: ['relay'],
 	10101: ['p'],
-	10102: ['relay']
+	10102: ['relay'],
+	30007: ['p'] //https://github.com/nostr-protocol/nips/issues/1156
 };
 
 // 重複を排除して新しい配列を作成する
