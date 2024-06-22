@@ -351,7 +351,7 @@
 
 	<div
 		bind:this={popupElement}
-		class="absolute card w-48 shadow-xl py-2 border border-primary-400-500-token"
+		class="absolute card w-48 shadow-xl py-2 border border-primary-400-500-token z-[51]"
 		data-popup="popupCombobox"
 	>
 		<ListBox

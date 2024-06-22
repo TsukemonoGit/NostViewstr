@@ -48,7 +48,7 @@
 		NostrLogin = await import('nostr-login');
 		NostrLogin.init({
 			/*options*/
-			noBanner: true
+			//noBanner: true
 		});
 		// if (!$login) {
 		// 	document.dispatchEvent(
