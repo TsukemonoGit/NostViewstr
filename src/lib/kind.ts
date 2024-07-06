@@ -14,6 +14,8 @@ export const kinds: Map<number, string> = new Map<number, string>([
 	//
 	[10030, 'emojis'],
 	//
+	[10096, 'File storage server list'],
+	//
 	[10101, 'good wiki authors'],
 	[10102, 'good wiki relays'],
 	//
@@ -58,7 +60,8 @@ export let kindsValidTag: { [key: number]: string[] } = {
 	30002: ['relay'],
 	10101: ['p'],
 	10102: ['relay'],
-	30007: ['p'] //https://github.com/nostr-protocol/nips/issues/1156
+	30007: ['p'], //https://github.com/nostr-protocol/nips/issues/1156,
+	10096: ['server'] //https://github.com/nostr-protocol/nips/blob/main/96.md#selecting-a-server
 };
 
 // 重複を排除して新しい配列を作成する

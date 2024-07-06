@@ -26,6 +26,7 @@
 	import EditTypeOther from './Add/EditTypeOther.svelte';
 	import { nowProgress } from '$lib/stores/settings';
 	import AddTypeRefelence from './Add/AddTypeRefelence.svelte';
+	import AddTypeServer from './Add/AddTypeServer.svelte';
 
 	export let parent: any;
 
@@ -62,7 +63,8 @@
 		kindsValidTag[$modalStore[0].value.kind]?.includes('r');
 	const includesT = kindsValidTag[$modalStore[0].value.kind]?.includes('t');
 	const includesW = kindsValidTag[$modalStore[0].value.kind]?.includes('word');
-
+	const includesServer =
+		kindsValidTag[$modalStore[0].value.kind]?.includes('server');
 	function onFormSubmit(): void {
 		console.log(res);
 		if ($modalStore[0].response) $modalStore[0].response(res);
@@ -74,86 +76,6 @@
 	const cHeader = 'text-2xl font-bold';
 	//const cForm =
 	//  'border border-surface-500 p-4 space-y-4 rounded-container-token';
-
-	//たぐからのチェックが
-	//リレーの場合同じリレーURLがあるかのチェックとかしてないからだめかも
-	//要検討
-	function onTagkara() {
-		try {
-			const tagArray: string[] = JSON.parse(input);
-			if (!isOneDimensionalArray(tagArray)) {
-				throw new Error();
-			}
-
-			//validtagかちぇっく
-			if (
-				!tagArray ||
-				!kindsValidTag[$modalStore[0].value.kind]?.includes(tagArray[0]) ||
-				tagArray.length <= 1 ||
-				tagArray[1] === ''
-			) {
-				throw new Error();
-			}
-			res.tag = tagArray;
-			//タグが大丈夫そうだったら
-
-			onFormSubmit();
-		} catch (error) {
-			const t = {
-				message: $_('toast.invalidtag'),
-				timeout: 3000,
-				background: 'bg-orange-500 text-white width-filled '
-			};
-
-			toastStore.trigger(t);
-			return;
-		}
-	}
-
-	async function onClickCreate() {
-		$nowProgress = true;
-		//contentのなかみをkind1に書き込みしてたぐにして返す
-		const event: Nostr.Event<any> = {
-			id: '',
-			pubkey: $modalStore[0].value.pubkey,
-			created_at: Math.floor(Date.now() / 1000),
-			kind: 1,
-			tags: [],
-			content: content,
-			sig: ''
-		};
-		console.log($relaySet[$modalStore[0].value.pubkey].writeRelays);
-		if ($relaySet[$modalStore[0].value.pubkey].writeRelays.length > 0) {
-			const response = await publishEventWithTimeout(
-				event,
-				$relaySet[$modalStore[0].value.pubkey].writeRelays
-			);
-			if (response.isSuccess) {
-				const t = {
-					message: response.msg,
-					timeout: 3000
-				};
-
-				toastStore.trigger(t);
-
-				if (response.event) {
-					res.tag = ['e', response.event.id]; //追加するノートIDがこれ
-					$nowProgress = false;
-					onFormSubmit();
-				} else {
-					const t = {
-						message: 'failed to publish',
-						timeout: 3000,
-						background: 'bg-orange-500 text-white width-filled '
-					};
-					toastStore.trigger(t);
-					$nowProgress = false;
-					//		$nowProgress = false;
-					return;
-				}
-			}
-		}
-	}
 
 	let selectBoxItem: string[] = [];
 	let selectItem: string;
@@ -314,6 +236,18 @@
 					{#if $modalStore[0].value.kind !== 10002 && (includesRefelence || (tag !== undefined && tag[0] === 'r'))}
 						<!--<hr class="!border-dashed my-1" />-->
 						<AddTypeRefelence
+							{res}
+							{parent}
+							{onFormSubmit}
+							tag={$modalStore[0].value.tag}
+							{bkm}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
+
+					{#if (tag === undefined && includesServer) || (tag !== undefined && tag[0] === 'server')}
+						<AddTypeServer
 							{res}
 							{parent}
 							{onFormSubmit}

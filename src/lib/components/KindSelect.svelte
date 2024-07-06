@@ -67,7 +67,7 @@
 	{/each}
 </div> -->
 <div
-	class="z-10 card w-56 shadow-xl py-2 border border-primary-500-400-token"
+	class="z-10 card w-60 shadow-xl py-2 border border-primary-500-400-token"
 	data-popup="popupSelect"
 >
 	<SelectKindList
