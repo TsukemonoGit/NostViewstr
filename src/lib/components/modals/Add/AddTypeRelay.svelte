@@ -54,8 +54,10 @@
 			toastStore.trigger(t);
 			return;
 		}
+		const info = Nip11Registry.get(input);
 		try {
-			const existRelay = await Nip11Registry.fetch(input);
+			const existRelay = !info ? await Nip11Registry.fetch(input) : info;
+
 			if (!existRelay) {
 				const t = {
 					message: `${$_('toast.checkRelay')}`,
