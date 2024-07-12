@@ -270,7 +270,7 @@
 		console.log(numList);
 		if ($eventListsMap) {
 			//$nowProgress = true;
-
+			console.log($eventListsMap[pubkey][kind].get($keysArray[listNumber]));
 			//	await updateBkmTag(pubkey, kind, listNumber); //最新の状態に更新
 			try {
 				const bkmk = $eventListsMap[pubkey][kind].get($keysArray[listNumber]);
@@ -287,6 +287,7 @@
 								: await deletePrivates(bkmk.content, bkmk.pubkey, numList), //ここでエラーの可能性ある
 						sig: ''
 					};
+					console.log(event);
 					const result = await publishEventWithTimeout(
 						event,
 						$relaySet[$pubkey_viewer].writeRelays

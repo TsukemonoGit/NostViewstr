@@ -230,6 +230,9 @@
 				nowLoading = false;
 			};
 		}
+		$queryClient.invalidateQueries({
+			queryKey: $modalStore[0].value.queryKeyeryKey
+		});
 	}
 </script>
 

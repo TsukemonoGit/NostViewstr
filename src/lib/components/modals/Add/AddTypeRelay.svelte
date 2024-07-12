@@ -54,9 +54,24 @@
 			toastStore.trigger(t);
 			return;
 		}
+		try {
+			const existRelay = await Nip11Registry.fetch(input);
+			if (!existRelay) {
+				const t = {
+					message: `${$_('toast.checkRelay')}`,
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
 
-		const existRelay = await Nip11Registry.fetch(input);
-		if (!existRelay) {
+				toastStore.trigger(t);
+				//		$nowProgress = false;
+				return;
+			} else {
+				res.tag = ['relay', input];
+				console.log(res.tag);
+				onFormSubmit();
+			}
+		} catch (error) {
 			const t = {
 				message: `${$_('toast.checkRelay')}`,
 				timeout: 3000,
@@ -66,10 +81,6 @@
 			toastStore.trigger(t);
 			//		$nowProgress = false;
 			return;
-		} else {
-			res.tag = ['relay', input];
-			console.log(res.tag);
-			onFormSubmit();
 		}
 	}
 

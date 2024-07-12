@@ -797,6 +797,7 @@ export async function deletePrivates(
 
 export function deletePubs(tags: string[][], numList: number[]): string[][] {
 	const newTags = [...tags];
+
 	if (newTags.length > 0 && numList.length > 0) {
 		numList.sort((a, b) => b - a); //大きい順にソート
 		try {

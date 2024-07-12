@@ -62,7 +62,38 @@
 		if (!input.endsWith('/')) {
 			input += '/';
 		}
+		try {
+			const existRelay = await Nip11Registry.fetch(input);
+			if (!existRelay) {
+				const t = {
+					message: `${$_('toast.checkRelay')}`,
+					timeout: 3000,
+					background: 'bg-orange-500 text-white width-filled '
+				};
 
+				toastStore.trigger(t);
+				//		$nowProgress = false;
+				return;
+			} else {
+				res.tag =
+					selectValue === 'both'
+						? ['r', input]
+						: ['r', input, selectValue === 'read' ? 'read' : 'write'];
+				console.log(res.tag);
+				res.check = true;
+				onFormSubmit();
+			}
+		} catch (error) {
+			const t = {
+				message: `${$_('toast.checkRelay')}`,
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
+
+			toastStore.trigger(t);
+			//		$nowProgress = false;
+			return;
+		}
 		// const index = viewList?.findIndex((tag) => {
 		// 	const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
 		// 	return modifiedTag === input;
@@ -80,32 +111,32 @@
 		// 	toastStore.trigger(t);
 		// 	return;
 		// }
-		$nowProgress = true;
-		const info = Nip11Registry.get(input);
+		// $nowProgress = true;
+		// const info = Nip11Registry.get(input);
 
-		const existRelay = !info ? await Nip11Registry.fetch(input) : info;
+		// const existRelay = !info ? await Nip11Registry.fetch(input) : info;
 
-		$nowProgress = false;
-		console.log(existRelay);
-		if (!existRelay.name) {
-			const t = {
-				message: `${$_('toast.checkRelay')}`,
-				timeout: 3000,
-				background: 'bg-orange-500 text-white width-filled '
-			};
+		// $nowProgress = false;
+		// console.log(existRelay);
+		// if (!existRelay.name) {
+		// 	const t = {
+		// 		message: `${$_('toast.checkRelay')}`,
+		// 		timeout: 3000,
+		// 		background: 'bg-orange-500 text-white width-filled '
+		// 	};
 
-			toastStore.trigger(t);
-			//		$nowProgress = false;
-			return;
-		} else {
-			res.tag =
-				selectValue === 'both'
-					? ['r', input]
-					: ['r', input, selectValue === 'read' ? 'read' : 'write'];
-			console.log(res.tag);
-			res.check = true;
-			onFormSubmit();
-		}
+		// 	toastStore.trigger(t);
+		// 	//		$nowProgress = false;
+		// 	return;
+		// } else {
+		// res.tag =
+		// 	selectValue === 'both'
+		// 		? ['r', input]
+		// 		: ['r', input, selectValue === 'read' ? 'read' : 'write'];
+		// console.log(res.tag);
+		// res.check = true;
+		// onFormSubmit();
+		//}
 	}
 
 	let inputElement: HTMLInputElement;
