@@ -614,7 +614,7 @@ export function useReq(
 
 	const obs: Observable<EventPacket | EventPacket[]> = rxNostr2
 		.use(_req, { relays: relay })
-		.pipe(tie, operator);
+		.pipe(operator); //tie,
 	const query = createQuery({
 		queryKey: queryKey,
 		queryFn: (): Promise<EventPacket | EventPacket[]> => {
