@@ -1039,7 +1039,7 @@
 	<div
 		class="top-1/2 -translate-y-1/2 fixed left-1/2 -translate-x-1/2 box-border overflow-x-hidden"
 	>
-		<div class="flex flex-wrap gap-3">
+		<div class="flex flex-wrap gap-3 fill-primary-800 dark:fill-primary-100">
 			{$_('nodata.iconbefore')}
 			{@html FormatListBulleted}
 			{$_('nodata.iconafter')}
