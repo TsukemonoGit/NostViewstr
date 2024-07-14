@@ -222,7 +222,7 @@ export async function StoreFetchFilteredEvents(
 	const rxReq = createRxForwardReq();
 
 	// データの購読
-	const observable = rxNostr.use(rxReq).pipe(tie, uniq());
+	const observable = rxNostr.use(rxReq).pipe(uniq()); //tie,
 
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
@@ -312,7 +312,7 @@ export async function StoreFetchFilteredEvents(
 					eventListsMap.set(storedEventsData);
 				}
 			}
-			saveQuery(pubkey, kind, storedEventsData[pubkey][kind]);
+			//	saveQuery(pubkey, kind, storedEventsData[pubkey][kind]);
 			//console.log(storedEventsData, get(eventListsMap));
 		},
 		error: (error) => {
