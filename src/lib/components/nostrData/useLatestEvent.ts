@@ -17,6 +17,6 @@ export function useLatestEvent(
 	filters: Nostr.Filter[],
 	req?: RxReqBase | undefined
 ): ReqResult<EventPacket> {
-	const operator = pipe(uniq(), verify(), latest());
+	const operator = pipe(uniq(), latest());
 	return useReq({ queryKey, filters, operator, req }) as ReqResult<EventPacket>;
 }

@@ -4,9 +4,11 @@
 	import UpdateIcon from '@material-design-icons/svg/round/update.svg?raw';
 	import { GetRelayState, ReconnectRelay } from '$lib/streamEventLists';
 	import { get, writable } from 'svelte/store';
+	import { cleanRelayUrl } from '$lib/otherFunctions';
 
 	//$: stateArray = Array.from($relayState.keys()).sort();
 	export let readTrueArray: string[];
+
 	//export let pubkey: string;
 	// ボタンの無効化を管理するストア
 	const disabledButtons = writable(new Set<string>());
@@ -41,29 +43,33 @@
 			disabledButtons.set(newDisabledButtons);
 
 			// 5分後にボタンを再び有効化する
-			setTimeout(() => {
-				const currentDisabledButtons = get(disabledButtons);
-				currentDisabledButtons.delete(relay);
-				disabledButtons.set(currentDisabledButtons);
-			}, 5 * 60 * 1000);
+			setTimeout(
+				() => {
+					const currentDisabledButtons = get(disabledButtons);
+					currentDisabledButtons.delete(relay);
+					disabledButtons.set(currentDisabledButtons);
+				},
+				5 * 60 * 1000
+			);
 		}
 	}
 </script>
 
 {#each readTrueArray as relay, index}
-	{#if $relayState.get(relay) !== undefined}
+	{@const relayUrl = cleanRelayUrl(relay)}
+	{#if $relayState.get(relayUrl) !== undefined}
 		<div class="flex items-center gap-1 break-all">
 			<div
-				class="h-4 w-4 rounded-full {dotColor($relayState.get(relay))}"
-				title={$relayState.get(relay)}
+				class="h-4 w-4 rounded-full {dotColor($relayState.get(relayUrl))}"
+				title={$relayState.get(relayUrl)}
 			/>
-			{relay.length > 30 ? `${relay.slice(0, 28)}...` : relay}
+			{relayUrl.length > 30 ? `${relayUrl.slice(0, 28)}...` : relayUrl}
 
 			<!-- {#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started' || $relayState[relay] === 'terminated') && !get(disabledButtons).has(relay)} -->
 
-			{#if $relayState.get(relay) === 'error' && !get(disabledButtons).has(relay)}
+			{#if $relayState.get(relayUrl) === 'error' && !get(disabledButtons).has(relayUrl)}
 				<button
-					on:click={() => handleClickReconnect(relay)}
+					on:click={() => handleClickReconnect(relayUrl)}
 					class="btn p-1 fill-white ml-auto"
 				>
 					{@html UpdateIcon}
