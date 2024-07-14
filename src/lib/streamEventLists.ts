@@ -53,6 +53,7 @@ import type Nostr from 'nostr-typedef';
 import type { EventParameters, Filter } from 'nostr-typedef';
 //import type { RelayStatus } from 'rx-nostr/types/src/rx-nostr/interface';
 import { verifier } from 'rx-nostr-crypto';
+import { cleanRelayUrl } from './otherFunctions';
 
 const reconnectableStates: ConnectionState[] = [
 	//https://penpenpng.github.io/rx-nostr/v2/monitoring-connections.html
@@ -385,9 +386,9 @@ export async function publishEventWithTimeout(
 	}
 	let isSuccess = false;
 	const msgObj: { [relay: string]: boolean } = {};
-	relays.forEach((relay) => {
-		msgObj[relay] = false;
-	});
+	// relays.forEach((relay) => {
+	// 	msgObj[cleanRelayUrl(relay)] = false;
+	// });
 	//	console.log(obj);
 	if (userCheck) {
 		const pubkey = await getPub(true); //書き込みたいときには再度のNIP46チェックも含む
@@ -433,7 +434,7 @@ export async function publishEventWithTimeout(
 				const subscription = rxNostr.send(event, { relays: relays }).subscribe({
 					next: (packet) => {
 						//	console.log('test', packet);タイムアウトまでに署名がすんでないとなぜかタイムアウト直前にokpacketがとんでくる。署名もしてないのに
-						msgObj[packet.from] = true;
+						msgObj[packet.from] = packet.ok;
 						isSuccess = true;
 					},
 					complete: () => {
