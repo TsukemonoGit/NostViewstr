@@ -42,7 +42,7 @@ import type {
 	RxReqOverable,
 	RxReqPipeable
 } from 'rx-nostr';
-import type { ReqResult, ReqStatus, RxReqBase, UseReqOpts } from './types';
+import type { ReqResult, ReqStatus, UseReqOpts } from './types';
 import {
 	QueryClient,
 	createQuery,
@@ -51,7 +51,8 @@ import {
 } from '@tanstack/svelte-query';
 import type Nostr from 'nostr-typedef';
 import type { EventParameters, Filter } from 'nostr-typedef';
-import type { RelayStatus } from 'rx-nostr/types/src/rx-nostr/interface';
+//import type { RelayStatus } from 'rx-nostr/types/src/rx-nostr/interface';
+import { verifier } from 'rx-nostr-crypto';
 
 const reconnectableStates: ConnectionState[] = [
 	//https://penpenpng.github.io/rx-nostr/v2/monitoring-connections.html
@@ -77,14 +78,15 @@ identifierListsMap.subscribe((value) => {
 });
 
 //EventList用のrxNostr(個々のイベント取得用のと同じにしたら、個々のイベントにEventListのイベントがあったり逆だったりしたときにイベントが取得されないので個々のイベント取得用とrxNostrを分けてみる)
-const rxNostr = createRxNostr();
+const rxNostr = createRxNostr({ verifier });
 rx.set(rxNostr);
 
 rxNostr.createConnectionStateObservable().subscribe((packet) => {
 	let tmp = get(relayState);
-
+	//console.log(packet);
 	tmp.set(packet.from, packet.state);
 	relayState.set(tmp);
+	//console.log(get(relayState));
 });
 const [tie, tieMap] = createTie();
 export function getRelaysById(id: string): string[] {
@@ -113,8 +115,8 @@ export async function ReconnectRelay(relay: string) {
 	rxNostr.reconnect(relay);
 }
 
-export async function GetRelayState(relay: string) {
-	return (rxNostr.getRelayStatus(relay) as RelayStatus).connection;
+export function GetRelayState(relay: string): ConnectionState | undefined {
+	return rxNostr.getRelayStatus(relay)?.connection;
 }
 
 export function GetAllRelayState() {
@@ -219,7 +221,7 @@ export async function StoreFetchFilteredEvents(
 	const rxReq = createRxForwardReq();
 
 	// データの購読
-	const observable = rxNostr.use(rxReq).pipe(tie, uniq(), verify());
+	const observable = rxNostr.use(rxReq).pipe(tie, uniq());
 
 	// オブザーバーオブジェクトの作成
 	const observer: Observer<any> = {
@@ -355,7 +357,6 @@ export function saveQuery(
 		const eventPacket: EventPacket = {
 			event: event,
 			subId: '',
-			rootPubkey: '',
 			from: '',
 			type: 'EVENT',
 			message: ['EVENT', 'ok', event]
@@ -560,7 +561,7 @@ export async function sendMessage(message: string, pubhex: string) {
 
 //------------------------------------------------------------------------------------------------------------------------以下
 //EventList用のrxNostr(個々のイベント取得用のと同じにしたら、個々のイベントにEventListのイベントがあったり逆だったりしたときにイベントが取得されないので個々のイベント取得用とrxNostrを分けてみる)
-const rxNostr2 = createRxNostr();
+const rxNostr2 = createRxNostr({ verifier });
 /**
  * @license Apache-2.0
  * @copyright 2023 Akiomi Kamakura
@@ -589,19 +590,17 @@ export function useReq(
 	// 	};
 	// }
 
-	let _req:
-		| RxReqBase
-		| (RxReq<'backward'> & {
-				emit(
-					filters: Filter | Filter[],
-					options?:
-						| {
-								relays: string[];
-						  }
-						| undefined
-				): void;
-		  } & RxReqOverable &
-				RxReqPipeable);
+	let _req: RxReq<'backward'> & {
+		emit(
+			filters: Filter | Filter[],
+			options?:
+				| {
+						relays: string[];
+				  }
+				| undefined
+		): void;
+	} & RxReqOverable &
+		RxReqPipeable;
 
 	if (req) {
 		_req = req;

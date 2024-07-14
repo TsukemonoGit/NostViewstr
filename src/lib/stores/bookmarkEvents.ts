@@ -3,8 +3,7 @@ import type { Event } from 'nostr-tools';
 
 import type Nostr from 'nostr-typedef';
 import type { TextPart } from '$lib/content';
-import type { ConnectionState } from 'rx-nostr';
-import type { RxNostr } from 'rx-nostr/types/src/rx-nostr/interface';
+import type { ConnectionState, RxNostr } from 'rx-nostr';
 import type { QueryClient } from '@tanstack/svelte-query';
 interface IdentifierList {
 	[pubkey: string]: {
@@ -70,15 +69,15 @@ export const checkedIndexList = writable<
 	{ index: number; event: Event | {}; tagArray: string[] }[]
 >([]);
 
-interface OgpList {
-	[url: string]: {
-		title: string;
-		image: string;
-		description: string;
-		favicon: string;
-	};
+export interface OgpList {
+	[url: string]: Ogp;
 }
-
+export interface Ogp {
+	title: string;
+	image: string;
+	description: string;
+	favicon: string;
+}
 export interface NaddrStore {
 	[naddr: string]: Nostr.Event<number>;
 }

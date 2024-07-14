@@ -7,7 +7,7 @@ import { useReq } from '$lib/streamEventLists';
 import type { ReqResult, RxReqBase } from '$lib/types';
 import type { QueryKey } from '@tanstack/svelte-query';
 import type { EventPacket, RxNostr } from 'rx-nostr';
-import { uniq, verify } from 'rx-nostr';
+import { uniq } from 'rx-nostr';
 import { pipe } from 'rxjs';
 import { filterId } from './operator';
 
@@ -18,7 +18,7 @@ export function useEvent(
 	relay?: string[] | undefined
 ): ReqResult<EventPacket> {
 	const filters = [{ ids: [id], limit: 1 }];
-	const operator = pipe(filterId(id), uniq(), verify());
+	const operator = pipe(filterId(id), uniq());
 	return useReq(
 		{ queryKey, filters, operator, req },
 		relay

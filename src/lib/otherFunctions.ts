@@ -85,10 +85,10 @@ export async function loadOgp(url: string) {
 			ogpStore.set(tmp);
 		} catch (error) {
 			console.log(error);
-			ogp[url].title = '';
-			ogp[url].image = '';
-			ogp[url].description = '';
-			ogp[url].favicon = '';
+			(ogp[url] as Ogp).title = '';
+			(ogp[url] as Ogp).image = '';
+			(ogp[url] as Ogp).description = '';
+			(ogp[url] as Ogp).favicon = '';
 		}
 	}
 }
@@ -249,8 +249,8 @@ export async function copyNoteId(selectedIndex: SelectIndex): Promise<boolean> {
 	const id = selectedIndex.detail.event
 		? selectedIndex.detail.event.id
 		: selectedIndex.detail.tagArray[0] === 'e'
-		? selectedIndex.detail.tagArray[1]
-		: '';
+			? selectedIndex.detail.tagArray[1]
+			: '';
 	if (id === '') {
 		return Promise.resolve(false);
 	}
@@ -275,16 +275,16 @@ export async function copyNaddr(selectedIndex: SelectIndex): Promise<boolean> {
 		selectedIndex.detail.tagArray[0] === 'a'
 			? parseNaddr(selectedIndex.detail.tagArray)
 			: selectedIndex.detail.event
-			? {
-					identifier:
-						selectedIndex.detail.event.tags.find(
-							(item) => item[0] === 'd'
-						)?.[1] ?? '',
-					pubkey: selectedIndex.detail.event.pubkey,
-					kind: selectedIndex.detail.event.kind
-					// relays: get(relaySet)?.[selectedIndex.detail.event.pubkey] ?? []
-			  }
-			: undefined;
+				? {
+						identifier:
+							selectedIndex.detail.event.tags.find(
+								(item) => item[0] === 'd'
+							)?.[1] ?? '',
+						pubkey: selectedIndex.detail.event.pubkey,
+						kind: selectedIndex.detail.event.kind
+						// relays: get(relaySet)?.[selectedIndex.detail.event.pubkey] ?? []
+					}
+				: undefined;
 	if (!naddrpointer) {
 		return Promise.resolve(false);
 	}
@@ -318,3 +318,4 @@ export async function copyRelayURL(
 		}
 	);
 }
+export const cleanRelayUrl = (url: string) => url.replace(/\/$/, '');

@@ -7,14 +7,14 @@
 	import {
 		createRxNostr,
 		createRxOneshotReq,
-		type EventPacket,
-		verify
+		type EventPacket
 	} from 'rx-nostr';
 	import { relaySet } from '$lib/stores/relays';
 	import type { Observer, Subscription } from 'rxjs';
 	import { pubkey_viewer } from '$lib/stores/settings';
 	import type { QueryKey } from '@tanstack/svelte-query';
 	import { queryClient } from '$lib/stores/bookmarkEvents';
+	import { verifier } from 'rx-nostr-crypto';
 
 	export let parent: any;
 	//export let pubkey: string;
@@ -125,7 +125,7 @@
 	let logs: string[] = [];
 	$: logs = logs;
 	let nowLoading: boolean = false;
-	const rxNostr = createRxNostr();
+	const rxNostr = createRxNostr({ verifier });
 	rxNostr.setDefaultRelays(relays);
 
 	function onClick() {
@@ -145,7 +145,7 @@
 			relaysState[relay] = RelayState.Connecting;
 		});
 		// データの購読
-		const observable = rxNostr.use(rxReq).pipe(verify());
+		const observable = rxNostr.use(rxReq);
 
 		// オブザーバーオブジェクトの作成
 		const observer: Observer<any> = {

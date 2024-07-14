@@ -7,7 +7,7 @@ import { useReq } from '$lib/streamEventLists';
 import type { ReqResult, RxReqBase } from '$lib/types';
 import type { QueryKey } from '@tanstack/svelte-query';
 import type { EventPacket, RxNostr } from 'rx-nostr';
-import { filterByKind, latest, verify } from 'rx-nostr';
+import { filterByKind, latest } from 'rx-nostr';
 import { pipe } from 'rxjs';
 import { filterPubkey } from './operator';
 
@@ -23,7 +23,7 @@ export function useReplaceableEvent(
 	const operator = pipe(
 		filterByKind(kind),
 		filterPubkey(pubkey),
-		verify(),
+
 		latest()
 	);
 	return useReq(

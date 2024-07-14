@@ -14,8 +14,7 @@ import {
 	nip04,
 	nip19
 } from 'nostr-tools';
-import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
-
+import { verifier, seckeySigner } from 'rx-nostr-crypto';
 import type { Event as NostrEvent } from 'nostr-tools';
 import {
 	pubkey_viewer,
@@ -27,20 +26,12 @@ import { type Observer, type MonoTypeOperatorFunction, Observable } from 'rxjs';
 
 import {
 	createRxNostr,
-	createRxOneshotReq,
 	uniq,
-	verify,
-	latest,
 	completeOnTimeout,
 	latestEach,
 	type EventPacket,
-	type RxNostr,
 	createRxBackwardReq,
-	now,
-	type LazyFilter,
-	type RxReq,
-	type RxReqOverable,
-	type RxReqPipeable
+	now
 } from 'rx-nostr';
 import { get } from 'svelte/store';
 
@@ -58,7 +49,7 @@ import {
 import type Nostr from 'nostr-typedef';
 import { setDefaultRelays } from './streamEventLists';
 
-export function parseNaddr(tag: string[]): AddressPointer {
+export function parseNaddr(tag: string[]): nip19.AddressPointer {
 	const [, reference, relay] = tag; // 配列の2番目の要素を取り出す
 	const [kind, pubkey, ...identifierParts] = reference.split(':'); // referenceをコロンで分割, identifierの中に:が含まれる可能性がある
 	const identifier = identifierParts.join(':'); // identifierの部分を結合する
@@ -69,12 +60,12 @@ export function parseNaddr(tag: string[]): AddressPointer {
 				pubkey: pubkey,
 				identifier: identifier ?? '',
 				relays: [relay]
-		  }
+			}
 		: {
 				kind: Number(kind),
 				pubkey: pubkey,
 				identifier: identifier ?? ''
-		  };
+			};
 }
 
 export async function getIdByTag(
@@ -94,11 +85,11 @@ export async function getIdByTag(
 						authors: [naddr.pubkey],
 						'#d': [naddr.identifier],
 						kinds: [naddr.kind]
-				  }
+					}
 				: {
 						authors: [naddr.pubkey],
 						kinds: [naddr.kind]
-				  };
+					};
 		// console.log(naddr.kind);
 		//	const res = await getEvent(naddr);
 		//	if (res) {
@@ -364,13 +355,12 @@ async function getRelayEvents(
 	filters: Nostr.Filter[],
 	relays: string[]
 ): Promise<{ [key: number]: Nostr.Event | undefined }> {
-	const rxNostr = createRxNostr();
+	const rxNostr = createRxNostr({ verifier });
 	// インデックスシグネチャを修正する
 	const rxReq = createRxBackwardReq();
 
 	// データの購読
 	const observable = rxNostr.use(rxReq).pipe(
-		verify(),
 		uniq(),
 		latestEach((packet: { event: { kind: number } }) => packet.event.kind),
 		completeOnTimeout(3000)

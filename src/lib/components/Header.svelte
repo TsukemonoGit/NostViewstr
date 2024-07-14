@@ -35,7 +35,7 @@
 	import { goto } from '$app/navigation';
 	import RelayStateIcon from './RelayStateIcon.svelte';
 	import UserIcon from './UserIcon.svelte';
-	import { formatAbsoluteDate } from '$lib/otherFunctions';
+	import { cleanRelayUrl, formatAbsoluteDate } from '$lib/otherFunctions';
 	import SelectKindList from './SelectKindList.svelte';
 
 	export let bkm: string;
@@ -55,9 +55,8 @@
 	// 	.filter(([key, item]) => item.read === true)
 	// 	.map(([key, item]) => item);
 	$: ongoingCount = $relaySet[pubkey]?.mergeRelays.filter(
-		(item) => $relayState.get(item) === 'connected'
+		(url) => $relayState.get(cleanRelayUrl(url)) === 'connected'
 	);
-
 	$: listNaddr = viewEvent
 		? [
 				'a',
@@ -66,7 +65,7 @@
 						$identifierKeysArray[$listNum]
 					)?.identifier || ''
 				}`
-		  ]
+			]
 		: [];
 
 	const borderDefault = ` rounded-tl-lg rounded-tr-lg  break-keep place-items-end h6 bkm flex  sm:px-3  py-0.5 px-1.5 h-min align-bottom place-self-end `;
@@ -410,7 +409,9 @@
 							<div class="align-center">
 								{#if JSON}<div class="h6">【JSON MODE】</div>
 								{/if}kind:{kind}
-								{#if kinds.has(kind)} ({kinds.get(kind)}) {/if}
+								{#if kinds.has(kind)}
+									({kinds.get(kind)})
+								{/if}
 								{#if nevent && kind >= 30000 && kind < 40000 && dtag}
 									<div class="overflow-x-hidden h4 p-1 truncate">{dtag}</div>
 								{/if}
