@@ -144,5 +144,9 @@
   "icon_description": "Icon description",
   "feedback": {
     "setumei": "Your message will be sent via encrypted DM using a randomly generated key."
+  },
+  "nodata": {
+    "iconbefore": "Listing not found. Please create a new listing by clicking",
+    "iconafter": "button at the bottom and then clicking on the [Edit] button\t"
   }
 }

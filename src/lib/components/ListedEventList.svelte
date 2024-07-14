@@ -70,6 +70,9 @@
 	import FooterMenu from './FooterMenu.svelte';
 	import { kinds, kindsValidTag } from '$lib/kind';
 	import { page } from '$app/stores';
+	import { parameterizedReplaceable } from '$lib/otherFunctions';
+	import FormatListBulleted from '@material-design-icons/svg/round/format_list_bulleted.svg?raw';
+
 	export let bkm: string = 'pub';
 	let viewEvent: Nostr.Event<number> | undefined;
 	export let pubkey: string;
@@ -89,14 +92,14 @@
 		$eventListsMap[pubkey] && $eventListsMap[pubkey][kind]
 			? Array.from($eventListsMap[pubkey][kind].keys()).sort((a, b) =>
 					a.localeCompare(b)
-			  )
+				)
 			: [];
 
 	$: $identifierKeysArray =
 		$identifierListsMap[pubkey] && $identifierListsMap[pubkey][kind]
 			? Array.from($identifierListsMap[pubkey][kind].keys()).sort((a, b) =>
 					a.localeCompare(b)
-			  )
+				)
 			: [];
 
 	$: if ($eventListsMap[pubkey] && $eventListsMap[pubkey][kind]) {
@@ -146,7 +149,27 @@
 
 		//console.log(await getRelays(pubkey)); //await setRelays(testRelay);
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
-			$pubkey_viewer = await getPub($nip46Check); //NIP46拒否られてるときはNIP46画面出さない
+			//$pubkey_viewer = await getPub($nip46Check); //NIP46拒否られてるときはNIP46画面出さない
+			try {
+				const NostrLogin = await import('nostr-login');
+				NostrLogin.init({
+					/*options*/
+					//noBanner: true
+				})
+					.then(async () => {
+						const gotPubkey = await (
+							window?.nostr as Nostr.Nip07.Nostr
+						).getPublicKey();
+						if (gotPubkey) {
+							$pubkey_viewer = gotPubkey;
+						}
+					})
+					.catch((error) => {
+						console.log(error);
+					});
+			} catch (error) {
+				console.log(error);
+			}
 		}
 
 		console.log($pubkey_viewer);
@@ -181,14 +204,14 @@
 							kinds: [kind],
 							authors: [pub]
 						}
-				  ]
+					]
 				: [
 						{
 							kinds: [kind],
 							authors: [pub],
 							'#d': [identifier]
 						}
-				  ];
+					];
 		//console.log(filter);
 		//console.log(pubkey, $relaySet[pubkey].bookmarkRelays);
 		const t: ToastSettings = {
@@ -421,7 +444,7 @@
 					?.identifier
 					? $identifierListsMap[pubkey][kind].get(
 							$identifierKeysArray[$listNum]
-					  )?.identifier
+						)?.identifier
 					: `kind:${kind}`,
 
 			body: '',
@@ -737,7 +760,7 @@
 					?.identifier
 					? $identifierListsMap[pubkey][kind].get(
 							$identifierKeysArray[listNumber]
-					  )?.identifier
+						)?.identifier
 					: `kind:${kind}`,
 
 			body: '',
@@ -997,12 +1020,12 @@
 	<!-- {:else}
 {`now getting relay list ...`} -->
 {/if}
-
+<!--
 {#if $eventListsMap && $eventListsMap[pubkey] && $eventListsMap[pubkey][kind] && $eventListsMap[pubkey][kind].size > 0}
-	<!---->
+
 {:else}
 	<div class="flex w-full h-full justify-center items-center text-center">
-		<!-- Left Sidebar (Hidden on small screens) -->
+	
 
 		{#if $nowProgress}
 			{`now loading...`}
@@ -1010,9 +1033,19 @@
 			{`no data`}
 		{/if}
 	</div>
-{/if}
-<!-------------------------------あど----->
-{#if !$nowProgress && $pubkey_viewer === pubkey && kindsValidTag.hasOwnProperty(kind)}
+{/if} -->
+<!-------------------------------あど---no dataでも、parameterizedじゃない方は、ついかできる-->
+{#if !$nowProgress && !viewEvent && parameterizedReplaceable(kind) && $pubkey_viewer === pubkey}
+	<div
+		class="top-1/2 -translate-y-1/2 fixed left-1/2 -translate-x-1/2 box-border overflow-x-hidden"
+	>
+		<div class="flex flex-wrap gap-3">
+			{$_('nodata.iconbefore')}
+			{@html FormatListBulleted}
+			{$_('nodata.iconafter')}
+		</div>
+	</div>
+{:else if !$nowProgress && $pubkey_viewer === pubkey && kindsValidTag.hasOwnProperty(kind)}
 	<div
 		class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
 			? 'multi'

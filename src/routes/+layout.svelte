@@ -26,6 +26,7 @@
 	import {
 		backButton,
 		login,
+		pubkey_viewer,
 		saveObj,
 		send_pubhex
 	} from '$lib/stores/settings';
@@ -33,7 +34,7 @@
 	import { RelaysReconnectChallenge } from '$lib/streamEventLists';
 
 	import { page } from '$app/stores';
-
+	import * as Nostr from 'nostr-typedef';
 	export let data: import('./$types').LayoutServerData;
 
 	send_pubhex.set(data.send_pubhex);
@@ -42,14 +43,29 @@
 	setModalStore();
 	setToastStore();
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
-	let NostrLogin;
+
 	onMount(async () => {
 		mounted = true;
-		NostrLogin = await import('nostr-login');
-		NostrLogin.init({
-			/*options*/
-			//noBanner: true
-		});
+		try {
+			const NostrLogin = await import('nostr-login');
+			NostrLogin.init({
+				/*options*/
+				//noBanner: true
+			})
+				.then(async () => {
+					const gotPubkey = await (
+						window?.nostr as Nostr.Nip07.Nostr
+					).getPublicKey();
+					if (gotPubkey) {
+						$pubkey_viewer = gotPubkey;
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		} catch (error) {
+			console.log(error);
+		}
 		// if (!$login) {
 		// 	document.dispatchEvent(
 		// 		new CustomEvent('nlLaunch', { detail: 'welcome' })

@@ -319,3 +319,6 @@ export async function copyRelayURL(
 	);
 }
 export const cleanRelayUrl = (url: string) => url.replace(/\/$/, '');
+export const parameterizedReplaceable = (kind: number): boolean => {
+	return kind >= 30000 && kind < 40000;
+};

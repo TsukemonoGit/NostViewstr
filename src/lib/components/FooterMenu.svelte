@@ -54,7 +54,7 @@
 	import { get } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { createEventDispatcher } from 'svelte';
-
+	import FormatListBulleted from '@material-design-icons/svg/round/format_list_bulleted.svg?raw';
 	export let pubkey: string;
 	export let kind: number;
 	export let naddr: boolean = false;
@@ -285,7 +285,7 @@
 					tags: [['e', bkm.get($keysArray[tagIndex])!.id]],
 					created_at: Math.floor(Date.now() / 1000),
 					kind: 5
-			  }
+				}
 			: {
 					id: '',
 					pubkey: pubkey,
@@ -294,7 +294,7 @@
 					tags: dtag ? [dtag] : [],
 					created_at: Math.floor(Date.now() / 1000),
 					kind: bkm.get($keysArray[tagIndex])!.kind
-			  };
+				};
 		const res = await publishEventWithTimeout(
 			event,
 			$relaySet[$pubkey_viewer].writeRelays
@@ -317,13 +317,13 @@
 					$identifierListsMap[pubkey] && $identifierListsMap[pubkey][kind]
 						? Array.from($identifierListsMap[pubkey][kind].keys()).sort(
 								(a, b) => a.localeCompare(b)
-						  )
+							)
 						: [];
 				$keysArray =
 					$eventListsMap[pubkey] && $eventListsMap[pubkey][kind]
 						? Array.from($eventListsMap[pubkey][kind].keys()).sort((a, b) =>
 								a.localeCompare(b)
-						  )
+							)
 						: [];
 			}
 			//IDリストも更新
@@ -393,24 +393,24 @@
 						const url = res.share
 							? window.location.href
 							: res.shareNaddr
-							? window.location.origin + '/' + nip19.naddrEncode(address)
-							: window.location.origin +
-							  '/' +
-							  nip19.npubEncode(pubkey) +
-							  '/' +
-							  kind +
-							  '/' +
-							  encodeURIComponent(
-									$identifierListsMap?.[pubkey]?.[kind].get(
-										$identifierKeysArray[$listNum]
-									)?.identifier ?? ''
-							  );
+								? window.location.origin + '/' + nip19.naddrEncode(address)
+								: window.location.origin +
+									'/' +
+									nip19.npubEncode(pubkey) +
+									'/' +
+									kind +
+									'/' +
+									encodeURIComponent(
+										$identifierListsMap?.[pubkey]?.[kind].get(
+											$identifierKeysArray[$listNum]
+										)?.identifier ?? ''
+									);
 						const tags = res.share
 							? [['r', url]]
 							: [
 									['a', `${kind}:${pubkey}:${address.identifier}`],
 									['r', url]
-							  ];
+								];
 						console.log(tags);
 						const modal: ModalSettings = {
 							type: 'component',
@@ -484,8 +484,8 @@
 			$isMulti === MultiMenu.Multi
 				? 'variant-ghost-secondary rounded-full '
 				: $isMulti === MultiMenu.Sort
-				? 'variant-ghost-warning rounded-full'
-				: '';
+					? 'variant-ghost-warning rounded-full'
+					: '';
 		$checkedIndexList = [];
 	}
 	export let disabled: boolean = false;
@@ -559,7 +559,7 @@
 						class={buttonClass}
 						on:click={openLists}
 						disabled={!(kind >= 30000 && kind < 40000) || disabled}
-						>{@html menuIcon}</button
+						>{@html FormatListBulleted}</button
 					>
 				{/if}
 
