@@ -70,7 +70,7 @@
 			{#if $relayState.get(relayUrl) === 'error' && !get(disabledButtons).has(relayUrl)}
 				<button
 					on:click={() => handleClickReconnect(relayUrl)}
-					class="btn p-1 fill-white ml-auto"
+					class="btn p-1 fill-black dark:fill-white ml-auto"
 				>
 					{@html UpdateIcon}
 				</button>
