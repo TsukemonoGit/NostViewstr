@@ -1,5 +1,5 @@
 import { nip19 } from 'nostr-tools';
-import type { AddressPointer, EventPointer } from 'nostr-tools/lib/types/nip19';
+
 //import { pubkey } from '$lib/stores/settings';
 import { error } from '@sveltejs/kit';
 import { relaySet, defaultRelays, initRelaySet } from '$lib/stores/relays';
@@ -26,7 +26,7 @@ export const load: PageLoad<{
 		console.log('[decode]', type, data);
 		if (type === 'nevent') {
 			//AddressPointer
-			const nevent = data as EventPointer;
+			const nevent = data as nip19.EventPointer;
 
 			//pubkey.set(address.pubkey);
 			if (!nevent.relays) {

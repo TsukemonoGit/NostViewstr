@@ -1,5 +1,4 @@
 import { nip19 } from 'nostr-tools';
-import type { AddressPointer } from 'nostr-tools/lib/types/nip19';
 //import { pubkey } from '$lib/stores/settings';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
@@ -26,7 +25,7 @@ export const load: PageLoad<{
 		console.log('[decode]', type, data);
 		if (type === 'naddr') {
 			//AddressPointer
-			const address = data as AddressPointer;
+			const address = data as nip19.AddressPointer;
 			//pubkey.set(address.pubkey);
 			if (address.relays && address.relays.length > 0) {
 				const tmp_relaySet = get(relaySet);

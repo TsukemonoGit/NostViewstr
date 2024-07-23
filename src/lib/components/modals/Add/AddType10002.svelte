@@ -68,7 +68,6 @@
 		try {
 			const existRelay = !info ? await Nip11Registry.fetch(input) : info;
 
-			$nowProgress = false;
 			console.log(existRelay);
 			if (!existRelay) {
 				const t = {
@@ -78,7 +77,7 @@
 				};
 
 				toastStore.trigger(t);
-				//		$nowProgress = false;
+				$nowProgress = false;
 				return;
 			} else {
 				res.tag =
@@ -88,6 +87,7 @@
 				console.log(res.tag);
 				res.check = true;
 				onFormSubmit();
+				$nowProgress = false;
 			}
 		} catch (error) {
 			const t = {
@@ -97,7 +97,7 @@
 			};
 
 			toastStore.trigger(t);
-			//		$nowProgress = false;
+			$nowProgress = false;
 			return;
 		}
 	}
