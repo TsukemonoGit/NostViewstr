@@ -923,6 +923,14 @@
 		$isMulti = MultiMenu.None;
 		$nowProgress = false;
 	}
+
+	async function awaitInterval(time: number): Promise<void> {
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				resolve();
+			}, time);
+		});
+	}
 </script>
 
 <!-- {#await bkminit(pubkey) then bkminti} -->
@@ -1033,15 +1041,16 @@
 {/if} -->
 <!-------------------------------あど---no dataでも、parameterizedじゃない方は、ついかできる-->
 {#if !$nowProgress && !viewEvent && parameterizedReplaceable(kind) && $pubkey_viewer === pubkey}
-	<div
-		class="top-1/2 -translate-y-1/2 fixed left-1/2 -translate-x-1/2 box-border overflow-x-hidden"
-	>
-		<div class="flex flex-wrap gap-3 fill-primary-800 dark:fill-primary-100">
-			{$_('nodata.iconbefore')}
-			{@html FormatListBulleted}
-			{$_('nodata.iconafter')}
-		</div>
-	</div>
+	{#await awaitInterval(2000) then}
+		<div
+			class="top-1/2 -translate-y-1/2 fixed left-1/2 -translate-x-1/2 box-border overflow-x-hidden"
+		>
+			<div class="flex flex-wrap gap-3 fill-primary-800 dark:fill-primary-100">
+				{$_('nodata.iconbefore')}
+				{@html FormatListBulleted}
+				{$_('nodata.iconafter')}
+			</div>
+		</div>{/await}
 {:else if !$nowProgress && $pubkey_viewer === pubkey && kindsValidTag.hasOwnProperty(kind)}
 	<div
 		class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
