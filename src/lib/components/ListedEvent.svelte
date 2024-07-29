@@ -25,7 +25,7 @@
 
 	// import Menu from '@material-design-icons/svg/round/more_vert.svg?raw';
 
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { dndzone } from 'svelte-dnd-action';
@@ -45,6 +45,7 @@
 		type SelectIndex
 	} from '$lib/otherFunctions';
 	import { getRelaysById } from '$lib/streamEventLists';
+	import { afterNavigate } from '$app/navigation';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
@@ -292,245 +293,286 @@
 		};
 		modalStore.trigger(modal);
 	};
+
+	let showText: boolean = false;
+	let isMount = false;
+
+	onMount(() => {
+		console.log('ListedEvent onMount');
+		showText = false;
+		if (!isMount) {
+			isMount = true;
+			init();
+		}
+	});
+	afterNavigate(() => {
+		console.log('ListedEvent afterNavigate');
+		showText = false;
+		if (!isMount) {
+			isMount = true;
+			init();
+		}
+	});
+	let timeoutId: NodeJS.Timeout | undefined;
+
+	function init() {
+		timeoutId = setTimeout(() => {
+			showText = true;
+			isMount = false;
+		}, 1000); // 1秒後に表示(初回読み込み時にデータがぶあーってきたときに一瞬だけ表示されたページのイベントの読み込みが発生しないようにしてみる)
+
+		return () => {
+			if (timeoutId) {
+				clearTimeout(timeoutId); // ページが変わった場合にタイマーをクリア
+			}
+		};
+	}
+	onDestroy(() => {
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+		}
+	});
 </script>
 
-<div class=" relative">
-	{#if viewPage && viewPage.length > 0}
-		<section
-			use:dndzone={{
-				items,
-				//flipDurationMs,
-				dropTargetStyle: {},
-				dragDisabled:
-					$isMulti === MultiMenu.Sort && !$nowProgress ? false : true,
-				morphDisabled: true,
-				dropFromOthersDisabled: true,
-				centreDraggedOnCursor: false
-			}}
-			on:consider={handleDndConsider}
-			on:finalize={handleDndFinalize}
-			class={dadClass}
-			on:touchmove|nonpassive={(e) => {
-				//console.log(e);
-				$isMulti === MultiMenu.Sort ? e.preventDefault() : '';
-			}}
-		>
-			{#each items as tag (tag.id)}
-				<div>
-					{#await getIdByTag(tag.name)}
-						<!--loading a タグ　のなかみ-->
-						<div class="z-0 card drop-shadow px-1 py-1 my-0.5">
-							{tag.name}
-						</div>
-					{:then { id, filter, kind }}
-						{#if tag.name[0] === 'd' || tag.name[0] === 'title' || tag.name[0] === 'image' || tag.name[0] === 'description'}
-							<!--なんもしない-->
-						{:else}
-							<!-- ノート | ボタン群-->
-							<EventandButtons
-								{id}
-								{tag}
-								{popupCombobox}
-								{pubkey}
-								{isOwner}
-								{filter}
-								bind:selectedIndex
-								{kind}
-								{CheckNote}
-							/>
-						{/if}
-					{/await}
-				</div>
-			{/each}
-		</section>
-	{:else if message}
-		<p class="h5 font-bold">【List's content】</p>
-		<div class="break-all whitespace-break-spaces">{message}</div>
-	{/if}
+{#if showText}
+	<div class=" relative">
+		{#if viewPage && viewPage.length > 0}
+			<section
+				use:dndzone={{
+					items,
+					//flipDurationMs,
+					dropTargetStyle: {},
+					dragDisabled:
+						$isMulti === MultiMenu.Sort && !$nowProgress ? false : true,
+					morphDisabled: true,
+					dropFromOthersDisabled: true,
+					centreDraggedOnCursor: false
+				}}
+				on:consider={handleDndConsider}
+				on:finalize={handleDndFinalize}
+				class={dadClass}
+				on:touchmove|nonpassive={(e) => {
+					//console.log(e);
+					$isMulti === MultiMenu.Sort ? e.preventDefault() : '';
+				}}
+			>
+				{#each items as tag (tag.id)}
+					<div>
+						{#await getIdByTag(tag.name)}
+							<!--loading a タグ　のなかみ-->
+							<div class="z-0 card drop-shadow px-1 py-1 my-0.5">
+								{tag.name}
+							</div>
+						{:then { id, filter, kind }}
+							{#if tag.name[0] === 'd' || tag.name[0] === 'title' || tag.name[0] === 'image' || tag.name[0] === 'description'}
+								<!--なんもしない-->
+							{:else}
+								<!-- ノート | ボタン群-->
+								<EventandButtons
+									{id}
+									{tag}
+									{popupCombobox}
+									{pubkey}
+									{isOwner}
+									{filter}
+									bind:selectedIndex
+									{kind}
+									{CheckNote}
+								/>
+							{/if}
+						{/await}
+					</div>
+				{/each}
+			</section>
+		{:else if message}
+			<p class="h5 font-bold">【List's content】</p>
+			<div class="break-all whitespace-break-spaces">{message}</div>
+		{/if}
 
-	<div
-		bind:this={popupElement}
-		class="absolute card w-48 shadow-xl py-2 border border-primary-400-500-token z-[51]"
-		data-popup="popupCombobox"
-	>
-		<ListBox
-			rounded="rounded-none"
-			class="fill-black dark:fill-white "
-			active="variant-filled-primary"
+		<div
+			bind:this={popupElement}
+			class="absolute card w-48 shadow-xl py-2 border border-primary-400-500-token z-[51]"
+			data-popup="popupCombobox"
 		>
-			{#if selectedIndex?.detail?.editable}<ListBoxItem
+			<ListBox
+				rounded="rounded-none"
+				class="fill-black dark:fill-white "
+				active="variant-filled-primary"
+			>
+				{#if selectedIndex?.detail?.editable}<ListBoxItem
+						name="medium"
+						value="edit"
+						disabled={!$page.params.hasOwnProperty('npub') &&
+							!$page.params.hasOwnProperty('naddr')}
+						bind:group={comboboxValue}
+						on:click={() => {
+							comboboxValue = '';
+							handleClickEdit(
+								selectedIndex.detail.number,
+								selectedIndex.detail.tagArray
+							);
+							//atodekaku ←？
+						}}
+						><svelte:fragment slot="lead">{@html EditIcon}</svelte:fragment
+						>Edit</ListBoxItem
+					>{/if}
+				<ListBoxItem
+					disabled={!$page.params.hasOwnProperty('npub') ||
+						!isOwner ||
+						!listEvent?.kind ||
+						listEvent?.kind < 30000 ||
+						listEvent?.kind >= 40000 ||
+						isNaddr}
+					value="Move"
+					bind:group={comboboxValue}
 					name="medium"
-					value="edit"
-					disabled={!$page.params.hasOwnProperty('npub') &&
-						!$page.params.hasOwnProperty('naddr')}
+					on:click={() => {
+						comboboxValue = '';
+						MoveNote(selectedIndex);
+					}}
+					><svelte:fragment slot="lead">{@html MoveIcon}</svelte:fragment>Move
+				</ListBoxItem>
+				<ListBoxItem
+					disabled={(!$page.params.hasOwnProperty('npub') &&
+						!$page.params.hasOwnProperty('naddr')) ||
+						!isOwner}
+					name="medium"
+					value="Delete"
 					bind:group={comboboxValue}
 					on:click={() => {
 						comboboxValue = '';
-						handleClickEdit(
-							selectedIndex.detail.number,
-							selectedIndex.detail.tagArray
-						);
-						//atodekaku ←？
+						DeleteNote(selectedIndex);
 					}}
-					><svelte:fragment slot="lead">{@html EditIcon}</svelte:fragment
-					>Edit</ListBoxItem
-				>{/if}
-			<ListBoxItem
-				disabled={!$page.params.hasOwnProperty('npub') ||
-					!isOwner ||
-					!listEvent?.kind ||
-					listEvent?.kind < 30000 ||
-					listEvent?.kind >= 40000 ||
-					isNaddr}
-				value="Move"
-				bind:group={comboboxValue}
-				name="medium"
-				on:click={() => {
-					comboboxValue = '';
-					MoveNote(selectedIndex);
-				}}
-				><svelte:fragment slot="lead">{@html MoveIcon}</svelte:fragment>Move
-			</ListBoxItem>
-			<ListBoxItem
-				disabled={(!$page.params.hasOwnProperty('npub') &&
-					!$page.params.hasOwnProperty('naddr')) ||
-					!isOwner}
-				name="medium"
-				value="Delete"
-				bind:group={comboboxValue}
-				on:click={() => {
-					comboboxValue = '';
-					DeleteNote(selectedIndex);
-				}}
-				><svelte:fragment slot="lead">{@html DeleteIcon}</svelte:fragment
-				>Delete</ListBoxItem
-			>
-			<hr class="!border-dashed" />
-			<ListBoxItem
-				name="medium"
-				value="Share"
-				bind:group={comboboxValue}
-				on:click={() => {
-					comboboxValue = '';
-					shareNote(selectedIndex);
-				}}
-				><svelte:fragment slot="lead">{@html ShareIcon}</svelte:fragment>Share
-				on Nostr</ListBoxItem
-			>
+					><svelte:fragment slot="lead">{@html DeleteIcon}</svelte:fragment
+					>Delete</ListBoxItem
+				>
+				<hr class="!border-dashed" />
+				<ListBoxItem
+					name="medium"
+					value="Share"
+					bind:group={comboboxValue}
+					on:click={() => {
+						comboboxValue = '';
+						shareNote(selectedIndex);
+					}}
+					><svelte:fragment slot="lead">{@html ShareIcon}</svelte:fragment>Share
+					on Nostr</ListBoxItem
+				>
 
-			<ListBoxItem
-				name="medium"
-				disabled={!selectedIndex?.detail ||
-					(!selectedIndex.detail.event &&
-						selectedIndex.detail.tagArray.length > 0 &&
-						selectedIndex.detail.tagArray[1].length !== 64)}
-				value="Open"
-				bind:group={comboboxValue}
-				on:click={() => {
-					comboboxValue = '';
-					//atagでもイベント取得できてるときはそのイベントのIDをIDにセットしてる。見つかってないときだけtagArrayからつかってる
-					const id =
-						selectedIndex?.detail && selectedIndex.detail.event
-							? selectedIndex.detail.event.id
-							: selectedIndex.detail.tagArray[1].length === 64
-								? selectedIndex.detail.tagArray[1]
-								: '';
-					const relays = getRelaysById(id);
-					//URLはaタグのときはnaddrにしてみる
-					const url = urlParam(selectedIndex.detail.tagArray, relays);
-					if (url) {
-						console.log(url);
-						console.log(relays);
-						windowOpen(url);
-					}
-				}}
-				><svelte:fragment slot="lead">{@html OpenIcon}</svelte:fragment>Open in
-				njump</ListBoxItem
-			>
-			<hr class="!border-dashed" />
-			<!--naddrがあったらnaddrボタンだけ表示にする？（ノートIDは詳細表示からもコピーできるので）-->
-			{#if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000))}
 				<ListBoxItem
 					name="medium"
-					value="copyNaddr"
+					disabled={!selectedIndex?.detail ||
+						(!selectedIndex.detail.event &&
+							selectedIndex.detail.tagArray.length > 0 &&
+							selectedIndex.detail.tagArray[1].length !== 64)}
+					value="Open"
 					bind:group={comboboxValue}
-					on:click={async () => {
+					on:click={() => {
 						comboboxValue = '';
-						const res = await copyNaddr(selectedIndex);
-						const toast = res
-							? {
-									message: `copied`,
-									timeout: 3000
-								}
-							: {
-									message: `failed`,
-									timeout: 3000,
-									background: 'bg-orange-500 text-white width-filled '
-								};
-						toastStore.trigger(toast);
+						//atagでもイベント取得できてるときはそのイベントのIDをIDにセットしてる。見つかってないときだけtagArrayからつかってる
+						const id =
+							selectedIndex?.detail && selectedIndex.detail.event
+								? selectedIndex.detail.event.id
+								: selectedIndex.detail.tagArray[1].length === 64
+									? selectedIndex.detail.tagArray[1]
+									: '';
+						const relays = getRelaysById(id);
+						//URLはaタグのときはnaddrにしてみる
+						const url = urlParam(selectedIndex.detail.tagArray, relays);
+						if (url) {
+							console.log(url);
+							console.log(relays);
+							windowOpen(url);
+						}
 					}}
-					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
-					Naddr</ListBoxItem
-				>{:else if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a')}
-				<ListBoxItem
-					name="medium"
-					value="copyNote"
-					bind:group={comboboxValue}
-					on:click={async () => {
-						comboboxValue = '';
-						const res = await copyNoteId(selectedIndex);
-						const toast = res
-							? {
-									message: `copied`,
-									timeout: 3000
-								}
-							: {
-									message: `failed`,
-									timeout: 3000,
-									background: 'bg-orange-500 text-white width-filled '
-								};
-						toastStore.trigger(toast);
-					}}
-					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
-					NoteID</ListBoxItem
-				>{/if}
+					><svelte:fragment slot="lead">{@html OpenIcon}</svelte:fragment>Open
+					in njump</ListBoxItem
+				>
+				<hr class="!border-dashed" />
+				<!--naddrがあったらnaddrボタンだけ表示にする？（ノートIDは詳細表示からもコピーできるので）-->
+				{#if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'a' || (selectedIndex.detail.event && selectedIndex.detail.event.kind >= 10000 && selectedIndex.detail.event.kind < 40000))}
+					<ListBoxItem
+						name="medium"
+						value="copyNaddr"
+						bind:group={comboboxValue}
+						on:click={async () => {
+							comboboxValue = '';
+							const res = await copyNaddr(selectedIndex);
+							const toast = res
+								? {
+										message: `copied`,
+										timeout: 3000
+									}
+								: {
+										message: `failed`,
+										timeout: 3000,
+										background: 'bg-orange-500 text-white width-filled '
+									};
+							toastStore.trigger(toast);
+						}}
+						><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
+						Naddr</ListBoxItem
+					>{:else if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'e' || selectedIndex.detail.tagArray[0] === 'a')}
+					<ListBoxItem
+						name="medium"
+						value="copyNote"
+						bind:group={comboboxValue}
+						on:click={async () => {
+							comboboxValue = '';
+							const res = await copyNoteId(selectedIndex);
+							const toast = res
+								? {
+										message: `copied`,
+										timeout: 3000
+									}
+								: {
+										message: `failed`,
+										timeout: 3000,
+										background: 'bg-orange-500 text-white width-filled '
+									};
+							toastStore.trigger(toast);
+						}}
+						><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
+						NoteID</ListBoxItem
+					>{/if}
 
-			{#if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'r' || selectedIndex.detail.tagArray[0] === 'relay')}
-				<!--wssでもhttpでも-->
-				<ListBoxItem
+				{#if selectedIndex?.detail && (selectedIndex.detail.tagArray[0] === 'r' || selectedIndex.detail.tagArray[0] === 'relay')}
+					<!--wssでもhttpでも-->
+					<ListBoxItem
+						name="medium"
+						value="relay"
+						bind:group={comboboxValue}
+						on:click={async () => {
+							comboboxValue = '';
+							const res = await copyRelayURL(selectedIndex);
+							const toast = res
+								? {
+										message: `copied`,
+										timeout: 3000
+									}
+								: {
+										message: `failed`,
+										timeout: 3000,
+										background: 'bg-orange-500 text-white width-filled '
+									};
+							toastStore.trigger(toast);
+						}}
+						><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
+						URL</ListBoxItem
+					>{/if}<ListBoxItem
 					name="medium"
-					value="relay"
+					value="detail"
 					bind:group={comboboxValue}
-					on:click={async () => {
+					on:click={() => {
 						comboboxValue = '';
-						const res = await copyRelayURL(selectedIndex);
-						const toast = res
-							? {
-									message: `copied`,
-									timeout: 3000
-								}
-							: {
-									message: `failed`,
-									timeout: 3000,
-									background: 'bg-orange-500 text-white width-filled '
-								};
-						toastStore.trigger(toast);
+						OpenNoteJson(selectedIndex);
 					}}
-					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
-					URL</ListBoxItem
-				>{/if}<ListBoxItem
-				name="medium"
-				value="detail"
-				bind:group={comboboxValue}
-				on:click={() => {
-					comboboxValue = '';
-					OpenNoteJson(selectedIndex);
-				}}
-				><svelte:fragment slot="lead">{@html DescriptionIcon}</svelte:fragment
-				>View Detail</ListBoxItem
-			>
-		</ListBox>
-		<div class="arrow bg-primary-400-500-token" />
-		<!-- <div class="arrow bg-surface-100-800-token border" /> -->
+					><svelte:fragment slot="lead">{@html DescriptionIcon}</svelte:fragment
+					>View Detail</ListBoxItem
+				>
+			</ListBox>
+			<div class="arrow bg-primary-400-500-token" />
+			<!-- <div class="arrow bg-surface-100-800-token border" /> -->
+		</div>
 	</div>
-</div>
+{/if}
