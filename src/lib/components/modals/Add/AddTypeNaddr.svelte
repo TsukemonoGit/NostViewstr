@@ -2,9 +2,7 @@
 	import { checkInputNaddr } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
-	import { nip19 } from 'nostr-tools';
-	import { nowProgress } from '$lib/stores/settings';
-	import dotIcon from '@material-design-icons/svg/round/circle.svg?raw';
+
 	import PublicButton from './PublicButton.svelte';
 	import PrivateButton from './PrivateButton.svelte';
 	export let res: { btn: string; tag: string[] };

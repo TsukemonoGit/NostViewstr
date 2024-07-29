@@ -3,7 +3,7 @@
 	import EventCard from '$lib/components/EventCard.svelte';
 	import { ogpDescription } from '$lib/otherFunctions.js';
 
-	import { nip19, type Event as NostrEvent } from 'nostr-tools';
+	import { nip19 } from 'nostr-tools';
 	import { parseNaddr } from '$lib/nostrFunctions';
 	import SearchCard from './SearchCard.svelte';
 
@@ -23,6 +23,7 @@
 	import Text from './nostrData/Text.svelte';
 	import LatestEvent from './nostrData/LatestEvent.svelte';
 	import { relaySet } from '$lib/stores/relays';
+
 	export let tag: {
 		id: number;
 		name: string[];
@@ -35,6 +36,7 @@
 	export let selectedIndex: SelectIndex;
 	export let kind: number | undefined;
 	//export let handleClick: any;
+
 	export let CheckNote: (e: SelectIndex) => void;
 </script>
 

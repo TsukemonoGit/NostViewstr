@@ -1,6 +1,5 @@
 <!--kind:40-->
 <script lang="ts">
-	import { iconView } from '$lib/stores/settings';
 	import { nip19 } from 'nostr-tools';
 
 	import type Nostr from 'nostr-typedef';

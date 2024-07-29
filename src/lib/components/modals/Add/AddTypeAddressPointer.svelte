@@ -4,7 +4,7 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
 	import { naddrVaridKind } from '$lib/kind';
-	import { nowProgress } from '$lib/stores/settings';
+
 	import PublicButton from './PublicButton.svelte';
 	import PrivateButton from './PrivateButton.svelte';
 

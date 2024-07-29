@@ -24,15 +24,14 @@ import {
 } from './stores/bookmarkEvents';
 import { formatResults, getPub, setRelays, signEv } from './nostrFunctions';
 import {
+	finalizeEvent,
+	generateSecretKey,
 	getEventHash,
-	generatePrivateKey,
 	getPublicKey,
 	nip04,
 	SimplePool,
-	getSignature,
-	verifySignature
+	verifyEvent
 } from 'nostr-tools';
-import { nsec, pubkey_viewer } from './stores/settings';
 import { feedbackRelay, relaySet } from './stores/relays';
 import type {
 	ConnectionState,
@@ -421,7 +420,7 @@ export async function publishEventWithTimeout(
 			event = await signEv(event);
 		}
 		console.log(event);
-		if (!verifySignature(event)) {
+		if (!verifyEvent(event)) {
 			return { isSuccess: false, msg: 'error' };
 		}
 
@@ -539,11 +538,11 @@ export async function sendMessage(message: string, pubhex: string) {
 	if (!pubhex) {
 		throw Error;
 	}
-	const sk = generatePrivateKey();
+	const sk = generateSecretKey();
 	const pk = getPublicKey(sk);
 	const encryptedMessage = await nip04.encrypt(sk, pubhex, message);
 	const pool = new SimplePool();
-	const ev = {
+	let ev = {
 		kind: 4,
 		created_at: Math.floor(Date.now() / 1000),
 		tags: [['p', pubhex]],
@@ -553,8 +552,9 @@ export async function sendMessage(message: string, pubhex: string) {
 		sig: '',
 		id: ''
 	};
-	ev.sig = getSignature(ev, sk);
+
 	ev.id = getEventHash(ev);
+	ev = finalizeEvent(ev, sk);
 	//サイン無しでrxnostrでやれないから
 	await Promise.any(pool.publish(feedbackRelay, ev));
 	pool.close(feedbackRelay);

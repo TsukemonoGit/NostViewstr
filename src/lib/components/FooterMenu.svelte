@@ -2,7 +2,6 @@
 	import { _ } from 'svelte-i18n';
 	import {
 		MultiMenu,
-		allView,
 		backButton,
 		isMulti,
 		nowProgress,
@@ -15,9 +14,7 @@
 	import backIcon from '@material-design-icons/svg/round/chevron_left.svg?raw';
 	import nextIcon from '@material-design-icons/svg/round/chevron_right.svg?raw';
 	import multiIcon from '@material-design-icons/svg/round/done_all.svg?raw';
-	import menuIcon from '@material-design-icons/svg/round/menu.svg?raw';
 	import LeftIcon from '@material-design-icons/svg/round/west.svg?raw';
-	import HomeIcon from '@material-design-icons/svg/round/home.svg?raw';
 	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
 	import checkIcon from '@material-design-icons/svg/outlined/toc.svg?raw';
 	import multiMenuIcon from '@material-design-icons/svg/round/checklist_rtl.svg?raw';
@@ -33,7 +30,6 @@
 		eventListsMap,
 		checkedIndexList,
 		listNum,
-		type Identifiers,
 		keysArray,
 		identifierKeysArray,
 		identifierListsMap
@@ -45,8 +41,7 @@
 		popup,
 		type ModalComponent,
 		type ModalSettings,
-		type PopupSettings,
-		type ToastSettings
+		type PopupSettings
 	} from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { publishEventWithTimeout } from '$lib/streamEventLists';

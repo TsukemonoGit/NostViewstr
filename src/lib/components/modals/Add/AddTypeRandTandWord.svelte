@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 
-	import { tagExp } from '$lib/kind';
-	import { nowProgress } from '$lib/stores/settings';
 	import PublicButton from './PublicButton.svelte';
 	import PrivateButton from './PrivateButton.svelte';
 	import Save from './Save.svelte';

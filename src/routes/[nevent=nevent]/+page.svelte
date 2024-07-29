@@ -4,23 +4,20 @@
 	import ListedEvent from '$lib/components/ListedEvent.svelte';
 	import { checkedIndexList, listNum, rx } from '$lib/stores/bookmarkEvents';
 	import { getPub, getRelays } from '$lib/nostrFunctions';
-	import { afterUpdate, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import Header from '$lib/components/Header.svelte';
 
 	import { initRelaySet, relaySet } from '$lib/stores/relays';
 	import {
-		MultiMenu,
 		URLPreview,
 		iconView,
-		isMulti,
-		login,
 		nip46Check,
 		nowProgress,
 		pubkey_viewer,
 		saveObj
 	} from '$lib/stores/settings';
 	//import type { Event } from 'nostr-tools';
-	import { amount, listSize, pageNum } from '$lib/stores/pagination';
+	import { pageNum } from '$lib/stores/pagination';
 	import NostrApp from '$lib/components/nostrData/NostrApp.svelte';
 
 	import type Nostr from 'nostr-typedef';
@@ -28,10 +25,9 @@
 
 	import FooterMenu from '$lib/components/FooterMenu.svelte';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
-	import { modalStore, toastStore } from '$lib/stores/store';
+	import { toastStore } from '$lib/stores/store';
 	import type { PageData } from './$types';
 	import { getViewEvent } from './function';
-	import { createRxNostr } from 'rx-nostr';
 	import Settings from '$lib/components/Settings.svelte';
 	import { nip19 } from 'nostr-tools';
 	export let data: PageData;

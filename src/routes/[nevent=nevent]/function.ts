@@ -1,35 +1,34 @@
-import { SimplePool, relayInit, type Event as NostrEvent } from 'nostr-tools';
-
 import type Nostr from 'nostr-typedef';
+import { createRxBackwardReq, createRxNostr, type EventPacket } from 'rx-nostr';
+import { verifier } from 'rx-nostr-crypto';
 
 export async function getViewEvent(
 	id: string,
 	relays: string[]
-): Promise<Nostr.Event<number>> {
-	const pool = new SimplePool();
-	let sub = pool.sub(relays, [{ ids: [id] }]);
-	let resEvent: Promise<Nostr.Event<number>>;
-	const result: Promise<Nostr.Event<number>> = new Promise((resolve) => {
-		const timeoutID = setTimeout(() => {
-			resolve(resEvent); //, pubkeys]);
-		}, 5000);
+): Promise<Nostr.Event> {
+	const filters = [{ ids: [id], limit: 1 }];
+	const rxNostr = createRxNostr({ verifier });
+	rxNostr.setDefaultRelays(relays);
+	const req = createRxBackwardReq();
+	return new Promise((resolve, reject) => {
+		const subscribe = rxNostr.use(req).subscribe({
+			next: (v: EventPacket) => {
+				resolve(v.event);
+			},
 
-		sub.on('event', (event) => {
-			// @ts-ignore
-			resEvent = event;
-			//    if (!pubkeys.includes(event.pubkey)) {
-			//      pubkeys.push(event.pubkey);
-			//}
+			complete: () => {
+				subscribe.unsubscribe();
+			},
+			error: (e) => {
+				console.error('[rx-nostr]', e);
+
+				reject(e);
+
+				subscribe.unsubscribe();
+			}
 		});
-		sub.on('eose', () => {
-			sub.unsub(); //イベントの購読を停止
-			clearTimeout(timeoutID); //settimeoutのタイマーより早くeoseを受け取ったら、setTimeoutをキャンセルさせる。
-			resolve(resEvent); //, pubkeys]);
-			clearTimeout(timeoutID);
-		});
+
+		req.emit(filters);
+		req.over();
 	});
-	//console.log(eventList);
-
-	await result; // result プロミスの解決を待つ
-	return result;
 }

@@ -9,7 +9,6 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	//import type { ConnectionStatePacket, DefaultRelayConfig } from 'rx-nostr';
 	//import { createRxNostr } from 'rx-nostr';
-	import { onDestroy } from 'svelte';
 
 	//import { app, useConnections } from '$lib/stores/index.js';
 

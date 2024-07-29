@@ -1,8 +1,7 @@
 <script lang="ts">
-	import type { TabGroup, ToastSettings } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
-	import copyIcon from '@material-design-icons/svg/round/content_copy.svg?raw';
 	import { _ } from 'svelte-i18n';
 	import { broadcast, parseNaddr } from '$lib/nostrFunctions';
 
@@ -10,7 +9,6 @@
 	import { relaySet } from '$lib/stores/relays';
 	import { nowProgress, pubkey_viewer } from '$lib/stores/settings';
 	import { getRelaysById } from '$lib/streamEventLists';
-	import Relay from '../Relay.svelte';
 	import { Nip11Registry } from 'rx-nostr';
 
 	export let parent: any;
@@ -61,8 +59,8 @@
 				tag[0] === 'a'
 					? nip19.naddrEncode(parseNaddr(tag))
 					: tag[0] === 'p'
-					? nip19.npubEncode(tag[1])
-					: tag[1];
+						? nip19.npubEncode(tag[1])
+						: tag[1];
 			navigator.clipboard.writeText(copyString).then(
 				() => {
 					// コピーに成功したときの処理

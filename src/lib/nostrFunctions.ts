@@ -8,9 +8,9 @@ declare let window: Window;
 import { _ } from 'svelte-i18n';
 import {
 	SimplePool,
+	finalizeEvent,
 	getEventHash,
 	getPublicKey,
-	getSignature,
 	nip04,
 	nip19
 } from 'nostr-tools';
@@ -158,7 +158,7 @@ export async function getPub(nip46: boolean): Promise<string> {
 		if (sec && sec !== '') {
 			//nsecログイン
 			try {
-				pubkey_viewer.set(getPublicKey(sec));
+				pubkey_viewer.set(getPublicKey(nip19.decode(sec).data as Uint8Array));
 				unsubscribe();
 				return myPubkey;
 			} catch (error) {
@@ -208,7 +208,11 @@ export async function nip04De(
 	const sec = get(nsec);
 	if (sec && sec !== '') {
 		try {
-			return await nip04.decrypt(sec, getPublicKey(sec), message);
+			return await nip04.decrypt(
+				sec,
+				getPublicKey(nip19.decode(sec).data as Uint8Array),
+				message
+			);
 		} catch (error) {
 			try {
 				return await window.nostr.nip04.decrypt(pubkey, message);
@@ -233,7 +237,11 @@ export async function nip04En(
 	const sec = get(nsec);
 	if (sec && sec !== '') {
 		try {
-			return await nip04.encrypt(sec, getPublicKey(sec), message);
+			return await nip04.encrypt(
+				sec,
+				getPublicKey(nip19.decode(sec).data as Uint8Array),
+				message
+			);
 		} catch (error) {
 			try {
 				return await window.nostr.nip04.encrypt(pubkey, message);
@@ -262,11 +270,12 @@ interface Event {
 
 export async function signEv(obj: NostrEvent): Promise<Event> {
 	//const sec = localStorage.getItem('nsec');
+
 	const sec = get(nsec);
 	if (sec && sec !== '') {
 		console.log('nsec');
 		try {
-			obj.sig = getSignature(obj, sec);
+			obj = finalizeEvent(obj, nip19.decode(sec).data as Uint8Array);
 			return obj;
 		} catch (error) {
 			try {
