@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { checkInputNpub } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 

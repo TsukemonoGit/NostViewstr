@@ -1,16 +1,12 @@
 <script lang="ts">
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
-	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore } from '@skeletonlabs/skeleton';
 	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
 	//import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { nip19, type Event, nip05 } from 'nostr-tools';
 
 	import { _ } from 'svelte-i18n';
-	import {
-		formatAbsoluteDate,
-		loadOgp,
-		type MenuMode
-	} from '$lib/otherFunctions.js';
+	import { formatAbsoluteDate, loadOgp } from '$lib/otherFunctions.js';
 	import OGP from './OGP.svelte';
 	import { URLPreview, allView, iconView } from '$lib/stores/settings';
 	import { goto } from '$app/navigation';

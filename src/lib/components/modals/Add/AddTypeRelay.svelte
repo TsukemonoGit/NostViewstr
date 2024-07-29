@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { checkInputNote } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
 
-	import type Nostr from 'nostr-typedef';
 	import PublicButton from './PublicButton.svelte';
 	import { Nip11Registry } from 'rx-nostr';
 

@@ -129,7 +129,7 @@ export const encodedURL = (str: string): string => {
 
 //long form contentsのOGP
 export function setLFCOgps(
-	ev: NostrEvent<number>,
+	ev: NostrEvent,
 	address: nip19.AddressPointer
 ): {
 	ogp: Ogp;
@@ -169,7 +169,7 @@ export function setLFCOgps(
 
 //communitiesのOGP
 export function setComOgps(
-	ev: NostrEvent<number>,
+	ev: NostrEvent,
 	address: nip19.AddressPointer
 ): {
 	ogp: Ogp;

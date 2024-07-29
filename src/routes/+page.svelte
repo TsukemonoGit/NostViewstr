@@ -82,7 +82,7 @@
 				}
 				goto(`./${input}/${Number(selectValue)}`);
 			} else if (decode.type === 'nsec') {
-				$nsec = decode.data;
+				$nsec = nip19.nsecEncode(decode.data);
 
 				const pub = getPublicKey(decode.data);
 				localStorage.setItem('npub', pub);

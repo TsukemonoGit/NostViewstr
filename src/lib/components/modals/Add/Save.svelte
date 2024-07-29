@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { prvIcon } from '$lib/components/icons';
-	import { pubIcon } from '$lib/components/icons';
 	import { nowProgress } from '$lib/stores/settings';
 	export let handleClickPub;
 	export let parent;

@@ -38,10 +38,7 @@
 	} from '$lib/stores/relays';
 	import {
 		MultiMenu,
-		iconView,
 		isMulti,
-		login,
-		nip46Check,
 		nowProgress,
 		pubkey_viewer
 	} from '$lib/stores/settings';

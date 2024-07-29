@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 
-	import { nowProgress } from '$lib/stores/settings';
 	import Save from './Save.svelte';
-	import PrivateButton from './PrivateButton.svelte';
 	import PublicButton from './PublicButton.svelte';
 
 	export let res: { btn: string; tag: string[]; check: boolean };

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatAbsoluteDate, formatRelativeDate } from '$lib/otherFunctions';
+	import { formatAbsoluteDate } from '$lib/otherFunctions';
 
 	import Content from './Content.svelte';
 	import { allView } from '$lib/stores/settings';

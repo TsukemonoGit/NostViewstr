@@ -19,7 +19,6 @@
 	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
 	import OpenIcon from '@material-design-icons/svg/round/open_in_browser.svg?raw';
 	import ShareIcon from '@material-design-icons/svg/round/chat.svg?raw';
-	import EditIcon from '@material-design-icons/svg/round/edit_note.svg?raw';
 
 	import swap from '@material-design-icons/svg/round/swap_vert.svg?raw';
 	import { nowProgress } from '$lib/stores/settings';
@@ -93,13 +92,13 @@
 					tagArray && tagArray[0] === 'a'
 						? `\r\nnostr:${nip19.naddrEncode(parseNaddr(tagArray))}`
 						: tagArray && tagArray[0] === 'e'
-						? note?.kind === 1
-							? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
-							: `\r\nnostr:${nip19.neventEncode({
-									id: tagArray[1],
-									relays: []
-							  })}`
-						: ''
+							? note?.kind === 1
+								? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
+								: `\r\nnostr:${nip19.neventEncode({
+										id: tagArray[1],
+										relays: []
+									})}`
+							: ''
 				}`,
 				tags: tags,
 				tagArray: tagArray,

@@ -8,7 +8,6 @@
 
 	import Metadata from './nostrData/Metadata.svelte';
 	import type Nostr from 'nostr-typedef';
-	import { getRelays } from '$lib/nostrFunctions';
 	import { relaySet } from '$lib/stores/relays';
 	export let pubkey: string;
 	//	console.log(readTrueArray.length);

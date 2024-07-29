@@ -4,8 +4,6 @@
 	import { _ } from 'svelte-i18n';
 	import type { PageData } from './$types';
 
-	import FooterMenu from '$lib/components/FooterMenu.svelte';
-
 	import { nip19 } from 'nostr-tools';
 	import { URLPreview, iconView, saveObj } from '$lib/stores/settings';
 	import { onMount } from 'svelte';

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { extractTextParts } from '$lib/content';
-	import OGP from '../OGP.svelte';
 	import { contentStore } from '$lib/stores/bookmarkEvents';
 	import { page } from '$app/stores';
 	import SampleOgp from './SampleOgp.svelte';

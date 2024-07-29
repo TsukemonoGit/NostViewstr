@@ -22,8 +22,7 @@
 		popup,
 		type ModalComponent,
 		type ModalSettings,
-		type PopupSettings,
-		storePopup
+		type PopupSettings
 	} from '@skeletonlabs/skeleton';
 	import type Nostr from 'nostr-typedef';
 	import { _ } from 'svelte-i18n';

@@ -25,14 +25,13 @@
 
 	// import Menu from '@material-design-icons/svg/round/more_vert.svg?raw';
 
-	import { afterUpdate, createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { dndzone } from 'svelte-dnd-action';
 	import {
 		ListBox,
 		ListBoxItem,
-		popup,
 		type ModalComponent,
 		type PopupSettings,
 		type ModalSettings
@@ -258,11 +257,11 @@
 					tagArray && tagArray[0] === 'a'
 						? `\r\nnostr:${nip19.naddrEncode(parseNaddr(tagArray))}`
 						: tagArray && tagArray[0] === 'e'
-						? `\r\nnostr:${nip19.neventEncode({
-								id: tagArray[1],
-								relays: getRelaysById(tagArray[1])
-						  })}`
-						: ''
+							? `\r\nnostr:${nip19.neventEncode({
+									id: tagArray[1],
+									relays: getRelaysById(tagArray[1])
+								})}`
+							: ''
 				}`,
 				tags: tags,
 				tagArray: tagArrayAddRelay(tagArray),
@@ -434,8 +433,8 @@
 						selectedIndex?.detail && selectedIndex.detail.event
 							? selectedIndex.detail.event.id
 							: selectedIndex.detail.tagArray[1].length === 64
-							? selectedIndex.detail.tagArray[1]
-							: '';
+								? selectedIndex.detail.tagArray[1]
+								: '';
 					const relays = getRelaysById(id);
 					//URLはaタグのときはnaddrにしてみる
 					const url = urlParam(selectedIndex.detail.tagArray, relays);
@@ -462,12 +461,12 @@
 							? {
 									message: `copied`,
 									timeout: 3000
-							  }
+								}
 							: {
 									message: `failed`,
 									timeout: 3000,
 									background: 'bg-orange-500 text-white width-filled '
-							  };
+								};
 						toastStore.trigger(toast);
 					}}
 					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
@@ -484,12 +483,12 @@
 							? {
 									message: `copied`,
 									timeout: 3000
-							  }
+								}
 							: {
 									message: `failed`,
 									timeout: 3000,
 									background: 'bg-orange-500 text-white width-filled '
-							  };
+								};
 						toastStore.trigger(toast);
 					}}
 					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy
@@ -509,12 +508,12 @@
 							? {
 									message: `copied`,
 									timeout: 3000
-							  }
+								}
 							: {
 									message: `failed`,
 									timeout: 3000,
 									background: 'bg-orange-500 text-white width-filled '
-							  };
+								};
 						toastStore.trigger(toast);
 					}}
 					><svelte:fragment slot="lead">{@html CopyIcon}</svelte:fragment>Copy

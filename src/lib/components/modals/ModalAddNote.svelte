@@ -1,20 +1,11 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { modalStore, toastStore } from '$lib/stores/store';
+	import { modalStore } from '$lib/stores/store';
 
-	import {
-		Accordion,
-		AccordionItem,
-		Tab,
-		TabGroup
-	} from '@skeletonlabs/skeleton';
+	import { Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import AddTypeNoteAndNaddr from './Add/AddTypeNoteAndNaddr.svelte';
-	import { isOneDimensionalArray } from '$lib/nostrFunctions';
-	import { publishEventWithTimeout } from '$lib/streamEventLists';
 	import { kindsValidTag, uniqueArray } from '$lib/kind';
 
-	import type Nostr from 'nostr-typedef';
-	import { relaySet } from '$lib/stores/relays';
 	import AddTypeNpub from './Add/AddTypeNpub.svelte';
 	import AddTypeNote from './Add/AddTypeNote.svelte';
 	import AddTypeNaddr from './Add/AddTypeNaddr.svelte';
@@ -24,16 +15,11 @@
 	import AddTypeRandTandWord from './Add/AddTypeRandTandWord.svelte';
 	import AddTypeAddressPointer from './Add/AddTypeAddressPointer.svelte';
 	import EditTypeOther from './Add/EditTypeOther.svelte';
-	import { nowProgress } from '$lib/stores/settings';
 	import AddTypeRefelence from './Add/AddTypeRefelence.svelte';
 	import AddTypeServer from './Add/AddTypeServer.svelte';
 
 	export let parent: any;
 
-	let input: string = $modalStore[0]?.value?.tag
-		? JSON.stringify($modalStore[0]?.value?.tag)
-		: '';
-	let content: string = '';
 	// Form Data
 	const res: { btn: string; tag: string[]; check: boolean } = {
 		btn: 'pub',

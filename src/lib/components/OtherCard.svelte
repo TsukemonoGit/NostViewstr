@@ -5,10 +5,6 @@
 	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import ModalPostNote from '$lib/components/modals/ModalPostNote.svelte';
-	import DeleteIcon from '@material-design-icons/svg/round/delete.svg?raw';
-	import MoveIcon from '@material-design-icons/svg/round/arrow_circle_right.svg?raw';
-	import OpenIcon from '@material-design-icons/svg/round/open_in_browser.svg?raw';
-	import ShareIcon from '@material-design-icons/svg/round/chat.svg?raw';
 	import { createEventDispatcher } from 'svelte';
 	import { nip19, type Event } from 'nostr-tools';
 	import { parseNaddr, windowOpen } from '$lib/nostrFunctions';
@@ -17,7 +13,6 @@
 
 	import EventTag from './EventTag.svelte';
 
-	import { checkedIndexList } from '$lib/stores/bookmarkEvents';
 	import Ogp from './OGP.svelte';
 	import Content from './Content.svelte';
 	import { allView, iconView } from '$lib/stores/settings';
@@ -133,13 +128,13 @@
 					tagArray && tagArray[0] === 'a'
 						? `\r\nnostr:${nip19.naddrEncode(parseNaddr(tagArray))}`
 						: tagArray && tagArray[0] === 'e'
-						? note?.kind === 1
-							? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
-							: `\r\nnostr:${nip19.neventEncode({
-									id: tagArray[1],
-									relays: []
-							  })}`
-						: ''
+							? note?.kind === 1
+								? `\r\nnostr:${nip19.noteEncode(tagArray[1])}`
+								: `\r\nnostr:${nip19.neventEncode({
+										id: tagArray[1],
+										relays: []
+									})}`
+							: ''
 				}`,
 				tags: tags,
 				kind: note.kind,
