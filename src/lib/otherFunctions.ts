@@ -122,8 +122,8 @@ export const uniqueTags = async (tags: any[]): Promise<string[][]> => {
 export const encodedURL = (str: string): string => {
 	//https://github.com/akiomik/noseyハッシュタグ以外も出てくるので変更しました
 	//https://github.com/SnowCait/nostter
-	const encodedstr = encodeURIComponent(str);
-	const url = `https://nostter.app/search?q=${encodedstr}`; //`https://nosey.vercel.app/?q=${encodedstr}`;
+	//const encodedstr = encodeURIComponent(str);
+	const url = `https://lumilumi.vercel.app/search?k=1&t=${str.slice(1)}`; // `https://nostter.app/search?q=${encodedstr}`; //`https://nosey.vercel.app/?q=${encodedstr}`;
 	return url;
 };
 

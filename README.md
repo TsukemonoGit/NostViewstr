@@ -12,8 +12,6 @@ https://nostviewstr.vercel.app/
 - nip-07 により書き込み
   に対応
 
-
-
 ## Tool for Displaying and Editing
 
 The tool, based on NIP-51, provides functionality for displaying and editing categorized bookmarks. Additionally, it allows users to view information related to other categories such as 'bookmark sets,' 'blocked relays,' 'communities,' 'curation sets,' 'emojis,' 'emoji sets,' 'interests,' 'interest sets,' 'lists,' 'mute,' 'people sets,' 'pin,' 'profile badges,' 'public chats,' 'relay sets,' and 'search relays.'
@@ -45,8 +43,9 @@ npm run build
 
 - [nostr-zap](https://github.com/SamSamskies/nostr-zap)
 
-- [nostter](https://github.com/SnowCait/nostter) - ハッシュタグのリンク先に使用
-<!-- [nosey](https://github.com/akiomik/nosey/) ハッシュタグ以外も出てくるので変更しました-->
+- [lumilumi](https://github.com/TsukemonoGit/lumilumi) - ハッシュタグのリンク先に使用
+  <!-- - [nostter](https://github.com/SnowCait/nostter) - ハッシュタグのリンク先に使用-->
+  <!-- [nosey](https://github.com/akiomik/nosey/) ハッシュタグ以外も出てくるので変更しました-->
 
 - [njump](https://njump.me/) - プロフィール,ノートのリンク先に使用
 <!-- - [nostr_band](https://nostr.band/) - プロフィール,ノートのリンク先に使用 -->
