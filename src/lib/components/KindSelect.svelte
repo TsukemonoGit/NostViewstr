@@ -32,6 +32,7 @@
 		type="number"
 		placeholder="other kind"
 		bind:value={selectValue}
+		min="0"
 	/>
 	<button
 		class="btn sm:w-24 w-12 variant-filled-primary fill-white"
