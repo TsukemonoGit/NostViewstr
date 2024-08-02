@@ -310,7 +310,7 @@
 					visible={false}
 				>
 					<select
-						class="border rounded border-primary-400 px-1 bg-primary-500 w-fit flex max-w-[85%]"
+						class="border rounded border-primary-400 px-1 bg-primary-500 sm:w-fit w-36 flex"
 						bind:value={selectValue}
 						on:change={handleKindChange}
 						disabled={$nowProgress}
@@ -406,12 +406,12 @@
 						{/if}
 					{:else}
 						<!---->
-						<div class="h5 self-center w-fit ml-1 truncate">
+						<div class="h5 self-center ml-1 truncate sm:w-full w-[85%]">
 							<div class="align-center">
 								{#if JSON}<div class="h6">【JSON MODE】</div>
-								{/if}kind:{kind}
+								{/if}
 								{#if kinds.has(kind)}
-									({$_(`kind.${kind}`)})
+									<span class="text-sm break-all">{$_(`kind.${kind}`)}</span>
 								{/if}
 								{#if nevent && kind >= 30000 && kind < 40000 && dtag}
 									<div class="overflow-x-hidden h4 p-1 truncate">{dtag}</div>
@@ -421,7 +421,7 @@
 					{/if}
 				</div>
 
-				<div class="grid grid-cols-[auto_auto]">
+				<div class="flex w-fit">
 					<div class="flex">
 						<button
 							title="Public List (tags)"
