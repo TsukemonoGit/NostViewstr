@@ -310,7 +310,7 @@
 					visible={false}
 				>
 					<select
-						class="border rounded border-primary-400 px-1 bg-primary-500 sm:w-fit w-36 flex"
+						class="border rounded border-primary-400 px-1 bg-primary-500 sm:w-fit w-40 flex"
 						bind:value={selectValue}
 						on:change={handleKindChange}
 						disabled={$nowProgress}
