@@ -148,5 +148,29 @@
   "nodata": {
     "iconbefore": "Listing not found. Please create a new listing by clicking",
     "iconafter": "button at the bottom and then clicking on the [Edit] button\t"
+  },
+  "kind": {
+    "3": "contact list",
+    "10000": "mute",
+    "10001": "pin",
+    "10002": "relays",
+    "10003": "bookmark",
+    "10004": "communities",
+    "10005": "public chats",
+    "10006": "blocked relays",
+    "10007": "search relays",
+    "10015": "interests",
+    "10030": "emojis",
+    "10096": "File storage server list",
+    "10101": "good wiki authors",
+    "10102": "good wiki relays",
+    "30000": "people sets",
+    "30001": "lists",
+    "30002": "relay sets",
+    "30003": "bookmark sets",
+    "30004": "curation sets",
+    "30008": "profile badges",
+    "30015": "interest sets",
+    "30030": "emoji sets"
   }
 }

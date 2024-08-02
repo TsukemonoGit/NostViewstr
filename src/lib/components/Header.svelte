@@ -316,7 +316,9 @@
 						disabled={$nowProgress}
 					>
 						{#each Array.from(kindList) as [key, value]}
-							<option value={key.toString()}>{`${value} (${key})`}</option>
+							<option value={key.toString()}
+								>{$_(`kind.${key}`)}{` (${key})`}</option
+							>
 						{/each}
 					</select>
 					<!-- {#if pubkey === $pubkey_viewer}
@@ -409,7 +411,7 @@
 								{#if JSON}<div class="h6">【JSON MODE】</div>
 								{/if}kind:{kind}
 								{#if kinds.has(kind)}
-									({kinds.get(kind)})
+									({$_(`kind.${kind}`)})
 								{/if}
 								{#if nevent && kind >= 30000 && kind < 40000 && dtag}
 									<div class="overflow-x-hidden h4 p-1 truncate">{dtag}</div>

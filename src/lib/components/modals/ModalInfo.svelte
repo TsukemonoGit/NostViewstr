@@ -164,7 +164,9 @@
 				>
 					<select class="select" bind:value={selectValue}>
 						{#each Array.from(kindList) as [key, value]}
-							<option value={key.toString()}>{`${value} (${key})`}</option>
+							<option value={key.toString()}
+								>{$_(`kind.${key}`)}{` (${key})`}</option
+							>
 						{/each}
 					</select></SelectKindList
 				>

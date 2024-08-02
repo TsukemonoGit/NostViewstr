@@ -74,7 +74,10 @@ pubkey:{nip19.npubEncode(data.pubkey)}"
 			</button>
 
 			<div class="space-t-5">
-				<h5 class="h5">kind:{data.kind}</h5>
+				<h5 class="h5">
+					kind:{data.kind}
+					{`(${$_(`kind.${data.kind}`)})`}
+				</h5>
 				<Settings {settingFunc} bind:saveCheck />
 			</div>
 		</div>

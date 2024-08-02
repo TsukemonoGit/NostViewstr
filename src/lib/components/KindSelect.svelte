@@ -8,6 +8,7 @@
 	} from '@skeletonlabs/skeleton';
 	import SelectKindList from './SelectKindList.svelte';
 
+	import { _ } from 'svelte-i18n';
 	export let selectValue: string;
 
 	const popupSelect: PopupSettings = {
@@ -23,7 +24,8 @@
 
 <div class=" input-group w-full grid grid-cols-[auto_1fr_auto] box-border">
 	<div class="input-group-shim whitespace-pre">
-		{kinds.get(Number(selectValue)) ?? 'kind'}
+		{$_(`kind.${selectValue}`) ?? 'kind'}
+		<!-- {kinds.get(Number(selectValue)) ?? 'kind'} -->
 	</div>
 	<input
 		class="px-2"
@@ -79,7 +81,7 @@
 		<ListBox class="h-72 max-h-[80%] overflow-y-auto">
 			{#each Array.from(kindList) as [key, value]}
 				<ListBoxItem bind:group={selectValue} name="medium" value={key}
-					>{`${value} (${key})`}</ListBoxItem
+					>{$_(`kind.${key}`)}{` (${key})`}</ListBoxItem
 				>
 			{/each}
 		</ListBox></SelectKindList
