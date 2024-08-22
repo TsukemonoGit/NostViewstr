@@ -25,6 +25,7 @@ export const kinds: Map<number, string> = new Map<number, string>([
 	[30003, 'bookmark sets'],
 	[30004, 'curation sets'],
 	//
+	[30007, 'kind mute sets'],
 	[30008, 'profile badges'],
 	//
 	[30015, 'interest sets'],
