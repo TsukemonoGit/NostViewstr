@@ -69,7 +69,7 @@ pubkey:{nip19.npubEncode(data.pubkey)}"
 	<ListedEventList
 		bind:pubkey={data.pubkey}
 		{kind}
-		{identifier}
+		identifier={identifier === '' ? undefined : identifier}
 		isNaddr={true}
 	/>
 {/if}
