@@ -56,7 +56,9 @@
 	export let CheckNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
 	}) => void;
-
+	export let MoveBkmNote: (e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => void;
 	export let listEvent: NostrEvent | undefined;
 	export let bkm = 'pub'; //'pub'|'prv'
 	export let isOwner: boolean;
@@ -416,22 +418,37 @@
 						><svelte:fragment slot="lead">{@html EditIcon}</svelte:fragment
 						>Edit</ListBoxItem
 					>{/if}
-				<ListBoxItem
-					disabled={!$page.params.hasOwnProperty('npub') ||
-						!isOwner ||
-						!listEvent?.kind ||
-						listEvent?.kind < 30000 ||
-						listEvent?.kind >= 40000 ||
-						isNaddr}
-					value="Move"
-					bind:group={comboboxValue}
-					name="medium"
-					on:click={() => {
-						comboboxValue = '';
-						MoveNote(selectedIndex);
-					}}
-					><svelte:fragment slot="lead">{@html MoveIcon}</svelte:fragment>Move
-				</ListBoxItem>
+				{#if listEvent?.kind === 10000 || listEvent?.kind === 10003}
+					<ListBoxItem
+						disabled={!$page.params.hasOwnProperty('npub') || !isOwner}
+						value="MoveBkm"
+						bind:group={comboboxValue}
+						name="medium"
+						on:click={() => {
+							comboboxValue = '';
+							MoveBkmNote(selectedIndex);
+						}}
+						><svelte:fragment slot="lead">{@html MoveIcon}</svelte:fragment>Move
+						to {bkm === 'prv' ? 'public' : 'private'}
+					</ListBoxItem>
+				{:else}
+					<ListBoxItem
+						disabled={!$page.params.hasOwnProperty('npub') ||
+							!isOwner ||
+							!listEvent?.kind ||
+							listEvent?.kind < 30000 ||
+							listEvent?.kind >= 40000 ||
+							isNaddr}
+						value="Move"
+						bind:group={comboboxValue}
+						name="medium"
+						on:click={() => {
+							comboboxValue = '';
+							MoveNote(selectedIndex);
+						}}
+						><svelte:fragment slot="lead">{@html MoveIcon}</svelte:fragment>Move
+					</ListBoxItem>
+				{/if}
 				<ListBoxItem
 					disabled={(!$page.params.hasOwnProperty('npub') &&
 						!$page.params.hasOwnProperty('naddr')) ||
