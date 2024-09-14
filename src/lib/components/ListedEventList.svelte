@@ -407,6 +407,31 @@
 		modalStore.trigger(modal);
 	}
 
+	//---------------------------------------------move prv⇔pub
+
+	async function MoveBkmNote(e: {
+		detail: { number: number; event: any; tagArray: any };
+	}): Promise<void> {
+		if ($nowProgress) {
+			return;
+		}
+		$nowProgress = true;
+		console.log('MoveNote');
+		const number: number = e.detail.number + $pageNum * $amount;
+		console.log(number);
+		console.log(e.detail.event);
+		console.log(e.detail.tagArray);
+		const listNumber = $listNum;
+		const _bkm = bkm;
+		await moveNoteSuruyatu(
+			[number],
+			[e.detail.tagArray],
+			{ tag: listNumber, bkm: _bkm },
+			{ tag: listNumber, bkm: _bkm === 'prv' ? 'pub' : 'prv' }
+		);
+		$nowProgress = false;
+	}
+
 	function CheckNote(e: {
 		detail: { number: number; event: any; tagArray: any };
 	}): void {
@@ -1011,6 +1036,7 @@
 						{pubkey}
 						{DeleteNote}
 						{MoveNote}
+						{MoveBkmNote}
 						{CheckNote}
 						bind:bkm
 						bind:isOwner
