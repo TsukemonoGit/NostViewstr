@@ -38,7 +38,7 @@
 		"tailwindcss": "3.4.7",
 		"tslib": "^2.6.3",
 		"typescript": "^5.5.4",
-		"vite": "^5.3.5",
+		"vite": "^5.4.6",
 		"vite-plugin-tailwind-purgecss": "0.3.3",
 		"vitest": "^2.0.4"
 	},
