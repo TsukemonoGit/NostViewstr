@@ -245,8 +245,8 @@
 		const tags = tagArray
 			? tagArray[0] === 'e'
 				? note?.kind !== 1
-					? [[...tagArray, getRelaysById(tagArray[1])[0], 'mention']]
-					: [['q', ...tagArray.slice(1), getRelaysById(tagArray[1])[0]]]
+					? [[...tagArray, getRelaysById(tagArray[1])[0] ?? '', 'mention']]
+					: [['q', ...tagArray.slice(1), getRelaysById(tagArray[1])[0] ?? '']]
 				: [tagArray]
 			: [];
 		const modal: ModalSettings = {
