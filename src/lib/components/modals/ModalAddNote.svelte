@@ -152,6 +152,7 @@
 					{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
 						<!--<hr class="!border-dashed my-1" />-->
 						<AddTypeNpub
+							{kind}
 							{res}
 							{parent}
 							{onFormSubmit}

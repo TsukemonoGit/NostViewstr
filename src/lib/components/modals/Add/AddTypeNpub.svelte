@@ -11,6 +11,7 @@
 
 	export let selectBoxItem: string[];
 	export let selectItem: string;
+	export let kind: number;
 
 	const myValue = 'User';
 
@@ -86,12 +87,14 @@
 			}}
 			{parent}
 		/>
-		<PrivateButton
-			handleClickPrv={() => {
-				res.btn = 'prv';
-				onClickCheck();
-			}}
-			{parent}
-		/>
+		{#if kind !== 3}
+			<PrivateButton
+				handleClickPrv={() => {
+					res.btn = 'prv';
+					onClickCheck();
+				}}
+				{parent}
+			/>
+		{/if}
 	</footer>
 {/if}
