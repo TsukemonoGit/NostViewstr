@@ -173,5 +173,10 @@
     "30008": "profile badges",
     "30015": "interest sets",
     "30030": "emoji sets"
+  },
+  "kind3": {
+    "relay": "relay",
+    "petname": "petname",
+    "npub": "npub"
   }
 }

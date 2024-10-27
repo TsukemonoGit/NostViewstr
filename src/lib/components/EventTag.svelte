@@ -43,7 +43,7 @@
 					on:click={() => {
 						handleClickPubkey(metadata, tag[1]);
 					}}
-					>{#if JSON.parse(metadata.content).name !== ''}{JSON.parse(
+					>{#if metadata.content && JSON.parse(metadata.content).name !== ''}{JSON.parse(
 							metadata.content
 						).name}
 					{:else}
@@ -60,7 +60,7 @@
 			id={tag[1]}
 			let:text
 			relay={tag.length > 2 && tag[2] !== ''
-				? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag[2]])]
+				? [...new Set([...($relaySet[pubkey]?.mergeRelays || []), tag[2]])]
 				: undefined}
 		>
 			<div slot="loading">
@@ -84,12 +84,14 @@
 				<button
 					class=" opacity-70 text-sm w-full truncate overflow-x-hidden text-start"
 					on:click={() => {
-						handleClickDate(text, tag);
+						if (tag && tag.length > 0) {
+							handleClickDate(text, tag);
+						}
 					}}
 				>
 					[{tag[0]}]
 
-					{#if text.tags.some((tag) => tag[0] === 'content-warning') && $allView == false}
+					{#if text && Array.isArray(text.tags) && text.tags.some((tag) => tag[0] === 'content-warning') && $allView == false}
 						{'<content-warning>'}
 					{:else}
 						{text.content}

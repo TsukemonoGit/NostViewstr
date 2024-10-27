@@ -247,62 +247,49 @@
 					</div>
 				{/if}
 			{/if}
-			<!--note-->
-			<div class="break-all box-border overflow-x-auto">
-				{#if note.kind === 31990}
-					{#await JsonCheck(note.content) then data}
-						{#if data !== ''}
-							<Ogp
-								ogp={{
-									title: data.name,
-									image: data.banner,
-									description: data.about,
-									favicon: data.picture,
-									memo: 'kind: ' + note.kind + ' Application'
-								}}
-								url={data.website}
-							/>
-						{/if}
-					{/await}
-				{:else if note.kind === 40 || note.kind === 41}
-					<PubCha event={note} text={note.content} id={note.id} />
-				{:else if note.kind === 30030}
-					<EmojiSet event={note} />
-				{:else if note.kind === 30023 && tagArray !== undefined}<!--long form content-->
-					<OGP
-						ogp={setLFCOgps(note, parseNaddr(tagArray)).ogp}
-						url={setLFCOgps(note, parseNaddr(tagArray)).site +
-							nip19.naddrEncode(parseNaddr(tagArray))}
-					/>
-				{:else if note.kind === 34550 && tagArray !== undefined}<!--communities-->
-					<OGP
-						ogp={setComOgps(note, parseNaddr(tagArray)).ogp}
-						url={setComOgps(note, parseNaddr(tagArray)).site +
-							nip19.naddrEncode(parseNaddr(tagArray))}
-					/>
-				{:else}<Content
-						text={note.content}
-						tag={note.tags}
-						id={note.id}
-						view={$allView}
-						{isPageOwner}
-						{pubkey}
-					/>{/if}
-			</div>
 		{/await}
+
+		<!--note-->
+		<div class="break-all box-border overflow-x-auto">
+			{#if note.kind === 31990}
+				{#await JsonCheck(note.content) then data}
+					{#if data !== ''}
+						<Ogp
+							ogp={{
+								title: data.name,
+								image: data.banner,
+								description: data.about,
+								favicon: data.picture,
+								memo: 'kind: ' + note.kind + ' Application'
+							}}
+							url={data.website}
+						/>
+					{/if}
+				{/await}
+			{:else if note.kind === 40 || note.kind === 41}
+				<PubCha event={note} text={note.content} id={note.id} />
+			{:else if note.kind === 30030}
+				<EmojiSet event={note} />
+			{:else if note.kind === 30023 && tagArray !== undefined}<!--long form content-->
+				<OGP
+					ogp={setLFCOgps(note, parseNaddr(tagArray)).ogp}
+					url={setLFCOgps(note, parseNaddr(tagArray)).site +
+						nip19.naddrEncode(parseNaddr(tagArray))}
+				/>
+			{:else if note.kind === 34550 && tagArray !== undefined}<!--communities-->
+				<OGP
+					ogp={setComOgps(note, parseNaddr(tagArray)).ogp}
+					url={setComOgps(note, parseNaddr(tagArray)).site +
+						nip19.naddrEncode(parseNaddr(tagArray))}
+				/>
+			{:else}<Content
+					text={note.content}
+					tag={note.tags}
+					id={note.id}
+					view={$allView}
+					{isPageOwner}
+					{pubkey}
+				/>{/if}
+		</div>
 	</div>
 </div>
-
-<!--ボタン群-->
-<!-- <MenuButtons
-		{myIndex}
-		{tagArray}
-		{note}
-		{menuMode}
-		on:DeleteNote={DeleteNote}
-		on:MoveNote={MoveNote}
-		on:CheckNote={CheckNote}
-	/> -->
-<!-- </div> -->
-<!-- </NostrApp> -->
-<!--{/if}-->

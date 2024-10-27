@@ -165,6 +165,9 @@
 						{#if content.display_name}
 							{content.display_name}
 						{/if}
+						{#if tagArray && tagArray.length >= 4 && tagArray[3] !== ''}
+							📛{tagArray[3]}<!--ペットネームがついてたらつける-->
+						{/if}
 					</div>
 					<!--time-->
 					<div class="min-w-max text-sm place-self-center">

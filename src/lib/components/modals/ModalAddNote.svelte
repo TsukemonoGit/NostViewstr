@@ -17,6 +17,7 @@
 	import EditTypeOther from './Add/EditTypeOther.svelte';
 	import AddTypeRefelence from './Add/AddTypeRefelence.svelte';
 	import AddTypeServer from './Add/AddTypeServer.svelte';
+	import AddType3 from './Add/AddType3.svelte';
 
 	export let parent: any;
 
@@ -109,6 +110,17 @@
 						</Tab>{/each}
 				</div>
 				<svelte:fragment slot="panel">
+					{#if $modalStore[0].value.kind === 3}
+						<!--<hr class="!border-dashed my-1" />-->
+						<AddType3
+							{res}
+							{parent}
+							tag={$modalStore[0].value.tag}
+							{onFormSubmit}
+							bind:selectBoxItem
+							bind:selectItem
+						/>
+					{/if}
 					{#if $modalStore[0].value.kind === 10002}
 						<!--<hr class="!border-dashed my-1" />-->
 						<AddType10002
@@ -120,6 +132,7 @@
 							bind:selectItem
 						/>
 					{/if}
+					<!--新規作成でeventもしくは編集でevent-->
 					{#if (tag === undefined && includesA && includesE) || (tag !== undefined && (tag[0] === 'a' || tag[0] === 'e'))}
 						<!--<hr class="!border-dashed my-1" />-->
 						<AddTypeNoteAndNaddr
@@ -149,10 +162,9 @@
 						/>
 					{/if}
 
-					{#if (tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p')}
+					{#if $modalStore[0].value.kind !== 3 && ((tag === undefined && includesP) || (tag !== undefined && tag[0] === 'p'))}
 						<!--<hr class="!border-dashed my-1" />-->
 						<AddTypeNpub
-							{kind}
 							{res}
 							{parent}
 							{onFormSubmit}

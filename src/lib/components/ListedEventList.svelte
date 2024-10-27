@@ -331,6 +331,7 @@
 
 						toastStore.trigger(t);
 					} else {
+						console.log(result.msg);
 						const t = {
 							message: $_('toast.failed_publish'),
 							timeout: 3000,

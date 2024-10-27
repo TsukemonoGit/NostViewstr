@@ -23,6 +23,7 @@
 	import Text from './nostrData/Text.svelte';
 	import LatestEvent from './nostrData/LatestEvent.svelte';
 	import { relaySet } from '$lib/stores/relays';
+	import { page } from '$app/stores';
 
 	export let tag: {
 		id: number;
@@ -506,11 +507,19 @@
 			<!-- loading ... {JSON.stringify(tag.name)} -->
 			<MenuByType
 				setSelectedIndex={{
-					detail: {
-						number: tag.id,
-						event: undefined,
-						tagArray: tag.name
-					}
+					detail:
+						kind === 3
+							? {
+									number: tag.id,
+									event: undefined,
+									tagArray: tag.name,
+									editable: isOwner
+								}
+							: {
+									number: tag.id,
+									event: undefined,
+									tagArray: tag.name
+								}
 				}}
 				{popupCombobox}
 				bind:selectedIndex
@@ -529,11 +538,19 @@
 			/>
 			<MenuByType
 				setSelectedIndex={{
-					detail: {
-						number: tag.id,
-						event: undefined,
-						tagArray: tag.name
-					}
+					detail:
+						$page.params.kind === '3'
+							? {
+									number: tag.id,
+									event: undefined,
+									tagArray: tag.name,
+									editable: isOwner
+								}
+							: {
+									number: tag.id,
+									event: undefined,
+									tagArray: tag.name
+								}
 				}}
 				{popupCombobox}
 				bind:selectedIndex
@@ -552,11 +569,19 @@
 			/>
 			<MenuByType
 				setSelectedIndex={{
-					detail: {
-						number: tag.id,
-						event: undefined,
-						tagArray: tag.name
-					}
+					detail:
+						$page.params.kind === '3'
+							? {
+									number: tag.id,
+									event: undefined,
+									tagArray: tag.name,
+									editable: isOwner
+								}
+							: {
+									number: tag.id,
+									event: undefined,
+									tagArray: tag.name
+								}
 				}}
 				{popupCombobox}
 				bind:selectedIndex
@@ -569,11 +594,19 @@
 			<ProfileCard {metadata} tagArray={tag.name} />
 			<MenuByType
 				setSelectedIndex={{
-					detail: {
-						number: tag.id,
-						event: metadata,
-						tagArray: tag.name
-					}
+					detail:
+						$page.params.kind === '3'
+							? {
+									number: tag.id,
+									event: undefined,
+									tagArray: tag.name,
+									editable: isOwner
+								}
+							: {
+									number: tag.id,
+									event: metadata,
+									tagArray: tag.name
+								}
 				}}
 				{popupCombobox}
 				bind:selectedIndex
