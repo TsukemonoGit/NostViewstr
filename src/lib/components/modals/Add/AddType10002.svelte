@@ -107,6 +107,8 @@
 	}
 </script>
 
+keep kind:10002 lists small!
+
 {#if selectItem === myValue}
 	<!-- Enable for debugging: -->
 	<article class="body">
