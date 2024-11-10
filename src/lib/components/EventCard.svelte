@@ -109,6 +109,22 @@
 			return '';
 		}
 	}
+
+	const toAddressPointer = (note: Event): nip19.AddressPointer => {
+		return {
+			kind: note.kind,
+			identifier: note.tags.find((tag) => tag[0] === 'd')?.[1] ?? '',
+			pubkey: note.pubkey
+		};
+	};
+
+	const encodeNaddr = (naddrAddress: nip19.AddressPointer) => {
+		try {
+			return nip19.naddrEncode(naddrAddress);
+		} catch (error) {
+			return undefined;
+		}
+	};
 </script>
 
 <!--{#if $searchRelays}-->
@@ -270,17 +286,21 @@
 				<PubCha event={note} text={note.content} id={note.id} />
 			{:else if note.kind === 30030}
 				<EmojiSet event={note} />
-			{:else if note.kind === 30023 && tagArray !== undefined}<!--long form content-->
+			{:else if note.kind === 30023 && tagArray !== undefined}
+				{@const parsedNaddr =
+					toAddressPointer(note)}<!--parseNaddr(tagArray)}-long form content-->
+				{@const encodedNaddr = encodeNaddr(parsedNaddr)}
 				<OGP
-					ogp={setLFCOgps(note, parseNaddr(tagArray)).ogp}
-					url={setLFCOgps(note, parseNaddr(tagArray)).site +
-						nip19.naddrEncode(parseNaddr(tagArray))}
+					ogp={setLFCOgps(note, parsedNaddr).ogp}
+					url={setLFCOgps(note, parsedNaddr).site + encodedNaddr}
 				/>
-			{:else if note.kind === 34550 && tagArray !== undefined}<!--communities-->
+			{:else if note.kind === 34550 && tagArray !== undefined}
+				{@const parsedNaddr = toAddressPointer(note)}
+				{@const encodedNaddr = encodeNaddr(parsedNaddr)}
+				<!--communities-->
 				<OGP
-					ogp={setComOgps(note, parseNaddr(tagArray)).ogp}
-					url={setComOgps(note, parseNaddr(tagArray)).site +
-						nip19.naddrEncode(parseNaddr(tagArray))}
+					ogp={setComOgps(note, parsedNaddr).ogp}
+					url={setComOgps(note, parsedNaddr).site + encodedNaddr}
 				/>
 			{:else}<Content
 					text={note.content}

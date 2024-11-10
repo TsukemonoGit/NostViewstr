@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import EventCard from '$lib/components/EventCard.svelte';
-	import { ogpDescription } from '$lib/otherFunctions.js';
+	import { hexRegex, nip33Regex, ogpDescription } from '$lib/otherFunctions.js';
 
 	import { nip19 } from 'nostr-tools';
 	import { parseNaddr } from '$lib/nostrFunctions';
@@ -41,7 +41,7 @@
 	export let CheckNote: (e: SelectIndex) => void;
 </script>
 
-{#if tag.name[0] === 'e'}
+{#if tag.name[0] === 'e' && hexRegex.test(tag.name[1])}
 	<!-- {#if $searchRelays && $searchRelays.length > 0}
 					<NostrApp relays={$searchRelays}> -->
 	<Text
@@ -227,7 +227,7 @@
 			</div>
 		</Metadata>
 	</Text>
-{:else if tag.name[0] === 'a'}
+{:else if tag.name[0] === 'a' && nip33Regex.test(tag.name[1])}
 	<!-- {#if $searchRelays && $searchRelays.length > 0}
 					<NostrApp relays={$searchRelays}> -->
 	<LatestEvent queryKey={[tag.name[1]]} filters={[filter]} let:events>
@@ -484,7 +484,7 @@
 			</div>
 		</Metadata>
 	</LatestEvent>
-{:else if tag.name[0] === 'p'}
+{:else if tag.name[0] === 'p' && hexRegex.test(tag.name[1])}
 	<Metadata
 		queryKey={['metadata', tag.name[1]]}
 		pubkey={tag.name[1]}

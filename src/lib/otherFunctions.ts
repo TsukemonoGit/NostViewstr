@@ -6,7 +6,8 @@ import { type Event as NostrEvent, nip19 } from 'nostr-tools';
 import { parseNaddr } from './nostrFunctions';
 import type Nostr from 'nostr-typedef';
 import { naddrEncode, noteEncode, type AddressPointer } from './nip19';
-
+export const hexRegex = /^[0-9a-fA-F]{64}$/;
+export const nip33Regex = /^([0-9]{1,9}):([0-9a-fA-F]{64}):(.*)$/;
 export enum MenuMode {
 	Multi, //複数選択モード
 	Owner, //追加削除ボタン込み
