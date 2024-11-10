@@ -53,7 +53,7 @@ export let kindsValidTag: { [key: number]: string[] } = {
 	30001: [],
 	10000: ['p', 't', 'word', 'e'],
 	30000: ['p'],
-	10001: ['e', 'a'], //aいいってかいてないけど
+	10001: ['e'],
 	30008: ['a', 'e'], //a-30009 e-kind8
 	10005: ['e'], //kind40 (kind:40 channel definitions)
 	10002: ['r'],
