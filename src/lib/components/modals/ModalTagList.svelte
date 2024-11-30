@@ -42,7 +42,6 @@
 			{$modalStore[0].title ?? '(title missing)'}
 		</header>
 		<article>{$modalStore[0].body ?? '(body missing)'}</article>
-
 		<ListBox
 			class="border border-surface-500 p-4 rounded-container-token max-h-80 overflow-y-auto"
 		>
@@ -68,20 +67,19 @@
 				{$_('modal.tagList.noList')}
 			{/if}
 		</ListBox>
+		<button
+			class="btn {parent.buttonPositive} variant-filled-primary w-full"
+			disabled={$modalStore[0].value.pubkey !== $pubkey_viewer}
+			on:click={() => {
+				res.index = -1;
+				res.edit = true;
+				onFormSubmit();
+			}}>{$_('modal.tagList.editTag')}</button
+		>
 
 		<footer class="modal-footer {parent.regionFooter}">
 			<button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
 				>{parent.buttonTextCancel}</button
-			>
-
-			<button
-				class="btn {parent.buttonPositive}"
-				disabled={$modalStore[0].value.pubkey !== $pubkey_viewer}
-				on:click={() => {
-					res.index = -1;
-					res.edit = true;
-					onFormSubmit();
-				}}>{$_('modal.tagList.editTag')}</button
 			>
 		</footer>
 	</div>

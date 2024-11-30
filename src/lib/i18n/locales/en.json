@@ -20,8 +20,8 @@
     },
     "tagList": {
       "title": "Lists",
-      "editTag": "Edit",
-      "noList": "no list. You can create a new list from the Edit button"
+      "editTag": "Delete Existing List / Create New List",
+      "noList": "no list."
     },
     "listInfo": {
       "ex": {

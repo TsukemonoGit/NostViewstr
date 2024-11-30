@@ -37,7 +37,7 @@
 	export let parent: any;
 
 	let viewRelays: boolean = false;
-	let selectValue: string = kinds.keys().next().value.toString();
+	let selectValue: string = (kinds.keys().next().value ?? 0).toString();
 
 	let res: {
 		share: boolean;

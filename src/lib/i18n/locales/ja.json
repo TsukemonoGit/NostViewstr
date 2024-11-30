@@ -20,8 +20,8 @@
     },
     "tagList": {
       "title": "リスト一覧",
-      "noList": "no list 編集ボタンから新しいリストを作成できます",
-      "editTag": "編集"
+      "noList": "no list",
+      "editTag": "既存リストの削除/新規リストの作成"
     },
     "editTags": {
       "title": "リストの編集",
