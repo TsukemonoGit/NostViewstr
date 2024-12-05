@@ -4,6 +4,7 @@
 	import { toastStore } from '$lib/stores/store';
 
 	import PublicButton from './PublicButton.svelte';
+	import PrivateButton from './PrivateButton.svelte';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
 	export let parent: any;
@@ -11,7 +12,7 @@
 
 	export let selectBoxItem: string[];
 	export let selectItem: string;
-
+	//export let privatable: boolean = true;
 	const myValue = 'User';
 
 	if (!selectBoxItem.includes(myValue)) {
@@ -86,5 +87,14 @@
 			}}
 			{parent}
 		/>
+		<!-- {#if privatable} -->
+		<PrivateButton
+			handleClickPrv={() => {
+				res.btn = 'prv';
+				onClickCheck();
+			}}
+			{parent}
+		/>
+		<!-- {/if} -->
 	</footer>
 {/if}
