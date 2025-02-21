@@ -208,7 +208,7 @@
 	let popupElement: HTMLDivElement;
 
 	const popupCombobox: PopupSettings = {
-		event: 'click',
+		event: 'focus-blur',
 		target: 'popupCombobox',
 		placement: 'bottom',
 		closeQuery: '.listbox-item',
