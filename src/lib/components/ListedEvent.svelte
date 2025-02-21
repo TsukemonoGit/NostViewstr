@@ -215,13 +215,12 @@
 
 		state: (test) => {
 			//	console.log(test);
-
-			if (!test.state) {
-				comboboxValue = '';
-				popupElement.style.display = 'none';
-				popupElement.style.top = '0';
-				popupElement.style.left = '0';
-			}
+			// if (!test.state) {
+			// 	comboboxValue = '';
+			// 	popupElement.style.display = 'none';
+			// 	popupElement.style.top = '0';
+			// 	popupElement.style.left = '0';
+			// }
 		}
 	};
 	const tagArrayAddRelay = (tagArray: string[]) => {
