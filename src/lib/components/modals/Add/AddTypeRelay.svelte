@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
-	import { modalStore, toastStore } from '$lib/stores/store';
+	import { toastStore } from '$lib/stores/store';
 
 	import PublicButton from './PublicButton.svelte';
 	import { Nip11Registry } from 'rx-nostr';
@@ -35,6 +35,7 @@
 			input += '/';
 		}
 
+		//同じリレーがないかチェック
 		const index = viewList?.findIndex((tag) => {
 			const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
 			return modifiedTag === input;

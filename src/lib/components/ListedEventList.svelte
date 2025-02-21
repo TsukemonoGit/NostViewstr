@@ -474,7 +474,8 @@
 			value: {
 				type: 'add',
 				kind: kind,
-				pubkey: pubkey
+				pubkey: pubkey,
+				viewList: viewList
 				//event: $eventListsMap[pubkey][kind].get($keysArray[$listNum])
 				//	viewList: viewList
 			},
@@ -794,7 +795,8 @@
 				event: $eventListsMap[pubkey]?.[kind]?.get($keysArray[listNumber]),
 				tag: tagArray,
 				number: number,
-				bkm: bkm //編集は今開いてる方だから
+				bkm: bkm, //編集は今開いてる方だから
+				viewList: viewList
 			},
 			response: async (res: { btn: string; tag: string[] }) => {
 				if (res && JSON.stringify(res.tag) !== JSON.stringify(tagArray)) {
