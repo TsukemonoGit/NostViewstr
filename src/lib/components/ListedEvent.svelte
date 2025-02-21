@@ -208,19 +208,19 @@
 	let popupElement: HTMLDivElement;
 
 	const popupCombobox: PopupSettings = {
-		event: 'focus-blur',
+		event: 'click',
 		target: 'popupCombobox',
 		placement: 'bottom',
 		closeQuery: '.listbox-item',
 
 		state: (test) => {
 			//	console.log(test);
-			// if (!test.state) {
-			// 	comboboxValue = '';
-			// 	popupElement.style.display = 'none';
-			// 	popupElement.style.top = '0';
-			// 	popupElement.style.left = '0';
-			// }
+			if (!test.state) {
+				comboboxValue = '';
+				popupElement.style.display = 'none';
+				popupElement.style.top = '0';
+				popupElement.style.left = '0';
+			}
 		}
 	};
 	const tagArrayAddRelay = (tagArray: string[]) => {
