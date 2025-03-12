@@ -130,13 +130,28 @@
 	// }
 
 	const init = async () => {
+		loadNotes = false;
 		$nowProgress = true;
 		console.log('onMount executed');
 
 		await bkminit(pubkey);
+		checkLoading();
 		$nowProgress = false;
 	};
-
+	let loadNotes = false;
+	function checkLoading() {
+		// 定期的に $eventListsMap[pubkey][kind] の長さをチェック
+		let previousLength = $eventListsMap?.[pubkey]?.[kind]?.size || 0;
+		const interval = setInterval(() => {
+			const currentLength = $eventListsMap[pubkey][kind]?.size || 0;
+			if (currentLength === previousLength) {
+				loadNotes = true;
+				clearInterval(interval);
+			} else {
+				previousLength = currentLength;
+			}
+		}, 1000);
+	}
 	export async function bkminit(pub: string) {
 		$listNum = 0;
 
@@ -219,6 +234,7 @@
 			relays: $relaySet[pubkey].mergeRelays,
 			filters: filter
 		});
+
 		bkm = 'pub';
 		listedEventRef?.viewUpdate(); //
 		toastStore.close(searchingEventsToast);
@@ -1046,6 +1062,7 @@
 						on:EditTag={EditTag}
 						bind:viewList
 						{isNaddr}
+						{loadNotes}
 					/>
 				</main>
 			</div>
