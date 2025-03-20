@@ -23,23 +23,6 @@
 		selectBoxItem.push(myValue);
 	}
 
-	async function onClickNaddr() {
-		const check = await checkInputNaddr(input);
-		if (check.error && check.message) {
-			const t = {
-				message: check.message,
-				timeout: 3000,
-				background: 'bg-orange-500 text-white width-filled '
-			};
-
-			toastStore.trigger(t);
-			//		$nowProgress = false;
-			return;
-		} else if (check.tag) {
-			res.tag = check.tag;
-			onFormSubmit();
-		}
-	}
 	let inputKind: string;
 	let inputPubkey: string;
 	let inputId: string = '';
