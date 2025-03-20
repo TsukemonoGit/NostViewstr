@@ -31,10 +31,6 @@
 		res.check = true;
 		onFormSubmit();
 	}
-	let inputElement: HTMLInputElement;
-	$: if (selectItem === myValue && inputElement) {
-		inputElement.focus();
-	}
 </script>
 
 {#if selectItem === myValue}
