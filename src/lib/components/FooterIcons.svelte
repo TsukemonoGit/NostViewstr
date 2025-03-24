@@ -24,6 +24,9 @@
 	const handleClickFeedback = () => {
 		modalStore.trigger(modal);
 	};
+	const handleClickZap = () => {
+		(document.querySelector('button[data-npub]') as HTMLButtonElement)?.click();
+	};
 </script>
 
 <div class="flex gap-6 sm:gap-10 justify-center h-full">
@@ -51,11 +54,16 @@
 	</a>
 	<button
 		class="light btn p-0 m-0 sm:w-[32px] sm:h-[32px] w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full flex self-center"
+		on:click={handleClickZap}>{@html lightningIcon}</button
+	>
+	<!-- 	<button
+		class="light btn p-0 m-0 sm:w-[32px] sm:h-[32px] w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full flex self-center"
 		data-npub="npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw"
-		data-note-id="note1sgfa7nh4p4k76k23e0vr0k95svg5hp3xqshq6ewd9jaut6hnp7jq8jhpy8"
+		data-naddr="naddr1qqxnzdesxgerwve3xgensvfjqgsgfvxyd2mfntp4avk29pj8pwz7pqwmyzrummmrjv3rdsuhg9mc9agrqsqqql8kmq36cm"
 		data-relays="wss://yabu.me,wss://nos.lol,wss://relay.nostr.wirednet.jp,wss://relay.nostr.band"
 		>{@html lightningIcon}</button
-	> <script src="https://cdn.jsdelivr.net/npm/nostr-zap@0.22.0"></script>
+	> -->
+
 	<button
 		class="feedback btn p-0 m-0 sm:w-[32px] sm:h-[32px] w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full flex self-center"
 		on:click={handleClickFeedback}>{@html FeedbackIcon}</button

@@ -47,7 +47,8 @@
 		openMyJson: boolean;
 		goto: boolean;
 		selectValue: string;
-		feedback?: boolean;
+		feedback: boolean;
+		zap: boolean;
 	} = {
 		share: false,
 		shareNaddr: false,
@@ -57,7 +58,8 @@
 		goto: false,
 		selectValue: selectValue,
 
-		feedback: false
+		feedback: false,
+		zap: false
 	};
 	function onFormSubmit(): void {
 		if ($modalStore[0].response) $modalStore[0].response(res);
@@ -365,13 +367,28 @@
 			>
 				{@html nostrIcon}
 			</a>
+
+			<!-- <button
+				class="light btn p-0 m-0 w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full"
+				data-npub="npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw"
+				data-naddr="naddr1qqxnzdesxgerwve3xgensvfjqgsgfvxyd2mfntp4avk29pj8pwz7pqwmyzrummmrjv3rdsuhg9mc9agrqsqqql8kmq36cm"
+				data-relays="wss://yabu.me,wss://nos.lol,wss://relay.nostr.wirednet.jp,wss://relay.nostr.band"
+				>{@html lightningIcon}</button
+			> -->
 			<button
+				class="light btn p-0 m-0 w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full"
+				on:click={() => {
+					res.zap = true;
+					onFormSubmit();
+				}}>{@html lightningIcon}</button
+			>
+			<!-- <button
 				class="light btn p-0 m-0 w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full"
 				data-npub="npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw"
 				data-note-id="note1sgfa7nh4p4k76k23e0vr0k95svg5hp3xqshq6ewd9jaut6hnp7jq8jhpy8"
 				data-relays="wss://yabu.me,wss://nos.lol,wss://relay.nostr.wirednet.jp,wss://relay.nostr.band"
 				>{@html lightningIcon}</button
-			> <script src="https://cdn.jsdelivr.net/npm/nostr-zap@0.22.0"></script>
+			> <script src="https://cdn.jsdelivr.net/npm/nostr-zap@0.22.0"></script> -->
 			<button
 				class="feedback btn p-0 m-0 w-[24px] h-[24px] badge-icon variant-filled-surface rounded-full"
 				on:click={() => {

@@ -27,18 +27,6 @@
 			return;
 		}
 
-		// const index = viewList.findIndex((tag) => tag[1] === emojiName);
-		// if (index !== -1) {
-		// 	//同じリストに同じ名前の絵文字があったら無効
-		// 	const t = {
-		// 		message: $_('toast.invalidEmoji'),
-		// 		timeout: 3000,
-		// 		background: 'bg-orange-500 text-white width-filled '
-		// 	};
-
-		// 	toastStore.trigger(t);
-		// 	return;
-		// }
 		res.tag = ['emoji', emojiName, emojiUrl];
 		res.check = true;
 		onFormSubmit();

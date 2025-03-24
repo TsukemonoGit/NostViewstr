@@ -76,7 +76,7 @@
 		const backBtn = localStorage.getItem('back');
 		//console.log('backButton', backBtn);
 		if (backBtn) {
-			backButton.set(backBtn === 'true' ?? false);
+			backButton.set(backBtn === 'true');
 		}
 		const saveInfo = localStorage.getItem('info');
 
@@ -158,5 +158,14 @@
 
 <slot />
 
-<Modal class="top-0" />
+<Modal class="top-0 " />
 <Toast class="z-[9999]" />
+
+<!--zapボタン押したときにこの要素をクリックする-->
+<button
+	class="fixed w-0 h-0 overflow-hidden"
+	data-npub="npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw"
+	data-naddr="naddr1qqxnzdesxgerwve3xgensvfjqgsgfvxyd2mfntp4avk29pj8pwz7pqwmyzrummmrjv3rdsuhg9mc9agrqsqqql8kmq36cm"
+	data-relays="wss://yabu.me,wss://nos.lol,wss://relay.nostr.wirednet.jp,wss://relay.nostr.band"
+>
+</button>

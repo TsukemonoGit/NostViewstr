@@ -368,7 +368,7 @@
 						{#if tag.name[0] === 'd' || tag.name[0] === 'title' || tag.name[0] === 'image' || tag.name[0] === 'description'}
 							<!--なんもしない-->
 						{:else if !loadNotes}
-							<div class="z-0 card drop-shadow px-1 py-1 my-0.5">
+							<div class="z-0 card drop-shadow px-1 py-1 my-0.5 break-all">
 								loading [{tag.name}]
 							</div>
 						{:else}

@@ -353,7 +353,7 @@
 		// Pass a reference to your custom component
 		ref: ModalInfo
 	};
-
+	let zapButtonElement: HTMLButtonElement;
 	function onClickInfo() {
 		const modal: ModalSettings = {
 			type: 'component',
@@ -372,6 +372,7 @@
 				goto: boolean;
 				selectValue: string;
 				feedback: boolean;
+				zap: false;
 			}) => {
 				if (res) {
 					if (res.share || res.shareNaddr || res.shareNpub_kind_d) {
@@ -456,6 +457,10 @@
 							component: feedbackModalComponent
 						};
 						modalStore.trigger(modal);
+					} else if (res.zap) {
+						(
+							document.querySelector('button[data-npub]') as HTMLButtonElement
+						)?.click();
 					}
 				}
 			}
@@ -724,9 +729,10 @@
 		line-height: 1rem /* 16px */;
 		font-weight: 600;
 		--tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-		--tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color),
-			0 1px 2px -1px var(--tw-shadow-color);
-		box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-			var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+		--tw-shadow-colored:
+			0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+		box-shadow:
+			var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
+			var(--tw-shadow);
 	}
 </style>
