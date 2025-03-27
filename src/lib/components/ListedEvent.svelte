@@ -65,7 +65,7 @@
 	//export let noEdit: boolean = false;
 	export let pubkey: string;
 	export let isNaddr: boolean;
-	export let loadNotes: boolean;
+	export let loadNotes: boolean = true;
 	//moveができるのはparamsがnpub/kindのときだけ
 	//deleteができるのはparamsがnpub/kindかnaddr
 	//deleteができないものはeditもできない
