@@ -129,6 +129,8 @@
 	// 	init();
 	// }
 
+	let loadNotes = false;
+	
 	const init = async () => {
 		loadNotes = false;
 		$nowProgress = true;
@@ -138,7 +140,7 @@
 		checkLoading();
 		$nowProgress = false;
 	};
-	let loadNotes = false;
+	
 	function checkLoading() {
 		// 定期的に $eventListsMap[pubkey][kind] の長さをチェック
 		let previousLength = $eventListsMap?.[pubkey]?.[kind]?.size || 0;

@@ -27,7 +27,7 @@
 			return;
 		}
 
-		res.tag = ['emoji', emojiName, emojiUrl];
+		res.tag = ['emoji', emojiName.trim(), emojiUrl.trim()];
 		res.check = true;
 		onFormSubmit();
 	}
