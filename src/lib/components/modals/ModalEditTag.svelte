@@ -207,10 +207,10 @@
 								>
 							</footer>
 							<button
-								class="btn-icon"
+								class="btn"
 								on:click={() => {
 									kind5button = !kind5button;
-								}}>{kind5button ? '▼' : '▶'}</button
+								}}>{kind5button ? '▼' : '▶'} Delete using kind:5</button
 							>
 							{#if kind5button}
 								<p>{$_('modal.editTags.kind')}</p>

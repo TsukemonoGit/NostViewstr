@@ -58,7 +58,7 @@
       "body": "Create a new list",
       "editTag": "Edit",
       "title": "edit a list",
-      "kind": "Delete with e-tag designation kind5 (Delete List above is overwritten with an empty matrix)",
+      "kind": "This button deletes using kind:5 with e and a tag designation. The Delete List above overwrites tags with an empty array.",
       "kindexp": "If you delete an event by kind5 and an old event remains, you may see the old event when you reload the event."
     },
     "deleteNote": {

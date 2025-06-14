@@ -267,17 +267,21 @@
 	async function deleteTag(tagIndex: number, kind5: boolean) {
 		console.log(tagIndex);
 		$nowProgress = true;
-		const bkm = get(eventListsMap)[pubkey][kind];
-		const dtag = bkm
-			.get($keysArray[tagIndex])
-			?.tags.find((item) => item[0] === 'd');
+		const bkms = get(eventListsMap)[pubkey][kind];
+		const bkm = bkms.get($keysArray[tagIndex]);
+		if (!bkm) return;
+		const dtag = bkm?.tags.find((item) => item[0] === 'd');
 		const event: NostrEvent = kind5
 			? {
 					id: '',
 					pubkey: pubkey,
 					sig: '',
 					content: '',
-					tags: [['e', bkm.get($keysArray[tagIndex])!.id]],
+					tags: [
+						['e', bkm.id],
+						['a', `${bkm.kind}:${bkm.pubkey}:${dtag?.[1] || ''}`],
+						['k', bkm.kind.toString()]
+					],
 					created_at: Math.floor(Date.now() / 1000),
 					kind: 5
 				}
@@ -288,7 +292,7 @@
 					content: '',
 					tags: dtag ? [dtag] : [],
 					created_at: Math.floor(Date.now() / 1000),
-					kind: bkm.get($keysArray[tagIndex])!.kind
+					kind: bkm!.kind
 				};
 		const res = await publishEventWithTimeout(
 			event,
