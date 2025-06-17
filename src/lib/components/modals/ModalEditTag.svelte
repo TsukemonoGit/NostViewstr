@@ -71,7 +71,9 @@
 			};
 
 			toastStore.trigger(t);
-		} else if ($identifierKeysArray.some((item) => item === res.value.id)) {
+		} else if (
+			$identifierKeysArray.some((item: string) => item === res.value.id)
+		) {
 			const t = {
 				message: 'already exists',
 				timeout: 3000,
