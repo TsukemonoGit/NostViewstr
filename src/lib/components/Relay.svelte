@@ -1,9 +1,15 @@
 <script lang="ts">
 	import { iconView } from '$lib/stores/settings';
+	import { normalizeURL } from 'nostr-tools/utils';
 	import type { Nip11 } from 'nostr-typedef';
 	import { Nip11Registry } from 'rx-nostr';
 	export let tagArray: string[];
-	const relayURL = tagArray[1].endsWith('/') ? tagArray[1] : tagArray[1] + '/';
+	let relayURL: string = '';
+	$: if (tagArray[1]) {
+		try {
+			relayURL = normalizeURL(tagArray[1]);
+		} catch (error) {}
+	}
 
 	$: httpsUrl = relayURL.startsWith('wss://')
 		? relayURL.replace(/^wss:/, 'https:')

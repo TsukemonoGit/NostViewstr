@@ -5,6 +5,7 @@
 	import PublicButton from './PublicButton.svelte';
 	import { Nip11Registry } from 'rx-nostr';
 	import { nowProgress } from '$lib/stores/settings';
+	import { normalizeURL } from 'nostr-tools/utils';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
 	export let parent: any;
@@ -57,11 +58,19 @@
 		if (input === '') {
 			return;
 		}
+		try {
+			input = normalizeURL(input);
+		} catch (error) {
+			// invalid url
+			const t = {
+				message: 'Invalid URL',
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
 
-		if (!input.endsWith('/')) {
-			input += '/';
+			toastStore.trigger(t);
+			return;
 		}
-
 		$nowProgress = true;
 		const info = Nip11Registry.get(input);
 		try {

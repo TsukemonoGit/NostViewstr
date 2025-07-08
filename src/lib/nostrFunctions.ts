@@ -48,6 +48,7 @@ import {
 } from './stores/relays';
 import type Nostr from 'nostr-typedef';
 import { setDefaultRelays } from './streamEventLists';
+import { normalizeURL } from 'nostr-tools/utils';
 
 export function parseNaddr(tag: string[]): nip19.AddressPointer {
 	const [, reference, relay] = tag; // 配列の2番目の要素を取り出す
@@ -442,41 +443,45 @@ export async function setRelays(
 
 	if (kind10002 && kind10002.tags.length > 0) {
 		for (const item of kind10002.tags) {
-			const relayURL = item[1].endsWith('/') ? item[1] : item[1] + '/';
+			try {
+				const relayURL = normalizeURL(item[1]);
 
-			if (item[0] === 'r') {
-				// const existRelay = await checkRelayExist(relayURL);
-				// if (existRelay) {
-				if (item.length < 3) {
-					read.push(relayURL);
-					write.push(relayURL);
-				} else if (item[2] === 'read') {
-					read.push(relayURL);
-				} else if (item[2] === 'write') {
-					write.push(relayURL);
+				if (item[0] === 'r') {
+					// const existRelay = await checkRelayExist(relayURL);
+					// if (existRelay) {
+					if (item.length < 3) {
+						read.push(relayURL);
+						write.push(relayURL);
+					} else if (item[2] === 'read') {
+						read.push(relayURL);
+					} else if (item[2] === 'write') {
+						write.push(relayURL);
+					}
+					both.push(relayURL);
+					//}
 				}
-				both.push(relayURL);
-				//}
-			}
-
+			} catch (error) {}
 			tmp_relay.relayEvent = kind10002;
 		}
 	} else if (kind3 && kind3.content !== '') {
 		try {
 			const relays = JSON.parse(kind3.content);
 			for (const item of Object.keys(relays)) {
-				const relayURL = item.endsWith('/') ? item : item + '/';
+				try {
+					const relayURL = normalizeURL(item);
 
-				// const existRelay = await checkRelayExist(relayURL);
-				// if (existRelay) {
-				if (relays[item].read) {
-					read.push(relayURL);
-				}
-				if (relays[item].write) {
-					write.push(relayURL);
-				}
-				//}
-				both.push(relayURL);
+					// const existRelay = await checkRelayExist(relayURL);
+					// if (existRelay) {
+					if (relays[item].read) {
+						read.push(relayURL);
+					}
+					if (relays[item].write) {
+						write.push(relayURL);
+					}
+					//}
+
+					both.push(relayURL);
+				} catch (error) {}
 			}
 
 			tmp_relay.relayEvent = kind3;

@@ -4,6 +4,7 @@
 
 	import PublicButton from './PublicButton.svelte';
 	import { Nip11Registry } from 'rx-nostr';
+	import { normalizeURL } from 'nostr-tools/utils';
 
 	export let res: { btn: string; tag: string[] };
 	export let parent: any;
@@ -30,15 +31,27 @@
 		if (input === '') {
 			return;
 		}
+		try {
+			input = normalizeURL(input);
+		} catch (error) {
+			// invalid url
+			const t = {
+				message: 'Invalid URL',
+				timeout: 3000,
+				background: 'bg-orange-500 text-white width-filled '
+			};
 
-		if (!input.endsWith('/')) {
-			input += '/';
+			toastStore.trigger(t);
+			return;
 		}
-
 		//同じリレーがないかチェック
 		const index = viewList?.findIndex((tag) => {
-			const modifiedTag = tag[1].endsWith('/') ? tag[1] : tag[1] + '/';
-			return modifiedTag === input;
+			try {
+				const modifiedTag = normalizeURL(tag[1]);
+				return modifiedTag === input;
+			} catch (error) {
+				return false;
+			}
 		});
 
 		// myIndex と index が一致する場合は処理をスキップ
