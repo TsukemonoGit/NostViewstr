@@ -14,6 +14,9 @@ export const kinds: Map<number, string> = new Map<number, string>([
 	//
 	[10030, 'emojis'],
 	//
+	[10063, 'blossom server list'],
+
+	//
 	[10096, 'File storage server list'],
 	//
 	[10101, 'good wiki authors'],
@@ -39,7 +42,7 @@ export const sortedKinds: Map<number, string> = new Map<number, string>(
 	sortedArray
 );
 
-export let kindsValidTag: { [key: number]: string[] } = {
+export const kindsValidTag: { [key: number]: string[] } = {
 	3: ['p'],
 	10003: ['e', 'a', 't', 'r'], //a-30023 etc
 	30003: ['e', 'a', 't', 'r'], //a-30023 etc
@@ -49,6 +52,7 @@ export let kindsValidTag: { [key: number]: string[] } = {
 	10030: ['emoji', 'a'], //a-30030(kind:30030 emoji set)
 	30030: ['emoji'],
 	10015: ['t', 'a'], //a-30015(kind:30015 interest set)
+
 	30015: ['t'],
 	30001: [],
 	10000: ['p', 't', 'word', 'e'],
@@ -62,6 +66,7 @@ export let kindsValidTag: { [key: number]: string[] } = {
 	10101: ['p'],
 	10102: ['relay'],
 	30007: ['p'], //https://github.com/nostr-protocol/nips/issues/1156,
+	10063: ['server'],
 	10096: ['server'] //https://github.com/nostr-protocol/nips/blob/main/96.md#selecting-a-server
 };
 
@@ -75,14 +80,14 @@ export const uniqueArray = () => {
 	return [...new Set(combinedArray)];
 };
 
-export let naddrVaridKind: { [key: number]: number[] } = {
+export const naddrVaridKind: { [key: number]: number[] } = {
 	10004: [34550],
 	10030: [30030],
 	10015: [30015],
 	30008: [30009]
 };
 
-export let tagExp: Record<string, string> = {
+export const tagExp: Record<string, string> = {
 	t: 'hashtag',
 	r: 'reference (URL, etc)',
 	word: 'word'

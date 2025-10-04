@@ -1,27 +1,14 @@
 interface Window {
 	// NIP-07
-	nostr: any;
-	open: any;
+	nostr: Nip07.Nostr;
+	open: (url?: string, target?: string, features?: string) => Window | null;
 }
 declare let window: Window;
 
-import { _ } from 'svelte-i18n';
-import {
-	SimplePool,
-	finalizeEvent,
-	getEventHash,
-	getPublicKey,
-	nip04,
-	nip19
-} from 'nostr-tools';
-import { verifier, seckeySigner } from 'rx-nostr-crypto';
+import { finalizeEvent, getPublicKey, nip04, nip19, nip44 } from 'nostr-tools';
+import { verifier } from 'rx-nostr-crypto';
 import type { Event as NostrEvent } from 'nostr-tools';
-import {
-	pubkey_viewer,
-	nsec,
-	nowProgress,
-	nip46Check
-} from './stores/settings';
+import { pubkey_viewer, nsec, nip46Check } from './stores/settings';
 import { type Observer, type MonoTypeOperatorFunction, Observable } from 'rxjs';
 
 import {
@@ -49,6 +36,7 @@ import {
 import type Nostr from 'nostr-typedef';
 import { setDefaultRelays } from './streamEventLists';
 import { normalizeURL } from 'nostr-tools/utils';
+import type { Nip07 } from 'nostr-typedef';
 
 export function parseNaddr(tag: string[]): nip19.AddressPointer {
 	const [, reference, relay] = tag; // 配列の2番目の要素を取り出す
@@ -71,7 +59,7 @@ export function parseNaddr(tag: string[]): nip19.AddressPointer {
 
 export async function getIdByTag(
 	tag: string[]
-): Promise<{ id: string; filter: {}; kind?: number }> {
+): Promise<{ id: string; filter: object; kind?: number }> {
 	if (tag[0] === 'e') {
 		return { id: tag[1], filter: { ids: [tag[1]] } };
 	} else if (tag[0] === 'a') {
@@ -201,62 +189,96 @@ export async function getPub(nip46: boolean): Promise<string> {
 	}
 }
 
+//
+export async function decryptAuto(
+	pubkey: string,
+	message: string
+): Promise<string> {
+	// NIP-44 かどうか判定: ciphertext に "iv" が含まれる
+	const isNip44 = message.includes('?iv=');
+
+	if (isNip44) {
+		return nip44De(pubkey, message);
+	} else {
+		return nip04De(pubkey, message);
+	}
+}
+//-------------------nip04
 export async function nip04De(
 	pubkey: string,
 	message: string
 ): Promise<string> {
-	//const sec = localStorage.getItem('nsec');
 	const sec = get(nsec);
+
 	if (sec && sec !== '') {
 		try {
-			return await nip04.decrypt(
+			return nip04.decrypt(
 				sec,
 				getPublicKey(nip19.decode(sec).data as Uint8Array),
 				message
 			);
-		} catch (error) {
-			try {
-				return await window.nostr.nip04.decrypt(pubkey, message);
-			} catch (error) {
-				throw error;
-			}
-		}
-	} else {
-		try {
-			return await window.nostr.nip04.decrypt(pubkey, message);
-		} catch (error) {
-			throw error;
+		} catch {
+			return (await window.nostr.nip04?.decrypt(pubkey, message)) || '';
 		}
 	}
+
+	return (await window.nostr.nip04?.decrypt(pubkey, message)) || '';
 }
 
 export async function nip04En(
 	pubkey: string,
 	message: string
 ): Promise<string> {
-	//const sec = localStorage.getItem('nsec');
 	const sec = get(nsec);
+
 	if (sec && sec !== '') {
 		try {
-			return await nip04.encrypt(
+			return nip04.encrypt(
 				sec,
 				getPublicKey(nip19.decode(sec).data as Uint8Array),
 				message
 			);
-		} catch (error) {
-			try {
-				return await window.nostr.nip04.encrypt(pubkey, message);
-			} catch (error) {
-				throw error;
-			}
-		}
-	} else {
-		try {
-			return await window.nostr.nip04.encrypt(pubkey, message);
-		} catch (error) {
-			throw error;
+		} catch {
+			return (await window.nostr.nip04?.encrypt(pubkey, message)) || '';
 		}
 	}
+
+	return (await window.nostr.nip04?.encrypt(pubkey, message)) || '';
+}
+
+//-----nip44
+export async function nip44De(
+	pubkey: string,
+	message: string
+): Promise<string> {
+	const sec = get(nsec);
+
+	if (sec && sec !== '') {
+		try {
+			return nip44.decrypt(message, nip19.decode(sec).data as Uint8Array);
+		} catch {
+			return (await window.nostr.nip44?.decrypt(pubkey, message)) || '';
+		}
+	}
+
+	return (await window.nostr.nip44?.decrypt(pubkey, message)) || '';
+}
+
+export async function nip44En(
+	pubkey: string,
+	message: string
+): Promise<string> {
+	const sec = get(nsec);
+
+	if (sec && sec !== '') {
+		try {
+			return nip44.encrypt(message, nip19.decode(sec).data as Uint8Array);
+		} catch {
+			return (await window.nostr.nip44?.encrypt(pubkey, message)) || '';
+		}
+	}
+
+	return (await window.nostr.nip44?.encrypt(pubkey, message)) || '';
 }
 
 interface Event {
@@ -270,73 +292,51 @@ interface Event {
 }
 
 export async function signEv(obj: NostrEvent): Promise<Event> {
-	//const sec = localStorage.getItem('nsec');
-
 	const sec = get(nsec);
+
 	if (sec && sec !== '') {
-		console.log('nsec');
-		try {
-			obj = finalizeEvent(obj, nip19.decode(sec).data as Uint8Array);
-			return obj;
-		} catch (error) {
-			try {
-				return await window.nostr.signEvent(obj);
-			} catch (error) {
-				throw error;
-			}
-		}
-	} else {
-		try {
-			return await window.nostr.signEvent(obj);
-		} catch (error) {
-			throw error;
-		}
+		return Promise.resolve(
+			finalizeEvent(obj, nip19.decode(sec).data as Uint8Array)
+		).catch(() => window.nostr.signEvent(obj));
 	}
+
+	return window.nostr.signEvent(obj);
 }
 
 //------------------------------------------------
-//ほぼじぇぺとがかいたidごとに最新のeventだけ受け取るためのpipe
+// idごとに最新のeventだけ受け取るためのpipe
 export function idlatestEach(): MonoTypeOperatorFunction<EventPacket> {
 	return (source) => {
-		return new Observable(
-			(observer: {
-				next: (arg0: any) => void;
-				complete: () => void;
-				error: (arg0: any) => void;
-			}) => {
-				const eventMap = new Map();
+		return new Observable<EventPacket>((observer: Observer<EventPacket>) => {
+			const eventMap = new Map<string, EventPacket>();
 
-				source.subscribe({
-					next(packet) {
-						//	console.log(packet);
-						const id = packet.event.tags.find(
-							(item: string[]) => item[0] === 'd'
-						); //一応一個目にdがない場合も考慮
-						//console.log(id);
-						if (id) {
-							const key = id[1]; // タグをキーとして文字列化
-							const existingPacket = eventMap.get(key);
+			source.subscribe({
+				next(packet) {
+					const id = packet.event.tags.find(
+						(item: string[]) => item[0] === 'd'
+					);
+					if (id) {
+						const key = id[1];
+						const existingPacket = eventMap.get(key);
 
-							if (
-								!existingPacket ||
-								packet.event.created_at > existingPacket.event.created_at
-							) {
-								eventMap.set(key, packet);
-							}
+						if (
+							!existingPacket ||
+							packet.event.created_at > existingPacket.event.created_at
+						) {
+							eventMap.set(key, packet);
 						}
-					},
-					complete() {
-						// Map内の最新のパケットを取得
-						const latestPackets = Array.from(eventMap.values());
-						latestPackets.forEach((packet) => observer.next(packet));
-						observer.complete();
-					},
-					error(err) {
-						observer.error(err);
 					}
-				});
-			}
-		);
+				},
+				complete() {
+					const latestPackets = Array.from(eventMap.values());
+					latestPackets.forEach((packet) => observer.next(packet));
+					observer.complete();
+				},
+				error(err) {
+					observer.error(err);
+				}
+			});
+		});
 	};
 }
 
@@ -414,9 +414,9 @@ export async function setRelays(
 	events: { [key: number]: Nostr.Event | undefined }
 ) {
 	console.log(`setting relays...`);
-	let read: string[] = [];
-	let write: string[] = [];
-	let both: string[] = [];
+	const read: string[] = [];
+	const write: string[] = [];
+	const both: string[] = [];
 	const kind10002 = events[10002];
 	const kind3 = events[3];
 	//まず今持ってる値を確認する
@@ -460,7 +460,9 @@ export async function setRelays(
 					both.push(relayURL);
 					//}
 				}
-			} catch (error) {}
+			} catch (error) {
+				// failed to normalize or parse relay, skip
+			}
 			tmp_relay.relayEvent = kind10002;
 		}
 	} else if (kind3 && kind3.content !== '') {
@@ -481,7 +483,9 @@ export async function setRelays(
 					//}
 
 					both.push(relayURL);
-				} catch (error) {}
+				} catch (error) {
+					// failed to normalize or parse relay, skip
+				}
 			}
 
 			tmp_relay.relayEvent = kind3;
@@ -722,7 +726,7 @@ export async function addPrivates(
 	let array: string[][] = [];
 	if (content.length > 0) {
 		try {
-			const privateContent = await nip04De(pubkey, content);
+			const privateContent = await decryptAuto(pubkey, content);
 			const parsedContent: string[][] = JSON.parse(privateContent);
 			if (
 				(Array.isArray(parsedContent) && parsedContent.length <= 0) ||
@@ -741,8 +745,8 @@ export async function addPrivates(
 			} else {
 				throw new Error('content is not array');
 			}
-		} catch (error: any) {
-			throw new Error(error);
+		} catch (error: unknown) {
+			throw error instanceof Error ? error : new Error(String(error));
 		}
 	} else {
 		array = tags;
@@ -750,7 +754,7 @@ export async function addPrivates(
 	console.log(array);
 	if (array.length > 0) {
 		try {
-			return await nip04En(pubkey, JSON.stringify(array));
+			return await nip44En(pubkey, JSON.stringify(array));
 		} catch (error) {
 			throw new Error('Encode error');
 		}
@@ -771,7 +775,7 @@ export async function deletePrivates(
 	if (content.length > 0 && numList.length > 0) {
 		numList.sort((a, b) => b - a); //大きい順にソート
 		try {
-			const privateContent = await nip04De(pubkey, content);
+			const privateContent = await decryptAuto(pubkey, content);
 			const parsedContent = JSON.parse(privateContent);
 			if (Array.isArray(parsedContent) && Array.isArray(parsedContent[0])) {
 				for (const index of numList) {
@@ -790,7 +794,7 @@ export async function deletePrivates(
 	console.log(array);
 	if (array.length > 0) {
 		try {
-			return await nip04En(pubkey, JSON.stringify(array));
+			return await nip44En(pubkey, JSON.stringify(array));
 		} catch (error) {
 			throw new Error('Encode error');
 		}
@@ -824,10 +828,10 @@ export async function editPrivates(
 	console.log(content, pubkey, tag);
 
 	try {
-		const privateContent = await nip04De(pubkey, content);
+		const privateContent = await decryptAuto(pubkey, content);
 		const parsedContent = JSON.parse(privateContent);
 		parsedContent[number] = tag;
-		return await nip04En(pubkey, JSON.stringify(parsedContent));
+		return await nip44En(pubkey, JSON.stringify(parsedContent));
 	} catch (error) {
 		throw new Error('Decode error');
 	}
@@ -840,7 +844,7 @@ export async function broadcast(
 ): Promise<string> {
 	const timeoutMs: number = 5000; // デフォルトのタイムアウト時間は5秒
 
-	let webSockets: WebSocket[] = [];
+	const webSockets: WebSocket[] = [];
 
 	const msgObj: { [relay: string]: boolean } = {};
 	const wsPromises: Promise<void>[] = [];
@@ -879,7 +883,7 @@ export async function broadcast(
 		// WebSocket処理が完了するか、タイムアウトするまで待つ
 		await Promise.race([
 			Promise.all(wsPromises),
-			new Promise<void>((resolve, reject) => {
+			new Promise<void>((resolve) => {
 				setTimeout(() => {
 					resolve(); // タイムアウト時に即座にresolveすることで待機中のPromise.allを解決
 				}, timeoutMs);

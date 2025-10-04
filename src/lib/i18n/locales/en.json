@@ -1,182 +1,183 @@
 {
-  "popup": {
-    "Share": "Post on Nostr",
-    "open": "Open other app",
-    "move": "Move other list",
-    "delete": "Delete",
-    "pub": "public list",
-    "prv": "private list"
-  },
-  "PostNote": {
-    "copied": "copied clipboard",
-    "failed_copy": "failed to copy clipboard",
-    "popup_copy": "copy to clipboard",
-    "p_tag": "Include the p tag of the quoted source"
-  },
-  "modal": {
-    "failed_copy": "failed to copy",
-    "postNote": {
-      "title": "Post Note"
-    },
-    "tagList": {
-      "title": "Lists",
-      "editTag": "Delete Existing List / Create New List",
-      "noList": "no list."
-    },
-    "listInfo": {
-      "ex": {
-        "title": "(ex. Books)",
-        "image": "(ex. https://example.com/image.webp)",
-        "summary": "(ex. Recommended Books Collection)"
-      },
-      "title": "info"
-    },
-    "info": {
-      "title": "settings",
-      "contentwarning": "Show all content warnings",
-      "light_switch": "View mode",
-      "relay": {
-        "list": "for list acquisition",
-        "search": "for searching notes",
-        "title": "Relay in setting",
-        "white": " write relays"
-      },
-      "share": "Share Lists (browsing URL) with nostr",
-      "urlandIcon": "Show/hide icons and URL previews",
-      "urlandIconOff": "Light",
-      "urlandIconOn": "Normal",
-      "backButton": "Show Back button",
-      "shareNaddr": "Share List (Naddr) with nostr",
-      "data": "Traffic"
-    },
-    "addNote_body": "Enter an ID starting with 'note' , 'nevent' , 'nostr:' or 'naddr'.",
-    "deleteTag": {
-      "body": "Delete the following listings",
-      "title": "Delete a list"
-    },
-    "editTags": {
-      "body": "Create a new list",
-      "editTag": "Edit",
-      "title": "edit a list",
-      "kind": "This button deletes using kind:5 with e and a tag designation. The Delete List above overwrites tags with an empty array.",
-      "kindexp": "If you delete an event by kind5 and an old event remains, you may see the old event when you reload the event."
-    },
-    "deleteNote": {
-      "content": "(empty content)",
-      "title": "Delete",
-      "body": "Delete the following note"
-    },
-    "moveNote": {
-      "title": "Move note",
-      "body_from": "Move from [",
-      "body_to": "] to"
-    },
-    "search": {
-      "title": "Search"
-    },
-    "publishjson": {
-      "title": "Write data to relay",
-      "body": "If there are any corrections you want to make, modify them and click Publish (the generated field will be updated automatically)."
-    },
-    "addNote": {
-      "edit": "Edit",
-      "add": "Add"
-    }
-  },
-  "created_at": "Last updated",
-  "public": "public",
-  "private": "private",
-  "main": {
-    "title": "NostViewstr",
-    "input_public_key": "🔑 public key",
-    "publish": "Nsec is not saved in the browser.",
-    "Nip46_login": "If you are directly inputting the private key, using the NIP07 extension, or only viewing, it is unnecessary.",
-    "input_kind": "Kind of Lists",
-    "Json": "Read the JSON file of the list"
-  },
-  "mode": {
-    "light_switch": "Switch between Light and Dark Mode",
-    "light": "View List in Light mode",
-    "light_exp": "【Light mode】",
-    "light_exp2": "URL preview (OGP) and Profile icon are not displayed. (reduces the amount of traffic)",
-    "normal": "View List in Normal mode",
-    "normal_exp": "【Normal mode】",
-    "normal_exp2": "URL preview (OGP), Profile icon will be displayed.",
-    "viewMode": "Please select a display mode",
-    "save": "Save settings and skip next time"
-  },
-  "modalEditTag": {
-    "list": {
-      "ID": "(Required / Cannot be changed / Only alphanumeric characters)",
-      "title": "Additional information (can be changed later)"
-    }
-  },
-  "ModalAddNote": {
-    "add_note": "Add to list",
-    "add_note_tag": "（by Tag）",
-    "add_note_to1": "Add to [",
-    "add_note_to2": "]",
-    "create": "Create & AddNote",
-    "create_to1": "Create and Add Note to [",
-    "create_to2": "]",
-    "create_body": "enter kind:1's content (If you add it to Private, kind1 will be published.)"
-  },
-  "ModalEditTag": {
-    "delete_body": "Delete list"
-  },
-  "msg": {
-    "nanka": "login error"
-  },
-  "toast": {
-    "failed_publish": "failed to publish",
-    "invalidtag": "invalid tag",
-    "invalidJson": "File format not allowed, please select JSON file.",
-    "selectJson": "please select JSON file.",
-    "checkJson": "Invalid JSON file.",
-    "failed_npub": "check public key",
-    "invalidEmoji": "same name exists",
-    "relaySearching": "Relay Searching ...",
-    "eventSearching": "Searching events ...",
-    "invalidEvent": "invalid event",
-    "checkRelay": "Check relay address",
-    "checkInput": "Please confirm your input"
-  },
-  "icon_description": "Icon description",
-  "feedback": {
-    "setumei": "Your message will be sent via encrypted DM using a randomly generated key."
-  },
-  "nodata": {
-    "iconbefore": "Listing not found. Please create a new listing by clicking",
-    "iconafter": "button at the bottom and then clicking on the [Edit] button\t"
-  },
-  "kind": {
-    "3": "contact list",
-    "10000": "mute",
-    "10001": "pin",
-    "10002": "relays",
-    "10003": "bookmark",
-    "10004": "communities",
-    "10005": "public chats",
-    "10006": "blocked relays",
-    "10007": "search relays",
-    "10015": "interests",
-    "10030": "emojis",
-    "10096": "File storage server list",
-    "10101": "good wiki authors",
-    "10102": "good wiki relays",
-    "30000": "people sets",
-    "30001": "lists",
-    "30002": "relay sets",
-    "30003": "bookmark sets",
-    "30004": "curation sets",
-    "30007": "kind mute sets",
-    "30008": "profile badges",
-    "30015": "interest sets",
-    "30030": "emoji sets"
-  },
-  "kind3": {
-    "relay": "relay",
-    "petname": "petname",
-    "npub": "npub"
-  }
+	"popup": {
+		"Share": "Post on Nostr",
+		"open": "Open other app",
+		"move": "Move other list",
+		"delete": "Delete",
+		"pub": "public list",
+		"prv": "private list"
+	},
+	"PostNote": {
+		"copied": "copied clipboard",
+		"failed_copy": "failed to copy clipboard",
+		"popup_copy": "copy to clipboard",
+		"p_tag": "Include the p tag of the quoted source"
+	},
+	"modal": {
+		"failed_copy": "failed to copy",
+		"postNote": {
+			"title": "Post Note"
+		},
+		"tagList": {
+			"title": "Lists",
+			"editTag": "Delete Existing List / Create New List",
+			"noList": "no list."
+		},
+		"listInfo": {
+			"ex": {
+				"title": "(ex. Books)",
+				"image": "(ex. https://example.com/image.webp)",
+				"summary": "(ex. Recommended Books Collection)"
+			},
+			"title": "info"
+		},
+		"info": {
+			"title": "settings",
+			"contentwarning": "Show all content warnings",
+			"light_switch": "View mode",
+			"relay": {
+				"list": "for list acquisition",
+				"search": "for searching notes",
+				"title": "Relay in setting",
+				"white": " write relays"
+			},
+			"share": "Share Lists (browsing URL) with nostr",
+			"urlandIcon": "Show/hide icons and URL previews",
+			"urlandIconOff": "Light",
+			"urlandIconOn": "Normal",
+			"backButton": "Show Back button",
+			"shareNaddr": "Share List (Naddr) with nostr",
+			"data": "Traffic"
+		},
+		"addNote_body": "Enter an ID starting with 'note' , 'nevent' , 'nostr:' or 'naddr'.",
+		"deleteTag": {
+			"body": "Delete the following listings",
+			"title": "Delete a list"
+		},
+		"editTags": {
+			"body": "Create a new list",
+			"editTag": "Edit",
+			"title": "edit a list",
+			"kind": "This button deletes using kind:5 with e and a tag designation. The Delete List above overwrites tags with an empty array.",
+			"kindexp": "If you delete an event by kind5 and an old event remains, you may see the old event when you reload the event."
+		},
+		"deleteNote": {
+			"content": "(empty content)",
+			"title": "Delete",
+			"body": "Delete the following note"
+		},
+		"moveNote": {
+			"title": "Move note",
+			"body_from": "Move from [",
+			"body_to": "] to"
+		},
+		"search": {
+			"title": "Search"
+		},
+		"publishjson": {
+			"title": "Write data to relay",
+			"body": "If there are any corrections you want to make, modify them and click Publish (the generated field will be updated automatically)."
+		},
+		"addNote": {
+			"edit": "Edit",
+			"add": "Add"
+		}
+	},
+	"created_at": "Last updated",
+	"public": "public",
+	"private": "private",
+	"main": {
+		"title": "NostViewstr",
+		"input_public_key": "🔑 public key",
+		"publish": "Nsec is not saved in the browser.",
+		"Nip46_login": "If you are directly inputting the private key, using the NIP07 extension, or only viewing, it is unnecessary.",
+		"input_kind": "Kind of Lists",
+		"Json": "Read the JSON file of the list"
+	},
+	"mode": {
+		"light_switch": "Switch between Light and Dark Mode",
+		"light": "View List in Light mode",
+		"light_exp": "【Light mode】",
+		"light_exp2": "URL preview (OGP) and Profile icon are not displayed. (reduces the amount of traffic)",
+		"normal": "View List in Normal mode",
+		"normal_exp": "【Normal mode】",
+		"normal_exp2": "URL preview (OGP), Profile icon will be displayed.",
+		"viewMode": "Please select a display mode",
+		"save": "Save settings and skip next time"
+	},
+	"modalEditTag": {
+		"list": {
+			"ID": "(Required / Cannot be changed / Only alphanumeric characters)",
+			"title": "Additional information (can be changed later)"
+		}
+	},
+	"ModalAddNote": {
+		"add_note": "Add to list",
+		"add_note_tag": "（by Tag）",
+		"add_note_to1": "Add to [",
+		"add_note_to2": "]",
+		"create": "Create & AddNote",
+		"create_to1": "Create and Add Note to [",
+		"create_to2": "]",
+		"create_body": "enter kind:1's content (If you add it to Private, kind1 will be published.)"
+	},
+	"ModalEditTag": {
+		"delete_body": "Delete list"
+	},
+	"msg": {
+		"nanka": "login error"
+	},
+	"toast": {
+		"failed_publish": "failed to publish",
+		"invalidtag": "invalid tag",
+		"invalidJson": "File format not allowed, please select JSON file.",
+		"selectJson": "please select JSON file.",
+		"checkJson": "Invalid JSON file.",
+		"failed_npub": "check public key",
+		"invalidEmoji": "same name exists",
+		"relaySearching": "Relay Searching ...",
+		"eventSearching": "Searching events ...",
+		"invalidEvent": "invalid event",
+		"checkRelay": "Check relay address",
+		"checkInput": "Please confirm your input"
+	},
+	"icon_description": "Icon description",
+	"feedback": {
+		"setumei": "Your message will be sent via encrypted DM using a randomly generated key."
+	},
+	"nodata": {
+		"iconbefore": "Listing not found. Please create a new listing by clicking",
+		"iconafter": "button at the bottom and then clicking on the [Edit] button\t"
+	},
+	"kind": {
+		"3": "contact list",
+		"10000": "mute",
+		"10001": "pin",
+		"10002": "relays",
+		"10003": "bookmark",
+		"10004": "communities",
+		"10005": "public chats",
+		"10006": "blocked relays",
+		"10007": "search relays",
+		"10015": "interests",
+		"10030": "emojis",
+		"10063": "Blossom server list",
+		"10096": "File storage server list",
+		"10101": "good wiki authors",
+		"10102": "good wiki relays",
+		"30000": "people sets",
+		"30001": "lists",
+		"30002": "relay sets",
+		"30003": "bookmark sets",
+		"30004": "curation sets",
+		"30007": "kind mute sets",
+		"30008": "profile badges",
+		"30015": "interest sets",
+		"30030": "emoji sets"
+	},
+	"kind3": {
+		"relay": "relay",
+		"petname": "petname",
+		"npub": "npub"
+	}
 }

@@ -13,7 +13,7 @@
 	import { nip19, type Event as NostrEvent } from 'nostr-tools';
 	import {
 		getIdByTag,
-		nip04De,
+		decryptAuto,
 		parseNaddr,
 		urlParam,
 		windowOpen
@@ -86,7 +86,7 @@
 	const privateList = async (list: NostrEvent) => {
 		if (list.content !== '') {
 			//	try {
-			const decypt = await nip04De(list.pubkey, list.content);
+			const decypt = await decryptAuto(list.pubkey, list.content);
 			return JSON.parse(decypt);
 
 			//		} catch (error) {

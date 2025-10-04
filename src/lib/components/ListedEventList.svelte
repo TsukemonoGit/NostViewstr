@@ -18,9 +18,8 @@
 		deletePrivates,
 		deletePubs,
 		editPrivates,
-		getPub,
 		getRelays,
-		nip04En
+		nip44En
 	} from '$lib/nostrFunctions';
 	import { onMount } from 'svelte';
 
@@ -43,7 +42,7 @@
 		pubkey_viewer
 	} from '$lib/stores/settings';
 	//import type { Event } from 'nostr-tools';
-	import { amount, listSize, pageNum } from '$lib/stores/pagination';
+	import { amount, pageNum } from '$lib/stores/pagination';
 	import {
 		ListBox,
 		ListBoxItem,
@@ -65,8 +64,8 @@
 		publishEventWithTimeout
 	} from '$lib/streamEventLists';
 	import FooterMenu from './FooterMenu.svelte';
-	import { kinds, kindsValidTag } from '$lib/kind';
-	import { page } from '$app/stores';
+	import { kindsValidTag } from '$lib/kind';
+	import { page } from '$app/state';
 	import { parameterizedReplaceable } from '$lib/otherFunctions';
 	import FormatListBulleted from '@material-design-icons/svg/round/format_list_bulleted.svg?raw';
 
@@ -130,7 +129,7 @@
 	// }
 
 	let loadNotes = false;
-	
+
 	const init = async () => {
 		loadNotes = false;
 		$nowProgress = true;
@@ -140,7 +139,7 @@
 		checkLoading();
 		$nowProgress = false;
 	};
-	
+
 	function checkLoading() {
 		// 定期的に $eventListsMap[pubkey][kind] の長さをチェック
 		let previousLength = $eventListsMap?.[pubkey]?.[kind]?.size || 0;
@@ -911,7 +910,7 @@
 					return eventList.content;
 				} else {
 					try {
-						return await nip04En(pubkey, JSON.stringify(tags));
+						return await nip44En(pubkey, JSON.stringify(tags));
 					} catch (error) {
 						throw Error;
 					}
@@ -1114,7 +1113,7 @@
 			{:else if $isMulti === MultiMenu.Multi}
 				<!-- {#if !(!$page.params.hasOwnProperty('npub') || !isOwner || !viewEvent?.kind || viewEvent?.kind < 30000 || viewEvent?.kind >= 40000 || isNaddr)} -->
 				<button
-					disabled={!$page.params.hasOwnProperty('npub') ||
+					disabled={!page.params.hasOwnProperty('npub') ||
 						!isOwner ||
 						!viewEvent?.kind ||
 						viewEvent?.kind < 30000 ||

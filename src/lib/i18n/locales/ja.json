@@ -1,182 +1,183 @@
 {
-  "popup": {
-    "Share": "nostrで共有",
-    "delete": "削除",
-    "open": "外部サイトで開く",
-    "move": "別のリストに移動",
-    "pub": "公開リスト",
-    "prv": "非公開リスト"
-  },
-  "PostNote": {
-    "copied": "クリップボードにコピーしました",
-    "failed_copy": "コピーに失敗しました",
-    "popup_copy": "クリップボードにコピー",
-    "p_tag": "引用元のpubkeyを含める"
-  },
-  "modal": {
-    "failed_copy": "コピーに失敗しました",
-    "postNote": {
-      "title": "Post Note"
-    },
-    "tagList": {
-      "title": "リスト一覧",
-      "noList": "no list",
-      "editTag": "既存リストの削除/新規リストの作成"
-    },
-    "editTags": {
-      "title": "リストの編集",
-      "body": "新規リストの作成",
-      "editTag": "編集",
-      "kind": "このボタンはe/aタグ指定のkind:5で削除します。上のDelete Listはタグを空配列で上書きします。",
-      "kindexp": "kind5による削除を行った場合、古いイベントが残っている場合は再読み込みをすると古いイベントが表示されることがあります"
-    },
-    "deleteTag": {
-      "title": "リストの削除",
-      "body": "下記リストを削除します"
-    },
-    "info": {
-      "title": "設定",
-      "relay": {
-        "list": "読み込み用",
-        "search": "ノートの検索用",
-        "title": "設定中のリレー",
-        "white": "書込用リレー"
-      },
-      "light_switch": "表示モード",
-      "share": "Lists(閲覧中のURL)をnostrで共有",
-      "urlandIcon": "アイコン、URLプレビューの表示・非表示",
-      "urlandIconOff": "軽量",
-      "urlandIconOn": "通常",
-      "contentwarning": "コンテントワーニングの全表示",
-      "shareNaddr": "List (naddr) をnostrで共有",
-      "data": "通信量"
-    },
-    "listInfo": {
-      "ex": {
-        "title": "(例: 本情報)",
-        "image": "(例: https://example.com/image.webp)",
-        "summary": "(例: みんなのおすすめの本情報たち)"
-      },
-      "title": "情報"
-    },
-    "addNote_body": "'note' , 'nevent' , 'nostr:' or 'naddr'のいずれかから始まるIDを入力してください.",
-    "deleteNote": {
-      "content": "(空のコンテント)",
-      "title": "削除",
-      "body": "以下のノートを削除"
-    },
-    "moveNote": {
-      "title": "ノートの移動",
-      "body_from": "[",
-      "body_to": "]からの移動先を選択してください"
-    },
-    "search": {
-      "title": "検索"
-    },
-    "publishjson": {
-      "body": "修正したい所があれば修正してPublishをクリック（generated欄は自動で更新されます）",
-      "title": "データをリレーに書き込む"
-    },
-    "addNote": {
-      "edit": "編集",
-      "add": "追加"
-    }
-  },
-  "created_at": "最終更新",
-  "public": "公開",
-  "private": "非公開",
-  "ModalEditTag": {
-    "delete_body": "リストの削除"
-  },
-  "msg": {
-    "nanka": "ログインエラー"
-  },
-  "ModalAddNote": {
-    "add_note": "リスト\nに追加",
-    "add_note_to1": "[",
-    "add_note_to2": "] に追加",
-    "add_note_tag": "（タグから）",
-    "create": "ノートを作成して追加",
-    "create_to1": "ノートを作成して、[",
-    "create_to2": "]に追加",
-    "create_body": "ポストする内容を入力してください（kind:1ノートのcontent）（privateに追加してもkind:1は公開されます）"
-  },
-  "main": {
-    "title": "のすとびうあ",
-    "input_public_key": "🔑公開鍵(public key)",
-    "publish": "nsecはブラウザに保存されません",
-    "Nip46_login": "nsecを直接入力するか、拡張機能を使う場合は不要です。",
-    "nip07": "NIP-07",
-    "input_kind": "リストの種類",
-    "Json": "リストのJSONファイルを読み込む"
-  },
-  "mode": {
-    "normal": "通常モードでリストをみる",
-    "light": "軽量モードでリストをみる",
-    "light_exp": "【通信量軽量モード】",
-    "light_switch": "ライトモード / ダークモードの切り替え",
-    "normal_exp": "【通常モード】",
-    "normal_exp2": "URLプレビュー(OGP), プロフィールアイコンが表示されます。",
-    "light_exp2": "URLプレビュー(OGP)を取得せず、 プロフィールアイコンを表示しないため、通信量が削減できます。（外ノスの際にオススメ）",
-    "viewMode": "表示モードを選択してください",
-    "save": "設定を保存して、次回からスキップする"
-  },
-  "modalEditTag": {
-    "list": {
-      "title": "追加情報（あとから変更可能）",
-      "ID": "（必須/変更不可/英数字のみ入力可能）"
-    }
-  },
-  "toast": {
-    "failed_publish": "書き込みに失敗しました",
-    "invalidtag": "無効なタグです",
-    "invalidJson": "許可されていないファイル形式です。JSONファイルを選択してください",
-    "selectJson": "JSONファイルを選択してください",
-    "checkJson": "無効なJSONファイルです",
-    "failed_npub": "公開鍵を確認してください",
-    "invalidEmoji": "すでに同じ名前のものが存在します",
-    "relaySearching": "リレー取得中",
-    "eventSearching": "イベント取得中",
-    "invalidEvent": "無効なイベントです",
-    "checkRelay": "リレーアドレスを確認してください",
-    "checkInput": "入力を確認してください"
-  },
-  "icon_description": "アイコンについて",
-  "feedback": {
-    "setumei": "ランダム生成された鍵で暗号化されてDMで送信されます。"
-  },
-  "nodata": {
-    "iconbefore": "リストが見つかりませんでした。下の",
-    "iconafter": "ボタンをクリックして、[編集]ボタンをクリックして、新規リストを作成してください"
-  },
-  "kind": {
-    "3": "フォローリスト",
-    "10000": "ミュート",
-    "10001": "ピン",
-    "10002": "リレー",
-    "10003": "ブックマーク",
-    "10004": "コミュニティ",
-    "10005": "パブリックチャット",
-    "10006": "ブロックリレー",
-    "10007": "検索リレー",
-    "10015": "興味・関心",
-    "10030": "絵文字",
-    "10096": "ファイルストレージサーバーリスト",
-    "10101": "wiki のおすすめ著者",
-    "10102": "wiki の推奨リレー",
-    "30000": "フォローセット",
-    "30001": "汎用リスト",
-    "30002": "リレーセット",
-    "30003": "ブックマークセット",
-    "30004": "キュレーションセット",
-    "30007": "kindミュートセット",
-    "30008": "バッジ",
-    "30015": "興味・関心 セット",
-    "30030": "絵文字セット"
-  },
-  "kind3": {
-    "relay": "リレー情報",
-    "petname": "ニックネーム（petname）",
-    "npub": "ユーザー（npub）"
-  }
+	"popup": {
+		"Share": "nostrで共有",
+		"delete": "削除",
+		"open": "外部サイトで開く",
+		"move": "別のリストに移動",
+		"pub": "公開リスト",
+		"prv": "非公開リスト"
+	},
+	"PostNote": {
+		"copied": "クリップボードにコピーしました",
+		"failed_copy": "コピーに失敗しました",
+		"popup_copy": "クリップボードにコピー",
+		"p_tag": "引用元のpubkeyを含める"
+	},
+	"modal": {
+		"failed_copy": "コピーに失敗しました",
+		"postNote": {
+			"title": "Post Note"
+		},
+		"tagList": {
+			"title": "リスト一覧",
+			"noList": "no list",
+			"editTag": "既存リストの削除/新規リストの作成"
+		},
+		"editTags": {
+			"title": "リストの編集",
+			"body": "新規リストの作成",
+			"editTag": "編集",
+			"kind": "このボタンはe/aタグ指定のkind:5で削除します。上のDelete Listはタグを空配列で上書きします。",
+			"kindexp": "kind5による削除を行った場合、古いイベントが残っている場合は再読み込みをすると古いイベントが表示されることがあります"
+		},
+		"deleteTag": {
+			"title": "リストの削除",
+			"body": "下記リストを削除します"
+		},
+		"info": {
+			"title": "設定",
+			"relay": {
+				"list": "読み込み用",
+				"search": "ノートの検索用",
+				"title": "設定中のリレー",
+				"white": "書込用リレー"
+			},
+			"light_switch": "表示モード",
+			"share": "Lists(閲覧中のURL)をnostrで共有",
+			"urlandIcon": "アイコン、URLプレビューの表示・非表示",
+			"urlandIconOff": "軽量",
+			"urlandIconOn": "通常",
+			"contentwarning": "コンテントワーニングの全表示",
+			"shareNaddr": "List (naddr) をnostrで共有",
+			"data": "通信量"
+		},
+		"listInfo": {
+			"ex": {
+				"title": "(例: 本情報)",
+				"image": "(例: https://example.com/image.webp)",
+				"summary": "(例: みんなのおすすめの本情報たち)"
+			},
+			"title": "情報"
+		},
+		"addNote_body": "'note' , 'nevent' , 'nostr:' or 'naddr'のいずれかから始まるIDを入力してください.",
+		"deleteNote": {
+			"content": "(空のコンテント)",
+			"title": "削除",
+			"body": "以下のノートを削除"
+		},
+		"moveNote": {
+			"title": "ノートの移動",
+			"body_from": "[",
+			"body_to": "]からの移動先を選択してください"
+		},
+		"search": {
+			"title": "検索"
+		},
+		"publishjson": {
+			"body": "修正したい所があれば修正してPublishをクリック（generated欄は自動で更新されます）",
+			"title": "データをリレーに書き込む"
+		},
+		"addNote": {
+			"edit": "編集",
+			"add": "追加"
+		}
+	},
+	"created_at": "最終更新",
+	"public": "公開",
+	"private": "非公開",
+	"ModalEditTag": {
+		"delete_body": "リストの削除"
+	},
+	"msg": {
+		"nanka": "ログインエラー"
+	},
+	"ModalAddNote": {
+		"add_note": "リスト\nに追加",
+		"add_note_to1": "[",
+		"add_note_to2": "] に追加",
+		"add_note_tag": "（タグから）",
+		"create": "ノートを作成して追加",
+		"create_to1": "ノートを作成して、[",
+		"create_to2": "]に追加",
+		"create_body": "ポストする内容を入力してください（kind:1ノートのcontent）（privateに追加してもkind:1は公開されます）"
+	},
+	"main": {
+		"title": "のすとびうあ",
+		"input_public_key": "🔑公開鍵(public key)",
+		"publish": "nsecはブラウザに保存されません",
+		"Nip46_login": "nsecを直接入力するか、拡張機能を使う場合は不要です。",
+		"nip07": "NIP-07",
+		"input_kind": "リストの種類",
+		"Json": "リストのJSONファイルを読み込む"
+	},
+	"mode": {
+		"normal": "通常モードでリストをみる",
+		"light": "軽量モードでリストをみる",
+		"light_exp": "【通信量軽量モード】",
+		"light_switch": "ライトモード / ダークモードの切り替え",
+		"normal_exp": "【通常モード】",
+		"normal_exp2": "URLプレビュー(OGP), プロフィールアイコンが表示されます。",
+		"light_exp2": "URLプレビュー(OGP)を取得せず、 プロフィールアイコンを表示しないため、通信量が削減できます。（外ノスの際にオススメ）",
+		"viewMode": "表示モードを選択してください",
+		"save": "設定を保存して、次回からスキップする"
+	},
+	"modalEditTag": {
+		"list": {
+			"title": "追加情報（あとから変更可能）",
+			"ID": "（必須/変更不可/英数字のみ入力可能）"
+		}
+	},
+	"toast": {
+		"failed_publish": "書き込みに失敗しました",
+		"invalidtag": "無効なタグです",
+		"invalidJson": "許可されていないファイル形式です。JSONファイルを選択してください",
+		"selectJson": "JSONファイルを選択してください",
+		"checkJson": "無効なJSONファイルです",
+		"failed_npub": "公開鍵を確認してください",
+		"invalidEmoji": "すでに同じ名前のものが存在します",
+		"relaySearching": "リレー取得中",
+		"eventSearching": "イベント取得中",
+		"invalidEvent": "無効なイベントです",
+		"checkRelay": "リレーアドレスを確認してください",
+		"checkInput": "入力を確認してください"
+	},
+	"icon_description": "アイコンについて",
+	"feedback": {
+		"setumei": "ランダム生成された鍵で暗号化されてDMで送信されます。"
+	},
+	"nodata": {
+		"iconbefore": "リストが見つかりませんでした。下の",
+		"iconafter": "ボタンをクリックして、[編集]ボタンをクリックして、新規リストを作成してください"
+	},
+	"kind": {
+		"3": "フォローリスト",
+		"10000": "ミュート",
+		"10001": "ピン",
+		"10002": "リレー",
+		"10003": "ブックマーク",
+		"10004": "コミュニティ",
+		"10005": "パブリックチャット",
+		"10006": "ブロックリレー",
+		"10007": "検索リレー",
+		"10015": "興味・関心",
+		"10030": "絵文字",
+		"10063": "ブロッサムサーバーリスト",
+		"10096": "ファイルストレージサーバーリスト",
+		"10101": "wiki のおすすめ著者",
+		"10102": "wiki の推奨リレー",
+		"30000": "フォローセット",
+		"30001": "汎用リスト",
+		"30002": "リレーセット",
+		"30003": "ブックマークセット",
+		"30004": "キュレーションセット",
+		"30007": "kindミュートセット",
+		"30008": "バッジ",
+		"30015": "興味・関心 セット",
+		"30030": "絵文字セット"
+	},
+	"kind3": {
+		"relay": "リレー情報",
+		"petname": "ニックネーム（petname）",
+		"npub": "ユーザー（npub）"
+	}
 }
