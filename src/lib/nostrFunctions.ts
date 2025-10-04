@@ -194,13 +194,13 @@ export async function decryptAuto(
 	pubkey: string,
 	message: string
 ): Promise<string> {
-	// NIP-44 かどうか判定: ciphertext に "iv" が含まれる
-	const isNip44 = message.includes('?iv=');
+	// NIP-04 かどうか判定: ciphertext に "iv" が含まれる
+	const isNip04 = message.includes('?iv=');
 
-	if (isNip44) {
-		return nip44De(pubkey, message);
-	} else {
+	if (isNip04) {
 		return nip04De(pubkey, message);
+	} else {
+		return nip44De(pubkey, message);
 	}
 }
 //-------------------nip04
