@@ -1,7 +1,7 @@
 <script lang="ts">
 	//書き込めるところに書き込むということでwrite二設定しているリレーに複製します
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
-	import { modalStore, toastStore } from '$lib/stores/store';
+	import { modalStore } from '$lib/stores/store';
 
 	import type Nostr from 'nostr-typedef';
 	import {
@@ -12,7 +12,6 @@
 	import { relaySet } from '$lib/stores/relays';
 	import type { Observer, Subscription } from 'rxjs';
 	import { pubkey_viewer } from '$lib/stores/settings';
-	import type { QueryKey } from '@tanstack/svelte-query';
 	import { queryClient } from '$lib/stores/bookmarkEvents';
 	import { verifier } from 'rx-nostr-crypto';
 

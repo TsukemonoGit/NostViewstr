@@ -1,14 +1,10 @@
-import { _ } from 'svelte-i18n';
-
 import type { Observer, Observable, Subscription } from 'rxjs';
 
 import {
 	createRxNostr,
 	uniq,
-	verify,
 	createRxForwardReq,
 	createRxBackwardReq,
-	nip07Signer,
 	createTie
 } from 'rx-nostr';
 import { derived, get, writable } from 'svelte/store';
@@ -35,7 +31,6 @@ import {
 import { feedbackRelay, relaySet } from './stores/relays';
 import type {
 	ConnectionState,
-	DefaultRelayConfig,
 	EventPacket,
 	RxReq,
 	RxReqOverable,
@@ -49,10 +44,9 @@ import {
 	type QueryKey
 } from '@tanstack/svelte-query';
 import type Nostr from 'nostr-typedef';
-import type { EventParameters, Filter } from 'nostr-typedef';
+import type { Filter } from 'nostr-typedef';
 //import type { RelayStatus } from 'rx-nostr/types/src/rx-nostr/interface';
 import { verifier } from 'rx-nostr-crypto';
-import { cleanRelayUrl } from './otherFunctions';
 
 const reconnectableStates: ConnectionState[] = [
 	//https://penpenpng.github.io/rx-nostr/v2/monitoring-connections.html
@@ -82,13 +76,13 @@ const rxNostr = createRxNostr({ verifier });
 rx.set(rxNostr);
 
 rxNostr.createConnectionStateObservable().subscribe((packet) => {
-	let tmp = get(relayState);
+	const tmp = get(relayState);
 	//console.log(packet);
 	tmp.set(packet.from, packet.state);
 	relayState.set(tmp);
 	//console.log(get(relayState));
 });
-const [tie, tieMap] = createTie();
+const [, tieMap] = createTie();
 export function getRelaysById(id: string): string[] {
 	return Array.from(tieMap.get(id) || []);
 }
@@ -132,7 +126,7 @@ export async function RelaysReconnectChallenge() {
 	}
 	//console.log(status);
 
-	status.forEach(([relayUrl, state]) => {
+	status.forEach(([relayUrl]) => {
 		if (
 			rxNostr.getRelayStatus(relayUrl)?.connection === undefined ||
 			reconnectableStates.includes(
@@ -224,7 +218,7 @@ export async function StoreFetchFilteredEvents(
 	const observable = rxNostr.use(rxReq).pipe(uniq()); //tie,
 
 	// オブザーバーオブジェクトの作成
-	const observer: Observer<any> = {
+	const observer: Observer<EventPacket> = {
 		next: (packet: EventPacket) => {
 			//	console.log('[rx-nostr packet]', packet);
 
@@ -430,7 +424,7 @@ export async function publishEventWithTimeout(
 				msg: string;
 				event?: Nostr.Event;
 			}>((resolve) => {
-				const subscription = rxNostr.send(event, { relays: relays }).subscribe({
+				rxNostr.send(event, { relays: relays }).subscribe({
 					next: (packet) => {
 						//	console.log('test', packet);タイムアウトまでに署名がすんでないとなぜかタイムアウト直前にokpacketがとんでくる。署名もしてないのに
 						msgObj[packet.from] = packet.ok;
@@ -482,44 +476,7 @@ export async function publishEventWithTimeout(
 	}
 }
 
-// function mergeRelays(
-// 	writeRelays: string[],
-// 	readRelays: string[]
-// ): { [url: string]: { read: boolean; write: boolean } } {
-// 	const result: { [url: string]: { read: boolean; write: boolean } } = {};
-
-// 	const uniqueRelays = Array.from(new Set([...writeRelays, ...readRelays]));
-
-// 	for (const url of uniqueRelays) {
-// 		result[url] = {
-// 			read: readRelays.includes(url),
-// 			write: writeRelays.includes(url)
-// 		};
-// 	}
-// 	connectingRelays.set(result);
-// 	console.log(result);
-// 	return result;
-// }
-
-function addsetRelays(relays: string[]): {
-	[url: string]: { read: boolean; write: boolean };
-} {
-	// const tmp = Object.fromEntries(
-	// 	rxNostr.getDefaultRelays().map(({ url, read, write }) => [url, { read, write }])
-	// );
-	const tmp: Record<string, DefaultRelayConfig> = rxNostr.getDefaultRelays();
-	relays.forEach((relay) => {
-		if (tmp[relay]) {
-			// tmpがrelay要素を持っていた場合
-			tmp[relay].write = true;
-		} else {
-			// tmpがrelay要素を持っていなかった場合
-			tmp[relay] = { url: relay, read: false, write: true };
-		}
-	});
-	return tmp;
-}
-function validCheck(obj: Nostr.Event<number>): Boolean {
+function validCheck(obj: Nostr.Event<number>): boolean {
 	//３００００台でdtagsがなかったらエラー
 	if (obj.kind >= 30000 && obj.kind < 40000) {
 		const index = obj.tags.findIndex((tag: string[]) => tag[0] === 'd');

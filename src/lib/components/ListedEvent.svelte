@@ -25,7 +25,7 @@
 
 	// import Menu from '@material-design-icons/svg/round/more_vert.svg?raw';
 
-	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { dndzone } from 'svelte-dnd-action';
@@ -45,7 +45,6 @@
 		type SelectIndex
 	} from '$lib/otherFunctions';
 	import { getRelaysById } from '$lib/streamEventLists';
-	import { afterNavigate } from '$app/navigation';
 
 	export let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
@@ -118,7 +117,7 @@
 
 	export async function viewUpdate() {
 		message = '';
-		//	console.log(bkm);
+
 		if (!listEvent) {
 			$listSize = 0;
 			viewList = [];
@@ -128,7 +127,7 @@
 		if (bkm === 'pub') {
 			$listSize = listEvent.tags.length;
 			viewList = listEvent.tags;
-		} else if (isOwner && listEvent.content.includes('?iv=')) {
+		} else if (isOwner) {
 			try {
 				const res = await privateList(listEvent);
 				$listSize = res.length;
