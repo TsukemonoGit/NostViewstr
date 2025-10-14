@@ -189,6 +189,19 @@ export async function getPub(nip46: boolean): Promise<string> {
 	}
 }
 
+// 自動判定付き暗号化関数
+export async function encryptAuto(
+	pubkey: string,
+	message: string
+): Promise<string> {
+	const type = localStorage.getItem('encryptType') || 'nip44';
+
+	if (type === 'nip04') {
+		return nip04En(pubkey, message);
+	}
+	return nip44En(pubkey, message);
+}
+
 //
 export async function decryptAuto(
 	pubkey: string,
@@ -754,7 +767,7 @@ export async function addPrivates(
 	console.log(array);
 	if (array.length > 0) {
 		try {
-			return await nip44En(pubkey, JSON.stringify(array));
+			return await encryptAuto(pubkey, JSON.stringify(array));
 		} catch (error) {
 			throw new Error('Encode error');
 		}
@@ -794,7 +807,7 @@ export async function deletePrivates(
 	console.log(array);
 	if (array.length > 0) {
 		try {
-			return await nip44En(pubkey, JSON.stringify(array));
+			return await encryptAuto(pubkey, JSON.stringify(array));
 		} catch (error) {
 			throw new Error('Encode error');
 		}
@@ -831,7 +844,7 @@ export async function editPrivates(
 		const privateContent = await decryptAuto(pubkey, content);
 		const parsedContent = JSON.parse(privateContent);
 		parsedContent[number] = tag;
-		return await nip44En(pubkey, JSON.stringify(parsedContent));
+		return await encryptAuto(pubkey, JSON.stringify(parsedContent));
 	} catch (error) {
 		throw new Error('Decode error');
 	}

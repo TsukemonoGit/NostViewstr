@@ -18,6 +18,7 @@
 		deletePrivates,
 		deletePubs,
 		editPrivates,
+		encryptAuto,
 		getRelays,
 		nip44En
 	} from '$lib/nostrFunctions';
@@ -910,7 +911,7 @@
 					return eventList.content;
 				} else {
 					try {
-						return await nip44En(pubkey, JSON.stringify(tags));
+						return await encryptAuto(pubkey, JSON.stringify(tags));
 					} catch (error) {
 						throw Error;
 					}

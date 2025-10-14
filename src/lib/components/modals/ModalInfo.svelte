@@ -90,13 +90,12 @@
 			console.log('failed to login');
 		}
 	}
-	let toggleValue: boolean = $URLPreview;
-	$: if (toggleValue) {
-		$URLPreview = true;
-		$iconView = true;
-	} else {
-		$URLPreview = false;
-		$iconView = false;
+	let toggleValue = $URLPreview ? 'true' : 'false';
+
+	$: {
+		const isOn = toggleValue === 'true';
+		$URLPreview = isOn;
+		$iconView = isOn;
 	}
 	let warningToggle: boolean = $allView;
 	$: $allView = warningToggle;
@@ -116,6 +115,10 @@
 	function handleChangeBack() {
 		localStorage.setItem('back', $backButton.toString());
 	}
+
+	let encryptType = localStorage.getItem('encryptType') || 'nip44';
+
+	$: localStorage.setItem('encryptType', encryptType);
 </script>
 
 {#if $modalStore[0]}
@@ -189,21 +192,56 @@
 				}}
 			/>
 		</div>
-
+		<div class="space-y-2">
+			{$_('modal.info.encryptType.type')}
+			<label class="flex items-center space-x-2 ml-4">
+				<input
+					class="radio"
+					type="radio"
+					checked
+					name="radio-encryptType"
+					value="nip44"
+					bind:group={encryptType}
+				/>
+				<p>{$_('modal.info.encryptType.nip44')}</p>
+			</label>
+			<label class="flex items-center space-x-2 ml-4">
+				<input
+					class="radio"
+					type="radio"
+					name="radio-encryptType"
+					value="nip04"
+					bind:group={encryptType}
+				/>
+				<p>{$_('modal.info.encryptType.nip04')}</p>
+			</label>
+		</div>
 		<!--ログインの許可のやつ全スキップした人のためとか-->
 
 		<!--iconとかURLとかの表示切替-->
-		<div class="flex gap-2">
-			{$_('modal.info.data')}<SlideToggle
-				border="border-solid border-2 border-indigo-600"
-				active="bg-secondary-600-300-token"
-				size="sm"
-				name="slide"
-				bind:checked={toggleValue}
-				>{toggleValue
-					? $_('modal.info.urlandIconOn')
-					: $_('modal.info.urlandIconOff')}</SlideToggle
-			>
+		<div class="space-y-2">
+			{$_('modal.info.data')}
+			<label class="flex items-center space-x-2 ml-4">
+				<input
+					class="radio"
+					type="radio"
+					checked
+					name="radio-dataType"
+					value="true"
+					bind:group={toggleValue}
+				/>
+				<p>{$_('modal.info.urlandIconOn')}</p>
+			</label>
+			<label class="flex items-center space-x-2 ml-4">
+				<input
+					class="radio"
+					type="radio"
+					name="radio-dataType"
+					value="false"
+					bind:group={toggleValue}
+				/>
+				<p>{$_('modal.info.urlandIconOff')}</p>
+			</label>
 		</div>
 
 		<!--iconとかURLとかの表示切替-->

@@ -213,9 +213,9 @@
 		placement: 'bottom',
 		closeQuery: '.listbox-item',
 
-		state: (test) => {
-			//	console.log(test);
-			if (!test.state) {
+		state: (state) => {
+			console.log(state);
+			if (!state.state) {
 				comboboxValue = '';
 				popupElement.style.display = 'none';
 				popupElement.style.top = '0';
