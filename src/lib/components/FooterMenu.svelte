@@ -588,7 +588,16 @@
 						on:click={back}
 						disabled={$pageNum === 0 ? true : false}>{@html backIcon}</button
 					>
-
+					<div
+						class="flex flex-col text-xs justify-center items-center divide-y"
+					>
+						<div>
+							{$pageNum + 1}
+						</div>
+						<div>
+							{last + 1}
+						</div>
+					</div>
 					<button
 						class={buttonClass}
 						on:click={next}
@@ -600,13 +609,7 @@
 						disabled={$pageNum === last ? true : false}>{@html lastIcon}</button
 					>
 				</div>
-				<!-- <div class="flex justify-center items-center m-0 p-0 text-xs">
-						{`${$amount * $pageNum} - ${Math.min(
-							($pageNum + 1) * $amount,
-							$listSize
-						)} / ${$listSize}`}
-					</div>
-				</div> -->
+
 				<!--ボタン押したときに説明的なやつをとーすとてきなやつでそれかポップアップメニューでやる-->
 				<!-- <button
 				class="btn btn-icon pageIcon {multiButtonClass}"

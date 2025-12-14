@@ -194,7 +194,7 @@
 		</div>
 		<div class="space-y-2">
 			{$_('modal.info.encryptType.type')}
-			<label class="flex items-center space-x-2 ml-4">
+			<label class="flex items-center space-x-2 pl-4">
 				<input
 					class="radio"
 					type="radio"
@@ -205,7 +205,7 @@
 				/>
 				<p>{$_('modal.info.encryptType.nip44')}</p>
 			</label>
-			<label class="flex items-center space-x-2 ml-4">
+			<label class="flex items-center space-x-2 pl-4">
 				<input
 					class="radio"
 					type="radio"
@@ -221,7 +221,7 @@
 		<!--iconとかURLとかの表示切替-->
 		<div class="space-y-2">
 			{$_('modal.info.data')}
-			<label class="flex items-center space-x-2 ml-4">
+			<label class="flex items-center space-x-2 pl-4">
 				<input
 					class="radio"
 					type="radio"
@@ -232,7 +232,7 @@
 				/>
 				<p>{$_('modal.info.urlandIconOn')}</p>
 			</label>
-			<label class="flex items-center space-x-2 ml-4">
+			<label class="flex items-center space-x-2 pl-4">
 				<input
 					class="radio"
 					type="radio"
