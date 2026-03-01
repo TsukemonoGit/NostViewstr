@@ -46,7 +46,7 @@
 	"dependencies": {
 		"@floating-ui/dom": "^1.7.4",
 		"@material-design-icons/svg": "^0.14.15",
-		"@sveltejs/adapter-vercel": "^5.10.3",
+		"@sveltejs/adapter-vercel": "^6.3.2",
 		"@tanstack/svelte-query": "^5.90.2",
 		"@types/graceful-fs": "^4.1.9",
 		"@vercel/analytics": "^1.6.1",
