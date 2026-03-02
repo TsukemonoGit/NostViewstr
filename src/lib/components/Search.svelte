@@ -16,14 +16,17 @@
 	import { verifier } from 'rx-nostr-crypto';
 
 	export let parent: any;
+
 	//export let pubkey: string;
-	enum RelayState {
-		Preparing,
-		Connecting,
-		Not_exist,
-		Error,
-		Exist
-	}
+	const RelayState = {
+		Preparing: 0,
+		Connecting: 1,
+		Not_exist: 2,
+		Error: 3,
+		Exist: 4
+	} as const;
+	type RelayState = (typeof RelayState)[keyof typeof RelayState];
+
 	interface RelayStates {
 		[key: string]: RelayState;
 	}

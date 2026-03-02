@@ -145,7 +145,7 @@
 		// 定期的に $eventListsMap[pubkey][kind] の長さをチェック
 		let previousLength = $eventListsMap?.[pubkey]?.[kind]?.size || 0;
 		const interval = setInterval(() => {
-			const currentLength = $eventListsMap[pubkey][kind]?.size || 0;
+			const currentLength = $eventListsMap?.[pubkey]?.[kind]?.size || 0;
 			if (currentLength === previousLength) {
 				loadNotes = true;
 				clearInterval(interval);
