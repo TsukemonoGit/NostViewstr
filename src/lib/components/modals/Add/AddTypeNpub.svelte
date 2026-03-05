@@ -2,13 +2,14 @@
 	import { checkInputNpub } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { toastStore } from '$lib/stores/store';
+	import type { ModalParent } from '$lib/types';
 
 	import PublicButton from './PublicButton.svelte';
 	import PrivateButton from './PrivateButton.svelte';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
-	export let parent: any;
-	export let onFormSubmit: any;
+	export let parent: ModalParent;
+	export let onFormSubmit: () => void;
 
 	export let selectBoxItem: string[];
 	export let selectItem: string;
@@ -16,7 +17,7 @@
 	const myValue = 'User';
 
 	if (!selectBoxItem.includes(myValue)) {
-		selectBoxItem.push(myValue);
+		selectBoxItem = [...selectBoxItem, myValue];
 	}
 
 	//export let viewList: string[][]; //今見てるリスト（pub,prvもく別）重複チェック
@@ -66,7 +67,7 @@
 
 {#if selectItem === myValue}
 	<article class="body">
-		<span class="dot" /><span class="px-1 font-bold">User</span>
+		<span class="dot"></span><span class="px-1 font-bold">User</span>
 	</article>
 	<!-- Enable for debugging: -->
 	<div class="p-2">

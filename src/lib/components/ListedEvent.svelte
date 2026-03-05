@@ -46,18 +46,10 @@
 	} from '$lib/otherFunctions';
 	import { getRelaysById } from '$lib/streamEventLists';
 
-	export let DeleteNote: (e: {
-		detail: { number: number; event: any; tagArray: any };
-	}) => void;
-	export let MoveNote: (e: {
-		detail: { number: number; event: any; tagArray: any };
-	}) => void;
-	export let CheckNote: (e: {
-		detail: { number: number; event: any; tagArray: any };
-	}) => void;
-	export let MoveBkmNote: (e: {
-		detail: { number: number; event: any; tagArray: any };
-	}) => void;
+	export let DeleteNote: (e: SelectIndex) => void;
+	export let MoveNote: (e: SelectIndex) => void;
+	export let CheckNote: (e: SelectIndex) => void;
+	export let MoveBkmNote: (e: SelectIndex) => void;
 	export let listEvent: NostrEvent | undefined;
 	export let bkm = 'pub'; //'pub'|'prv'
 	export let isOwner: boolean;
@@ -157,7 +149,6 @@
 			tagArray: tagArray
 		});
 	}
-	let isSortEditing;
 	function handleDndConsider(e: {
 		detail: { items: { id: number; name: string[] }[] };
 	}) {
@@ -168,11 +159,6 @@
 	}) {
 		console.log(e.detail.items);
 		items = e.detail.items;
-		if (items !== items_original) {
-			isSortEditing = true;
-		} else {
-			isSortEditing = false;
-		}
 	}
 
 	// Convert emojiData to the desired format
@@ -190,7 +176,7 @@
 	export function getSortedTags(): string[][] {
 		const sorted = [...viewList];
 		console.log(sorted);
-		const sortedPage = items.map((item, index) => {
+		const sortedPage = items.map((item) => {
 			return item.name;
 		});
 
@@ -338,6 +324,7 @@
 <div class=" relative">
 	{#if viewPage && viewPage.length > 0}
 		<section
+			role="list"
 			use:dndzone={{
 				items,
 				//flipDurationMs,
@@ -359,7 +346,7 @@
 			{#each items as tag (tag.id)}
 				<div class="item">
 					{#await getIdByTag(tag.name)}
-						<!--loading a タグ　のなかみ-->
+						<!--loading a tag content-->
 						<div class="z-0 card drop-shadow px-1 py-1 my-0.5">
 							{tag.name}
 						</div>
@@ -406,8 +393,10 @@
 			{#if selectedIndex?.detail?.editable}<ListBoxItem
 					name="medium"
 					value="edit"
-					disabled={!$page.params.hasOwnProperty('npub') &&
-						!$page.params.hasOwnProperty('naddr')}
+					disabled={!Object.prototype.hasOwnProperty.call(
+						$page.params,
+						'npub'
+					) && !Object.prototype.hasOwnProperty.call($page.params, 'naddr')}
 					bind:group={comboboxValue}
 					on:click={() => {
 						comboboxValue = '';
@@ -422,7 +411,10 @@
 				>{/if}
 			{#if listEvent?.kind === 10000 || listEvent?.kind === 10003}
 				<ListBoxItem
-					disabled={!$page.params.hasOwnProperty('npub') || !isOwner}
+					disabled={!Object.prototype.hasOwnProperty.call(
+						$page.params,
+						'npub'
+					) || !isOwner}
 					value="MoveBkm"
 					bind:group={comboboxValue}
 					name="medium"
@@ -435,7 +427,10 @@
 				</ListBoxItem>
 			{:else}
 				<ListBoxItem
-					disabled={!$page.params.hasOwnProperty('npub') ||
+					disabled={!Object.prototype.hasOwnProperty.call(
+						$page.params,
+						'npub'
+					) ||
 						!isOwner ||
 						!listEvent?.kind ||
 						listEvent?.kind < 30000 ||
@@ -452,8 +447,11 @@
 				</ListBoxItem>
 			{/if}
 			<ListBoxItem
-				disabled={(!$page.params.hasOwnProperty('npub') &&
-					!$page.params.hasOwnProperty('naddr')) ||
+				disabled={(!Object.prototype.hasOwnProperty.call(
+					$page.params,
+					'npub'
+				) &&
+					!Object.prototype.hasOwnProperty.call($page.params, 'naddr')) ||
 					!isOwner}
 				name="medium"
 				value="Delete"
@@ -590,7 +588,7 @@
 				>View Detail</ListBoxItem
 			>
 		</ListBox>
-		<div class="arrow bg-primary-400-500-token" />
+		<div class="arrow bg-primary-400-500-token"></div>
 		<!-- <div class="arrow bg-surface-100-800-token border" /> -->
 	</div>
 </div>

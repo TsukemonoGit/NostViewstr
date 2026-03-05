@@ -4,13 +4,14 @@
 	import { modalStore, toastStore } from '$lib/stores/store';
 	import { nip19 } from 'nostr-tools';
 	import { naddrVaridKind } from '$lib/kind';
+	import type { ModalParent } from '$lib/types';
 
 	import PublicButton from './PublicButton.svelte';
 	import PrivateButton from './PrivateButton.svelte';
 
 	export let res: { btn: string; tag: string[] };
-	export let parent: any;
-	export let onFormSubmit: any;
+	export let parent: ModalParent;
+	export let onFormSubmit: () => void;
 	let input: string;
 	export let kind;
 
@@ -20,7 +21,7 @@
 	const myValue = 'Event';
 
 	if (!selectBoxItem.includes(myValue)) {
-		selectBoxItem.push(myValue);
+		selectBoxItem = [...selectBoxItem, myValue];
 	}
 
 	let inputKind: string;

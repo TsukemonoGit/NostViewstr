@@ -5,6 +5,7 @@
 	import { Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import AddTypeNoteAndNaddr from './Add/AddTypeNoteAndNaddr.svelte';
 	import { kindsValidTag, uniqueArray } from '$lib/kind';
+	import type { ModalParent } from '$lib/types';
 
 	import AddTypeNpub from './Add/AddTypeNpub.svelte';
 	import AddTypeNote from './Add/AddTypeNote.svelte';
@@ -19,7 +20,7 @@
 	import AddTypeServer from './Add/AddTypeServer.svelte';
 	import AddType3 from './Add/AddType3.svelte';
 
-	export let parent: any;
+	export let parent: ModalParent;
 
 	// Form Data
 	const res: { btn: string; tag: string[]; check: boolean } = {

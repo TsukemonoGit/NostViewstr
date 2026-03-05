@@ -14,8 +14,9 @@
 	import { pubkey_viewer } from '$lib/stores/settings';
 	import { queryClient } from '$lib/stores/bookmarkEvents';
 	import { verifier } from 'rx-nostr-crypto';
+	import type { ModalParent } from '$lib/types';
 
-	export let parent: any;
+	export let parent: ModalParent;
 
 	//export let pubkey: string;
 	const RelayState = {
@@ -93,14 +94,7 @@
 		sig: ''
 	};
 
-	let res = {};
 	let subscription: Subscription;
-	// We've created a custom submit function to pass the response and close the modal.
-	function onFormSubmit(): void {
-		if ($modalStore[0].response) $modalStore[0].response(res);
-
-		modalStore.close();
-	}
 
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
@@ -150,7 +144,7 @@
 		const observable = rxNostr.use(rxReq);
 
 		// オブザーバーオブジェクトの作成
-		const observer: Observer<any> = {
+		const observer: Observer<EventPacket> = {
 			next: (packet: EventPacket) => {
 				//	console.log(packet);
 				relaysState[packet.from] = RelayState.Exist;
@@ -263,9 +257,9 @@
 			{/if}
 		</article>
 		<div class="break-all text-sm grid grid-cols-[0.5fr_0.5fr]">
-			{#each relays as relay, index}
+			{#each relays as relay}
 				<div class="card m-0 p-0 text-sm bg-grey">
-					<span class={stateColor(relaysState[relay])} />
+					<span class={stateColor(relaysState[relay])}></span>
 					{relay}
 				</div>
 			{/each}

@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 
+	import type { ModalParent } from '$lib/types';
 	import PublicButton from './PublicButton.svelte';
 	import PrivateButton from './PrivateButton.svelte';
 	import Save from './Save.svelte';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
-	export let parent: any;
-	export let onFormSubmit: any;
+	export let parent: ModalParent;
+	export let onFormSubmit: () => void;
 	//export let viewList: string[][];
 	export let tag: string[];
 	export let bkm: undefined | string;
@@ -18,7 +19,7 @@
 	const myValue = 'Other';
 
 	if (!selectBoxItem.includes(myValue)) {
-		selectBoxItem.push(myValue);
+		selectBoxItem = [...selectBoxItem, myValue];
 	}
 
 	let input: string = tag ? tag[1] : '';
@@ -41,7 +42,7 @@
 
 {#if selectItem === myValue}
 	<article class="body">
-		<span class="dot" /><span class="px-1 font-bold">{tag[0]}</span>
+		<span class="dot"></span><span class="px-1 font-bold">{tag[0]}</span>
 	</article>
 	<div class="input-group input-group-divider grid-cols-[auto_1fr] m-2">
 		<div class="my-2">{tag[0]}</div>

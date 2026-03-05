@@ -47,7 +47,7 @@
 	onMount(async () => {
 		mounted = true;
 		try {
-			const NostrLogin = await import('nostr-login');
+			const NostrLogin = await import('@konemono/nostr-login');
 			NostrLogin.init({
 				/*options*/
 				//noBanner: true

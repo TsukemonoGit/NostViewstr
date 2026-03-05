@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { toastStore } from '$lib/stores/store';
+	import type { ModalParent } from '$lib/types';
 
 	import PublicButton from './PublicButton.svelte';
 	import { Nip11Registry } from 'rx-nostr';
 	import { normalizeURL } from 'nostr-tools/utils';
 
 	export let res: { btn: string; tag: string[] };
-	export let parent: any;
-	export let onFormSubmit: any;
+	export let parent: ModalParent;
+	export let onFormSubmit: () => void;
 	//export let event: Nostr.Event;
 	export let tag: string[];
 	export let number: number;
@@ -20,7 +21,7 @@
 	const myValue = 'Relay';
 
 	if (!selectBoxItem.includes(myValue)) {
-		selectBoxItem.push(myValue);
+		selectBoxItem = [...selectBoxItem, myValue];
 	}
 
 	let input: string = tag ? tag[1] : '';
@@ -106,7 +107,7 @@
 
 {#if selectItem === myValue}
 	<article class="body">
-		<span class="dot" /><span class="px-1 font-bold">Relay</span>
+		<span class="dot"></span><span class="px-1 font-bold">Relay</span>
 	</article>
 	<!-- Enable for debugging: -->
 	<div class="p-2">

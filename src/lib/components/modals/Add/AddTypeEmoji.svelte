@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 
+	import type { ModalParent } from '$lib/types';
 	import PublicButton from './PublicButton.svelte';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
-	export let parent: any;
-	export let onFormSubmit: any;
+	export let parent: ModalParent;
+	export let onFormSubmit: () => void;
 	//export let viewList: string[][];
 	export let tag: string[];
 
@@ -15,7 +16,7 @@
 	const myValue = 'Emoji';
 
 	if (!selectBoxItem.includes(myValue)) {
-		selectBoxItem.push(myValue);
+		selectBoxItem = [...selectBoxItem, myValue];
 	}
 
 	let emojiUrl: string = tag ? tag[2] : '';
@@ -40,7 +41,7 @@
 
 {#if selectItem === myValue}
 	<article class="body">
-		<span class="dot" /><span class="px-1 font-bold">Emoji</span>
+		<span class="dot"></span><span class="px-1 font-bold">Emoji</span>
 	</article>
 	<div
 		class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"

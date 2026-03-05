@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
+	import type { ModalParent } from '$lib/types';
 
 	import PublicButton from './PublicButton.svelte';
 	import { Nip11Registry } from 'rx-nostr';
@@ -8,8 +9,8 @@
 	import { normalizeURL } from 'nostr-tools/utils';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
-	export let parent: any;
-	export let onFormSubmit: any;
+	export let parent: ModalParent;
+	export let onFormSubmit: () => void;
 	//export let event: Nostr.Event;
 	export let tag: string[]; //編集の場合はここに初期値が
 
@@ -19,7 +20,7 @@
 	const myValue = 'Relay';
 
 	if (!selectBoxItem.includes(myValue)) {
-		selectBoxItem.push(myValue);
+		selectBoxItem = [...selectBoxItem, myValue];
 	}
 
 	let input: string = tag ? tag[1] : '';
@@ -121,7 +122,7 @@ keep kind:10002 lists small!
 {#if selectItem === myValue}
 	<!-- Enable for debugging: -->
 	<article class="body">
-		<span class="dot" /><span class="px-1 font-bold">Relay</span>
+		<span class="dot"></span><span class="px-1 font-bold">Relay</span>
 	</article>
 	<div
 		class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"

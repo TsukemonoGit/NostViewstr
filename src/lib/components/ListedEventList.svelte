@@ -19,8 +19,7 @@
 		deletePubs,
 		editPrivates,
 		encryptAuto,
-		getRelays,
-		nip44En
+		getRelays
 	} from '$lib/nostrFunctions';
 	import { onMount } from 'svelte';
 
@@ -67,7 +66,10 @@
 	import FooterMenu from './FooterMenu.svelte';
 	import { kindsValidTag } from '$lib/kind';
 	import { page } from '$app/state';
-	import { parameterizedReplaceable } from '$lib/otherFunctions';
+	import {
+		parameterizedReplaceable,
+		type SelectIndex
+	} from '$lib/otherFunctions';
 	import FormatListBulleted from '@material-design-icons/svg/round/format_list_bulleted.svg?raw';
 
 	export let bkm: string = 'pub';
@@ -165,7 +167,7 @@
 		if ($pubkey_viewer === undefined || $pubkey_viewer === '') {
 			//$pubkey_viewer = await getPub($nip46Check); //NIP46拒否られてるときはNIP46画面出さない
 			try {
-				const NostrLogin = await import('nostr-login');
+				const NostrLogin = await import('@konemono/nostr-login');
 				NostrLogin.init({
 					/*options*/
 					//noBanner: true
@@ -267,9 +269,7 @@
 		slot: '<p>Skeleton</p>'
 	};
 
-	async function DeleteNote(e: {
-		detail: { number: number; event: any; tagArray: any };
-	}) {
+	async function DeleteNote(e: SelectIndex) {
 		if ($nowProgress) {
 			return;
 		}
@@ -378,9 +378,7 @@
 		// Pass a reference to your custom component
 		ref: ModalMove
 	};
-	function MoveNote(e: {
-		detail: { number: number; event: any; tagArray: any };
-	}): void {
+	function MoveNote(e: SelectIndex): void {
 		if ($nowProgress) {
 			return;
 		}
@@ -428,9 +426,7 @@
 
 	//---------------------------------------------move prv⇔pub
 
-	async function MoveBkmNote(e: {
-		detail: { number: number; event: any; tagArray: any };
-	}): Promise<void> {
+	async function MoveBkmNote(e: SelectIndex): Promise<void> {
 		if ($nowProgress) {
 			return;
 		}
@@ -451,9 +447,7 @@
 		$nowProgress = false;
 	}
 
-	function CheckNote(e: {
-		detail: { number: number; event: any; tagArray: any };
-	}): void {
+	function CheckNote(e: SelectIndex): void {
 		console.log(e);
 		console.log('CheckNote');
 		//const number: number = e.detail.number + $pageNum * $amount;
@@ -605,8 +599,8 @@
 					if (bkmk && bkmk.content) {
 						try {
 							return await addPrivates(bkmk.content, pubkey, idTagList, check);
-						} catch (error: any) {
-							throw Error(error);
+						} catch (error: unknown) {
+							throw error instanceof Error ? error : new Error(String(error));
 						}
 					} else {
 						return await addPrivates('', pubkey, idTagList, check);
@@ -658,8 +652,8 @@
 				toastStore.trigger(t);
 			}
 			//	}
-		} catch (error: any) {
-			throw Error(error);
+		} catch (error: unknown) {
+			throw error instanceof Error ? error : new Error(String(error));
 			// console.error(error);
 
 			// const t = {
@@ -776,13 +770,15 @@
 				//		$nowProgress = false;
 				return;
 			}
-			const deleteRes = await deleteNotesfromLists(from.tag, indexes);
+			await deleteNotesfromLists(from.tag, indexes);
 			//		$nowProgress = false;
 			listedEventRef?.viewUpdate();
 		}
 	}
 
-	function EditTag(e: CustomEvent<any>): void {
+	function EditTag(
+		e: CustomEvent<{ number: number; tagArray: string[] }>
+	): void {
 		console.log(e.detail);
 		const listNumber = $listNum; //ここにきたじてんのNumberでこてい
 
@@ -1099,7 +1095,7 @@
 				{$_('nodata.iconafter')}
 			</div>
 		</div>{/await}
-{:else if !$nowProgress && $pubkey_viewer === pubkey && kindsValidTag.hasOwnProperty(kind)}
+{:else if !$nowProgress && $pubkey_viewer === pubkey && Object.prototype.hasOwnProperty.call(kindsValidTag, kind)}
 	<div
 		class="fixed bottom-14 z-10 box-border overflow-x-hidden {$isMulti
 			? 'multi'
@@ -1114,7 +1110,10 @@
 			{:else if $isMulti === MultiMenu.Multi}
 				<!-- {#if !(!$page.params.hasOwnProperty('npub') || !isOwner || !viewEvent?.kind || viewEvent?.kind < 30000 || viewEvent?.kind >= 40000 || isNaddr)} -->
 				<button
-					disabled={!page.params.hasOwnProperty('npub') ||
+					disabled={!Object.prototype.hasOwnProperty.call(
+						page.params,
+						'npub'
+					) ||
 						!isOwner ||
 						!viewEvent?.kind ||
 						viewEvent?.kind < 30000 ||

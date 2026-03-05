@@ -2,12 +2,13 @@
 	import { checkInputNoteOrNaddr } from '$lib/nostrFunctions';
 	import { _ } from 'svelte-i18n';
 	import { modalStore, toastStore } from '$lib/stores/store';
+	import type { ModalParent } from '$lib/types';
 	import PrivateButton from './PrivateButton.svelte';
 	import PublicButton from './PublicButton.svelte';
 
 	export let res: { btn: string; tag: string[] };
-	export let parent: any;
-	export let onFormSubmit: any;
+	export let parent: ModalParent;
+	export let onFormSubmit: () => void;
 
 	export let selectBoxItem: string[];
 	export let selectItem: string;
@@ -15,7 +16,7 @@
 	const myValue = 'Event';
 
 	if (!selectBoxItem.includes(myValue)) {
-		selectBoxItem.push(myValue);
+		selectBoxItem = [...selectBoxItem, myValue];
 	}
 
 	let input: string;
@@ -44,7 +45,7 @@
 
 {#if selectItem === myValue}
 	<article class="body">
-		<span class="dot" /><span class="px-1 font-bold">Event</span>
+		<span class="dot"></span><span class="px-1 font-bold">Event</span>
 	</article>
 	<!-- Enable for debugging: -->
 	<div class="p-2">

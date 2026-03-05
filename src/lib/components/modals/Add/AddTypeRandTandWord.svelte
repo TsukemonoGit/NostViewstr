@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 
+	import type { ModalParent } from '$lib/types';
 	import PublicButton from './PublicButton.svelte';
 	import PrivateButton from './PrivateButton.svelte';
 	import Save from './Save.svelte';
 
 	export let res: { btn: string; tag: string[]; check: boolean };
-	export let parent: any;
-	export let onFormSubmit: any;
+	export let parent: ModalParent;
+	export let onFormSubmit: () => void;
 	//export let viewList: string[][];
 	export let tag: string[];
 	//export let countCharacters: string[];
@@ -20,7 +21,7 @@
 	const myValue = tagKind === 't' ? 'HashTag' : 'Word';
 
 	if (!selectBoxItem.includes(myValue)) {
-		selectBoxItem.push(myValue);
+		selectBoxItem = [...selectBoxItem, myValue];
 	}
 
 	// let selectValue: string = tag ? tag[0] : countCharacters[0];
@@ -45,7 +46,7 @@
 
 {#if selectItem === myValue}
 	<article class="body">
-		<span class="dot" /><span class="px-1 font-bold">{myValue}</span>
+		<span class="dot"></span><span class="px-1 font-bold">{myValue}</span>
 	</article>
 	<div class="p-2">
 		<input
