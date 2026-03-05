@@ -94,12 +94,10 @@ export async function loadOgp(url: string) {
 	}
 }
 
-export const uniqueTags = async (
-	tags: [string, string, ...string[]][]
-): Promise<[string, string, ...string[]][]> => {
+export const uniqueTags = async (tags: string[][]): Promise<string[][]> => {
 	if (tags.length === 0) return [];
 
-	return tags.reduce<[string, string, ...string[]][]>((acc, curr) => {
+	return tags.reduce<string[][]>((acc, curr) => {
 		const [tag1, tag2, ...tag3] = curr;
 
 		const isDuplicate = acc.some(

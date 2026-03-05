@@ -19,7 +19,7 @@
 	import { navigating } from '$app/stores';
 	let saveCheck: boolean;
 	//let kind: number = Number(kinds.keys().next().value);
-	let selectValue = kinds.keys().next().value.toString();
+	let selectValue = kinds.keys().next().value?.toString() ?? '30001';
 	$: console.log(selectValue);
 	let inputValue: string;
 	onMount(() => {
@@ -254,6 +254,7 @@
 		</h5>
 		<button
 			class="btn variant-filled-primary"
+			aria-label="Open JSON viewer"
 			on:click={() => {
 				goto(`/Json`);
 			}}

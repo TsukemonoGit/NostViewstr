@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
-	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
+	import { modalStore } from '$lib/stores/store';
 
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 
@@ -19,8 +19,6 @@
 	//export let menuMode: MenuMode;
 
 	//export let tagArray: string[] | undefined;
-
-	const modalStore = getModalStore();
 
 	type NostrProfile = {
 		name: string;

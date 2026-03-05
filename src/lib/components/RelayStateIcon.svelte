@@ -62,7 +62,7 @@
 			<div
 				class="h-4 w-4 rounded-full {dotColor($relayState.get(relayUrl))}"
 				title={$relayState.get(relayUrl)}
-			/>
+			></div>
 			{relayUrl.length > 30 ? `${relayUrl.slice(0, 28)}...` : relayUrl}
 
 			<!-- {#if ($relayState[relay] === 'error' || $relayState[relay] === 'not-started' || $relayState[relay] === 'terminated') && !get(disabledButtons).has(relay)} -->

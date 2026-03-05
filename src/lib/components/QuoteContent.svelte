@@ -88,7 +88,7 @@
 		} else return '';
 	};
 
-	const toArray = (decodeData: nip19.DecodeResult) => {
+	const toArray = (decodeData: nip19.DecodedResult) => {
 		if (decodeData.type === 'naddr') {
 			const data = decodeData.data as nip19.AddressPointer;
 			return ['a', `${data.kind}:${data.pubkey}:${data.identifier}`];

@@ -39,13 +39,16 @@
 	let isOnMount = false;
 	let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
-	}) => void;
+	}) => void = () => {};
 	let MoveNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
-	}) => void;
+	}) => void = () => {};
 	let CheckNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
-	}) => void;
+	}) => void = () => {};
+	let MoveBkmNote: (e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => void = () => {};
 	let isOwner: boolean = false;
 	$: isOwner = $pubkey_viewer === pubkey;
 	let settings: boolean = false;
@@ -201,6 +204,7 @@ pubkey:{nip19.npubEncode(pubkey)}"
 							{DeleteNote}
 							{MoveNote}
 							{CheckNote}
+							{MoveBkmNote}
 							bind:bkm
 							{isOwner}
 							isNaddr={false}

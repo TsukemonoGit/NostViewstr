@@ -15,7 +15,7 @@
 			/>{:else}
 			<div
 				class="w-4 h-4 object-contain justify-center variant-filled-surface"
-			/>
+			></div>
 		{/if}
 	</div>
 	<div class="grid grid-rows-[auto_1fr]">

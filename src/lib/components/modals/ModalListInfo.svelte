@@ -84,7 +84,7 @@
 					disabled={$modalStore[0].value.pubkey !== $pubkey_viewer}
 					bind:value={res.description}
 					placeholder=""
-				/>
+				></textarea>
 			</label>
 		</div>
 

@@ -172,7 +172,7 @@
 								frameborder="0"
 								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 								allowfullscreen
-							/>
+							></iframe>
 						{:else if item.content?.endsWith('.mp4') || item.content?.endsWith('.mov')}
 							<video controls class="max-h-[20em] max-w-full">
 								<source src={item.content} type="video/mp4" />

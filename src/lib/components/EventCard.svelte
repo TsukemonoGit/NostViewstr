@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ModalComponent, ModalSettings } from '@skeletonlabs/skeleton';
-	import { Modal, Toast, getModalStore } from '@skeletonlabs/skeleton';
+	import { modalStore } from '$lib/stores/store';
 	import ModalProfile from '$lib/components/modals/ModalProfile.svelte';
 	import ModalEventJson from '$lib/components/modals/ModalEventJson.svelte';
 	import { nip19, type Event } from 'nostr-tools';
@@ -31,7 +31,6 @@
 	export let pubkey: string;
 
 	let metadataContent: NostrProfile;
-	const modalStore = getModalStore();
 
 	type NostrProfile = {
 		name: string;
@@ -224,7 +223,7 @@
 					</u>
 				</button>
 				<!--display_name-->
-				<div />
+				<div></div>
 				<!--time-->
 				<div class="min-w-max text-sm place-self-center">
 					<!-- <button

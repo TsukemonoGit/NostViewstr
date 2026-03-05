@@ -95,7 +95,7 @@
 					maxlength="400"
 					bind:value={inputMessage}
 					disabled={$nowProgress}
-				/>
+				></textarea>
 				{#if error}
 					<p class="error">
 						Message is required and must be less than {MAX_MESSAGE_LENGTH} characters

@@ -63,12 +63,12 @@
 			? {
 					message: `publish result<br>${response.msg}`,
 					timeout: 5000
-			  }
+				}
 			: {
 					message: `failed to publish`,
 					background: 'bg-orange-500 text-white width-filled ',
 					timeout: 5000
-			  };
+				};
 		toastStore.trigger(toastSettings);
 		modalStore.close();
 	}
@@ -129,12 +129,12 @@
 				? {
 						message: `publish result<br>${response.msg}`,
 						timeout: 5000
-				  }
+					}
 				: {
 						message: `failed to publish`,
 						background: 'bg-orange-500 text-white width-filled ',
 						timeout: 5000
-				  };
+					};
 			toastStore.trigger(toastSettings);
 			modalStore.close();
 		}
@@ -170,12 +170,8 @@
 			<p>Quote:</p>
 		{/if}
 
-		<textarea
-			class="textarea"
-			rows="5"
-			placeholder=""
-			bind:value={res.content}
-		/>
+		<textarea class="textarea" rows="5" placeholder="" bind:value={res.content}
+		></textarea>
 		{#if contents.pubkey !== ''}
 			<label class="flex items-center space-x-2">
 				<input class="checkbox" type="checkbox" bind:checked />
@@ -197,7 +193,7 @@
 				<span class="text-xs"
 					>[{#if contents.tags}
 						{#each checked ? tags_p : contents.tags as tags}
-							<div class="ml-2">{JSON.stringify(tags, null, 0)},</div>
+							<span class="block ml-2">{JSON.stringify(tags, null, 0)},</span>
 						{/each}
 					{/if}]</span
 				>

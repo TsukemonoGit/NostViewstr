@@ -563,6 +563,7 @@
 						class={buttonClass}
 						on:click={openLists}
 						disabled={!(kind >= 30000 && kind < 40000) || disabled}
+						aria-label="Open lists"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
 							height="24px"
@@ -713,7 +714,7 @@
 				><svelte:fragment slot="lead">{@html swap}</svelte:fragment>Sort Mode</ListBoxItem
 			>
 		</ListBox>
-		<div class="arrow bg-primary-400-500-token" />
+		<div class="arrow bg-primary-400-500-token"></div>
 		<!-- <div class="arrow bg-surface-100-800-token border" /> -->
 	</div>
 </div>

@@ -11,16 +11,12 @@
 		flip,
 		arrow
 	} from '@floating-ui/dom';
-	import {
-		Modal,
-		Toast,
-		initializeStores,
-		storePopup
-	} from '@skeletonlabs/skeleton';
+	import { Toast, initializeStores, storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 	//最初に一回だけ実行するやつ
 	import { setModalStore } from '$lib/stores/store';
 	import { setToastStore } from '$lib/stores/store';
+	import CustomModal from '$lib/components/CustomModal.svelte';
 	import RegisterSw from '$lib/components/RegisterSW.svelte';
 	import { onMount } from 'svelte';
 	import {
@@ -158,12 +154,13 @@
 
 <slot />
 
-<Modal class="top-0 " />
+<CustomModal class="top-0 " />
 <Toast class="z-[9999]" />
 
 <!--zapボタン押したときにこの要素をクリックする-->
 <button
 	class="fixed w-0 h-0 overflow-hidden"
+	aria-label="Zap"
 	data-npub="npub1sjcvg64knxkrt6ev52rywzu9uzqakgy8ehhk8yezxmpewsthst6sw3jqcw"
 	data-naddr="naddr1qqxnzdesxgerwve3xgensvfjqgsgfvxyd2mfntp4avk29pj8pwz7pqwmyzrummmrjv3rdsuhg9mc9agrqsqqql8kmq36cm"
 	data-relays="wss://yabu.me,wss://nos.lol,wss://relay.nostr.wirednet.jp,wss://relay.nostr.band"

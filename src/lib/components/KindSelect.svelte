@@ -38,6 +38,7 @@
 		class="btn sm:w-24 w-12 variant-filled-primary fill-white"
 		style="padding-right:  0; padding-left:0; justify-content:center"
 		use:popup={popupSelect}
+		aria-label="Select kind"
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -89,5 +90,5 @@
 	>
 	<div
 		class="arrow bg-primary-500-400-token border border-primary-500-400-token"
-	/>
+	></div>
 </div>

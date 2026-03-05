@@ -451,7 +451,7 @@
 							</button>
 						</div>
 					{:else}
-						<div />
+						<div></div>
 					{/if}
 				</div>
 			</div>
@@ -511,7 +511,7 @@
 					<RelayStateIcon readTrueArray={$relaySet[pubkey]?.mergeRelays} />
 				</div>
 
-				<div class="arrow bg-surface-100-800-token" />
+				<div class="arrow bg-surface-100-800-token"></div>
 			</div>
 		{/if}
 	</div>

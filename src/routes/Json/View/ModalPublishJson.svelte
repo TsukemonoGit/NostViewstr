@@ -96,7 +96,7 @@
 			bind:value={event}
 			placeholder=""
 			bind:this={textareaElement}
-		/>
+		></textarea>
 		<!-- </div> -->
 
 		<footer class="modal-footer {parent.regionFooter} mt-2">

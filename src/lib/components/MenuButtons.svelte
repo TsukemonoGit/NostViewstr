@@ -30,12 +30,13 @@
 	export let share = true; //pたぐのときはシェア不可にしてるらしい
 	export let kind: number | undefined;
 	export let isNaddr: boolean;
-	enum State {
-		Default,
-		Delete,
-		Move,
-		Check
-	}
+	const State = {
+		Default: 0,
+		Delete: 1,
+		Move: 2,
+		Check: 3
+	} as const;
+	type State = (typeof State)[keyof typeof State];
 
 	const dispatch = createEventDispatcher();
 
@@ -240,7 +241,7 @@
 		{@html swap}
 	</div>
 {:else}
-	<div />
+	<div></div>
 {/if}
 
 <style>

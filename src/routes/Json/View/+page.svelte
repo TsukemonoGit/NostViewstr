@@ -48,13 +48,16 @@
 	let isOnMount = false;
 	let DeleteNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
-	}) => void;
+	}) => void = () => {};
 	let MoveNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
-	}) => void;
+	}) => void = () => {};
 	let CheckNote: (e: {
 		detail: { number: number; event: any; tagArray: any };
-	}) => void;
+	}) => void = () => {};
+	let MoveBkmNote: (e: {
+		detail: { number: number; event: any; tagArray: any };
+	}) => void = () => {};
 	let isOwner: boolean;
 	$: isOwner = $pubkey_viewer === pubkey;
 	$: console.log(isOwner);
@@ -227,6 +230,7 @@
 						{DeleteNote}
 						{MoveNote}
 						{CheckNote}
+						{MoveBkmNote}
 						bind:bkm
 						{isOwner}
 						isNaddr={false}

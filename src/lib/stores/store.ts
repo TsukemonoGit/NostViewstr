@@ -1,15 +1,11 @@
-import {
-	getModalStore,
-	getToastStore,
-	type ModalStore,
-	type ToastStore
-} from '@skeletonlabs/skeleton';
+import { getToastStore, type ToastStore } from '@skeletonlabs/skeleton';
+import { createCustomModalStore, type CustomModalStore } from './customModal';
 
-export let modalStore: ModalStore;
+export let modalStore: CustomModalStore;
 export let toastStore: ToastStore;
 
 export function setModalStore() {
-	modalStore = getModalStore();
+	modalStore = createCustomModalStore();
 }
 
 export function setToastStore() {

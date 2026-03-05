@@ -105,7 +105,7 @@
 					</u>
 				</div>
 				<!--display_name-->
-				<div />
+				<div></div>
 				<!--time-->
 				<div class="min-w-max text-sm place-self-center">
 					<!-- <button
