@@ -45,7 +45,7 @@
 	"type": "module",
 	"dependencies": {
 		"@floating-ui/dom": "^1.7.6",
-		"@konemono/nostr-login": "^1.14.1",
+		"@konemono/nostr-login": "^1.15.1",
 		"@material-design-icons/svg": "^0.14.15",
 		"@sveltejs/adapter-vercel": "^6.3.3",
 		"@tanstack/svelte-query": "^5.90.2",
