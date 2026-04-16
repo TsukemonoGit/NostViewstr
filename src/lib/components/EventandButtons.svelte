@@ -24,6 +24,7 @@
 	import LatestEvent from './nostrData/LatestEvent.svelte';
 	import { relaySet } from '$lib/stores/relays';
 	import { page } from '$app/stores';
+	import type Nostr from 'nostr-typedef';
 
 	export let tag: {
 		id: number;
@@ -31,7 +32,7 @@
 	};
 	export let id: string;
 	export let popupCombobox: PopupSettings;
-	export let filter: {};
+	export let filter: Nostr.Filter;
 	export let isOwner: boolean;
 	export let pubkey: string;
 	export let selectedIndex: SelectIndex;
@@ -49,7 +50,7 @@
 		{id}
 		let:text
 		relay={tag.name.length > 2 && tag.name[2] !== ''
-			? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
+			? [...new Set([...($relaySet[pubkey]?.mergeRelays || ''), tag.name[2]])]
 			: undefined}
 	>
 		<div
@@ -127,7 +128,7 @@
 			pubkey={text.pubkey}
 			let:metadata
 			relay={tag.name.length > 2 && tag.name[2] !== ''
-				? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
+				? [...new Set([...($relaySet[pubkey]?.mergeRelays || ''), tag.name[2]])]
 				: undefined}
 		>
 			<div
@@ -227,270 +228,275 @@
 			</div>
 		</Metadata>
 	</Text>
-{:else if tag.name[0] === 'a' && nip33Regex.test(tag.name[1])}
-	<!-- {#if $searchRelays && $searchRelays.length > 0}
-					<NostrApp relays={$searchRelays}> -->
-	<LatestEvent queryKey={[tag.name[1]]} filters={[filter]} let:events>
-		<div
-			slot="loading"
-			class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
-		>
-			{#if kind && kind === 30023}<!--long form content-->
-				<OGP
-					ogp={{
-						title: 'Long Form Content',
-						image: '',
-						description: 'open in habla' + ogpDescription(parseNaddr(tag.name)),
-						favicon: 'https://habla.news/favicon.png'
-					}}
-					url={'https://habla.news/a/\n' +
-						nip19.naddrEncode(parseNaddr(tag.name))}
-				/>
-				<!---->
-			{:else if kind && kind === 34550}<!--communities-->
-				<OGP
-					ogp={{
-						title: 'Communities',
-						image: '',
-						description:
-							'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
-						favicon: 'https://habla.news/favicon.png'
-					}}
-					url={'https://habla.news/c/' +
-						nip19.naddrEncode(parseNaddr(tag.name))}
-				/>
-			{:else}
-				<SearchCard
-					{filter}
-					message={`loading [${tag.name}]`}
-					isPageOwner={isOwner}
-					queryKey={tag.name}
-				/>
-			{/if}
-			<MenuByType
-				setSelectedIndex={{
-					detail: {
-						number: tag.id,
-						event: undefined,
-						tagArray: tag.name
-					}
-				}}
-				{popupCombobox}
-				bind:selectedIndex
-				{CheckNote}
-			/>
-		</div>
-		<div
-			slot="error"
-			class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
-		>
-			{#if kind && kind === 30023}
-				<OGP
-					ogp={{
-						title: 'Long Form Content',
-						image: '',
-						description:
-							'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
-						favicon: 'https://habla.news/favicon.png'
-					}}
-					url={'https://habla.news/a/' +
-						nip19.naddrEncode(parseNaddr(tag.name))}
-				/>
-				<!---->
-			{:else if kind && kind === 34550}<!--communities-->
-				<OGP
-					ogp={{
-						title: 'Communities',
-						image: '',
-						description:
-							'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
-						favicon: 'https://habla.news/favicon.png'
-					}}
-					url={'https://habla.news/c/' +
-						nip19.naddrEncode(parseNaddr(tag.name))}
-				/>
-			{:else}
-				<SearchCard
-					{filter}
-					message={`error [${tag.name}]`}
-					isPageOwner={isOwner}
-					queryKey={tag.name}
-				/>
-			{/if}
-			<MenuByType
-				setSelectedIndex={{
-					detail: {
-						number: tag.id,
-						event: undefined,
-						tagArray: tag.name
-					}
-				}}
-				{popupCombobox}
-				bind:selectedIndex
-				{CheckNote}
-			/>
-		</div>
-		<div
-			slot="nodata"
-			class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
-		>
-			{#if kind && kind === 30023}
-				<OGP
-					ogp={{
-						title: 'Long Form Content',
-						image: '',
-						description:
-							'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
-						favicon: 'https://habla.news/favicon.png'
-					}}
-					url={'https://habla.news/a/' +
-						nip19.naddrEncode(parseNaddr(tag.name))}
-				/>
-				<!---->
-			{:else if kind && kind === 34550}<!--communities-->
-				<OGP
-					ogp={{
-						title: 'Communities',
-						image: '',
-						description:
-							'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
-						favicon: 'https://habla.news/favicon.png'
-					}}
-					url={'https://habla.news/c/' +
-						nip19.naddrEncode(parseNaddr(tag.name))}
-				/>
-			{:else}
-				<SearchCard
-					{filter}
-					message={`not found [${tag.name}]`}
-					isPageOwner={isOwner}
-					queryKey={tag.name}
-				/>
-			{/if}
-			<MenuByType
-				setSelectedIndex={{
-					detail: {
-						number: tag.id,
-						event: undefined,
-						tagArray: tag.name
-					}
-				}}
-				{popupCombobox}
-				bind:selectedIndex
-				{CheckNote}
-			/>
-		</div>
+{:else if tag.name[0] === 'a' && nip33Regex.test(tag.name[1])}{#key tag.name[1]}
+		{#await new Promise((r) => setTimeout(r, 0)) then}
+			<LatestEvent queryKey={[tag.name[1]]} filters={[filter]} let:events>
+				<div
+					slot="loading"
+					class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+				>
+					{#if kind && kind === 30023}<!--long form content-->
+						<OGP
+							ogp={{
+								title: 'Long Form Content',
+								image: '',
+								description:
+									'open in habla' + ogpDescription(parseNaddr(tag.name)),
+								favicon: 'https://habla.news/favicon.png'
+							}}
+							url={'https://habla.news/a/\n' +
+								nip19.naddrEncode(parseNaddr(tag.name))}
+						/>
+						<!---->
+					{:else if kind && kind === 34550}<!--communities-->
+						<OGP
+							ogp={{
+								title: 'Communities',
+								image: '',
+								description:
+									'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
+								favicon: 'https://habla.news/favicon.png'
+							}}
+							url={'https://habla.news/c/' +
+								nip19.naddrEncode(parseNaddr(tag.name))}
+						/>
+					{:else}
+						<SearchCard
+							{filter}
+							message={`loading [${tag.name}]`}
+							isPageOwner={isOwner}
+							queryKey={tag.name}
+						/>
+					{/if}
+					<MenuByType
+						setSelectedIndex={{
+							detail: {
+								number: tag.id,
+								event: undefined,
+								tagArray: tag.name
+							}
+						}}
+						{popupCombobox}
+						bind:selectedIndex
+						{CheckNote}
+					/>
+				</div>
+				<div
+					slot="error"
+					class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+				>
+					{#if kind && kind === 30023}
+						<OGP
+							ogp={{
+								title: 'Long Form Content',
+								image: '',
+								description:
+									'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
+								favicon: 'https://habla.news/favicon.png'
+							}}
+							url={'https://habla.news/a/' +
+								nip19.naddrEncode(parseNaddr(tag.name))}
+						/>
+						<!---->
+					{:else if kind && kind === 34550}<!--communities-->
+						<OGP
+							ogp={{
+								title: 'Communities',
+								image: '',
+								description:
+									'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
+								favicon: 'https://habla.news/favicon.png'
+							}}
+							url={'https://habla.news/c/' +
+								nip19.naddrEncode(parseNaddr(tag.name))}
+						/>
+					{:else}
+						<SearchCard
+							{filter}
+							message={`error [${tag.name}]`}
+							isPageOwner={isOwner}
+							queryKey={tag.name}
+						/>
+					{/if}
+					<MenuByType
+						setSelectedIndex={{
+							detail: {
+								number: tag.id,
+								event: undefined,
+								tagArray: tag.name
+							}
+						}}
+						{popupCombobox}
+						bind:selectedIndex
+						{CheckNote}
+					/>
+				</div>
+				<div
+					slot="nodata"
+					class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+				>
+					{#if kind && kind === 30023}
+						<OGP
+							ogp={{
+								title: 'Long Form Content',
+								image: '',
+								description:
+									'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
+								favicon: 'https://habla.news/favicon.png'
+							}}
+							url={'https://habla.news/a/' +
+								nip19.naddrEncode(parseNaddr(tag.name))}
+						/>
+						<!---->
+					{:else if kind && kind === 34550}<!--communities-->
+						<OGP
+							ogp={{
+								title: 'Communities',
+								image: '',
+								description:
+									'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
+								favicon: 'https://habla.news/favicon.png'
+							}}
+							url={'https://habla.news/c/' +
+								nip19.naddrEncode(parseNaddr(tag.name))}
+						/>
+					{:else}
+						<SearchCard
+							{filter}
+							message={`not found [${tag.name}]`}
+							isPageOwner={isOwner}
+							queryKey={tag.name}
+						/>
+					{/if}
+					<MenuByType
+						setSelectedIndex={{
+							detail: {
+								number: tag.id,
+								event: undefined,
+								tagArray: tag.name
+							}
+						}}
+						{popupCombobox}
+						bind:selectedIndex
+						{CheckNote}
+					/>
+				</div>
 
-		<Metadata
-			queryKey={['metadata', events.pubkey]}
-			pubkey={events.pubkey}
-			let:metadata
-			relay={tag.name.length > 2 && tag.name[2] !== ''
-				? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
-				: undefined}
-		>
-			<div
-				slot="loading"
-				class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
-			>
-				<EventCard
-					isPageOwner={isOwner}
-					tagArray={tag.name}
-					note={events}
-					metadata={undefined}
-					{pubkey}
-				/>
-				<MenuByType
-					setSelectedIndex={{
-						detail: {
-							number: tag.id,
-							event: events,
-							tagArray: tag.name
-						}
-					}}
-					{popupCombobox}
-					bind:selectedIndex
-					{CheckNote}
-				/>
-			</div>
-			<div
-				slot="error"
-				class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
-			>
-				<EventCard
-					isPageOwner={isOwner}
-					tagArray={tag.name}
-					note={events}
-					metadata={undefined}
-					{pubkey}
-				/><MenuByType
-					setSelectedIndex={{
-						detail: {
-							number: tag.id,
-							event: events,
-							tagArray: tag.name
-						}
-					}}
-					{popupCombobox}
-					bind:selectedIndex
-					{CheckNote}
-				/>
-			</div>
-			<div
-				slot="nodata"
-				class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
-			>
-				<EventCard
-					isPageOwner={isOwner}
-					tagArray={tag.name}
-					note={events}
-					metadata={undefined}
-					{pubkey}
-				/><MenuByType
-					setSelectedIndex={{
-						detail: {
-							number: tag.id,
-							event: events,
-							tagArray: tag.name
-						}
-					}}
-					{popupCombobox}
-					bind:selectedIndex
-					{CheckNote}
-				/>
-			</div>
-			<div
-				class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
-			>
-				<EventCard
-					isPageOwner={isOwner}
-					tagArray={tag.name}
-					note={events}
-					{metadata}
-					{pubkey}
-				/>
-				<MenuByType
-					setSelectedIndex={{
-						detail: {
-							number: tag.id,
-							event: events,
-							tagArray: tag.name
-						}
-					}}
-					{popupCombobox}
-					bind:selectedIndex
-					{CheckNote}
-				/>
-			</div>
-		</Metadata>
-	</LatestEvent>
+				<Metadata
+					queryKey={['metadata', events.pubkey]}
+					pubkey={events.pubkey}
+					let:metadata
+					relay={tag.name.length > 2 && tag.name[2] !== ''
+						? [
+								...new Set([
+									...($relaySet[pubkey]?.mergeRelays || ''),
+									tag.name[2]
+								])
+							]
+						: undefined}
+				>
+					<div
+						slot="loading"
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+					>
+						<EventCard
+							isPageOwner={isOwner}
+							tagArray={tag.name}
+							note={events}
+							metadata={undefined}
+							{pubkey}
+						/>
+						<MenuByType
+							setSelectedIndex={{
+								detail: {
+									number: tag.id,
+									event: events,
+									tagArray: tag.name
+								}
+							}}
+							{popupCombobox}
+							bind:selectedIndex
+							{CheckNote}
+						/>
+					</div>
+					<div
+						slot="error"
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+					>
+						<EventCard
+							isPageOwner={isOwner}
+							tagArray={tag.name}
+							note={events}
+							metadata={undefined}
+							{pubkey}
+						/><MenuByType
+							setSelectedIndex={{
+								detail: {
+									number: tag.id,
+									event: events,
+									tagArray: tag.name
+								}
+							}}
+							{popupCombobox}
+							bind:selectedIndex
+							{CheckNote}
+						/>
+					</div>
+					<div
+						slot="nodata"
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+					>
+						<EventCard
+							isPageOwner={isOwner}
+							tagArray={tag.name}
+							note={events}
+							metadata={undefined}
+							{pubkey}
+						/><MenuByType
+							setSelectedIndex={{
+								detail: {
+									number: tag.id,
+									event: events,
+									tagArray: tag.name
+								}
+							}}
+							{popupCombobox}
+							bind:selectedIndex
+							{CheckNote}
+						/>
+					</div>
+					<div
+						class="z-0 card drop-shadow px-1 py-1 my-0.5 grid grid-cols-[1fr_auto] gap-1"
+					>
+						<EventCard
+							isPageOwner={isOwner}
+							tagArray={tag.name}
+							note={events}
+							{metadata}
+							{pubkey}
+						/>
+						<MenuByType
+							setSelectedIndex={{
+								detail: {
+									number: tag.id,
+									event: events,
+									tagArray: tag.name
+								}
+							}}
+							{popupCombobox}
+							bind:selectedIndex
+							{CheckNote}
+						/>
+					</div>
+				</Metadata>
+			</LatestEvent>{/await}{/key}
 {:else if tag.name[0] === 'p' && hexRegex.test(tag.name[1])}
 	<Metadata
 		queryKey={['metadata', tag.name[1]]}
 		pubkey={tag.name[1]}
 		let:metadata
 		relay={tag.name.length > 2 && tag.name[2] !== ''
-			? [...new Set([...$relaySet[pubkey]?.mergeRelays, tag.name[2]])]
+			? [...new Set([...($relaySet[pubkey]?.mergeRelays || ''), tag.name[2]])]
 			: undefined}
 	>
 		<div
