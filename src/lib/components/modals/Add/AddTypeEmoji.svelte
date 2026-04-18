@@ -47,7 +47,7 @@
 		class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"
 	>
 		<div class="input-group-shim">
-			emoji name (only alphanumeric characters and underscores)
+			emoji name (only alphanumeric characters, underscores and hyphens)
 		</div>
 		<input
 			bind:this={inputElement}
