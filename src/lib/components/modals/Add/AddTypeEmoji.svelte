@@ -47,14 +47,14 @@
 		class="mt-2 input-group input-group-divider grid-rows-[auto_auto_auto_auto]"
 	>
 		<div class="input-group-shim">
-			emoji name (only alphanumeric characters and underscores)
+			emoji name (only alphanumeric characters, underscores and hyphens)
 		</div>
 		<input
 			bind:this={inputElement}
 			class="input p-2 my-2 w-full"
 			type="text"
 			bind:value={emojiName}
-			on:input={() => (emojiName = emojiName.replace(/[^a-zA-Z0-9_]/g, ''))}
+			on:input={() => (emojiName = emojiName.replace(/[^a-zA-Z0-9_-]/g, ''))}
 			placeholder="name"
 		/>
 		<div class="input-group-shim">image url</div>
