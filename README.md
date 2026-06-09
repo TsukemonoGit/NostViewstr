@@ -5,6 +5,7 @@ https://nostviewstr.vercel.app/
 第五弾 SvelteKit と Skeleton と Tailwindcss と Nostr と Nosvelte と rx-nostr とその他諸々の勉強
 
 ---
+<img width="769" height="917" alt="image" src="https://github.com/user-attachments/assets/e1acf896-8597-44b3-a6d0-090f1ee77ac0" />
 
 <!-- - nsec による書き込み（store） nosvelteのばーじょんやんや-->
 
