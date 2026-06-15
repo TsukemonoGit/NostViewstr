@@ -117,7 +117,7 @@ export const encodedURL = (str: string): string => {
 	//https://github.com/akiomik/noseyハッシュタグ以外も出てくるので変更しました
 	//https://github.com/SnowCait/nostter
 	//const encodedstr = encodeURIComponent(str);
-	const url = `https://lumilumi.vercel.app/search?k=1&t=${str.slice(1)}`; // `https://nostter.app/search?q=${encodedstr}`; //`https://nosey.vercel.app/?q=${encodedstr}`;
+	const url = `https://lumilumi.app/search?k=1&t=${str.slice(1)}`; // `https://nostter.app/search?q=${encodedstr}`; //`https://nosey.vercel.app/?q=${encodedstr}`;
 	return url;
 };
 
@@ -151,13 +151,13 @@ export function setLFCOgps(
 			image: imagetag ? imagetag[1] : '',
 			description: summarytag
 				? summarytag[1]
-				: 'open in habla\n' + ogpDescription(address),
+				: 'open in Lumilumi\n' + ogpDescription(address),
 			favicon: noslitag
 				? 'https://nosli.vercel.app/favicon.svg'
-				: 'https://habla.news/favicon.png',
+				: 'https://lumilumi.app/favicon.ico',
 			memo: 'kind:' + ev.kind + ' LongFormContent'
 		},
-		site: noslitag ? 'https://nosli.vercel.app/li/' : 'https://habla.news/a/'
+		site: noslitag ? 'https://nosli.vercel.app/li/' : 'https:/lumilumi.app/'
 	};
 }
 

@@ -241,10 +241,10 @@
 								title: 'Long Form Content',
 								image: '',
 								description:
-									'open in habla' + ogpDescription(parseNaddr(tag.name)),
-								favicon: 'https://habla.news/favicon.png'
+									'open in Lumilumi' + ogpDescription(parseNaddr(tag.name)),
+								favicon: 'https://lumilumi.app/favicon.ico'
 							}}
-							url={'https://habla.news/a/\n' +
+							url={'https://lumilumi.app/\n' +
 								nip19.naddrEncode(parseNaddr(tag.name))}
 						/>
 						<!---->
@@ -291,10 +291,10 @@
 								title: 'Long Form Content',
 								image: '',
 								description:
-									'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
-								favicon: 'https://habla.news/favicon.png'
+									'open in Lumilumi\n' + ogpDescription(parseNaddr(tag.name)),
+								favicon: 'https://lumilumi.app/favicon.ico'
 							}}
-							url={'https://habla.news/a/' +
+							url={'https://lumilumi.app/' +
 								nip19.naddrEncode(parseNaddr(tag.name))}
 						/>
 						<!---->
@@ -341,10 +341,10 @@
 								title: 'Long Form Content',
 								image: '',
 								description:
-									'open in habla\n' + ogpDescription(parseNaddr(tag.name)),
-								favicon: 'https://habla.news/favicon.png'
+									'open in Lumilumi\n' + ogpDescription(parseNaddr(tag.name)),
+								favicon: 'https://lumilumi.app/favicon.ico'
 							}}
-							url={'https://habla.news/a/' +
+							url={'https://lumilumi.app/' +
 								nip19.naddrEncode(parseNaddr(tag.name))}
 						/>
 						<!---->
