@@ -157,7 +157,7 @@ export function setLFCOgps(
 				: 'https://lumilumi.app/favicon.ico',
 			memo: 'kind:' + ev.kind + ' LongFormContent'
 		},
-		site: noslitag ? 'https://nosli.vercel.app/li/' : 'https:/lumilumi.app/'
+		site: noslitag ? 'https://nosli.vercel.app/li/' : 'https://lumilumi.app/'
 	};
 }
 
