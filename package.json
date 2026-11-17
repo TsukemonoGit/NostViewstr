@@ -47,7 +47,7 @@
 		"@floating-ui/dom": "^1.7.6",
 		"@konemono/nostr-login": "^1.15.7",
 		"@material-design-icons/svg": "^0.14.15",
-		"@sveltejs/adapter-vercel": "^6.3.3",
+		"@sveltejs/adapter-vercel": "^6.3.5",
 		"@tanstack/svelte-query": "^5.90.2",
 		"@types/graceful-fs": "^4.1.9",
 		"@vercel/analytics": "^1.6.1",
